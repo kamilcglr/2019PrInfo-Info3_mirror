@@ -3,3 +3,4 @@
 # Contributors :
 Kamil CAGLAR : kamilcaglar.contact@gmail.com
 Taha ALAMI IDRISSI : taha.alami@um5s.net.ma
+Sergiy MAZANKA : mazanka.sergiy13@gmail.com
