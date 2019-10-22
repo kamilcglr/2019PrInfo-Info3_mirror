@@ -2,5 +2,6 @@
 
 # Contributors :
 Kamil CAGLAR : kamilcaglar.contact@gmail.com
-Laila Abouzaid - lailaabouzaid@gmail.com
+Taha ALAMI IDRISSI : taha.alami@um5s.net.ma
+Laila Abouzaid : lailaabouzaid@gmail.com
 
