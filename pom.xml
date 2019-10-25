@@ -12,6 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
         <javafx.version>13</javafx.version>
+
+
     </properties>
     
     <dependencies>
@@ -25,7 +27,15 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+
+    <!--TESTs-->
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>hbc-core</artifactId> <!-- or hbc-twitter4j -->
+            <version>2.2.0</version> <!-- or whatever the latest version is -->
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -44,6 +54,8 @@
                     <mainClass>org.openjfx.App</mainClass>
                 </configuration>
             </plugin>
+            <!--Test-->
+
         </plugins>
     </build>
 </project>
