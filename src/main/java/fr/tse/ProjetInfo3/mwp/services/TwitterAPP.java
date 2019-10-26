@@ -28,7 +28,7 @@ public class TwitterAPP {
     public User getUserFromId(String id) {
         User user = null;
         try {
-            user = twitter.showUser("realdonaldtrump");
+            user = twitter.showUser(id);
         } catch (TwitterException te) {
             te.printStackTrace();
         }
