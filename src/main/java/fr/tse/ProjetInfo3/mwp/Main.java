@@ -1,11 +1,12 @@
 package fr.tse.ProjetInfo3.mwp;
 
-import fr.tse.ProjetInfo3.mwp.services.Twitter;
+import fr.tse.ProjetInfo3.mwp.services.TwitterAPP;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import twitter4j.User;
 
 import java.io.IOException;
 
@@ -20,15 +21,13 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        try {
-            String consumer = "PahWHDFSZ02bTaqFUVamZ0iBI";
-            String consumerSecret = "mGDqU2cwWrw85cMvj7YOBSczI8qZQM0IKKymdbRL82sXqtyhhr";
-            String accessToken = "4664421557-y8N6WL3BVrhBTIfuzZcHqRmNZeGDkt0TbAFoz9g";
-            String Accesstokensecret = "riGJEs4QhZWjOgQyQJY4jQJM8nCRnsfHisU1Vnq1VpDiv";
-            Twitter.run(consumer, consumerSecret, accessToken, Accesstokensecret);
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
+        //Ceci est un test permettant d'essayer l'api twitter4j
+        TwitterAPP twitter = new TwitterAPP();
+        User test = twitter.getUserFromId("realdonaldtrump");
+        System.out.println(test.getScreenName());
+        System.out.println(test.getStatus());
+        System.out.println(test.getId());
+        System.out.println(test.getDescription());
     }
 
     public void init(Stage stage) {
