@@ -1,0 +1,76 @@
+/*Load fonts that can be used*/
+@font-face {
+    src: url('fonts/Raleway/Raleway-Regular.ttf');
+}
+
+@font-face {
+    src: url('fonts/Raleway/Raleway-Bold.ttf');
+}
+
+@font-face {
+    src: url('fonts/Raleway/Raleway-Italic.ttf');
+}
+
+@font-face {
+    src: url('fonts/Raleway/Raleway-Black.ttf');
+}
+@font-face {
+    src: url('fonts/Roboto/Roboto-Medium.ttf');
+}
+@font-face {
+    src: url('fonts/Roboto/Roboto-Bold.ttf');
+}
+.root {
+    -main-bg-color: #E5E9ED;
+    -primary: #03ADF1;
+    -accent: #48ac98ff;
+    -gray: #cdd2d9;
+}
+
+.root {
+    -fx-background-color: -main-bg-color;
+}
+
+.jfx-tab-pane {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 25;
+}
+
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: -primary;
+}
+
+/*Add space to left*/
+.jfx-tab-pane .tab-header-area {
+    -fx-padding: 0 -30 0 30;
+}
+
+.jfx-tab-pane .tab .tab-label {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 25;
+}
+
+/*White color to tab header*/
+.jfx-tab-pane .tab-header-area .tab-selected-line {
+    -fx-background-color: WHITE;
+}
+
+.jfx-text-field .input-line {
+    -fx-background-color: -accent;
+}
+
+.jfx-text-field {
+    -jfx-focus-color: -accent;
+}
+
+#questionLabel{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -primary;
+}
+
+.toggle{
+    -jfx-toggle-color: -accent;
+}
+
