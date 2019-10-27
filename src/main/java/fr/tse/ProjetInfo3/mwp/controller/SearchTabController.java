@@ -10,7 +10,8 @@ import org.kordamp.ikonli.javafx.Icon;
 
 /**
  * @author Kamil CAGLAR
- * Controller of the SearchTab
+ * Controller of the SearchTab, all user interactions are handled here
+ *
  */
 public class SearchTabController {
     private MainController mainController;
@@ -20,6 +21,9 @@ public class SearchTabController {
         this.mainController = mainController;
     }
 
+    /*
+    * We re-declare fxml variable here (fx:id="hashtagToggle"), whith the SAME name ot use them
+    * */
     @FXML
     private JFXToggleNode hashtagToggle;
 
@@ -32,7 +36,6 @@ public class SearchTabController {
     @FXML
     private Icon userIcon;
 
-
     @FXML
     private JFXButton searchButton;
 
@@ -43,6 +46,7 @@ public class SearchTabController {
         hashtagIcon.setIconColor(Paint.valueOf("#48ac98ff"));
     }
 
+    /*Only one Toggle can be pressed, so we change the color of the second Toggle */
     @FXML
     private void hashtagTogglePressed(ActionEvent event) {
         userIcon.setIconColor(Paint.valueOf("#48ac98ff"));

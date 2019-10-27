@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import fr.tse.ProjetInfo3.mwp.controller.MainController;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
+import fr.tse.ProjetInfo3.mwp.services.TwitterAPP;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,8 +24,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        Twitter twitter = buildTwitter();
-
+        Twitter twitter = TwitterAPP.buildTwitter();
         /* Sergiy Tests - Commented to not use calls to API
 
         RequestManager rm = new RequestManager(twitter);
@@ -56,7 +56,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
+        //TODO create app icon
         // Set the application icon.
         // this.primaryStage.getIcons().add(new
         // Image("file:resources/images/address_book_32.png"));
@@ -67,6 +67,8 @@ public class Main extends Application {
 
     }
 
+    //Duplicate of functon in twitterApp
+    //TODO delete
     public static Twitter buildTwitter() {
         Twitter twitter;
         String consumer = "PahWHDFSZ02bTaqFUVamZ0iBI";

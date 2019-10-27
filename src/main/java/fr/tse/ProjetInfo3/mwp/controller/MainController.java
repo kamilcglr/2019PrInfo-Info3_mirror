@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 
 /**
  * @author Kamil CAGLAR
- * Controller of the main window
+ * Controller of the main window, all user interactions whith the main windows (not the tabs) are handled here
  */
 public class MainController {
     /*

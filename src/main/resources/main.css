@@ -8,18 +8,17 @@
 }
 
 @font-face {
-    src: url('fonts/Raleway/Raleway-Italic.ttf');
+    src: url('fonts/Raleway/Raleway-Black.ttf');
 }
 
 @font-face {
-    src: url('fonts/Raleway/Raleway-Black.ttf');
-}
-@font-face {
     src: url('fonts/Roboto/Roboto-Medium.ttf');
 }
+
 @font-face {
     src: url('fonts/Roboto/Roboto-Bold.ttf');
 }
+
 .root {
     -main-bg-color: #E5E9ED;
     -primary: #03ADF1;
@@ -51,7 +50,7 @@
     -fx-font-size: 25;
 }
 
-/*White color to tab header*/
+/*White color on the bottom of the selected tab color*/
 .jfx-tab-pane .tab-header-area .tab-selected-line {
     -fx-background-color: WHITE;
 }
@@ -64,13 +63,13 @@
     -jfx-focus-color: -accent;
 }
 
-#questionLabel{
+#questionLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 30;
     -fx-text-fill: -primary;
 }
 
-.toggle{
+.toggle {
     -jfx-toggle-color: -accent;
 }
 

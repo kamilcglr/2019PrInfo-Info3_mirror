@@ -7,9 +7,9 @@ import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterAPP {
-    private Twitter twitter;
+    private static Twitter twitter;
 
-    public TwitterAPP() {
+    public static Twitter buildTwitter() {
         String consumer = "PahWHDFSZ02bTaqFUVamZ0iBI";
         String consumerSecret = "mGDqU2cwWrw85cMvj7YOBSczI8qZQM0IKKymdbRL82sXqtyhhr";
         String accessToken = "4664421557-y8N6WL3BVrhBTIfuzZcHqRmNZeGDkt0TbAFoz9g";
@@ -23,15 +23,7 @@ public class TwitterAPP {
                 .setOAuthAccessTokenSecret(accessTokensecret);
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
+        return twitter;
     }
 
-    public User getUserFromId(String id) {
-        User user = null;
-        try {
-            user = twitter.showUser(id);
-        } catch (TwitterException te) {
-            te.printStackTrace();
-        }
-        return user;
-    }
 }
