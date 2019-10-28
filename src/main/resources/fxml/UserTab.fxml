@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<AnchorPane fx:id="UserTab" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/userTab.css"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="fr.tse.ProjetInfo3.mwp.controller.UserTabController">
+<AnchorPane fx:id="UserTab" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mwp.controller.UserTabController">
     <children>
-        <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane fx:id="anchorPane">
                     <children>
-                        <GridPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <GridPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                         </GridPane>
                     </children>
@@ -24,4 +19,8 @@
             </children>
         </StackPane>
     </children>
+   <stylesheets>
+      <URL value="@styles/userTab.css" />
+      <URL value="@styles/main.css" />
+   </stylesheets>
 </AnchorPane>

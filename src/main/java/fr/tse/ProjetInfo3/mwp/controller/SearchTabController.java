@@ -69,24 +69,39 @@ public class SearchTabController {
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
     @FXML
     private void hashtagTogglePressed(ActionEvent event) {
-        if(hashtagToggle.isSelected()){
+        /*if the toggle is selected, we change the the color of the toggle
+         * else, this toggle is unselected, then we change the color of this icon*/
+        if (hashtagToggle.isSelected()) {
             hashtagIcon.setIconColor(Paint.valueOf("#ffffff"));
             userIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             userToggle.setSelected(false);
-        }else{
+
+            //Set floating label to help the user
+            searchField.setLabelFloat(true);
+            searchField.setPromptText("Entrez le hashtag # que vous souhaitez chercher");
+        } else {
             hashtagIcon.setIconColor(Paint.valueOf("#48ac98ff"));
+            searchField.setLabelFloat(false);
         }
 
     }
 
+    /*Only one Toggle can be pressed, so we change the color of the second Toggle */
     @FXML
     private void userTogglePressed(ActionEvent event) {
-        if(userToggle.isSelected()){
+        /*if the toggle is selected, we change the the color
+         * else, this toggle is unselected, then we change the color of this icon*/
+        if (userToggle.isSelected()) {
             userIcon.setIconColor(Paint.valueOf("#ffffff"));
             hashtagIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             hashtagToggle.setSelected(false);
-        }else{
+
+            //Set floating label to help the user
+            searchField.setLabelFloat(true);
+            searchField.setPromptText("Entrez l'identifiant @ de l'user que vous souhaitez chercher");
+        } else {
             userIcon.setIconColor(Paint.valueOf("#48ac98ff"));
+            searchField.setLabelFloat(false);
         }
 
     }
@@ -97,21 +112,31 @@ public class SearchTabController {
      * */
     @FXML
     private void searchButtonPressed() throws IOException {
+        //get the content of the fied
         String research = searchField.getText();
+
+        //verify if it is empty
         if (research.length() == 0) {
             launchDialog("Aucune saisie", "Veuillez entrer quelque chose à chercher", "D'accord");
+        }else{
+            //At least one toggle has to be selected
+            if (!userToggle.isSelected() && !hashtagToggle.isSelected()) {
+                launchDialog("Aucune mode de rechercher choisi", "Veuillez choisir un mode de recherche", "D'accord");
+            }else{
+                //clean the
+            }
         }
-        if (!userToggle.isSelected() && !hashtagToggle.isSelected()) {
-            launchDialog("Aucune mode de rechercher choisi", "Veuillez choisir un mode de recherche", "D'accord");
-        }
+
 
     }
 
     /**
      * Launch dialog
-     * @param header label of the header
-     * @param text content printed inside
-     * @param labelButton label inside of button*/
+     *
+     * @param header      label of the header
+     * @param text        content printed inside
+     * @param labelButton label inside of button
+     */
     private void launchDialog(String header, String text, String labelButton) {
         Label headerLabel = new Label(header);
         Text bodyText = new Text(text);
