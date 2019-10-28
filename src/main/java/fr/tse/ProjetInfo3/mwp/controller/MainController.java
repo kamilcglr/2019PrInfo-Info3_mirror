@@ -20,11 +20,10 @@ public class MainController {
     @FXML
     private UserTabController userTabController;
 
-
     /*This function is launched when Mainwindows is launched */
     @FXML
     private void initialize() {
-        /*the controller can be used in search Tab*/
+        /*the controller can be used in other Tabs*/
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
