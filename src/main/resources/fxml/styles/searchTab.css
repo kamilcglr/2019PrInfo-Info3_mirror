@@ -1,0 +1,49 @@
+#questionLabel {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -primary;
+}
+
+#searchButton{
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
+
+.toggle {
+    -jfx-toggle-color: -accent;
+}
+
+.logginSigninIcons{
+    -fx-icon-color: -accent;
+}
+
+.logginSigninButtons{
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -accent;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+    -fx-border-color: -accent;
+}
+
+.dialog-button{
+    -jfx-button-type: RAISED;
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+
+}
+
+.dialog-text{
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 15;
+}
+
+.dialog-header{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
+}

@@ -15,12 +15,20 @@ public class MainController {
     private JFXTabPane tabPane;
     @FXML
     private SearchTabController searchTabController;
+    @FXML
+    private PiTabController piTabController ;
+    @FXML
+    private UserTabController userTabController;
+
 
     /*This function is launched when Mainwindows is launched */
     @FXML
     private void initialize() {
         /*the controller can be used in search Tab*/
         searchTabController.injectMainController(this);
+        userTabController.injectMainController(this);
+        piTabController.injectMainController(this);
+
     }
 
 }

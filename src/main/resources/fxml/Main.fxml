@@ -4,11 +4,21 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@../main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mwp.controller.MainController">
-    <JFXTabPane prefHeight="741.0" prefWidth="1200.0" side="BOTTOM" stylesheets="@../main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Tab text="Search">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mwp.controller.MainController">
+    <JFXTabPane prefHeight="741.0" prefWidth="1200.0" side="BOTTOM" stylesheets="@styles/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Tab text="Rechercher">
             <content>
                 <fx:include fx:id="searchTab" source="SearchTab.fxml" />
+            </content>
+        </Tab>
+        <Tab text="Utilisateur">
+            <content>
+                <fx:include fx:id="userTab" source="UserTab.fxml" />
+            </content>
+        </Tab>
+        <Tab text="Points d'intérêts">
+            <content>
+                <fx:include fx:id="piTab" source="PiTab.fxml" />
             </content>
         </Tab>
     </JFXTabPane>

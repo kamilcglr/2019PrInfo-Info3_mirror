@@ -104,6 +104,7 @@ public class SearchTabController {
         if (!userToggle.isSelected() && !hashtagToggle.isSelected()) {
             launchDialog("Aucune mode de rechercher choisi", "Veuillez choisir un mode de recherche", "D'accord");
         }
+
     }
 
     /**
