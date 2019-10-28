@@ -26,4 +26,8 @@ public class TwitterAPP {
         return twitter;
     }
 
+    public static Twitter getTwitter(){
+        return twitter;
+    }
+
 }

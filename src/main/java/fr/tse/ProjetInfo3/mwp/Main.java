@@ -46,7 +46,7 @@ public class Main extends Application {
             rootNode = loader.load();
 
             /* Give the controller access to the main app.*/
-			MainController mainController = loader.getController();
+            MainController mainController = loader.getController();
             //TODO verify utility : controller.setMainApp(this);
 
         } catch (IOException e) {
@@ -65,23 +65,5 @@ public class Main extends Application {
         stage.setTitle("Main");
         stage.show();
 
-    }
-
-    //Duplicate of functon in twitterApp
-    //TODO delete
-    public static Twitter buildTwitter() {
-        Twitter twitter;
-        String consumer = "PahWHDFSZ02bTaqFUVamZ0iBI";
-        String consumerSecret = "mGDqU2cwWrw85cMvj7YOBSczI8qZQM0IKKymdbRL82sXqtyhhr";
-        String accessToken = "4664421557-y8N6WL3BVrhBTIfuzZcHqRmNZeGDkt0TbAFoz9g";
-        String accessTokensecret = "riGJEs4QhZWjOgQyQJY4jQJM8nCRnsfHisU1Vnq1VpDiv";
-
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true).setOAuthConsumerKey(consumer).setOAuthConsumerSecret(consumerSecret)
-                .setOAuthAccessToken(accessToken).setOAuthAccessTokenSecret(accessTokensecret);
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        twitter = tf.getInstance();
-
-        return twitter;
     }
 }

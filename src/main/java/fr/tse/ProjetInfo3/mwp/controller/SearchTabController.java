@@ -2,7 +2,10 @@ package fr.tse.ProjetInfo3.mwp.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
+import com.jfoenix.validation.RequiredFieldValidator;
 import fr.tse.ProjetInfo3.mwp.Main;
+import fr.tse.ProjetInfo3.mwp.services.RequestManager;
+import fr.tse.ProjetInfo3.mwp.viewer.UserViewer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,6 +67,28 @@ public class SearchTabController {
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
+        //Disable the text field, we wait for the at least one toggle to be pressed
+        activateField(false);
+        /*
+         * When the text in the input field is changed,
+         * we constantly remove spaces and add the # or @ at the begining
+         */
+        searchField.textProperty().addListener(
+                (observable, old_value, new_value) -> {
+                    if (new_value.contains(" ")) {
+                        searchField.setText(old_value);
+                    }
+                    if (hashtagToggle.isSelected()) {
+                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
+                            searchField.setText("#" + new_value);
+                        }
+                    } else if (userToggle.isSelected()) {
+                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
+                            searchField.setText("@" + new_value);
+                        }
+                    }
+                }
+        );
     }
 
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
@@ -72,16 +97,20 @@ public class SearchTabController {
         /*if the toggle is selected, we change the the color of the toggle
          * else, this toggle is unselected, then we change the color of this icon*/
         if (hashtagToggle.isSelected()) {
+            userToggle.setSelected(false);
             hashtagIcon.setIconColor(Paint.valueOf("#ffffff"));
             userIcon.setIconColor(Paint.valueOf("#48ac98ff"));
-            userToggle.setSelected(false);
 
             //Set floating label to help the user
             searchField.setLabelFloat(true);
             searchField.setPromptText("Entrez le hashtag # que vous souhaitez chercher");
+
+            activateField(true);
         } else {
             hashtagIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             searchField.setLabelFloat(false);
+
+            activateField(false);
         }
 
     }
@@ -99,9 +128,13 @@ public class SearchTabController {
             //Set floating label to help the user
             searchField.setLabelFloat(true);
             searchField.setPromptText("Entrez l'identifiant @ de l'user que vous souhaitez chercher");
+
+            activateField(true);
         } else {
             userIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             searchField.setLabelFloat(false);
+
+            activateField(false);
         }
 
     }
@@ -115,23 +148,23 @@ public class SearchTabController {
         //get the content of the fied
         String research = searchField.getText();
 
-        //verify if it is empty
-        if (research.length() == 0) {
+        //verify if it is empty or contains only the @/#
+        if (research.length() <= 1) {
             launchDialog("Aucune saisie", "Veuillez entrer quelque chose à chercher", "D'accord");
-        }else{
-            //At least one toggle has to be selected
-            if (!userToggle.isSelected() && !hashtagToggle.isSelected()) {
-                launchDialog("Aucune mode de rechercher choisi", "Veuillez choisir un mode de recherche", "D'accord");
-            }else{
-                //clean the
+        } else {
+            UserViewer userViewer = new UserViewer();
+            try {
+                userViewer.searchId(research);
+                userViewer.printUserView();
+
+            } catch (Exception e) {
+                System.out.println("Something went wrong :" + e);
             }
         }
-
-
     }
 
     /**
-     * Launch dialog
+     * Launch dialog to inform the user
      *
      * @param header      label of the header
      * @param text        content printed inside
@@ -164,4 +197,21 @@ public class SearchTabController {
         });
         anchorPane.setEffect(blur);
     }
+
+    /**
+     * Desactive of active the search field and button
+     *
+     * @param activate : boolean, if true, activate search button and field
+     */
+    private void activateField(boolean activate) {
+        if (activate) {
+            searchField.setDisable(false);
+            searchButton.setDisable(false);
+        } else {
+            searchField.setDisable(true);
+            searchButton.setDisable(true);
+        }
+        searchField.setText("");
+    }
+
 }
