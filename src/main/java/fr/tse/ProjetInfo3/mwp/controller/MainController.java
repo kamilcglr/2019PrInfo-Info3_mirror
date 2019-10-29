@@ -18,9 +18,16 @@ public class MainController {
     @FXML
     private SearchTabController searchTabController;
     @FXML
-    private PiTabController piTabController ;
+    private PiTabController piTabController;
     @FXML
     private UserTabController userTabController;
+    @FXML
+    private Tab userTabFromMain;
+    @FXML
+    private Tab piTabFromMain;
+    @FXML
+    private Tab searchTabFromMain;
+
 
     /*This function is launched when Mainwindows is launched */
     @FXML
@@ -31,20 +38,8 @@ public class MainController {
         piTabController.injectMainController(this);
 
     }
-    //public void init() {
-        //tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable,
-        //                                                                Tab oldValue, Tab newValue) -> {
-        //    if (newValue == tab2_bar) {
-        //        System.out.println("- 2.Tab bar -");
-        //        System.out.println("xxx_tab2bar_xxxController=" + xxx_tab2bar_xxxController); //if =null => inject problem
-        //        xxx_tab2bar_xxxController.handleTab2ButtonBar();
-        //    } else if (newValue == tab1_foo) {
-        //        System.out.println("- 1.Tab foo -");
-        //        System.out.println("xxx_tab1foo_xxxController=" + xxx_tab1foo_xxxController); //if =null => inject problem
-        //        xxx_tab1foo_xxxController.handleTab1ButtonFoo();
-        //    } else {
-        //        System.out.println("- another Tab -");
-        //    }
-        //});
 
+    public void goToSearchPane(){
+        tabPane.getSelectionModel().select(userTabFromMain);;
+    }
 }

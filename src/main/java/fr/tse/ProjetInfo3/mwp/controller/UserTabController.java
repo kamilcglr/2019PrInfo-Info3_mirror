@@ -1,5 +1,7 @@
 package fr.tse.ProjetInfo3.mwp.controller;
 
+import javafx.fxml.FXML;
+
 public class UserTabController {
     private MainController mainController;
 
@@ -8,4 +10,8 @@ public class UserTabController {
         this.mainController = mainController;
     }
 
+    @FXML
+    private void initialize() {
+
+    }
 }
