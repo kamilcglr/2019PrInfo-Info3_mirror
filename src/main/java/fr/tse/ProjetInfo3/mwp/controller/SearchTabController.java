@@ -73,22 +73,22 @@ public class SearchTabController {
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
          */
-        searchField.textProperty().addListener(
-                (observable, old_value, new_value) -> {
-                    if (new_value.contains(" ")) {
-                        searchField.setText(old_value);
-                    }
-                    if (hashtagToggle.isSelected()) {
-                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
-                            searchField.setText("#" + new_value);
-                        }
-                    } else if (userToggle.isSelected()) {
-                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
-                            searchField.setText("@" + new_value);
-                        }
-                    }
-                }
-        );
+      searchField.textProperty().addListener(
+              (observable, old_value, new_value) -> {
+                  if (new_value.contains(" ")) {
+                      searchField.setText(old_value);
+                  }
+                  if (hashtagToggle.isSelected()) {
+                      if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
+                          searchField.setText("#" + new_value);
+                      }
+                  } else if (userToggle.isSelected()) {
+                      if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
+                          searchField.setText("@" + new_value);
+                      }
+                  }
+              }
+      );
     }
 
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
@@ -154,11 +154,13 @@ public class SearchTabController {
         } else {
             UserViewer userViewer = new UserViewer();
             try {
+                //if search does not throw error
                 userViewer.searchId(research);
-                userViewer.printUserView();
+                mainController.goToSearchPane();
 
             } catch (Exception e) {
-                System.out.println("Something went wrong :" + e);
+                //else we print error on dialog
+                System.out.println("Something went wrong : " + e);
             }
         }
     }
