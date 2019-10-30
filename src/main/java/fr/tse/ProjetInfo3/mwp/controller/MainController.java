@@ -39,7 +39,12 @@ public class MainController {
 
     }
 
-    public void goToSearchPane(){
+    public void goToUserPane(){
+        tabPane.getSelectionModel().select(userTabFromMain);;
+    }
+
+    public void goToHashtagPane(){
+        //TODO
         tabPane.getSelectionModel().select(userTabFromMain);;
     }
 }
