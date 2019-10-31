@@ -35,7 +35,7 @@ public class RequestManager {
 	 * @return A Profile object
 	 * @throws IOException
 	 */
-	public Profile getProfile(String id) throws IOException {
+	public Profile getProfile(String id) throws IOException, TwitterException {
 		Profile profile = null;
 
 		String name;
@@ -61,8 +61,10 @@ public class RequestManager {
 
 			profile = new Profile(name, description, followersCount, friendsCount, favouritesCount, profileImage);
 
-		} catch (TwitterException te) {
-			te.printStackTrace();
+		} catch (TwitterException e) {
+			e.printStackTrace();
+			//added by Kamil : permits to catch type of error when calling during search
+			throw new TwitterException(e);
 		}
 
 		return profile;
@@ -73,7 +75,7 @@ public class RequestManager {
 	 * @param request - a String corresponding to the hashtag to find
 	 * @return A List of Tweets
 	 */
-	public List<Status> getTweets(String request) {
+	public List<Status> getTweets(String request) throws TwitterException {
 		Query query = new Query(request);
 		List<Status> tweets = new ArrayList<>();
 
@@ -83,6 +85,8 @@ public class RequestManager {
 
 		} catch (TwitterException e) {
 			e.printStackTrace();
+			//added by Kamil : permits to catch type of error when calling during search
+			throw new TwitterException(e);
 		}
 
 		for (Status s : tweets) {

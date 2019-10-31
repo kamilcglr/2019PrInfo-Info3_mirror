@@ -47,3 +47,12 @@
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
+
+#progressIndicator{
+    -fx-progress-color: -accent;
+}
+
+#progressLabel{
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 15;
+}

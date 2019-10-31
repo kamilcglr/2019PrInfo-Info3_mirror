@@ -2,25 +2,23 @@ package fr.tse.ProjetInfo3.mwp.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
-import com.jfoenix.validation.RequiredFieldValidator;
-import fr.tse.ProjetInfo3.mwp.Main;
-import fr.tse.ProjetInfo3.mwp.services.RequestManager;
+import fr.tse.ProjetInfo3.mwp.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mwp.viewer.UserViewer;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
+import twitter4j.TwitterException;
 
 import java.io.IOException;
 
@@ -64,31 +62,40 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Label progressLabel;
+
+    private String research;
+
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
         //Disable the text field, we wait for the at least one toggle to be pressed
-        activateField(false);
+        activateField(false, true);
+        progressIndicator.setVisible(false);
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
          */
-      searchField.textProperty().addListener(
-              (observable, old_value, new_value) -> {
-                  if (new_value.contains(" ")) {
-                      searchField.setText(old_value);
-                  }
-                  if (hashtagToggle.isSelected()) {
-                      if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
-                          searchField.setText("#" + new_value);
-                      }
-                  } else if (userToggle.isSelected()) {
-                      if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
-                          searchField.setText("@" + new_value);
-                      }
-                  }
-              }
-      );
+        searchField.textProperty().addListener(
+                (observable, old_value, new_value) -> {
+                    if (new_value.contains(" ")) {
+                        searchField.setText(old_value);
+                    }
+                    if (hashtagToggle.isSelected()) {
+                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
+                            searchField.setText("#" + new_value);
+                        }
+                    } else if (userToggle.isSelected()) {
+                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
+                            searchField.setText("@" + new_value);
+                        }
+                    }
+                }
+        );
     }
 
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
@@ -105,12 +112,12 @@ public class SearchTabController {
             searchField.setLabelFloat(true);
             searchField.setPromptText("Entrez le hashtag # que vous souhaitez chercher");
 
-            activateField(true);
+            activateField(true, true);
         } else {
             hashtagIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             searchField.setLabelFloat(false);
 
-            activateField(false);
+            activateField(false, true);
         }
 
     }
@@ -129,40 +136,101 @@ public class SearchTabController {
             searchField.setLabelFloat(true);
             searchField.setPromptText("Entrez l'identifiant @ de l'user que vous souhaitez chercher");
 
-            activateField(true);
+            activateField(true, true);
         } else {
             userIcon.setIconColor(Paint.valueOf("#48ac98ff"));
             searchField.setLabelFloat(false);
 
-            activateField(false);
+            activateField(false, true);
         }
-
     }
 
     /*
-     * 1. Verify if at least one toggle option is set
-     * 2. Give hand to search function
+     * 1. Verify that there is something in search bar
+     * 2. Call search
      * */
     @FXML
-    private void searchButtonPressed() throws IOException {
+    private void searchButtonPressed(ActionEvent event) throws IOException {
         //get the content of the fied
         String research = searchField.getText();
+        //u for user, h for hastag
+        char typeOfSearch = 'e';
+        if (hashtagToggle.isSelected()) {
+            typeOfSearch = 'h';
+        }else if(userToggle.isSelected()) {
+            typeOfSearch = 'u';
+        }else{
+            //TODO create error here
+        }
 
         //verify if it is empty or contains only the @/#
         if (research.length() <= 1) {
             launchDialog("Aucune saisie", "Veuillez entrer quelque chose à chercher", "D'accord");
         } else {
-            UserViewer userViewer = new UserViewer();
-            try {
-                //if search does not throw error
-                userViewer.searchId(research);
-                mainController.goToSearchPane();
-
-            } catch (Exception e) {
-                //else we print error on dialog
-                System.out.println("Something went wrong : " + e);
-            }
+            progressLabel.setVisible(true);
+            progressLabel.setText("Recherche en cours");
+            searchIsRunning(true);
+            launchSearch(research, typeOfSearch);
         }
+    }
+
+    /**
+     * Create a new thread that will do the search
+     * If there is not error during search, it calls the maincontroller to go to userPane
+     * Else we print error
+     * @param research:string text entered by user
+     * @param typeOfSearch: char type of search h for hastag, u for user
+     */
+    private void launchSearch(String research, char typeOfSearch) {
+        /*
+         * It permits to do the search in a separated thread, so the interface does not freeze
+         * */
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() {
+                try {
+                    //if search does not throw error
+
+                    if(typeOfSearch=='h'){
+                        HastagViewer hastagViewer = new HastagViewer();
+                        hastagViewer.searchHashtag(research);
+                        progressLabel.setVisible(false);
+                        mainController.goToUserPane();
+
+                    }else if(typeOfSearch=='u'){
+                        UserViewer userViewer = new UserViewer();
+                        userViewer.searchId(research);
+                    }
+
+                    searchIsRunning(false);
+                } catch (Exception e) {
+                    //Most of the time we will catch Exception from Twitter4j
+                    //Stop animations
+                    searchIsRunning(false);
+
+                    //this is necessary to update the ui because we are in a separated thread
+                    Platform.runLater(() -> {
+                        progressLabel.setVisible(true);
+
+                        //If it is a Twitter4j Exception we catch the case when user does not exist
+                        if (e instanceof TwitterException) {
+                            //get the error code from twitter API
+                            String errorCode = e.getCause().toString().substring(0, 3);
+                            if (errorCode.equals("404")) {
+                                progressLabel.setText("Désolé, l'utilisateur " + research + " n'existe pas.");
+                            }
+                        } else {
+                            progressLabel.setText("Désolé, la recherche n'a pas aboutie");
+                        }
+                    });
+                    System.out.println("Something went wrong : " + e);
+                }
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     /**
@@ -201,11 +269,27 @@ public class SearchTabController {
     }
 
     /**
+     *
+     */
+    private void searchIsRunning(boolean searching) {
+        if (searching) {
+            progressIndicator.setVisible(true);
+            searchButton.setVisible(false);
+            activateField(false, false);
+        } else {
+            progressIndicator.setVisible(false);
+            searchButton.setVisible(true);
+            activateField(true, false);
+        }
+
+    }
+
+    /**
      * Desactive of active the search field and button
      *
      * @param activate : boolean, if true, activate search button and field
      */
-    private void activateField(boolean activate) {
+    private void activateField(boolean activate, boolean delete) {
         if (activate) {
             searchField.setDisable(false);
             searchButton.setDisable(false);
@@ -213,7 +297,9 @@ public class SearchTabController {
             searchField.setDisable(true);
             searchButton.setDisable(true);
         }
-        searchField.setText("");
+        if (delete) {
+            searchField.setText("");
+        }
     }
 
 }

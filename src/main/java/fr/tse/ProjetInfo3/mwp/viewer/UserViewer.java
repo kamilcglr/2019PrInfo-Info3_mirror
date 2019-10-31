@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mwp.viewer;
 import fr.tse.ProjetInfo3.mwp.Profile;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 import fr.tse.ProjetInfo3.mwp.services.TwitterAPP;
+import twitter4j.TwitterException;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class UserViewer {
         requestManager = new RequestManager(TwitterAPP.getTwitter());
     }
 
-    public void searchId(String id) throws IOException {
+    public void searchId(String id) throws Exception {
         Profile profile = requestManager.getProfile(id);
     }
 
