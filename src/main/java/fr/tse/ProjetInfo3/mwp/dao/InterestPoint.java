@@ -14,6 +14,7 @@ public class InterestPoint implements InterestPointInterface {
 	
 	private List<Hashtag> hashtags;
 	private List<User> users;
+	
 	private List<InterestPoint> interestPoints;
 	
 	public InterestPoint() {

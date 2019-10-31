@@ -8,5 +8,6 @@ package fr.tse.ProjetInfo3.mwp.dao;
  *
  */
 public class Hashtag {
+	private String hashtag;
 
 }
