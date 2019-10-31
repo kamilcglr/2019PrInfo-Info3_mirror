@@ -36,7 +36,7 @@ public class SearchTabController {
     }
 
     /*
-     * We re-declare fxml variable here (fx:id="hashtagToggle"), whith the SAME name ot use them
+     * We re-declare fxml variable here (fx:id="hashtagToggle"), with the SAME name ot use them
      * */
     @FXML
     private StackPane dialogStackPane;
@@ -195,13 +195,14 @@ public class SearchTabController {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research);
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane();
+                        mainController.goToHashtagPane();
 
                     }else if(typeOfSearch=='u'){
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchId(research);
+                        progressLabel.setVisible(false);
+                        mainController.goToUserPane();
                     }
-
                     searchIsRunning(false);
                 } catch (Exception e) {
                     //Most of the time we will catch Exception from Twitter4j
