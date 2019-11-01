@@ -1,7 +1,10 @@
 package fr.tse.ProjetInfo3.mwp.viewer;
 
+import fr.tse.ProjetInfo3.mwp.dao.Tweet;
 import fr.tse.ProjetInfo3.mwp.dao.User;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
+
+import java.util.List;
 
 /**
  * This class makes the research for an user
@@ -19,6 +22,10 @@ public class UserViewer {
         System.out.println(user);
     }
 
+    public void getTweets(String screen_name, int count){
+        List<Tweet> tweets = requestManager.getTweetsFromUSer(screen_name,count);
+        System.out.println(tweets);
+    }
     public void printUserView(){
 
     }
