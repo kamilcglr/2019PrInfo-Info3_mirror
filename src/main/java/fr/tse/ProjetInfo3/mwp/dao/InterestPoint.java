@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * @author ALAMI IDRISSI Taha
- *	this interface is a contract that's going to be implemented by the InterestPoint interface 
- *  every method is going to be overwritten to avoid creating 
- *  Object after that are going to be created like this : InterestPointInterface ip = new InterestPoint();
+ *	In this class we define what an interest point is and what we can do with it by implementing the 
+ *  InterestPointInterface multiple method with the same name but with different
+ *   parameters are defined to have a variety of definition for an InterestPoint
  */
 
 public class InterestPoint implements InterestPointInterface {
@@ -57,6 +57,29 @@ public class InterestPoint implements InterestPointInterface {
 		this.users.add(user);
 	}
 	/*
+	 * every interest point that going to call this method is going to add to his 
+	 * current list a brand new user
+	 * (non-Javadoc)
+	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
+	 */
+	@Override
+	public void addToInterestPoint(User user) {
+		// TODO Auto-generated method stub
+		this.users.add(user);
+	}
+	/*
+	 * every interest point that going to call this method is going to add to his 
+	 * current list a brand new hashtag 
+	 * (non-Javadoc)
+	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
+	 */
+	@Override
+	public void addToInterestPoint(Hashtag hashtag) {
+		// TODO Auto-generated method stub
+		this.hashtags.add(hashtag);
+	}
+
+	/*
 	 * Method not FINISHED YET !
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
@@ -94,6 +117,26 @@ public class InterestPoint implements InterestPointInterface {
 		
 		interestPoint.interestPoints.add(interestPoint);
 		return true;
+	}
+	/*
+	 * creating a new Interest point
+	 * (non-Javadoc)
+	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
+	 */
+	@Override
+	public boolean createInterestPoint(User user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/*
+	 * creating a new Interest point
+	 * (non-Javadoc)
+	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
+	 */
+	@Override
+	public boolean createInterestPoint(Hashtag hashtag) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/*
@@ -156,13 +199,6 @@ public class InterestPoint implements InterestPointInterface {
 		} else if (!users.equals(other.users))
 			return false;
 		return true;
-	}
-
-	
-
-	
-
-	
-	
+	}	
 	
 }

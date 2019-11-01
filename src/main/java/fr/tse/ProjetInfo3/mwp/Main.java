@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mwp;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXTabPane;
 import fr.tse.ProjetInfo3.mwp.controller.MainController;
+import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.concurrent.Flow;
-
 public class Main extends Application {
     private Parent rootNode;
 
@@ -29,13 +29,19 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        //Twitter twitter = TwitterAPP.buildTwitter();
+        /* Sergiy Tests - Commented to not use calls to API
 
-        //RequestManager requestManager = new RequestManager();
-        //try {
-        //    System.out.println(requestManager.getUser("realDonaldTrump"));
-        //} catch (Exception e) {
-        //    e.printStackTrace();
-        //}
+        RequestManager rm = new RequestManager(twitter);
+        rm.getTweets("#ASSE");
+
+        try {
+            Profile macron = rm.getProfile("EmmanuelMacron");
+            System.out.println(macron.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		*/
         launch();
     }
 

@@ -218,11 +218,8 @@ public class SearchTabController {
                         JFXSnackbar snackbar = new JFXSnackbar(anchorPane);
                         snackbar.getStyleClass().add("snackbar");
 
-                        //TODO find the type of instance
                         if (e instanceof RequestManager.RequestManagerException) {
-                            //If it is a Twitter4j Exception we catch the case when user does not exist
                             snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, l'utilisateur " + research + " n'existe pas.", "D'accord", b -> snackbar.close())));
-                            //snackbar.fireEvent(new JFXSnackbar.SnackbarEvent("Désolé, l'utilisateur " + research + " n'existe pas.","error-toast");
                         } else {
                             snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie","D'accord", b -> snackbar.close())));
                         }
