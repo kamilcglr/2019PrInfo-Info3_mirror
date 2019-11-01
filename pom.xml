@@ -36,6 +36,7 @@
             <version>9.0.9</version>
         </dependency>
 
+
         <!--  Permits to use icons from fontawesome-->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>

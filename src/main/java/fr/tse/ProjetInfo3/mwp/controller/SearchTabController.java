@@ -2,11 +2,14 @@ package fr.tse.ProjetInfo3.mwp.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
+import com.jfoenix.controls.JFXSnackbar;
+import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 import fr.tse.ProjetInfo3.mwp.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mwp.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -18,7 +21,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
-import twitter4j.TwitterException;
 
 import java.io.IOException;
 
@@ -157,9 +159,9 @@ public class SearchTabController {
         char typeOfSearch = 'e';
         if (hashtagToggle.isSelected()) {
             typeOfSearch = 'h';
-        }else if(userToggle.isSelected()) {
+        } else if (userToggle.isSelected()) {
             typeOfSearch = 'u';
-        }else{
+        } else {
             //TODO create error here
         }
 
@@ -178,8 +180,9 @@ public class SearchTabController {
      * Create a new thread that will do the search
      * If there is not error during search, it calls the maincontroller to go to userPane
      * Else we print error
+     *
      * @param research:string text entered by user
-     * @param typeOfSearch: char type of search h for hastag, u for user
+     * @param typeOfSearch:   char type of search h for hastag, u for user
      */
     private void launchSearch(String research, char typeOfSearch) {
         /*
@@ -190,14 +193,13 @@ public class SearchTabController {
             protected Void call() {
                 try {
                     //if search does not throw error
-
-                    if(typeOfSearch=='h'){
+                    if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research);
                         progressLabel.setVisible(false);
                         mainController.goToHashtagPane();
 
-                    }else if(typeOfSearch=='u'){
+                    } else if (typeOfSearch == 'u') {
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchScreenName(research);
                         progressLabel.setVisible(false);
@@ -211,17 +213,18 @@ public class SearchTabController {
 
                     //this is necessary to update the ui because we are in a separated thread
                     Platform.runLater(() -> {
-                        progressLabel.setVisible(true);
+                        //hide progress label because we will use snackbar
+                        progressLabel.setVisible(false);
+                        JFXSnackbar snackbar = new JFXSnackbar(anchorPane);
+                        snackbar.getStyleClass().add("snackbar");
 
-                        //If it is a Twitter4j Exception we catch the case when user does not exist
-                        if (e instanceof TwitterException) {
-                            //get the error code from twitter API
-                            String errorCode = e.getCause().toString().substring(0, 3);
-                            if (errorCode.equals("404")) {
-                                progressLabel.setText("Désolé, l'utilisateur " + research + " n'existe pas.");
-                            }
+                        //TODO find the type of instance
+                        if (e instanceof RequestManager.RequestManagerException) {
+                            //If it is a Twitter4j Exception we catch the case when user does not exist
+                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, l'utilisateur " + research + " n'existe pas.", "D'accord", b -> snackbar.close())));
+                            //snackbar.fireEvent(new JFXSnackbar.SnackbarEvent("Désolé, l'utilisateur " + research + " n'existe pas.","error-toast");
                         } else {
-                            progressLabel.setText("Désolé, la recherche n'a pas aboutie");
+                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie","D'accord", b -> snackbar.close())));
                         }
                     });
                     System.out.println("Something went wrong : " + e);
@@ -270,7 +273,9 @@ public class SearchTabController {
     }
 
     /**
+     * Shows the label and animation during searching
      *
+     * @param searching true if searching
      */
     private void searchIsRunning(boolean searching) {
         if (searching) {
@@ -286,7 +291,7 @@ public class SearchTabController {
     }
 
     /**
-     * Desactive of active the search field and button
+     * Desactive or active the search field and button
      *
      * @param activate : boolean, if true, activate search button and field
      */

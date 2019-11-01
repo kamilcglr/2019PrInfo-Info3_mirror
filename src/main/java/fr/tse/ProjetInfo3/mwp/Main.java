@@ -1,18 +1,26 @@
 package fr.tse.ProjetInfo3.mwp;
 
-import java.io.IOException;
-
-import com.google.gson.internal.$Gson$Preconditions;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXTabPane;
 import fr.tse.ProjetInfo3.mwp.controller.MainController;
-import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.concurrent.Flow;
 
 public class Main extends Application {
     private Parent rootNode;
+
+    @FXML
+    private AnchorPane root;
 
     /**
      * Constructor
@@ -31,30 +39,52 @@ public class Main extends Application {
         launch();
     }
 
-    public void init(Stage stage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
-            rootNode = loader.load();
-
-            /* Give the controller access to the main app.*/
-            MainController mainController = loader.getController();
-            //TODO verify utility : controller.setMainApp(this);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void start(Stage stage) {
-        //TODO create app icon
-        // Set the application icon.
-        // this.primaryStage.getIcons().add(new
-        // Image("file:resources/images/address_book_32.png"));
-        init(stage);
-        stage.setScene(new Scene(rootNode));
-        stage.setTitle("Main");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Twitter Anlatytics");
+        JFXDecorator decorator = new JFXDecorator(stage, root);
+        decorator.setCustomMaximize(true);
+
+
+        Scene scene = new Scene(decorator);
+        handleWindowResize(stage, scene);
+
+        final ObservableList<String> stylesheets = scene.getStylesheets();
+        stylesheets.add(getClass().getResource("/fxml/styles/main.css").toString());
+        stage.setScene(scene);
         stage.show();
 
+       /* //TODO create app icon
+        // Set the application icon.
+        new Thread(() -> {
+            try {
+                SVGGlyphLoader.loadGlyphsFont(MainDemo.class.getResourceAsStream("/fonts/icomoon.svg"),
+                    "icomoon.svg");
+            } catch (IOException ioExc) {
+                ioExc.printStackTrace();
+            }
+        }).start();
+        */
+    }
+
+    /**
+     * Change the size of sub elements when the size of window is modified
+     */
+    private void handleWindowResize(Stage stage, Scene scene) {
+
+        //This part is called when window is resized by user or by full screen mode
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            root.prefWidthProperty().bind(scene.widthProperty());
+        });
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            root.prefHeightProperty().bind(scene.heightProperty());
+        });
     }
 }

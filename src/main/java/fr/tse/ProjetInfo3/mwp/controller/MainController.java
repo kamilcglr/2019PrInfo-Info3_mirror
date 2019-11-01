@@ -3,6 +3,10 @@ package fr.tse.ProjetInfo3.mwp.controller;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+
+import java.util.Stack;
 
 /**
  * @author Kamil CAGLAR
@@ -14,7 +18,11 @@ public class MainController {
      *FXML elements are declared here
      */
     @FXML
+    private AnchorPane root;
+    @FXML
     private JFXTabPane tabPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private SearchTabController searchTabController;
     @FXML
@@ -41,11 +49,15 @@ public class MainController {
 
     }
 
-    public void goToUserPane(){
-        tabPane.getSelectionModel().select(userTabFromMain);;
+    public void goToUserPane() {
+        tabPane.getSelectionModel().select(userTabFromMain);
+        ;
     }
 
-    public void goToHashtagPane(){
-        tabPane.getSelectionModel().select(hashtagTabFromMain);;
+    public void goToHashtagPane() {
+        tabPane.getSelectionModel().select(hashtagTabFromMain);
+        ;
     }
+
+
 }
