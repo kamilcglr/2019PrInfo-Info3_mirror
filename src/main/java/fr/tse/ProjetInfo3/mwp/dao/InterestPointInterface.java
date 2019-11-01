@@ -9,11 +9,19 @@ import java.util.List;
  */
 public interface InterestPointInterface {
 	// for adding a single hashtag and a single user to the lists of users and hashtags of a certain interestPoint
-	public void addToInterestPoint(Hashtag hashtag, User user);// we can add only a user / hashtag
+	public void addToInterestPoint(Hashtag hashtag, User user);
+	// to a pointInterest , we can add a user (only)
+	public void addToInterestPoint(User user);
+	// or we can add a Hashtag (only)
+	public void addToInterestPoint(Hashtag hashtag);
 	// to modify an InterestPoint (not finished yet !)
 	public boolean modifyInterestPoint(InterestPoint interestPoint,Hashtag hashtag, User user);// a voir !
 	// creating a brand new interest point on its own
-	public boolean createInterestPoint(Hashtag hashtag,User user);// create an interest point with # / user
+	public boolean createInterestPoint(Hashtag hashtag,User user);
+	// An interest point can be created with the adding to it a user
+	public boolean createInterestPoint(User user);
+	// An interest point can be created with the adding to it a hashtag
+	public boolean createInterestPoint(Hashtag hashtag);
 	// removing an interest point from the list of interests points
 	public boolean removeInterestPoint(InterestPoint interestPoint);
 	// getting all the interest points
