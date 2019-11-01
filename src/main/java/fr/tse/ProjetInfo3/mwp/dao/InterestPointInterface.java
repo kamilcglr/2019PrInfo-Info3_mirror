@@ -3,7 +3,7 @@ package fr.tse.ProjetInfo3.mwp.dao;
 import java.util.List;
 /**
  * @author ALAMI IDRISSI Taha
- *	this interface is a contract that's going to be implemented by the InterestPoint interface 
+ *	this interface is a contract that's going to be implemented by the InterestPoint class 
  *  every method is going to be overwritten to avoid creating 
  *  Object after that are going to be created like this : InterestPointInterface ip = new InterestPoint();
  */
