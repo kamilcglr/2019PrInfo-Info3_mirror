@@ -1,7 +1,7 @@
 package fr.tse.ProjetInfo3.mwp.viewer;
 
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
-import twitter4j.Status;
+//import twitter4j.Status;
 
 import java.util.List;
 

@@ -18,7 +18,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
-import twitter4j.TwitterException;
 
 import java.io.IOException;
 
@@ -214,7 +213,7 @@ public class SearchTabController {
                         progressLabel.setVisible(true);
 
                         //If it is a Twitter4j Exception we catch the case when user does not exist
-                        if (e instanceof TwitterException) {
+                        if (e instanceof Exception) { // replaced the twitter exception with a global exception
                             //get the error code from twitter API
                             String errorCode = e.getCause().toString().substring(0, 3);
                             if (errorCode.equals("404")) {
