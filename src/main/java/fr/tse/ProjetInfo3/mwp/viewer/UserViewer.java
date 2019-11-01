@@ -1,8 +1,6 @@
 package fr.tse.ProjetInfo3.mwp.viewer;
 
-import fr.tse.ProjetInfo3.mwp.Profile;
 import fr.tse.ProjetInfo3.mwp.dao.User;
-import fr.tse.ProjetInfo3.mwp.dao.UserTest;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 
 /**
@@ -17,7 +15,7 @@ public class UserViewer {
     }
 
     public void searchScreenName(String screen_name) throws Exception {
-        UserTest user = requestManager.getUser(screen_name);
+        User user = requestManager.getUser(screen_name);
         System.out.println(user);
     }
 

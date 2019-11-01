@@ -2,7 +2,7 @@ package fr.tse.ProjetInfo3.mwp.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import fr.tse.ProjetInfo3.mwp.dao.UserTest;
+import fr.tse.ProjetInfo3.mwp.dao.User;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -74,7 +74,7 @@ public class RequestManager {
      * @param screen_name the name of the profile, e.g. realdonaldtrump
      * @return User
      */
-    public UserTest getUser(String screen_name) throws RequestManagerException {
+    public User getUser(String screen_name) throws RequestManagerException {
         // We cannot pass the parameters as arguments of get method
         // We add the parameters of id directly in the link
         String link = "https://api.twitter.com/1.1/users/show.json?screen_name=" + screen_name;
@@ -87,7 +87,7 @@ public class RequestManager {
                 .build();
 
         HttpResponse<String> response = null;
-        UserTest userReturned = null;
+        User userReturned = null;
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.body().toString().contains("code\":50")) {
@@ -98,7 +98,7 @@ public class RequestManager {
                     .create();
 
             //gson will complete the attributes of object if it finds elements that have the same name
-            userReturned = gson.fromJson(response.body().toString(), UserTest.class);
+            userReturned = gson.fromJson(response.body().toString(), User.class);
 
             System.out.println(response.body());
         } catch (Exception e) {
