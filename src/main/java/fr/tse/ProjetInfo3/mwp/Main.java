@@ -2,17 +2,14 @@ package fr.tse.ProjetInfo3.mwp;
 
 import java.io.IOException;
 
+import com.google.gson.internal.$Gson$Preconditions;
 import fr.tse.ProjetInfo3.mwp.controller.MainController;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
-import fr.tse.ProjetInfo3.mwp.services.TwitterAPP;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
 public class Main extends Application {
     private Parent rootNode;
@@ -24,19 +21,13 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        Twitter twitter = TwitterAPP.buildTwitter();
-        /* Sergiy Tests - Commented to not use calls to API
 
-        RequestManager rm = new RequestManager(twitter);
-        rm.getTweets("#ASSE");
-
-        try {
-            Profile macron = rm.getProfile("EmmanuelMacron");
-            System.out.println(macron.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-		*/
+        //RequestManager requestManager = new RequestManager();
+        //try {
+        //    System.out.println(requestManager.getUser("realDonaldTrump"));
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //}
         launch();
     }
 

@@ -1,11 +1,9 @@
 package fr.tse.ProjetInfo3.mwp.viewer;
 
 import fr.tse.ProjetInfo3.mwp.Profile;
+import fr.tse.ProjetInfo3.mwp.dao.User;
+import fr.tse.ProjetInfo3.mwp.dao.UserTest;
 import fr.tse.ProjetInfo3.mwp.services.RequestManager;
-import fr.tse.ProjetInfo3.mwp.services.TwitterAPP;
-import twitter4j.TwitterException;
-
-import java.io.IOException;
 
 /**
  * This class makes the research for an user
@@ -15,11 +13,12 @@ public class UserViewer {
     private RequestManager requestManager;
 
     public UserViewer() {
-        requestManager = new RequestManager(TwitterAPP.getTwitter());
+        requestManager = new RequestManager();
     }
 
-    public void searchId(String id) throws Exception {
-        Profile profile = requestManager.getProfile(id);
+    public void searchScreenName(String screen_name) throws Exception {
+        UserTest user = requestManager.getUser(screen_name);
+        System.out.println(user);
     }
 
     public void printUserView(){

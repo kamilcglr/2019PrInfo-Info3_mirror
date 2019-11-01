@@ -199,7 +199,7 @@ public class SearchTabController {
 
                     }else if(typeOfSearch=='u'){
                         UserViewer userViewer = new UserViewer();
-                        userViewer.searchId(research);
+                        userViewer.searchScreenName(research);
                         progressLabel.setVisible(false);
                         mainController.goToUserPane();
                     }
