@@ -1,6 +1,6 @@
-package fr.tse.ProjetInfo3.mwp.viewer;
+package fr.tse.ProjetInfo3.mvc.viewer;
 
-import fr.tse.ProjetInfo3.mwp.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.services.RequestManager;
 
 public class HastagViewer {
     private RequestManager requestManager;

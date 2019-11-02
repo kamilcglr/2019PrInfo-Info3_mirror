@@ -1,12 +1,12 @@
-package fr.tse.ProjetInfo3.mwp.services;
+package fr.tse.ProjetInfo3.mvc.services;
 
-import com.google.gson.internal.bind.util.ISO8601Utils;
-import fr.tse.ProjetInfo3.mwp.dao.Tweet;
+import fr.tse.ProjetInfo3.mvc.dao.Tweet;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Test if request manager sends correct information
+ * */
 class RequestManagerTest {
 
     @org.junit.jupiter.api.Test

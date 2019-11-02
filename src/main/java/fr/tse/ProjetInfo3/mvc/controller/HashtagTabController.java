@@ -1,8 +1,8 @@
-package fr.tse.ProjetInfo3.mwp.controller;
+package fr.tse.ProjetInfo3.mvc.controller;
 
 import javafx.fxml.FXML;
 
-public class UserTabController {
+public class HashtagTabController {
     private MainController mainController;
 
     /*Controller can acces to this Tab */

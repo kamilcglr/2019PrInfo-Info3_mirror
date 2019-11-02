@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.tse.ProjetInfo3.mwp.dao;
+package fr.tse.ProjetInfo3.mvc.dao;
 
 import java.util.List;
 

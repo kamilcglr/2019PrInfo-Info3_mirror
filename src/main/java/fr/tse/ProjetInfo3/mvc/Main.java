@@ -1,9 +1,6 @@
-package fr.tse.ProjetInfo3.mwp;
+package fr.tse.ProjetInfo3.mvc;
 
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXTabPane;
-import fr.tse.ProjetInfo3.mwp.controller.MainController;
-import fr.tse.ProjetInfo3.mwp.services.RequestManager;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,11 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.concurrent.Flow;
+
 public class Main extends Application {
     private Parent rootNode;
 

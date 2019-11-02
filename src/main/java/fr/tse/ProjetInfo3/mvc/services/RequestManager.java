@@ -1,9 +1,9 @@
-package fr.tse.ProjetInfo3.mwp.services;
+package fr.tse.ProjetInfo3.mvc.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import fr.tse.ProjetInfo3.mwp.dao.Tweet;
-import fr.tse.ProjetInfo3.mwp.dao.User;
+import fr.tse.ProjetInfo3.mvc.dao.Tweet;
+import fr.tse.ProjetInfo3.mvc.dao.User;
 
 import java.net.URI;
 import java.net.http.HttpClient;

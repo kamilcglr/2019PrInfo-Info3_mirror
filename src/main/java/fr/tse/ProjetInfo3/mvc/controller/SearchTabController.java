@@ -1,15 +1,14 @@
-package fr.tse.ProjetInfo3.mwp.controller;
+package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import com.jfoenix.controls.JFXSnackbar;
-import fr.tse.ProjetInfo3.mwp.services.RequestManager;
-import fr.tse.ProjetInfo3.mwp.viewer.HastagViewer;
-import fr.tse.ProjetInfo3.mwp.viewer.UserViewer;
+import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;

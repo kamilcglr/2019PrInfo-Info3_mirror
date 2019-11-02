@@ -1,4 +1,4 @@
-package fr.tse.ProjetInfo3.mwp.controller;
+package fr.tse.ProjetInfo3.mvc.controller;
 
 public class PiTabController {
     private MainController mainController;

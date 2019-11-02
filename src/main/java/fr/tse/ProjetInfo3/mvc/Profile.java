@@ -1,4 +1,4 @@
-package fr.tse.ProjetInfo3.mwp;
+package fr.tse.ProjetInfo3.mvc;
 
 import java.awt.Image;
 

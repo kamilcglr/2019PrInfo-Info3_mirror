@@ -1,12 +1,10 @@
-package fr.tse.ProjetInfo3.mwp.controller;
+package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXTabPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-
-import java.util.Stack;
 
 /**
  * @author Kamil CAGLAR
