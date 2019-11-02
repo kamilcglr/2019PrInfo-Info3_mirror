@@ -2,6 +2,8 @@ package fr.tse.ProjetInfo3.mvc.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import fr.tse.ProjetInfo3.mvc.dao.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dao.Tweet;
 import fr.tse.ProjetInfo3.mvc.dao.User;
 
@@ -158,7 +160,90 @@ public class RequestManager {
         List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(tweetList));
         return tweets;
     }
+    
+    /**
+     * Return a single tweet by id
+     * https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-show-id
+     * @author ALAMI IDRISSI Taha
+     *	this method is gonna be useful when trying to get number of retweets of a hashtag
+     */
+    public Tweet getSingleTweet(String name , int id) throws RequestManagerException{
+    	
+    	String url = "https://api.twitter.com/1.1/statuses/show.json?id="+id;
+    	
+    	HttpRequest httpRequest = HttpRequest.newBuilder()
+    										 .GET()
+    										 .uri(URI.create(url))
+    										 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+    							             .build();
+    	HttpResponse<String> response = null;
+        Tweet returnedTweet = null;
+        try {
+            response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (response.body().toString().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting() 
+                    .create();
 
+            
+            returnedTweet = gson.fromJson(response.body().toString(), Tweet.class);
+
+            System.out.println(response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (response.body().toString().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+        }
+    	
+    	return returnedTweet;
+    }
+    
+    /**
+     * Returns a collection of the 100 most recent retweets of the Tweet specified by the id parameter.
+     * https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-retweets-id
+     * @author ALAMI IDRISSI Taha
+     *	we're going to get for the moment just the 100 most recent retweets after that we're going to figure out how we can 
+     * 	the number of retweets
+     */
+    
+    	public List<Tweet> getHundredRecentRetweets(String name,int id) throws RequestManagerException {
+    		
+    		String url = "https://api.twitter.com/1.1/statuses/retweets/"+id+".json";
+    		
+    		HttpRequest httpRequest = HttpRequest.newBuilder()
+    											 .GET()
+    											 .uri(URI.create(url))
+    											 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+    											 .build();
+    		HttpResponse<String> response = null;
+            Tweet[] hundredRetweets = null;
+            try {
+                response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                if (response.body().toString().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .create();
+
+                //gson will complete the attributes of object if it finds elements that have the same name
+                hundredRetweets = gson.fromJson(response.body().toString(), Tweet[].class);
+
+                System.out.println(response.body());
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (response.body().toString().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+            }
+            
+            List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(hundredRetweets));
+            return tweets;
+    	}
+    
     /**
      * @author kamilcaglar
      * Simple Class that contains the access token
