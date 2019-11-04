@@ -49,12 +49,12 @@ public class MainController {
 
     public void goToUserPane() {
         tabPane.getSelectionModel().select(userTabFromMain);
-        ;
+
     }
 
     public void goToHashtagPane() {
         tabPane.getSelectionModel().select(hashtagTabFromMain);
-        ;
+
     }
 
 
