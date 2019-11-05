@@ -196,7 +196,7 @@ public class SearchTabController {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research);
                         progressLabel.setVisible(false);
-                        mainController.goToHashtagPane();
+                        mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
                         UserViewer userViewer = new UserViewer();

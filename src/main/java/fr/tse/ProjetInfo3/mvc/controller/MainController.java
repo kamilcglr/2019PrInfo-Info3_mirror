@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXTabPane;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
@@ -28,6 +29,8 @@ public class MainController {
     @FXML
     private UserTabController userTabController;
     @FXML
+    private HashtagTabController hashtagTabController;
+    @FXML
     private Tab userTabFromMain;
     @FXML
     private Tab hashtagTabFromMain;
@@ -44,17 +47,17 @@ public class MainController {
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
+        hashtagTabController.injectMainController(this);
 
     }
 
     public void goToUserPane() {
         tabPane.getSelectionModel().select(userTabFromMain);
-
     }
 
-    public void goToHashtagPane() {
+    public void goToHashtagPane(HastagViewer hastagViewer) {
         tabPane.getSelectionModel().select(hashtagTabFromMain);
-
+        hashtagTabController.setHastagViewer(hastagViewer);
     }
 
 

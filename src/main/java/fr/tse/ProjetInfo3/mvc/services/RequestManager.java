@@ -211,7 +211,7 @@ public class RequestManager {
      * we're going to get for the moment just the 100 most recent retweets after that we're going to figure out how we can
      * the number of retweets
      */
-    public List<Tweet> getHundredRecentRetweets(String name, int id) throws RequestManagerException {
+    public List<Tweet> getHundredRecentRetweets(int id) throws RequestManagerException {
 
         String url = "https://api.twitter.com/1.1/statuses/retweets/" + id + ".json";
 
