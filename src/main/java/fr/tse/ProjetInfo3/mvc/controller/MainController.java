@@ -38,6 +38,8 @@ public class MainController {
     private Tab piTabFromMain;
     @FXML
     private Tab searchTabFromMain;
+    @FXML
+    private Tab loginTabFromMain;
 
 
     /*This function is launched when Mainwindow is launched */
@@ -58,6 +60,10 @@ public class MainController {
     public void goToHashtagPane(HastagViewer hastagViewer) {
         tabPane.getSelectionModel().select(hashtagTabFromMain);
         hashtagTabController.setHastagViewer(hastagViewer);
+    }
+    
+    public void goToLoginPane() {
+    	tabPane.getSelectionModel().select(loginTabFromMain);
     }
 
 

@@ -30,6 +30,11 @@
                           <fx:include fx:id="piTab" source="PiTab.fxml" />
                       </content>
                   </Tab>
+                     <Tab fx:id="loginTabFromMain" text="Login">
+        	<content>
+        		<fx:include fx:id="loginTab" source="Login.fxml"/>
+        	</content>
+        </Tab>
             <StackPane.margin>
                <Insets />
             </StackPane.margin>
