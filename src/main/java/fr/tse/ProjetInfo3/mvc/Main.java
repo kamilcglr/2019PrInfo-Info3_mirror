@@ -1,19 +1,20 @@
 package fr.tse.ProjetInfo3.mvc;
 
 import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.svg.SVGGlyph;
+import com.jfoenix.svg.SVGGlyphLoader;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class Main extends Application {
-    private Parent rootNode;
 
     @FXML
     private AnchorPane root;
@@ -25,19 +26,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        //Twitter twitter = TwitterAPP.buildTwitter();
-        /* Sergiy Tests - Commented to not use calls to API
-
-        RequestManager rm = new RequestManager(twitter);
-        rm.getTweets("#ASSE");
-
-        try {
-            Profile macron = rm.getProfile("EmmanuelMacron");
-            System.out.println(macron.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-		*/
         launch();
     }
 
@@ -50,10 +38,11 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        stage.setTitle("Twitter Anlatytics");
+        stage.setTitle("Twitter Analytics");
+
         JFXDecorator decorator = new JFXDecorator(stage, root);
         decorator.setCustomMaximize(true);
-
+        decorator.setGraphic(new SVGGlyph(""));
 
         Scene scene = new Scene(decorator);
         handleWindowResize(stage, scene);
@@ -61,19 +50,20 @@ public class Main extends Application {
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.add(getClass().getResource("/fxml/styles/main.css").toString());
         stage.setScene(scene);
-        stage.show();
 
-       /* //TODO create app icon
-        // Set the application icon.
+        stage.show();
+        // Set the application icon and window icon
+        stage.getIcons().add(new Image(getClass().getResource("/fonts/hashtag.png").toExternalForm()));
         new Thread(() -> {
+
             try {
-                SVGGlyphLoader.loadGlyphsFont(MainDemo.class.getResourceAsStream("/fonts/icomoon.svg"),
-                    "icomoon.svg");
+                SVGGlyphLoader.loadGlyphsFont(getClass().getResourceAsStream("/fonts/icon.svg"),
+                    "icon.svg");
             } catch (IOException ioExc) {
                 ioExc.printStackTrace();
             }
         }).start();
-        */
+
     }
 
     /**
