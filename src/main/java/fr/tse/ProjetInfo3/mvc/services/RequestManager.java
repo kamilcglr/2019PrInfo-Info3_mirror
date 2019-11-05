@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * @author Sergiy
  * @author kamilcaglar
+ * @author Taha
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...
  */
@@ -121,7 +122,7 @@ public class RequestManager {
      * https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
      *
      * @param screen_name the name of the profile, e.g. realdonaldtrump
-     * @param count number of tweets (max 200 per request)
+     * @param count       number of tweets (max 200 per request)
      * @return User
      */
     public List<Tweet> getTweetsFromUSer(String screen_name, int count) throws RequestManagerException {
@@ -160,23 +161,24 @@ public class RequestManager {
         List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(tweetList));
         return tweets;
     }
-    
+
     /**
      * Return a single tweet by id
      * https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-show-id
+     *
      * @author ALAMI IDRISSI Taha
-     *	this method is gonna be useful when trying to get number of retweets of a hashtag
+     * this method is gonna be useful when trying to get number of retweets of a hashtag
      */
-    public Tweet getSingleTweet(String name , int id) throws RequestManagerException{
-    	
-    	String url = "https://api.twitter.com/1.1/statuses/show.json?id="+id;
-    	
-    	HttpRequest httpRequest = HttpRequest.newBuilder()
-    										 .GET()
-    										 .uri(URI.create(url))
-    										 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-    							             .build();
-    	HttpResponse<String> response = null;
+    public Tweet getSingleTweet(String name, int id) throws RequestManagerException {
+
+        String url = "https://api.twitter.com/1.1/statuses/show.json?id=" + id;
+
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                .build();
+        HttpResponse<String> response = null;
         Tweet returnedTweet = null;
         try {
             response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -184,10 +186,10 @@ public class RequestManager {
                 throw new RequestManagerException("Unknown user");
             }
             Gson gson = new GsonBuilder()
-                    .setPrettyPrinting() 
+                    .setPrettyPrinting()
                     .create();
 
-            
+
             returnedTweet = gson.fromJson(response.body().toString(), Tweet.class);
 
             System.out.println(response.body());
@@ -197,53 +199,53 @@ public class RequestManager {
                 throw new RequestManagerException("Unknown user");
             }
         }
-    	
-    	return returnedTweet;
+
+        return returnedTweet;
     }
-    
+
     /**
      * Returns a collection of the 100 most recent retweets of the Tweet specified by the id parameter.
      * https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-retweets-id
+     *
      * @author ALAMI IDRISSI Taha
-     *	we're going to get for the moment just the 100 most recent retweets after that we're going to figure out how we can 
-     * 	the number of retweets
+     * we're going to get for the moment just the 100 most recent retweets after that we're going to figure out how we can
+     * the number of retweets
      */
-    
-    	public List<Tweet> getHundredRecentRetweets(String name,int id) throws RequestManagerException {
-    		
-    		String url = "https://api.twitter.com/1.1/statuses/retweets/"+id+".json";
-    		
-    		HttpRequest httpRequest = HttpRequest.newBuilder()
-    											 .GET()
-    											 .uri(URI.create(url))
-    											 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-    											 .build();
-    		HttpResponse<String> response = null;
-            Tweet[] hundredRetweets = null;
-            try {
-                response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                if (response.body().toString().contains("code\":50")) {
-                    throw new RequestManagerException("Unknown user");
-                }
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        .create();
+    public List<Tweet> getHundredRecentRetweets(String name, int id) throws RequestManagerException {
 
-                //gson will complete the attributes of object if it finds elements that have the same name
-                hundredRetweets = gson.fromJson(response.body().toString(), Tweet[].class);
+        String url = "https://api.twitter.com/1.1/statuses/retweets/" + id + ".json";
 
-                System.out.println(response.body());
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (response.body().toString().contains("code\":50")) {
-                    throw new RequestManagerException("Unknown user");
-                }
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                .build();
+        HttpResponse<String> response = null;
+        Tweet[] hundredRetweets = null;
+        try {
+            response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (response.body().toString().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
             }
-            
-            List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(hundredRetweets));
-            return tweets;
-    	}
-    
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting() //human-readable json
+                    .create();
+
+            //gson will complete the attributes of object if it finds elements that have the same name
+            hundredRetweets = gson.fromJson(response.body().toString(), Tweet[].class);
+
+            System.out.println(response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (response.body().toString().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+        }
+
+        List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(hundredRetweets));
+        return tweets;
+    }
+
     /**
      * @author kamilcaglar
      * Simple Class that contains the access token
@@ -267,5 +269,5 @@ public class RequestManager {
             super(errorMessage);
         }
     }
-    
+
 }
