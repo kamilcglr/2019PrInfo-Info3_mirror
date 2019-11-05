@@ -9,8 +9,6 @@ package fr.tse.ProjetInfo3.mvc.dao;
  *  Object after that are going to be created like this : InterestPointInterface ip = new InterestPoint();
  */
 public interface HashtagInterface {
-	
-	
-	
-
+	// method to get hashtags with specific criteria will be added !
+	// public List<Tweet> searchTweets(String name);
 }
