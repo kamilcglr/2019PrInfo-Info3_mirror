@@ -16,4 +16,5 @@ class RequestManagerTest {
         tweets.forEach(tweet -> System.out.println(tweet));
         tweets.forEach(tweet -> System.out.println(tweet.getUser()));
     }
+   
 }

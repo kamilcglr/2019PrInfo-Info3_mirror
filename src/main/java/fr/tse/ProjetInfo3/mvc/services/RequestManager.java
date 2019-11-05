@@ -72,7 +72,7 @@ public class RequestManager {
             e.printStackTrace();
         }
     }
-
+    
     /**
      * Return User object completed by the result of search
      * https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-users-show
