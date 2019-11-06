@@ -50,7 +50,7 @@
 .accordion .titled-pane > .title {
     -fx-background-color: -white;
     -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
 
