@@ -1,63 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXToggleNode?>
 <?import java.net.URL?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane fx:id="hashtagPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.HashtagTabController">
     <children>
         <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane fx:id="anchorPane">
-                    <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <content>
-                            <GridPane fx:id="gridPane" minHeight="700.0" minWidth="1100.0">
-                                <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                    <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                <children>
-                                    <JFXListView fx:id="topFiveList" depthTest="DISABLE" prefHeight="100.0" verticalGap="5.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2" />
-                                    <Label fx:id="topFiveLabel" text="Top 5 tweets" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                                    <Label fx:id="hashtagLabel" text="#NomduHashtage" GridPane.columnSpan="2" GridPane.halignment="LEFT" />
-                                    <JFXListView fx:id="topTenLinkedList" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
-                                    <Label fx:id="topLinkedLabel" text="Top 10 des # liés" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                                    <Label fx:id="nbUserLabel" text="Nombre de comptes ayant tweeté : XX" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-                                    <JFXToggleNode fx:id="expandTweetsToggle" onAction="#expandTweetsTogglePressed" styleClass="toggle" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-                                        <graphic>
-                                            <FontIcon fx:id="expandTweetsIcon" iconColor="#48ac98" iconLiteral="fas-chevron-down" iconSize="16" styleClass="" />
-                                        </graphic>
-                                    </JFXToggleNode>
-                                    <JFXToggleNode fx:id="expandHashtagToggle" onAction="#expandHashtagTogglePressed" styleClass="toggle" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
-                                        <graphic>
-                                            <FontIcon fx:id="expandHashtagIcon" iconColor="#48ac98" iconLiteral="fas-chevron-down" iconSize="16" styleClass="toggleIcon" />
-                                        </graphic>
-                                    </JFXToggleNode>
-                                </children>
-                            </GridPane>
-                        </content>
-                    </ScrollPane>
                     <stylesheets>
                         <URL value="@styles/main.css" />
                         <URL value="@styles/hashtagTab.css" />

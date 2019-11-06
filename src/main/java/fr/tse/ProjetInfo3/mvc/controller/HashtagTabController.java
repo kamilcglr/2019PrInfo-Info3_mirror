@@ -55,9 +55,7 @@ public class HashtagTabController {
 
     @FXML
     private void initialize() {
-        arrow_up = new FontIcon(FontAwesomeSolid.CHEVRON_UP);
-        arrow_down = new FontIcon(FontAwesomeSolid.CHEVRON_DOWN);
-        addTweetsToList();
+
     }
 
     /*This function expand TweetsList*/

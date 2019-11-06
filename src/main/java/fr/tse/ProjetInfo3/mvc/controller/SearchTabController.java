@@ -147,8 +147,7 @@ public class SearchTabController {
     }
     @FXML
     public void loginButtonPressed(ActionEvent event) {
-    	
-    	mainController.goToLoginPane();
+    	//mainController.goToLoginPane();
     }
     /*
      * 1. Verify that there is something in search bar
@@ -199,14 +198,18 @@ public class SearchTabController {
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research);
+
+                        //we go to this part when hashtag exists, else Exception is thrown
                         progressLabel.setVisible(false);
                         mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchScreenName(research);
+
+                        //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane();
+                        mainController.goToUserPane(userViewer);
                     }
                     searchIsRunning(false);
                 } catch (Exception e) {

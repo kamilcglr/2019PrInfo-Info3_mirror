@@ -1,6 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
+import fr.tse.ProjetInfo3.mvc.dao.User;
+import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,9 +22,10 @@ import java.io.IOException;
 /**
  * @author Sobun UNG
  **/
-
 public class UserTabController {
     private MainController mainController;
+
+    private UserViewer userViewer;
 
     @FXML
     private ScrollPane scrollPane;
@@ -45,9 +51,40 @@ public class UserTabController {
     private FontIcon arrow_up;
     private FontIcon arrow_down;
 
+    /*
+     * We will populate this fields/labels by the result of search
+     */
+    @FXML
+    private Label username;
+    @FXML
+    private Label twittername;
+    @FXML
+    private Label description;
+    @FXML
+    private Label nbTweet;
+    @FXML
+    private Label nbFollowers;
+    @FXML
+    private Label nbFollowing;
+
+    /**************************************************************/
+
     /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void setUserViewer(UserViewer userViewer) {
+        User userToPrint = userViewer.getUser();
+        Platform.runLater(() -> {
+            username.setText(userToPrint.getScreen_name());
+            twittername.setText("@" + userToPrint.getName());
+            description.setText(userToPrint.getDescription());
+            nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
+            nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
+            nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+        });
+
     }
 
     @FXML
@@ -58,7 +95,6 @@ public class UserTabController {
         //for (int i = 1; i < 11; i++) listTweets.getItems().add(new Label("Tweets " + i));
         addTweetsToList();
         addTweetsToList();
-
     }
 
     @FXML
