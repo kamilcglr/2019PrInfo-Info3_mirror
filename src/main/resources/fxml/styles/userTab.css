@@ -1,0 +1,65 @@
+#twittername{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+}
+
+#username{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -gray;
+}
+
+#description{
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 15;
+    -fx-text-fill: -grey-dark;
+}
+
+#compareButton{
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -accent;
+    -fx-border-color: -accent;
+    -fx-border-width: 2px;
+}
+
+.jfx-scroll-pane .main-header{
+    -fx-background-color: white;
+}
+
+.tweetLabels{
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 15;
+    -fx-text-fill: -grey-dark;
+}
+
+.tweetnumberLabels{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-text-fill: -grey-dark;
+}
+
+#favoriteIcon {
+    -fx-icon-color: -red;
+}
+
+.listTweetsHashtags{
+    -fx-font-size: 10;
+}
+
+.TitleListviewLabel{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
+}
+
+/*.chevron{*/
+/*    -fx-icon-color: -accent;*/
+/*}*/
+
+/*#profilepicture{*/
+/*    border-radius: 50%;*/
+/*}*/

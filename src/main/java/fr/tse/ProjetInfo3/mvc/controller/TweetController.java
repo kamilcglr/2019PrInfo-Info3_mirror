@@ -8,10 +8,14 @@ import java.awt.*;
 
 public class TweetController {
     private HashtagTabController hashtagTabController;
-
+    private UserTabController userTabController;
 
     public void injectHashtagTabController(HashtagTabController hashtagTabController) {
         this.hashtagTabController = hashtagTabController;
+    }
+
+    public void injectUserTabController(UserTabController userTabController) {
+        this.userTabController = userTabController;
     }
 
 

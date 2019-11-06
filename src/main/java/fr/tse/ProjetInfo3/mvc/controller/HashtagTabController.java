@@ -66,10 +66,10 @@ public class HashtagTabController {
         /*if the toggle is already expanded we fold it*/
         if (expandTweetsToggle.isSelected()) {
             expandTweetsToggle.setGraphic(arrow_up);
-            gridPane.getRowConstraints().get(2).setPrefHeight(500);
+            gridPane.getRowConstraints().get(4).setPrefHeight(1000);
         } else {
             expandTweetsToggle.setGraphic(arrow_down);
-            gridPane.getRowConstraints().get(2).setPrefHeight(100);
+            gridPane.getRowConstraints().get(4).setPrefHeight(750);
         }
     }
 

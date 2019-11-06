@@ -50,7 +50,7 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        stage.setTitle("Twitter Anlatytics");
+        stage.setTitle("Twitter Analytics");
         JFXDecorator decorator = new JFXDecorator(stage, root);
         decorator.setCustomMaximize(true);
 

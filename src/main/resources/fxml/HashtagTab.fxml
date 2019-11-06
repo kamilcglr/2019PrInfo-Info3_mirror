@@ -62,7 +62,6 @@
                         <URL value="@styles/main.css" />
                         <URL value="@styles/hashtagTab.css" />
                     </stylesheets>
-
                 </AnchorPane>
             </children>
          <stylesheets>
