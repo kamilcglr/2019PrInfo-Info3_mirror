@@ -14,6 +14,15 @@ class RequestManagerTest {
         RequestManager requestManager = new RequestManager();
         List<Tweet> tweets = requestManager.getTweetsFromUSer("realdonaldtrump", 100);
         tweets.forEach(tweet -> System.out.println(tweet));
-        tweets.forEach(tweet -> System.out.println(tweet.getUser()));
+        //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
     }
+    @org.junit.jupiter.api.Test
+    void searchTweetsTest() {
+        RequestManager requestManager = new RequestManager();
+        List<Tweet> tweets = requestManager.searchTweets("mardi");
+        //tweets.forEach(tweet -> System.out.println(tweet));
+        //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
+    }
+    
+   
 }

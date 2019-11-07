@@ -13,6 +13,7 @@ import java.sql.Statement;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
@@ -45,8 +46,10 @@ public class LoginController {
 	     private JFXButton loginButton;
 	 	 @FXML
 	 	 private JFXTextField identifiantField;
+	 	// @FXML
+	 	// private JFXTextField passwordField;
 	 	 @FXML
-	 	 private JFXTextField passwordField;	 	 
+	 	 private JFXPasswordField passwordField;
  
 	 	 ////////
 	 	 // JDBC driver name and database URL 
@@ -77,6 +80,7 @@ public class LoginController {
 	    	//Password 
 	    	/*TO DO: make it invisible
 	    	 * */
+	    	
 	    	String password= passwordField.getText();
 	    	  Connection conn = null; 
 		      Statement stmt = null; 
@@ -91,7 +95,7 @@ public class LoginController {
 		         // STEP 3: Execute a query 
 		         System.out.println("Connected database successfully..."); 
 		         stmt = conn.createStatement(); 
-		         String sql = "SELECT id, password FROM userApp where ID="+identifiant+" and password="+password; 
+		         String sql = "SELECT mail, password FROM userApp where mail='"+identifiant+"'"+" and password= '"+password+"'"; 
 		         ResultSet rs = stmt.executeQuery(sql); 
 		         
 		         // STEP 4: Extract data from result set 
