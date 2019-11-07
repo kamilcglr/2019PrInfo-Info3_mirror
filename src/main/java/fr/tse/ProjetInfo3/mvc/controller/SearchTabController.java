@@ -169,7 +169,7 @@ public class SearchTabController {
 
         //verify if it is empty or contains only the @/#
         if (research.length() <= 1) {
-            launchDialog("Aucune saisie", "Veuillez entrer quelque chose à chercher", "D'accord");
+            launchDialog("Aucune saisie", "Veuillez saisir au moins un caractère", "D'accord");
         } else {
             progressLabel.setVisible(true);
             progressLabel.setText("Recherche en cours");
