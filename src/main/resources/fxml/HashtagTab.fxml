@@ -44,7 +44,7 @@
                                         <Label fx:id="nbTweetLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                         <Label fx:id="nbUserLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
                                         <Label fx:id="tweetsLabel" styleClass="tweetLabels" text="Tweets" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-                                        <Label fx:id="userLabel" styleClass="tweetLabels" text="Personnes ont réagis" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
+                                        <Label fx:id="userLabel" styleClass="tweetLabels" text="Personnes ont réagi" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
 
                                         <Accordion fx:id="topTweetAccordion" styleClass="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
                                             <panes>

@@ -147,7 +147,7 @@ public class SearchTabController {
     }
     @FXML
     public void loginButtonPressed(ActionEvent event) {
-    	//mainController.goToLoginPane();
+    	mainController.goToLoginPane();
     }
     /*
      * 1. Verify that there is something in search bar

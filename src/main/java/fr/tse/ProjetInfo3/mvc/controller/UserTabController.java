@@ -68,8 +68,8 @@ public class UserTabController {
     public void setUserViewer(UserViewer userViewer) {
         User userToPrint = userViewer.getUser();
         Platform.runLater(() -> {
-            username.setText(userToPrint.getScreen_name());
-            twittername.setText("@" + userToPrint.getName());
+            username.setText("@" + userToPrint.getScreen_name());
+            twittername.setText(userToPrint.getName());
             description.setText(userToPrint.getDescription());
             nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));

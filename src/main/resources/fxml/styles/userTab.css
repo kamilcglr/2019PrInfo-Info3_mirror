@@ -18,6 +18,7 @@
     -fx-font-size: 15;
     -fx-text-fill: -grey-dark;
 }
+
 .tweetLabels {
     -fx-font-family: 'Raleway Regular', sans-serif;
     -fx-font-size: 15;
@@ -47,7 +48,6 @@
 .jfx-scroll-pane .main-header {
     -fx-background-color: white;
 }
-
 
 
 .TitleListviewLabel {
@@ -87,4 +87,18 @@
 
 .titled-pane > .title > .arrow-button .arrow {
     -fx-background-color: -primary
+}
+
+/*
+* Image
+*/
+#profilepicture {
+
+}
+
+#pictureBox {
+    -fx-border-color: -primary;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+
 }

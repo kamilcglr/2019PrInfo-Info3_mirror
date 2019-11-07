@@ -88,7 +88,7 @@ public class MainController {
     }
 
     public void goToLoginPane() {
-
+        tabPane.getSelectionModel().select(loginTabFromMain);
     }
 }
 
