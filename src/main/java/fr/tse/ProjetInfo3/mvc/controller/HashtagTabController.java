@@ -2,16 +2,12 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXToggleNode;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
@@ -20,11 +16,6 @@ public class HashtagTabController {
     private MainController mainController;
 
     private HastagViewer hastagViewer;
-    @FXML
-    JFXToggleNode expandTweetsToggle;
-
-    @FXML
-    JFXToggleNode expandHashtagToggle;
 
     @FXML
     private Icon expandTweetsIcon;
@@ -41,8 +32,6 @@ public class HashtagTabController {
     @FXML
     private GridPane gridPane;
 
-    private FontIcon arrow_up;
-    private FontIcon arrow_down;
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -55,24 +44,6 @@ public class HashtagTabController {
 
     @FXML
     private void initialize() {
-
-    }
-
-    /*This function expand TweetsList*/
-    @FXML
-    private void expandTweetsTogglePressed(ActionEvent event) {
-        /*if the toggle is already expanded we fold it*/
-        if (expandTweetsToggle.isSelected()) {
-            expandTweetsToggle.setGraphic(arrow_up);
-            gridPane.getRowConstraints().get(4).setPrefHeight(1000);
-        } else {
-            expandTweetsToggle.setGraphic(arrow_down);
-            gridPane.getRowConstraints().get(4).setPrefHeight(750);
-        }
-    }
-
-    @FXML
-    private void expandHashtagTogglePressed(ActionEvent event) {
 
     }
 
