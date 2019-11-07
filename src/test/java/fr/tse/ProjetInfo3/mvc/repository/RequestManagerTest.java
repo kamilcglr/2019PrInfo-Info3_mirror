@@ -1,6 +1,6 @@
-package fr.tse.ProjetInfo3.mvc.services;
+package fr.tse.ProjetInfo3.mvc.repository;
 
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package fr.tse.ProjetInfo3.mvc.dao;
+package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *   parameters are defined to have a variety of definition for an InterestPoint
  */
 
-public class InterestPoint implements InterestPointInterface {
+public class InterestPoint {
 	
 	private List<Hashtag> hashtags;
 	private List<User> users;
@@ -41,7 +41,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public List<InterestPoint> retreiveAllInterestPoints() {
 		return this.interestPoints;
 	}
@@ -51,7 +50,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public void addToInterestPoint(Hashtag hashtag, User user) {
 		this.hashtags.add(hashtag);
 		this.users.add(user);
@@ -62,7 +60,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public void addToInterestPoint(User user) {
 		// TODO Auto-generated method stub
 		this.users.add(user);
@@ -73,7 +70,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public void addToInterestPoint(Hashtag hashtag) {
 		// TODO Auto-generated method stub
 		this.hashtags.add(hashtag);
@@ -84,7 +80,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public boolean modifyInterestPoint(InterestPoint interestPoint,Hashtag hashtag, User user) {
 		
 		for(InterestPoint ip : interestPoints) {
@@ -103,7 +98,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
 
-	@Override
 	public boolean createInterestPoint(Hashtag hashtag, User user) {
 		InterestPoint interestPoint = new InterestPoint();
 		// create a list of Interest of point to check (after)  if the interest point already exist
@@ -123,7 +117,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public boolean createInterestPoint(User user) {
 		// TODO Auto-generated method stub
 		return false;
@@ -133,7 +126,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public boolean createInterestPoint(Hashtag hashtag) {
 		// TODO Auto-generated method stub
 		return false;
@@ -144,7 +136,6 @@ public class InterestPoint implements InterestPointInterface {
 	 * (non-Javadoc)
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
-	@Override
 	public boolean removeInterestPoint(InterestPoint interestPoint) {
 		// TODO Auto-generated method stub
 		for(InterestPoint ip : interestPoints) {
@@ -170,7 +161,6 @@ public class InterestPoint implements InterestPointInterface {
 		this.users = users;
 	}
 
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -179,7 +169,6 @@ public class InterestPoint implements InterestPointInterface {
 		return result;
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -194,11 +183,8 @@ public class InterestPoint implements InterestPointInterface {
 		} else if (!hashtags.equals(other.hashtags))
 			return false;
 		if (users == null) {
-			if (other.users != null)
-				return false;
-		} else if (!users.equals(other.users))
-			return false;
-		return true;
-	}	
+			return other.users == null;
+		} else return users.equals(other.users);
+	}
 	
 }

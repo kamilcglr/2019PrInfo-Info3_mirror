@@ -1,7 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import fr.tse.ProjetInfo3.mvc.dao.User;
-import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

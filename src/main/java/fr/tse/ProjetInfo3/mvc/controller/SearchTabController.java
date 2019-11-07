@@ -3,7 +3,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import com.jfoenix.controls.JFXSnackbar;
-import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -69,11 +69,22 @@ public class SearchTabController {
     @FXML
     private Label progressLabel;
 
+    @FXML
+    private JFXButton loginButton;
+
+    @FXML
+    private JFXButton signinButton;
+
     private String research;
 
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
+        //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
+        loginButton.setVisible(false);
+        signinButton.setVisible(false);
+
+
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
         progressIndicator.setVisible(false);

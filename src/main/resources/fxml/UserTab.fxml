@@ -50,7 +50,7 @@
                                                 <Insets top="3.0" />
                                             </GridPane.margin>
                                         </JFXButton>
-                                        <JFXToggleNode GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                        <JFXToggleNode fx:id="favoriteToggle" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                             <graphic>
                                                 <FontIcon fx:id="favoriteIcon" iconLiteral="far-heart" iconSize="40" />
                                             </graphic>
@@ -73,7 +73,6 @@
                                        <content>
                                           <JFXListView fx:id="listTweets" />
                                        </content></TitledPane>
-                                  <TitledPane animated="false" text="untitled 2" />
                                 </panes>
                               </Accordion>
                               <Accordion fx:id="topHashtagAccordion" styleClass="accordion" GridPane.columnIndex="2" GridPane.rowIndex="2">
