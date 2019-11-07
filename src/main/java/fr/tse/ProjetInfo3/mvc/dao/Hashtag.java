@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Hashtag {
 	private String hashtag;
-	private List<Hashtag> tweets;
+	private List<Tweet> tweets;
 
 
 	public String getHashtag() {
@@ -23,15 +23,15 @@ public class Hashtag {
 		this.hashtag = hashtag;
 	}
 
-	public List<Hashtag> getTweets() {
+	public List<Tweet> getTweets() {
 		return tweets;
 	}
 
-	public void setTweets(List<Hashtag> tweets) {
+	public void setTweets(List<Tweet> tweets) {
 		this.tweets = tweets;
 	}
 
-	public Hashtag(String hashtag, List<Hashtag> tweets) {
+	public Hashtag(String hashtag, List<Tweet> tweets) {
 		this.hashtag = hashtag;
 		this.tweets = tweets;
 	}

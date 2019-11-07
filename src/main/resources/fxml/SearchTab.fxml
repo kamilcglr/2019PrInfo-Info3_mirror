@@ -76,7 +76,7 @@
                                                   iconSize="32" styleClass="toggleIcon"/>
                                     </graphic>
                                 </JFXToggleNode>
-                                <JFXButton fx:id="loginButton" contentDisplay="RIGHT" styleClass="logginSigninButtons"
+                                <JFXButton fx:id="loginButton" onAction="#loginButtonPressed" contentDisplay="RIGHT" styleClass="logginSigninButtons"
                                            text="Login" GridPane.columnIndex="4" GridPane.halignment="CENTER"
                                            GridPane.valignment="CENTER">
                                     <graphic>

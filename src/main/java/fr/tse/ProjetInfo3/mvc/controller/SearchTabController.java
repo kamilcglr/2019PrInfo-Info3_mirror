@@ -145,7 +145,10 @@ public class SearchTabController {
             activateField(false, true);
         }
     }
-
+    @FXML
+    public void loginButtonPressed(ActionEvent event) {
+    	mainController.goToLoginPane();
+    }
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
@@ -195,14 +198,18 @@ public class SearchTabController {
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research);
+
+                        //we go to this part when hashtag exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToHashtagPane();
+                        mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchScreenName(research);
+
+                        //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane();
+                        mainController.goToUserPane(userViewer);
                     }
                     searchIsRunning(false);
                 } catch (Exception e) {

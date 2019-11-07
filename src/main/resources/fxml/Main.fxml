@@ -22,7 +22,7 @@
                   </Tab>
                   <Tab fx:id="hashtagTabFromMain" text="Hashtag">
                       <content>
-                          <fx:include fx:id="hastagTab" source="HashtagTab.fxml" />
+                          <fx:include fx:id="hashtagTab" source="HashtagTab.fxml" />
                       </content>
                   </Tab>
                   <Tab fx:id="piTabFromMain" text="Points d'intérêts">
@@ -30,6 +30,11 @@
                           <fx:include fx:id="piTab" source="PiTab.fxml" />
                       </content>
                   </Tab>
+                     <Tab fx:id="loginTabFromMain" text="Login">
+        	<content>
+        		<fx:include fx:id="loginTab" source="Login.fxml"/>
+        	</content>
+        </Tab>
             <StackPane.margin>
                <Insets />
             </StackPane.margin>
