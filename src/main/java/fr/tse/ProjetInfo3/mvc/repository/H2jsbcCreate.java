@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.tse.ProjetInfo3.mvc.services;
+package fr.tse.ProjetInfo3.mvc.repository;
 import java.sql.Connection; 
 import java.sql.DriverManager; 
 import java.sql.SQLException; 

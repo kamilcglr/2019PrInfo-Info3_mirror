@@ -37,8 +37,8 @@ public class MainController {
     private HashtagTabController hashtagTabController;
     @FXML
     private Tab userTabFromMain;
-    @FXML
-    private Tab hashtagTabFromMain;
+    //@FXML
+    //private Tab hashtagTabFromMain;
     @FXML
     private Tab piTabFromMain;
     @FXML
@@ -53,7 +53,7 @@ public class MainController {
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
-        hashtagTabController.injectMainController(this);
+        //hashtagTabController.injectMainController(this);
     }
 
     /**
@@ -62,12 +62,10 @@ public class MainController {
      * @param userViewer
      */
     public void goToUserPane(UserViewer userViewer) {
-        //tabPane.getSelectionModel().select(userTabFromMain);
-        //userTabController.setUserViewer(userViewer);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/UserTab.fxml"));
         try {
             AnchorPane newUserTab = fxmlLoader.load();
-            UserTabController userTabController = (UserTabController) fxmlLoader.getController();
+            UserTabController userTabController = fxmlLoader.getController();
             userTabController.injectMainController(this);
             Platform.runLater(() -> {
                 Tab tab = new Tab();
@@ -83,8 +81,8 @@ public class MainController {
     }
 
     public void goToHashtagPane(HastagViewer hastagViewer) {
-        tabPane.getSelectionModel().select(hashtagTabFromMain);
-        hashtagTabController.setHastagViewer(hastagViewer);
+        //tabPane.getSelectionModel().select(hashtagTabFromMain);
+        //hashtagTabController.setHastagViewer(hastagViewer);
     }
 
     public void goToLoginPane() {

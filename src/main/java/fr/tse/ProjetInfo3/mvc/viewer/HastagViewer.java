@@ -1,10 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import fr.tse.ProjetInfo3.mvc.dao.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
-import fr.tse.ProjetInfo3.mvc.services.RequestManager;
-
-import java.util.List;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 public class HastagViewer {
     private Hashtag hashtag;

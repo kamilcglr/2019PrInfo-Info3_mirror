@@ -1,9 +1,9 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
 import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
-import fr.tse.ProjetInfo3.mvc.dao.User;
-import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.util.List;
 

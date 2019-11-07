@@ -1,10 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-
-import java.awt.*;
 
 public class TweetController {
     private HashtagTabController hashtagTabController;

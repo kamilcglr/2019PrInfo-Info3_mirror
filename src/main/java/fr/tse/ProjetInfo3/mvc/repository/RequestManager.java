@@ -1,4 +1,4 @@
-package fr.tse.ProjetInfo3.mvc.services;
+package fr.tse.ProjetInfo3.mvc.repository;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -14,8 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
-import fr.tse.ProjetInfo3.mvc.dao.User;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 
 /**
  * @author Sergiy
@@ -66,10 +66,10 @@ public class RequestManager {
                     .setPrettyPrinting() //human-readable json
                     .create();
 
-            System.out.println(response.body().toString());
+            System.out.println(response.body());
 
             //add the access_token value to bearer, we will use it for other request
-            bearer = gson.fromJson(response.body().toString(), RequestManager.Bearer.class);
+            bearer = gson.fromJson(response.body(), RequestManager.Bearer.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class RequestManager {
         User userReturned = null;
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
             Gson gson = new GsonBuilder()
@@ -107,12 +107,12 @@ public class RequestManager {
                     .create();
 
             //gson will complete the attributes of object if it finds elements that have the same name
-            userReturned = gson.fromJson(response.body().toString(), User.class);
+            userReturned = gson.fromJson(response.body(), User.class);
 
             System.out.println(response.body());
         } catch (Exception e) {
             e.printStackTrace();
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
@@ -130,7 +130,7 @@ public class RequestManager {
     public List<Tweet> getTweetsFromUSer(String screen_name, int count) throws RequestManagerException {
         // We cannot pass the parameters as arguments of get method
         // We add the parameters of id directly in the link
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + String.valueOf(count);
+        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count;
         System.out.println(link);
         //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
         HttpRequest request = HttpRequest.newBuilder()
@@ -144,7 +144,7 @@ public class RequestManager {
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
             Gson gson = new GsonBuilder()
@@ -153,13 +153,13 @@ public class RequestManager {
 
             //gson will complete the attributes of object if it finds elements that have the same name
             
-            tweetList = gson.fromJson(response.body().toString(), Tweet[].class);
+            tweetList = gson.fromJson(response.body(), Tweet[].class);
             
 
             System.out.println(response.body());
         } catch (Exception e) {
             e.printStackTrace();
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
@@ -183,7 +183,7 @@ public class RequestManager {
             response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             
 
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
             Gson gson = new GsonBuilder()
@@ -202,7 +202,7 @@ public class RequestManager {
             
         }catch (Exception e) {
             e.printStackTrace();
-            if (response.body().toString().contains("code\":50")) {
+            if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }

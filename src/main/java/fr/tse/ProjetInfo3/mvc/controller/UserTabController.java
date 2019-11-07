@@ -3,7 +3,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
-import fr.tse.ProjetInfo3.mvc.dao.User;
+import com.jfoenix.controls.JFXToggleNode;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -40,7 +41,7 @@ public class UserTabController {
     private JFXButton compareButton;
 
     @FXML
-    private JFXButton favoriteButton;
+    private JFXToggleNode favoriteToggle;
 
     /*
      * We will populate this fields/labels by the result of search
@@ -80,9 +81,9 @@ public class UserTabController {
 
     @FXML
     private void initialize() {
-        for (int i = 1; i < 11; i++) listHashtags.getItems().add(new Label("Hashtag " + i));
-        addTweetsToList();
-        addTweetsToList();
+        //hide elements
+        compareButton.setVisible(false);
+        favoriteToggle.setVisible(false);
     }
 
 
@@ -94,7 +95,7 @@ public class UserTabController {
         try {
             //For the tests
             JFXListCell jfxListCell = fxmlLoader.load();
-            TweetController tweetController = (TweetController) fxmlLoader.getController();
+            TweetController tweetController = fxmlLoader.getController();
             tweetController.injectUserTabController(this);
             tweetController.populate();
             listTweets.getItems().add(jfxListCell);
