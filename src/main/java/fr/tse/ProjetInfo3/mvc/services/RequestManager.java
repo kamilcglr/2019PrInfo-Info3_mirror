@@ -1,12 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.services;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import fr.tse.ProjetInfo3.mvc.dao.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dao.Tweet;
-import fr.tse.ProjetInfo3.mvc.dao.User;
-
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,6 +8,14 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import fr.tse.ProjetInfo3.mvc.dao.Tweet;
+import fr.tse.ProjetInfo3.mvc.dao.User;
 
 /**
  * @author Sergiy
@@ -140,6 +142,7 @@ public class RequestManager {
         Tweet[] tweetList = null;
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            
             if (response.body().toString().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
@@ -148,7 +151,9 @@ public class RequestManager {
                     .create();
 
             //gson will complete the attributes of object if it finds elements that have the same name
+            
             tweetList = gson.fromJson(response.body().toString(), Tweet[].class);
+            
 
             System.out.println(response.body());
         } catch (Exception e) {
@@ -243,7 +248,66 @@ public class RequestManager {
             List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(hundredRetweets));
             return tweets;
     	}
-    
+    	
+    	/**
+         * @author ALAMI IDRISSI Taha
+         * Simple Class that contains the access token
+         * It is easier to complete from gson
+         */
+    	public String removeLastChar(String str) {
+    	    if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == '}') {
+    	        str = str.substring(0, str.length() - 1);
+    	    }
+    	    return str;
+    	}
+    	
+    	public List<Tweet> searchTweets(String label){
+    		
+    		String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23"+label;
+    		
+    		HttpRequest httpRequest = HttpRequest.newBuilder()
+    											 .GET()
+    											 .uri(URI.create(url))
+    											 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+    											 .build();
+    		HttpResponse<String> response = null;
+    		// Create a tweet Object 
+            ArrayList<Tweet> hundredRetweets = new ArrayList<>();
+            try {
+                response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                
+
+                if (response.body().toString().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .setLenient()
+                        .create();
+                // assign the line below to the tweet object
+                
+                /*String newBody = removeLastChar(response.body());
+                String tableOfTweets = newBody.replace("{\"statuses\":","")+"]";
+                System.out.println(tableOfTweets);*/
+                
+                
+                Map jsonJavaRootObject = new Gson().fromJson(response.body(), Map.class);
+                System.out.println(jsonJavaRootObject.get("statuses"));
+                // take just the table
+                Type listType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+                
+                hundredRetweets = gson.fromJson(jsonJavaRootObject.get("statuses").toString(),listType);
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (response.body().toString().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+            }
+            
+            return hundredRetweets;
+    	}
+    	
     /**
      * @author kamilcaglar
      * Simple Class that contains the access token
