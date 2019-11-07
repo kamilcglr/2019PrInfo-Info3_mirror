@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.MainController">
+      <StackPane fx:id="stackPane" stylesheets="@styles/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+              <JFXTabPane fx:id="tabPane" side="BOTTOM" stylesheets="@styles/main.css" StackPane.alignment="TOP_LEFT">
+                  <Tab fx:id="searchTabFromMain" text="Rechercher">
+                      <content>
+                          <fx:include fx:id="searchTab" source="SearchTab.fxml" />
+                      </content>
+                  </Tab>
+                  <Tab fx:id="userTabFromMain" text="Utilisateur">
+                      <content>
+                          <fx:include fx:id="userTab" source="UserTab.fxml" />
+                      </content>
+                  </Tab>
+                  <Tab fx:id="hashtagTabFromMain" text="Hashtag">
+                      <content>
+                          <fx:include fx:id="hashtagTab" source="HashtagTab.fxml" />
+                      </content>
+                  </Tab>
+                  <Tab fx:id="piTabFromMain" text="Points d'intérêts">
+                      <content>
+                          <fx:include fx:id="piTab" source="PiTab.fxml" />
+                      </content>
+                  </Tab>
+                     <Tab fx:id="loginTabFromMain" text="Login">
+        	<content>
+        		<fx:include fx:id="loginTab" source="Login.fxml"/>
+        	</content>
+        </Tab>
+            <StackPane.margin>
+               <Insets />
+            </StackPane.margin>
+
+                    </JFXTabPane>
+          </children>
+      </StackPane>
+  </AnchorPane>
