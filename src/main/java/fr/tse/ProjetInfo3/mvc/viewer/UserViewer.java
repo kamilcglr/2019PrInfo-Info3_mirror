@@ -43,14 +43,4 @@ public class UserViewer {
         return user;
     }
 
-    /**
-     * After searching the user, this function will print on the screen the attributes of an user
-     * Name and screen name(the @realdonaldtrump)
-     * Number of tweets
-     * Number of Follower/Following
-     * ...
-     */
-    public void printUserView() {
-        System.out.println(this.user.getName());
-    }
 }
