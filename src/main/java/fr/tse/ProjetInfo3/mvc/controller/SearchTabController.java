@@ -64,7 +64,7 @@ public class SearchTabController {
     private JFXButton searchButton;
 
     @FXML
-    private ProgressIndicator progressIndicator;
+    private JFXSpinner progressIndicator;
 
     @FXML
     private Label progressLabel;
@@ -156,17 +156,19 @@ public class SearchTabController {
             activateField(false, true);
         }
     }
+
     @FXML
     public void loginButtonPressed(ActionEvent event) {
-    	mainController.goToLoginPane();
+        mainController.goToLoginPane();
     }
+
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
      * */
     @FXML
-    private void searchButtonPressed(ActionEvent event) throws IOException {
-        //get the content of the fied
+    private void searchButtonPressed(ActionEvent event){
+        //get the content of the field
         String research = searchField.getText();
         //u for user, h for hastag
         char typeOfSearch = 'e';
@@ -177,7 +179,6 @@ public class SearchTabController {
         } else {
             //TODO create error here
         }
-
         //verify if it is empty or contains only the @/#
         if (research.length() <= 1) {
             launchDialog("Aucune saisie", "Veuillez saisir au moins un caractère", "D'accord");
@@ -187,6 +188,14 @@ public class SearchTabController {
             searchIsRunning(true);
             launchSearch(research, typeOfSearch);
         }
+    }
+
+    @FXML
+    /**
+     * If user pressed enter key in the search field, we call searchButtonPressed()
+     */
+    private void onEnter(ActionEvent event) {
+        searchButtonPressed(event);
     }
 
     /**
@@ -238,7 +247,7 @@ public class SearchTabController {
                         if (e instanceof RequestManager.RequestManagerException) {
                             snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, l'utilisateur " + research + " n'existe pas.", "D'accord", b -> snackbar.close())));
                         } else {
-                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie","D'accord", b -> snackbar.close())));
+                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie", "D'accord", b -> snackbar.close())));
                         }
                     });
                     System.out.println("Something went wrong : " + e);
@@ -321,5 +330,6 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
+
 
 }
