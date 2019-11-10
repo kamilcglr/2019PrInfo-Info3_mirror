@@ -36,9 +36,13 @@ public class MainController {
     @FXML
     private HashtagTabController hashtagTabController;
     @FXML
+    private MyPIController myPIController;
+    @FXML
     private Tab userTabFromMain;
     //@FXML
     //private Tab hashtagTabFromMain;
+    @FXML
+    private Tab piTabEditFromMain;
     @FXML
     private Tab piTabFromMain;
     @FXML
@@ -54,6 +58,7 @@ public class MainController {
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
         //hashtagTabController.injectMainController(this);
+        myPIController.injectMainController(this);
     }
 
     /**
@@ -87,6 +92,10 @@ public class MainController {
 
     public void goToLoginPane() {
         tabPane.getSelectionModel().select(loginTabFromMain);
+    }
+    
+    public void goToPIEditCreatePane() {
+    	tabPane.getSelectionModel().select(piTabEditFromMain);
     }
 }
 
