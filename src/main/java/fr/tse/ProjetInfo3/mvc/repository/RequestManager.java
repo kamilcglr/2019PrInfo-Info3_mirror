@@ -1,25 +1,24 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
+
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import fr.tse.ProjetInfo3.mvc.dto.Tweet;
-import fr.tse.ProjetInfo3.mvc.dto.User;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergiy
- * @author kamilcaglar
+ * @author Kamil CAGLAR
  * @author Taha
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...
@@ -66,7 +65,6 @@ public class RequestManager {
                     .setPrettyPrinting() //human-readable json
                     .create();
 
-            System.out.println(response.body());
 
             //add the access_token value to bearer, we will use it for other request
             bearer = gson.fromJson(response.body(), RequestManager.Bearer.class);
@@ -75,7 +73,7 @@ public class RequestManager {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Return User object completed by the result of search
      * https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-users-show
@@ -86,12 +84,12 @@ public class RequestManager {
     public User getUser(String screen_name) throws RequestManagerException {
         // We cannot pass the parameters as arguments of get method
         // We add the parameters of id directly in the link
-        String link = "https://api.twitter.com/1.1/users/show.json?screen_name=" + screen_name;
+        String url = "https://api.twitter.com/1.1/users/show.json?screen_name=" + screen_name;
 
         //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(link))
+                .uri(URI.create(url))
                 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
                 .build();
 
@@ -109,7 +107,6 @@ public class RequestManager {
             //gson will complete the attributes of object if it finds elements that have the same name
             userReturned = gson.fromJson(response.body(), User.class);
 
-            System.out.println(response.body());
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
@@ -120,68 +117,113 @@ public class RequestManager {
     }
 
     /**
+     * @param screen_name the name of the profile, e.g. realdonaldtrump
+     * @param count       number of tweets (max 3200)
+     * @return User
+     * @author kamilcglr
      * Return List Of tweets of some user
      * https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
-     *
-     * @param screen_name the name of the profile, e.g. realdonaldtrump
-     * @param count       number of tweets (max 200 per request)
-     * @return User
+     * TODO optimize the List format
      */
-    public List<Tweet> getTweetsFromUSer(String screen_name, int count) throws RequestManagerException {
-        // We cannot pass the parameters as arguments of get method
-        // We add the parameters of id directly in the link
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count;
-        System.out.println(link);
-        //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(link))
-                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-                .build();
-
+    public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
+        List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
-        Tweet[] tweetList = null;
+        HttpRequest request;
+        Long max_id = 0L;
         try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
-            if (response.body().contains("code\":50")) {
-                throw new RequestManagerException("Unknown user");
+            while (tweets.size() < count) {
+                request = buildUserTweetsRequest(screen_name, "200", max_id);
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.body().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .setDateFormat(TwitterDateParser.twitterFormat)
+                        .create();
+
+                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
+                }.getType();
+                //gson will complete the attributes of object if it finds elements that have the same name
+                List<Tweet> tempList = gson.fromJson(response.body(), tweetListType);
+
+                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
+                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+                 */
+                max_id = tempList.get(tempList.size() - 1).getId() - 1;
+
+                tweets.addAll(tempList);
             }
-            Gson gson = new GsonBuilder()
-                    .setPrettyPrinting() //human-readable json
-                    .create();
-
-            //gson will complete the attributes of object if it finds elements that have the same name
-            
-            tweetList = gson.fromJson(response.body(), Tweet[].class);
-            
-
-            System.out.println(response.body());
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
-        List<Tweet> tweets = new ArrayList<Tweet>(Arrays.asList(tweetList));
         return tweets;
     }
 
-    public List<Tweet> searchTweets(String label){
-		
-		String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23"+label;
-		
-		HttpRequest httpRequest = HttpRequest.newBuilder()
-											 .GET()
-											 .uri(URI.create(url))
-											 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-											 .build();
-		HttpResponse<String> response = null;
-		// Create a tweet Object 
+    public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
+        List<Tweet> tweets = new ArrayList<Tweet>();
+        HttpResponse<String> response = null;
+        HttpRequest request;
+        Long max_id = 0L;
+        try {
+            while (tweets.size() < 3200) {
+                if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))){
+                    break;
+                }
+                request = buildUserTweetsRequest(screen_name, "200", max_id);
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.body().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .setDateFormat(TwitterDateParser.twitterFormat)
+                        .create();
+
+                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
+                }.getType();
+                //gson will complete the attributes of object if it finds elements that have the same name
+                List<Tweet> tempList = gson.fromJson(response.body(), tweetListType);
+
+                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
+                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+                 */
+                max_id = tempList.get(tempList.size() - 1).getId() - 1;
+
+                tweets.addAll(tempList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (response.body().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+        }
+
+        //Filtering
+        tweets = tweets.stream().filter(tweet -> tweet.getCreated_at().after(date)).collect(Collectors.toList());
+        return tweets;
+    }
+
+    public List<Tweet> searchTweets(String label) {
+
+        String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23" + label;
+
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                .build();
+        HttpResponse<String> response = null;
+        // Create a tweet Object
         ArrayList<Tweet> hundredRetweets = new ArrayList<>();
         try {
             response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            
+
 
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
@@ -197,18 +239,39 @@ public class RequestManager {
             Map jsonJavaRootObject = new Gson().fromJson(response.body(), Map.class);
             System.out.println(jsonJavaRootObject.get("statuses"));
             // take just the table
-            Type listType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Tweet>>() {
+            }.getType();
             //hundredRetweets = gson.fromJson(jsonJavaRootObject.get("statuses").toString(),listType);
-            
-        }catch (Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
-            return hundredRetweets;
+        return hundredRetweets;
     }
-        
+
+    /**
+     * @author kamil CAGLAR
+     * Porvides a request for getting the tweets from user timeline
+     */
+    private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
+        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?" + "screen_name=" + screen_name + "&count=" + count;
+
+        if (max_id > 0) {
+            link = link + "&max_id=" + max_id.toString();
+        }
+
+        //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(link))
+                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                .build();
+
+        return request;
+    }
 
     /**
      * @author kamilcaglar
