@@ -171,7 +171,7 @@ public class RequestManager {
         Long max_id = 0L;
         try {
             while (tweets.size() < 3200) {
-                if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))){
+                if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))) {
                     break;
                 }
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
@@ -255,9 +255,10 @@ public class RequestManager {
     /**
      * @author kamil CAGLAR
      * Porvides a request for getting the tweets from user timeline
+     * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
      */
     private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?" + "screen_name=" + screen_name + "&count=" + count;
+        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?tweet_mode=extended&screen_name=" + screen_name + "&count=" + count;
 
         if (max_id > 0) {
             link = link + "&max_id=" + max_id.toString();

@@ -47,8 +47,8 @@ class UserViewerTest {
 
         List<Tweet> tweetsByDate = new ArrayList<>();
         try {
-            tweetsByDate = requestManager.getTweetsFromUserByDate("France2tv",
-                    TwitterDateParser.parseTwitterUTC("Tue Nov 5 01:00:00 CET 2019"));
+            tweetsByDate = requestManager.getTweetsFromUserByDate("MayleenTheOne",
+                    TwitterDateParser.parseTwitterUTC("Fri Nov 11 20:00:00 CET 2019"));
         } catch (ParseException e) {
             e.printStackTrace();
         }

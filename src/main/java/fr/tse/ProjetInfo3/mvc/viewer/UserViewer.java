@@ -7,6 +7,7 @@ import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class makes the research for an user
@@ -47,12 +48,33 @@ public class UserViewer {
     public Map<String, Integer> topHashtag(List<Tweet> tweetList) {
         Map<String, Integer> hashtagUsedSorted;
         Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
-        
-        List<String> hashtags = tweetList.stream()
-                .map(Tweet::getEntities)
-                .flatMap(subHashtags -> subHashtags.getHashtags().stream())
-                .map(Tweet.hashtags::getText)
-                .collect(Collectors.toList());
+
+        List<String> hashtags = new ArrayList<>();
+        //Method to get hashtag from retweets
+        for (Tweet tweet : tweetList) {
+
+            //if the tweet is retweeted, then we get the #'s of retweeted tweet
+            if (tweet.getRetweeted_status() != null) {
+                hashtags.addAll(tweet
+                        .getRetweeted_status().getEntities().getHashtags()
+                        .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+            } else
+                //else, if the tweet is quoted, then we get the #'s of quoted tweet
+                if (tweet.getQuoted_status() != null) {
+                    hashtags.addAll(tweet
+                            .getQuoted_status().getEntities().getHashtags()
+                            .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+                }
+            hashtags.addAll(tweet.getEntities().getHashtags()
+                    .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+
+        }
+        //This will not work to get hashtag from retweets
+        //List<String> hashtags = tweetList.stream()
+        //        .map(Tweet::getEntities)
+        //        .flatMap(subHashtags -> subHashtags.getHashtags().stream())
+        //        .map(Tweet.hashtags::getText)
+        //        .collect(Collectors.toList());
 
         for (String theme : hashtags) {
             Integer occurence = hashtagUsed.get(theme);
@@ -73,7 +95,7 @@ public class UserViewer {
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
 
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     }
 }
