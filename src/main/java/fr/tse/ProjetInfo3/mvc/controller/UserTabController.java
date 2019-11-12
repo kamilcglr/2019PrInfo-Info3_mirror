@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -58,6 +60,8 @@ public class UserTabController {
     private Label nbFollowers;
     @FXML
     private Label nbFollowing;
+    @FXML
+    private ImageView profilepicture;
 
     /**************************************************************/
 
@@ -75,6 +79,11 @@ public class UserTabController {
             nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+            boolean backgroundLoading = true;
+            // The image is being loaded in the background
+            Image image = new Image(userToPrint.getProfile_image_url_https(), backgroundLoading);
+            profilepicture.setImage(image);
+
         });
 
     }

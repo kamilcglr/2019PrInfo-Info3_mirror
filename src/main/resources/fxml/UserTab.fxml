@@ -84,7 +84,7 @@
                                   </TitledPane>
                                 </panes>
                               </Accordion>
-                              <HBox fx:id="pictureBox" prefWidth="200.0" GridPane.columnIndex="2">
+                              <HBox fx:id="pictureBox" alignment="CENTER" prefWidth="200.0" GridPane.columnIndex="2">
                                  <children>
                                               <ImageView fx:id="profilepicture" fitHeight="150.0" fitWidth="241.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
