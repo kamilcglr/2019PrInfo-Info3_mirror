@@ -129,7 +129,7 @@ public class RequestManager {
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
-        Long max_id = 0L;
+        long max_id = 0L;
         try {
             while (tweets.size() < count) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
@@ -137,6 +137,11 @@ public class RequestManager {
 
                 if (response.body().contains("code\":50")) {
                     throw new RequestManagerException("Unknown user");
+                }
+
+                //Sometimes twitter API gives bad result
+                if (response.body().equals("[]")){
+                    continue;
                 }
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting() //human-readable json
@@ -168,7 +173,7 @@ public class RequestManager {
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
-        Long max_id = 0L;
+        long max_id = 0L;
         try {
             while (tweets.size() < 3200) {
                 if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))) {
@@ -189,7 +194,7 @@ public class RequestManager {
                 }.getType();
                 //gson will complete the attributes of object if it finds elements that have the same name
                 List<Tweet> tempList = gson.fromJson(response.body(), tweetListType);
-
+                System.out.println(tempList);
                 /* ! -1 gets the id f the tweet just before the oldest tweet of this query
                  *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
                  */
@@ -199,6 +204,8 @@ public class RequestManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(response.body());
+            System.out.println(tweets);
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
@@ -258,7 +265,7 @@ public class RequestManager {
      * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
      */
     private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?tweet_mode=extended&screen_name=" + screen_name + "&count=" + count;
+        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count+"&tweet_mode=extended";
 
         if (max_id > 0) {
             link = link + "&max_id=" + max_id.toString();

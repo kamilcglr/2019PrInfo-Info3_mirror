@@ -31,6 +31,9 @@
     -fx-text-fill: -grey-dark;
 }
 
+#progressIndicator .arc {
+    -fx-stroke: -accent;
+}
 
 /*
 * Buttons & Icons
@@ -49,7 +52,6 @@
     -fx-background-color: white;
 }
 
-
 .TitleListviewLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 20;
@@ -65,24 +67,26 @@
 */
 .accordion > .titled-pane {
     -fx-padding: 0 0 1em 0;
-    -fx-border-radius: 10%;
-    -fx-background-radius: 10%;
 }
 
-.accordion > .titled-pane > .tittle {
-    -fx-border-radius: 15pt;
-    -fx-background-radius: 15pt;
-}
-
-.accordion .titled-pane > .title {
+.accordion > .titled-pane > .title {
+    -fx-background-radius: 10pt;
     -fx-background-color: -white;
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
 
-.titled-pane > .title > .text {
+.accordion > .titled-pane > .title > .text {
     -fx-fill: -primary;
+}
+
+.accordion > .titled-pane > *.content {
+    -fx-background-radius: 10pt;
+    -fx-border-radius: 10pt;
+    -fx-background-color: WHITE;
+    -fx-text-fill: -primary;
+    -fx-border-style: hidden;
 }
 
 .titled-pane > .title > .arrow-button .arrow {
@@ -101,4 +105,20 @@
     -fx-border-style: solid;
     -fx-border-width: 1;
 
+}
+
+/*
+* List of hastags
+*/
+#listHashtags {
+    -fx-background-radius: 10 10 10 10px;
+    -fx-padding: 0 10 0 10;
+    -fx-font-size: 15;
+    -fx-font-family: Roboto;
+    -fx-background-color: WHITE;
+    -fx-border-style: hidden;
+}
+
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: WHITE;
 }

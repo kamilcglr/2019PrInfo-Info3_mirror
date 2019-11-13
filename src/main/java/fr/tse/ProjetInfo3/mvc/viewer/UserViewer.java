@@ -7,7 +7,6 @@ import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class makes the research for an user
@@ -36,9 +35,12 @@ public class UserViewer {
         System.out.println(user);
     }
 
-    public void getTweets(String screen_name, int count) {
-        List<Tweet> tweets = requestManager.getTweetsFromUser(screen_name, count);
-        System.out.println(tweets);
+    public List<Tweet> getTweetsByDate(String screen_name, Date date) {
+        return requestManager.getTweetsFromUserByDate(screen_name, date);
+    }
+
+    public List<Tweet> getTweetsByCount(String screen_name, int count) {
+        return requestManager.getTweetsFromUser(screen_name, count);
     }
 
     public User getUser() {
