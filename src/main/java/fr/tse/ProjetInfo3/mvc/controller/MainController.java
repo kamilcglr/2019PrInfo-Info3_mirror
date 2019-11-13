@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -45,7 +46,8 @@ public class MainController {
     private Tab searchTabFromMain;
     @FXML
     private Tab loginTabFromMain;
-
+   
+    
     /*This function is launched when Mainwindow is launched */
     @FXML
     private void initialize() {
@@ -88,5 +90,25 @@ public class MainController {
     public void goToLoginPane() {
         tabPane.getSelectionModel().select(loginTabFromMain);
     }
+
+	public void goToMyPisPane() {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
+        try {
+            AnchorPane newUserTab = fxmlLoader.load();
+            MyPIsTabController myPisTabController = fxmlLoader.getController();
+            myPisTabController.injectMainController(this);
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(newUserTab);
+                tab.setText("Mes Points d'interets");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+    
+    
 }
 
