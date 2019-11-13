@@ -2,7 +2,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
-import com.jfoenix.controls.JFXSnackbar;
+
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -63,9 +63,9 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-    @FXML
-    private JFXSpinner progressIndicator;
-
+	@FXML 
+	private JFXSpinner progressIndicator;
+	 
     @FXML
     private Label progressLabel;
 
@@ -74,6 +74,9 @@ public class SearchTabController {
 
     @FXML
     private JFXButton signinButton;
+    
+    @FXML
+    private JFXButton myPibutton;
 
     private String research;
 
@@ -87,7 +90,7 @@ public class SearchTabController {
 
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
-        progressIndicator.setVisible(false);
+        //progressIndicator.setVisible(false);
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
@@ -330,6 +333,10 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
-
+    
+    @FXML
+    private void myPibuttonPressed(ActionEvent event) {
+    	mainController.goToMyPisPane();
+    }
 
 }
