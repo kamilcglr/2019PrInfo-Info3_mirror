@@ -36,6 +36,7 @@ public class InterestPoint {
 		this.dateOfCreation = dateOfCreation;
 		this.hashtags = hashtags;
 		this.users = users;
+		
 	}
 	
 
