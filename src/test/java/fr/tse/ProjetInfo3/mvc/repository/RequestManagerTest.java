@@ -27,9 +27,8 @@ class RequestManagerTest {
     @org.junit.jupiter.api.Test
     void searchUsersTest() {
         RequestManager requestManager = new RequestManager();
-        List<User> users = requestManager.getUsersbyName("donald");
-        //tweets.forEach(tweet -> System.out.println(tweet));
-        //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
+        List<String> users = requestManager.getUsersbyName("donald");
+        users.forEach(user -> System.out.println(user));
     }
     
     

@@ -210,7 +210,7 @@ public class RequestManager {
 		return hundredRetweets;
 	}
 
-	public List<User> getUsersbyName(String userProposition) {
+	public List<String> getUsersbyName(String userProposition) {
 		OAuthSample oAuthSample = new OAuthSample();
 		String url = "https://api.twitter.com/1.1/users/search.json?q="+userProposition;
 		HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
@@ -237,7 +237,9 @@ public class RequestManager {
 				throw new RequestManagerException("Unknown user");
 			}
 		}
-		return users;
+		List<String> userNames=new ArrayList<>();
+		users.forEach(user->userNames.add(user.getScreen_name()));
+		return userNames;
 
 	}
 

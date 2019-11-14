@@ -5,13 +5,16 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import com.jfoenix.controls.JFXSnackbar;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 //import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +25,7 @@ import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -76,6 +80,9 @@ public class SearchTabController {
     private JFXButton signinButton;
 
     private String research;
+    
+    @FXML
+    private ListView<String> listt;
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -224,12 +231,37 @@ public class SearchTabController {
                         mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
-                        UserViewer userViewer = new UserViewer();
-                        userViewer.searchScreenName(research);
-
+                        SearchViewer searchViewer=new SearchViewer();
+                        //Here we remove the @ to make our research of propositions
+                        List<String> users =searchViewer.getListPropositions(research.substring(1));
+                        //We go through the proposition list
+                        for(String user : users) {
+                        	//if we find the exact name in the list 
+                        	//we show the user's tab
+                        	if(user.equals(research.substring(1))) {
+                        		UserViewer userViewer = new UserViewer();
+                                userViewer.searchScreenName(research);
+                           	 	mainController.goToUserPane(userViewer);
+                           	 	}
+                        	//if not we show the proposition list 
+                           	 else {
+                           	  ObservableList<String> items =listt.getItems();
+                          	users.forEach(use->items.add(use));
+                          items.forEach(item->System.out.println(item));
+                           	 }
+                        	}
+                        //We get the user we chose from the list
+                        String newResearch=listt.getSelectionModel().getSelectedItem();
+                        if(newResearch != null) {
+                        	 UserViewer userViewer = new UserViewer();
+                             userViewer.searchScreenName(newResearch);
+                        	 	mainController.goToUserPane(userViewer);
+                        }
+                        //then we launch the research
+                       
+                        
                         //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane(userViewer);
                     }
                     searchIsRunning(false);
                 } catch (Exception e) {
@@ -260,6 +292,13 @@ public class SearchTabController {
         thread.start();
     }
 
+    /**
+     * Search for user's propositions
+     * 
+     * 
+     */
+   
+    
     /**
      * Launch dialog to inform the user
      *
