@@ -1,12 +1,17 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXSnackbar;
+import com.jfoenix.controls.JFXSnackbarLayout;
 import com.jfoenix.controls.JFXTabPane;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -49,6 +54,8 @@ public class MainController {
     /*This function is launched when Mainwindow is launched */
     @FXML
     private void initialize() {
+        tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
+
         /*the controller can be used in other Tabs*/
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
@@ -59,6 +66,7 @@ public class MainController {
     /**
      * Called by searchButton
      * Pass the userViewer as parameters to use it in the controller of UserTab
+     *
      * @param userViewer
      */
     public void goToUserPane(UserViewer userViewer) {
@@ -73,8 +81,20 @@ public class MainController {
                 tab.setText(userViewer.getUser().getName());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-                userTabController.setUserViewer(userViewer);
             });
+
+            //Heavy task inside this thread, we go to user pane before
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    userTabController.setUserViewer(userViewer);
+                    return null;
+                }
+            };
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
