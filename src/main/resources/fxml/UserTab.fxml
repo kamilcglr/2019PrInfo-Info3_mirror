@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
@@ -37,16 +38,16 @@
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="150.0" prefWidth="100.0" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints minHeight="100.0" />
-                                        <RowConstraints minHeight="100.0" />
-                                        <RowConstraints minHeight="100.0" />
-                              <RowConstraints minHeight="30.0" />
-                              <RowConstraints minHeight="200.0" vgrow="ALWAYS" />
-                              <RowConstraints minHeight="20.0" />
+                                        <RowConstraints minHeight="200.0" />
+                                        <RowConstraints prefHeight="120.0" />
+                                        <RowConstraints minHeight="100.0" prefHeight="50.0" />
+                                        <RowConstraints minHeight="30.0" />
+                                        <RowConstraints minHeight="200.0" vgrow="ALWAYS" />
+                                        <RowConstraints minHeight="20.0" />
                                         <RowConstraints minHeight="200.0" />
                                         <RowConstraints minHeight="100.0" vgrow="ALWAYS" />
-                                        <RowConstraints />
-                                    </rowConstraints>
+                                      
+                                  </rowConstraints>
                                     <children>
                                         <JFXButton fx:id="compareButton" contentDisplay="RIGHT" text="Comparer" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                             <GridPane.margin>
@@ -61,16 +62,42 @@
                                                 <Insets right="20.0" top="-5.0" />
                                             </GridPane.margin>
                                         </JFXToggleNode>
-                                        <Label fx:id="username" text="\@user" wrapText="true" GridPane.columnSpan="3" />
-                                        <Label fx:id="twittername" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
-                                        <Label fx:id="description" text="Description" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-                                        <Label fx:id="nbTweet" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-                                        <Label fx:id="nbFollowers" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2" />
-                                        <Label fx:id="nbFollowing" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                                        <Label fx:id="tweetsLabel" styleClass="tweetLabels" text="Tweets" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-                                        <Label fx:id="followersLabel" styleClass="tweetLabels" text="Followers" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                                        <Label fx:id="followingsLabel" styleClass="tweetLabels" text="Followings" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                              <Accordion fx:id="topAccordion" styleClass="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
+
+                                      <Accordion fx:id="topAccordion" styleClass="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                                        <Label fx:id="description" alignment="CENTER" maxWidth="200.0" text="Description" wrapText="true">
+                                 <GridPane.margin>
+                                    <Insets top="75.0" />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                                        <Label fx:id="username" focusTraversable="false" text="\@user" wrapText="true" GridPane.columnSpan="3">
+                                 <GridPane.margin>
+                                    <Insets bottom="75.0" />
+                                 </GridPane.margin></Label>
+                                        <Label fx:id="twittername" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" />
+                                 </padding></Label>
+                                        <Label fx:id="nbTweet" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                        <Label fx:id="nbFollowers" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="1" />
+                                        <Label fx:id="nbFollowing" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                                        <Label fx:id="tweetsLabel" styleClass="tweetLabels" text="Tweets" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                        <Label fx:id="followersLabel" styleClass="tweetLabels" text="Followers" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                                        <Label fx:id="followingsLabel" styleClass="tweetLabels" text="Followings" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                              <Accordion fx:id="topTweetAccordion" styleClass="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                <panes>
+                                  <TitledPane animated="false" text="Top 5 des tweets">
+                                       <content>
+                                          <JFXListView fx:id="listTweets" />
+                                       </content></TitledPane>
+                                </panes>
+                              </Accordion>
+                              <Accordion fx:id="topHashtagAccordion" styleClass="accordion" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                 <panes>
                                   <TitledPane animated="false" text="# les plus utilisés">
                                        <content>
@@ -83,12 +110,17 @@
                                        </content></TitledPane>
                                 </panes>
                               </Accordion>
-                              <HBox fx:id="pictureBox" prefWidth="200.0" GridPane.columnIndex="2">
+                              <HBox fx:id="pictureBox" alignment="CENTER" maxHeight="180.0" maxWidth="180.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER">
                                  <children>
-                                              <ImageView fx:id="profilepicture" fitHeight="150.0" fitWidth="241.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </HBox>
+                                              <ImageView fx:id="profilepicture" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children></HBox>
+                              <Pane fx:id="firstpane" prefHeight="200.0" prefWidth="200.0" styleClass="headerborder" />
+                              <Pane fx:id="thirdpane" prefHeight="200.0" prefWidth="200.0" styleClass="headerborder" GridPane.columnIndex="2" />
+                              <Pane fx:id="secondpane" prefHeight="200.0" prefWidth="200.0" styleClass="headerborder" GridPane.columnIndex="1" />
+                              <Pane fx:id="fourthpane" prefHeight="200.0" prefWidth="200.0" styleClass="headerborder" GridPane.columnIndex="3" />
+                              <Pane fx:id="fifthpane" prefHeight="200.0" prefWidth="200.0" styleClass="headerborder" GridPane.columnIndex="4" />
                               <JFXSpinner fx:id="progressIndicator" maxHeight="35.0" maxWidth="35.0" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+
                                     </children>
                                 </GridPane>
                             </content>
