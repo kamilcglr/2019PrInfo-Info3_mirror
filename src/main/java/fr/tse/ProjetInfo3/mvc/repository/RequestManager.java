@@ -126,12 +126,14 @@ public class RequestManager {
      * TODO optimize the List format
      */
     public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
+        //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
+        int tentatives = 0;
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
         long max_id = 0L;
         try {
-            while (tweets.size() < count) {
+            while (tweets.size() < count && (tentatives < 10)) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -139,8 +141,9 @@ public class RequestManager {
                     throw new RequestManagerException("Unknown user");
                 }
 
-                //Sometimes twitter API gives bad result
-                if (response.body().equals("[]")){
+                //Sometimes twitter API gives bad result then we increment tentatives
+                if (response.body().equals("[]")) {
+                    tentatives++;
                     continue;
                 }
                 Gson gson = new GsonBuilder()
@@ -170,17 +173,25 @@ public class RequestManager {
     }
 
     public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
+        //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
+        int tentatives = 0;
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
         long max_id = 0L;
         try {
-            while (tweets.size() < 3200) {
+            while (tweets.size() < 3200 && (tentatives < 10)) {
                 if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))) {
                     break;
                 }
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                //Sometimes twitter API gives bad result then we increment tentatives
+                if (response.body().equals("[]")) {
+                    tentatives++;
+                    continue;
+                }
 
                 if (response.body().contains("code\":50")) {
                     throw new RequestManagerException("Unknown user");
@@ -265,7 +276,7 @@ public class RequestManager {
      * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
      */
     private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count+"&tweet_mode=extended";
+        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count + "&tweet_mode=extended";
 
         if (max_id > 0) {
             link = link + "&max_id=" + max_id.toString();
