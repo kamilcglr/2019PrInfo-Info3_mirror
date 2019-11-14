@@ -15,8 +15,10 @@
 
 #description {
     -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-size: 12;
     -fx-text-fill: -grey-dark;
+    /*-fx-border-width: 1px;*/
+    /*-fx-border-color: -grey-dark;*/
 }
 
 .tweetLabels {
@@ -31,6 +33,15 @@
     -fx-text-fill: -grey-dark;
 }
 
+/*
+* Header
+*/
+
+.headerborder{
+    -fx-border-style: none none solid none;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: -grey-dark;
+}
 
 /*
 * Buttons & Icons
@@ -93,11 +104,10 @@
 * Image
 */
 
-#pictureBox {
+#pictureBox{
+    -fx-border-width: 4px;
+    /*-fx-border-radius: 15;*/
     -fx-border-color: -primary;
-    -fx-border-style: solid;
-    -fx-border-width: 1;
-    -fx-border-insets: 5;
-    -fx-border-radius: 5;
-
 }
+
+
