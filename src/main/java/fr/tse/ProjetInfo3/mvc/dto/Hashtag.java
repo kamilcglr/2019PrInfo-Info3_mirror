@@ -15,6 +15,11 @@ public class Hashtag {
 	private List<Tweet> tweets;
 
 
+	public Hashtag(String hashtag) {
+		super();
+		this.hashtag = hashtag;
+	}
+
 	public String getHashtag() {
 		return hashtag;
 	}
