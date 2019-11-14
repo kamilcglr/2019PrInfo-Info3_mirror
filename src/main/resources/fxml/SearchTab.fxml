@@ -70,7 +70,6 @@
                                     </graphic>
                                 </JFXButton>
                                 <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                        <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
 
                             </children>
                         </GridPane>

@@ -42,5 +42,6 @@ public class UserViewer {
     public User getUser() {
         return user;
     }
+    
 
 }

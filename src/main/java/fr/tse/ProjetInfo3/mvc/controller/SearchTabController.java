@@ -12,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
+//import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -63,8 +63,8 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-    @FXML
-    private JFXSpinner progressIndicator;
+    //@FXML
+    //private JFXSpinner progressIndicator;
 
     @FXML
     private Label progressLabel;
@@ -87,7 +87,7 @@ public class SearchTabController {
 
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
-        progressIndicator.setVisible(false);
+        //progressIndicator.setVisible(false);
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
@@ -302,11 +302,11 @@ public class SearchTabController {
      */
     private void searchIsRunning(boolean searching) {
         if (searching) {
-            progressIndicator.setVisible(true);
+         //   progressIndicator.setVisible(true);
             searchButton.setVisible(false);
             activateField(false, false);
         } else {
-            progressIndicator.setVisible(false);
+           // progressIndicator.setVisible(false);
             searchButton.setVisible(true);
             activateField(true, false);
         }

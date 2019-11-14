@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 
 import java.util.List;
 
@@ -23,6 +24,14 @@ class RequestManagerTest {
         //tweets.forEach(tweet -> System.out.println(tweet));
         //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
     }
+    @org.junit.jupiter.api.Test
+    void searchUsersTest() {
+        RequestManager requestManager = new RequestManager();
+        List<User> users = requestManager.getUsersbyName("donald");
+        //tweets.forEach(tweet -> System.out.println(tweet));
+        //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
+    }
+    
     
    
 }
