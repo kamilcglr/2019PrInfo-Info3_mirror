@@ -6,7 +6,7 @@ import fr.tse.ProjetInfo3.mvc.controller.SearchTabController;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
-public class SearchController {
+public class SearchViewer {
     private User user;
     private RequestManager requestManager;
 
