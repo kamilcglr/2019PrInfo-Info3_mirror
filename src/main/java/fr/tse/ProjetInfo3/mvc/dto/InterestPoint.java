@@ -14,35 +14,34 @@ public class InterestPoint {
 	
 	private List<Hashtag> hashtags;
 	private List<User> users;
-	// a voir 
+	private List<Tweet> tweets;
+	private String title;
 	private List<InterestPoint> interestPoints;
 	
 	public InterestPoint() {
 		this.hashtags = new ArrayList<Hashtag>();
 		this.users = new ArrayList<User>();
 		this.interestPoints = new ArrayList<InterestPoint>();
+		this.tweets = new ArrayList<Tweet>();
 	}
 
-	public InterestPoint(List<Hashtag> hashtags, List<User> users) {
+	public InterestPoint(List<Hashtag> hashtags, List<User> users,String title) {
 		super();
 		this.hashtags = hashtags;
 		this.users = users;
+		this.title = title;
 	}
 	
-
+	public InterestPoint(List<Hashtag> hashtags,String title) {
+		super();
+		this.hashtags = hashtags;
+		this.title = title;
+	}
 	public InterestPoint(List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
 		super();
 		this.hashtags = hashtags;
 		this.users = users;
 		this.interestPoints = interestPoints;
-	}
-	/*
-	 * this method is going to get us all the interest point 
-	 * (non-Javadoc)
-	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-	 */
-	public List<InterestPoint> retreiveAllInterestPoints() {
-		return this.interestPoints;
 	}
 	/*
 	 * every interest point that going to call this method is going to add to his 
@@ -98,7 +97,7 @@ public class InterestPoint {
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
 
-	public boolean createInterestPoint(Hashtag hashtag, User user) {
+	public boolean createInterestPoint(Hashtag hashtag, User user,String title) {
 		InterestPoint interestPoint = new InterestPoint();
 		// create a list of Interest of point to check (after)  if the interest point already exist
 		for(InterestPoint ip : interestPoints) {
@@ -108,29 +107,11 @@ public class InterestPoint {
 		
 		interestPoint.hashtags.add(hashtag);
 		interestPoint.users.add(user);
-		
+		interestPoint.setTitle(title);
 		interestPoint.interestPoints.add(interestPoint);
 		return true;
 	}
-	/*
-	 * creating a new Interest point
-	 * (non-Javadoc)
-	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-	 */
-	public boolean createInterestPoint(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	/*
-	 * creating a new Interest point
-	 * (non-Javadoc)
-	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-	 */
-	public boolean createInterestPoint(Hashtag hashtag) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 	/*
 	 * removing an interest point from the list of interests points 
 	 * (non-Javadoc)
@@ -186,5 +167,30 @@ public class InterestPoint {
 			return other.users == null;
 		} else return users.equals(other.users);
 	}
+	public List<Tweet> getTweets() {
+		return tweets;
+	}
+
+	public void setTweets(List<Tweet> tweets) {
+		this.tweets = tweets;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setInterestPoints(List<InterestPoint> interestPoints) {
+		this.interestPoints = interestPoints;
+	}
+
+	public List<InterestPoint> getInterestPoints() {
+		return interestPoints;
+	}
+	
+	
 	
 }
