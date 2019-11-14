@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXButton;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 /***
@@ -19,10 +20,16 @@ public class MyPIController {
     
     
     @FXML
-    private JFXButton createPI;
+    private JFXButton createPIButton;
     
     @FXML
 	private void initialize() {
 
 	}
+    
+    /** Events **/
+    @FXML
+    public void createPIButtonPressed(ActionEvent event) {
+    	mainController.goToPICreatePane();
+    }
 }

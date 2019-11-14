@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane fx:id="MyPIPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.PiTabController">
+<AnchorPane fx:id="MyPIPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.MyPIController">
     <children>
         <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -25,7 +25,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <JFXButton fx:id="createPI" prefHeight="143.0" prefWidth="482.0" text="Créer un Point d'Intêret" GridPane.halignment="CENTER" />
+                        <JFXButton fx:id="createPIButton" onAction="#createPIButtonPressed" prefHeight="143.0" prefWidth="482.0" text="Créer un Point d'Intêret" GridPane.halignment="CENTER" />
                      </children>
                   </GridPane>
                </children>

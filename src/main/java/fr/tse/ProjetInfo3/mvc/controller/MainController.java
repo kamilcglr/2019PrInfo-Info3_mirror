@@ -46,6 +46,8 @@ public class MainController {
     @FXML
     private Tab piTabFromMain;
     @FXML
+    private Tab myPITabFromMain;
+    @FXML
     private Tab searchTabFromMain;
     @FXML
     private Tab loginTabFromMain;
@@ -58,7 +60,9 @@ public class MainController {
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
         //hashtagTabController.injectMainController(this);
-        myPIController.injectMainController(this);
+        //myPIController.injectMainController(this);
+        
+        goToPICreatePane();
     }
 
     /**
@@ -94,8 +98,20 @@ public class MainController {
         tabPane.getSelectionModel().select(loginTabFromMain);
     }
     
-    public void goToPIEditCreatePane() {
-    	tabPane.getSelectionModel().select(piTabEditFromMain);
+    public void goToPICreatePane() {
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
+    	try {
+            AnchorPane newUserTab = fxmlLoader.load();
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(newUserTab);
+                tab.setText("Création d'un Point d'Intêret");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -8,6 +8,7 @@ public class PiTabController {
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        System.out.println(this.mainController.toString());
     }
     
     @FXML
