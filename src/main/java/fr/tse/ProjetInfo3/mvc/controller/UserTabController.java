@@ -11,9 +11,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 
 import java.io.IOException;
 
@@ -58,6 +63,12 @@ public class UserTabController {
     private Label nbFollowers;
     @FXML
     private Label nbFollowing;
+    @FXML
+    private ImageView profilepicture;
+    @FXML
+    private Circle circle;
+    @FXML
+    private Pane thirdpane;
 
     /**************************************************************/
 
@@ -75,9 +86,20 @@ public class UserTabController {
             nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+//            Image image = new Image(userToPrint.getProfile_image_url_https(), true);
+            profilepicture.setImage(new Image(userToPrint.getProfile_image_url_https(), true));
+//            SetProfilePicture(image);
+
         });
 
     }
+
+//    @FXML
+//    private void SetProfilePicture(Image image){
+//        profilepicture.setClip(circle);
+//        thirdpane.getChildren().add(profilepicture);
+//        }
+
 
     @FXML
     private void initialize() {

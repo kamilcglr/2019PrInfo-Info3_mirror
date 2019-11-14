@@ -55,7 +55,7 @@ public class User {
                 ", statuses_count=" + statuses_count +
                 ", created_at='" + created_at + '\'' +
                 ", profile_banner_url='" + profile_banner_url + '\'' +
-                ", profile_image_url_https='" + profile_image_url_https + '\'' +
+                ", profile_image_url_https='" + profile_image_url_https+ '\'' +
                 ", listoftweets=" + listoftweets +
                 '}';
     }
@@ -221,7 +221,7 @@ public class User {
     }
 
     public String getProfile_image_url_https() {
-        return profile_image_url_https;
+        return profile_image_url_https.substring(0,profile_image_url_https.length()-11)+ ".jpg";  //We want the original picture not the mini version
     }
 
     public void setProfile_image_url_https(String profile_image_url_https) {
