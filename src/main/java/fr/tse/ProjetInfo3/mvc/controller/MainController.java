@@ -94,12 +94,12 @@ public class MainController {
 	public void goToMyPisPane() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
         try {
-            AnchorPane newUserTab = fxmlLoader.load();
+            AnchorPane myPiTab = fxmlLoader.load();
             MyPIsTabController myPisTabController = fxmlLoader.getController();
             myPisTabController.injectMainController(this);
             Platform.runLater(() -> {
                 Tab tab = new Tab();
-                tab.setContent(newUserTab);
+                tab.setContent(myPiTab);
                 tab.setText("Mes Points d'interets");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
