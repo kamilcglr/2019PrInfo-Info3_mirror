@@ -47,14 +47,15 @@
     -fx-stroke: -gray;
     -fx-background-color: -gray;
 }
-
+#header{
+    -fx-background-color: -white;
+}
 /*
 * Image
 */
 #profileImageBox {
     -fx-border-radius: 50%;
     -fx-border-color: -grey-dark;
-
 }
 
 /*
