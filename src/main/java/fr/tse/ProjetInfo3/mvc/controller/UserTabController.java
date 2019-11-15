@@ -12,16 +12,22 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +64,8 @@ public class UserTabController {
     @FXML
     private JFXSpinner progressIndicator;
 
+    @FXML
+    private Pane thirdpane;
     /*
      * We will populate this fields/labels by the result of search
      */
@@ -76,11 +84,10 @@ public class UserTabController {
     @FXML
     private JFXListView listHashtags;
     @FXML
-    private ImageView profilepicture;
+    private Circle avatar;
     @FXML
-    private Circle circle;
-    @FXML
-    private Pane thirdpane;
+    private ImageView profileImageView;
+    private Image profileImage;
 
     /**************************************************************/
 
@@ -90,10 +97,10 @@ public class UserTabController {
     }
 
     /*
-    * Set the user of the page
-    * Prints User simple infos (name, id...)
-    * Prints top #
-    * */
+     * Set the user of the page
+     * Prints User simple infos (name, id...)
+     * Prints top #
+     * */
     public void setUserViewer(UserViewer userViewer) {
         this.userViewer = userViewer;
         userToPrint = userViewer.getUser();
@@ -105,10 +112,11 @@ public class UserTabController {
             nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
-//            Image image = new Image(userToPrint.getProfile_image_url_https(), true);
-            profilepicture.setImage(new Image(userToPrint.getProfile_image_url_https(), true));
-//            SetProfilePicture(image);
-
+            buildPicture();
+            //Image profilePic = new Image(userToPrint.getProfile_image_url_https());
+            //profileImageView.setImage(profilePic);
+            //profileImageView.setClip(avatar);
+            //avatar.setFill(new ImagePattern(profilePic));
         });
 
         Thread thread = new Thread(setTopHashtags());
@@ -116,19 +124,33 @@ public class UserTabController {
         thread.start();
     }
 
-//    @FXML
-//    private void SetProfilePicture(Image image){
-//        profilepicture.setClip(circle);
-//        thirdpane.getChildren().add(profilepicture);
-//        }
-
-
     @FXML
     private void initialize() {
         //hide elements
         compareButton.setVisible(false);
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
+
+    }
+
+    //TODO
+    private String numberFormatter(long value) {
+        return Arrays.toString(String.valueOf(value).split("([0-9]{3})*$"));
+    }
+
+    /*
+    * Draws the profile picture after rounding it.
+    * */
+    private void buildPicture() {
+        Image profilePic = new Image(userToPrint.getProfile_image_url_https());
+        profileImageView.setImage(profilePic);
+        Circle clip = new Circle(67,67,67);
+        profileImageView.setClip(clip);
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = profileImageView.snapshot(parameters, null);
+        profileImageView.setClip(null);
+        profileImageView.setImage(image);
 
     }
 

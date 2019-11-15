@@ -5,46 +5,57 @@
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
 }
 
 #username {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 30;
+    -fx-font-family: 'Raleway ', sans-serif;
+    -fx-font-size: 25;
     -fx-text-fill: -gray;
 }
 
 #description {
-    -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 12;
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-size: 15;
     -fx-text-fill: -grey-dark;
     /*-fx-border-width: 1px;*/
     /*-fx-border-color: -grey-dark;*/
 }
 
 .tweetLabels {
-    -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 15;
-    -fx-text-fill: -grey-dark;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
 }
 
 .tweetnumberLabels {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 20;
     -fx-text-fill: -grey-dark;
 }
 
 #progressIndicator .arc {
     -fx-stroke: -accent;
 }
+
 /*
 * Header
 */
+#headerborder {
+    -fx-stroke-width: 3;
+    -fx-fill: -gray;
+    -fx-stroke: -gray;
+    -fx-background-color: -gray;
+}
 
-.headerborder{
-    -fx-border-style: none none solid none;
-    -fx-border-width: 0 0 3 0;
+/*
+* Image
+*/
+#profileImageBox {
+    -fx-border-radius: 50%;
     -fx-border-color: -grey-dark;
 
+}
 
 /*
 * Buttons & Icons
@@ -64,7 +75,7 @@
 }
 
 .TitleListviewLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
@@ -103,17 +114,6 @@
 .titled-pane > .title > .arrow-button .arrow {
     -fx-background-color: -primary
 }
-
-/*
-* Image
-*/
-
-#pictureBox{
-    -fx-border-width: 4px;
-    /*-fx-border-radius: 15;*/
-    -fx-border-color: -primary;
-}
-
 
 /*
 * List of hastags

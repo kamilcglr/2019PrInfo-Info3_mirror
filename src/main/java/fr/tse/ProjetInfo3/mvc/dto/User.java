@@ -213,7 +213,8 @@ public class User {
     }
 
     public String getProfile_banner_url() {
-        return profile_banner_url;
+
+        return profile_banner_url.;
     }
 
     public void setProfile_banner_url(String profile_banner_url) {
@@ -221,7 +222,8 @@ public class User {
     }
 
     public String getProfile_image_url_https() {
-        return profile_image_url_https.substring(0,profile_image_url_https.length()-11)+ ".jpg";  //We want the original picture not the mini version
+        //We want the original picture, so we susbtract the _normal.jpg
+        return profile_image_url_https.replace("_normal","");
     }
 
     public void setProfile_image_url_https(String profile_image_url_https) {
