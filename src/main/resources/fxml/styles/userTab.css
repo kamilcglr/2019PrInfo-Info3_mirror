@@ -88,11 +88,11 @@
 /*
 * Accordion TODO add radius on titled pane
 */
-.accordion > .titled-pane {
+.titled-pane {
     -fx-padding: 0 0 1em 0;
 }
 
-.accordion > .titled-pane > .title {
+.titled-pane > .title {
     -fx-background-radius: 10pt;
     -fx-background-color: -white;
     -fx-font-family: 'Raleway Bold', sans-serif;
@@ -100,11 +100,11 @@
     -fx-text-fill: -primary;
 }
 
-.accordion > .titled-pane > .title > .text {
+.titled-pane > .title > .text {
     -fx-fill: -primary;
 }
 
-.accordion > .titled-pane > *.content {
+.titled-pane > *.content {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
     -fx-background-color: WHITE;

@@ -6,7 +6,6 @@
 <?import com.jfoenix.controls.JFXToggleNode?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
@@ -17,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -96,20 +96,6 @@
                                         <Label fx:id="tweetsLabel" styleClass="tweetLabels" text="Tweets" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                                         <Label fx:id="followersLabel" styleClass="tweetLabels" text="Followers" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                                         <Label fx:id="followingsLabel" styleClass="tweetLabels" text="Followings" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                              <Accordion fx:id="topHashtagAccordion" styleClass="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
-                                <panes>
-                                  <TitledPane animated="false" text="# les plus utilisés">
-                                       <content>
-                                          <JFXListView fx:id="listHashtags" focusTraversable="false" />
-                                       </content>
-                                  </TitledPane>
-                                  <TitledPane animated="false" text="Top 5 des tweets">
-                                       <content>
-                                          <JFXListView fx:id="listTweets" />
-                                       </content>
-                                    </TitledPane>
-                                </panes>
-                              </Accordion>
                               <JFXSpinner fx:id="progressIndicator" maxHeight="35.0" maxWidth="35.0" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                               <Line fx:id="headerborder" endX="5000.0" endY="0.7928932309150696" startX="-1.0" GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" />
                               <HBox fx:id="profileImageBox" maxHeight="136.0" maxWidth="136.0" minHeight="136.0" minWidth="136.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
@@ -117,6 +103,20 @@
                                     <ImageView fx:id="profileImageView" fitHeight="134.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
                               </HBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                                 <children>
+                                  <TitledPane fx:id="titledHashtag" animated="false" expanded="false" text="# les plus utilisés">
+                                       <content>
+                                          <JFXListView fx:id="listHashtags" focusTraversable="false" />
+                                       </content>
+                                  </TitledPane>
+                                  <TitledPane animated="false" expanded="false" text="Top 5 des tweets">
+                                       <content>
+                                          <JFXListView fx:id="listTweets" />
+                                       </content>
+                                    </TitledPane>
+                                 </children>
+                              </VBox>
 
                                     </children>
                                 </GridPane>
