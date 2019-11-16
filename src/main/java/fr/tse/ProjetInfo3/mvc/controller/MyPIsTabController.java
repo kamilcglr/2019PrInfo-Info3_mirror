@@ -2,6 +2,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.io.FileInputStream;
 import java.net.URL;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -17,6 +19,7 @@ import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,6 +31,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
+/**
+ * @author ALAMI IDRISSI Taha
+ * Controller of the List PI window, all user interactions whith the LIST PI windows (not the tabs) are handled here
+ * 
+ */
 public class MyPIsTabController extends ListView<String> implements Initializable {
     private MainController mainController;
     
@@ -55,12 +63,34 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 		
 		for(InterestPoint interestPoint : ip.getInterestPoints()) {
 			for(User us : interestPoint.getUsers()) {
-				listPI.getItems().add(us.getName());
+				for(Hashtag hash : interestPoint.getHashtags()) {
+					try {
+						listPI.getItems().add(interestPoint.getTitle()+"\t "+us.getDate()+"\n"+"@"+us.getName()+" "+hash.getHashtag());
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
-			
 		}
 		
+		editPI.setOnAction(e -> editButtonClicked());
+		
 	}
+	
+	
+
+	private void editButtonClicked() {
+		//InterestPoint ip = new InterestPoint();
+		String message = "";
+		ObservableList<String> ips = listPI.getSelectionModel().getSelectedItems();
+		for(String s : ips) {
+			message +=s+"\n";
+		}
+		System.out.println(message);
+		mainController.goToEditPiPane(message);
+	}
+
 
 	@FXML
 	private void load(ActionEvent event) {
@@ -81,8 +111,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 	
 	@FXML
     void editPIPressed(ActionEvent event) {
-		// will go to the edit Pi class
-		System.out.println("Class edit PI");
+		//mainController.goToEditPiPane();
     }
 	
 	public InterestPoint initializeListOfInterestPoints() {
@@ -96,9 +125,9 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 		List<User> users = new ArrayList<>();
         RequestManager requestManager = new RequestManager();
 		User trump = requestManager.getUser("realdonaldtrump");
-		User sob = requestManager.getUser("SobunUng");
+		User macron = requestManager.getUser("EmmanuelMacron");
 		users.add(trump);
-		users.add(sob);
+		users.add(macron);
 		InterestPoint ip = new InterestPoint(hashtags, users,"Politique");
 		List<InterestPoint> interestPoints = new ArrayList<InterestPoint>();
 		interestPoints.add(ip);
