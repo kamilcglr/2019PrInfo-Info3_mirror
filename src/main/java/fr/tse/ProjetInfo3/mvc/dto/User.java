@@ -1,6 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author kamilcaglar
@@ -199,7 +203,12 @@ public class User {
     public long getStatuses_count() {
         return statuses_count;
     }
-
+    
+    public Date getDate() throws ParseException {
+    	SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM d HH:mm:ss z yyyy", Locale.UK );
+    	Date d = dateFormat.parse(this.getCreated_at());
+    	return d;
+    }
     public void setStatuses_count(long statuses_count) {
         this.statuses_count = statuses_count;
     }
