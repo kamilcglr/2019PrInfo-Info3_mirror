@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Hashtag {
 	private String hashtag;
+
 	private List<Tweet> tweets;
 
 

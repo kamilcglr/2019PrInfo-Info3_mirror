@@ -5,32 +5,58 @@
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
 }
 
 #username {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 30;
+    -fx-font-family: 'Raleway ', sans-serif;
+    -fx-font-size: 25;
     -fx-text-fill: -gray;
 }
 
 #description {
-    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-family: 'Roboto Light', sans-serif;
     -fx-font-size: 15;
     -fx-text-fill: -grey-dark;
+    /*-fx-border-width: 1px;*/
+    /*-fx-border-color: -grey-dark;*/
 }
 
 .tweetLabels {
-    -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 15;
-    -fx-text-fill: -grey-dark;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
 }
 
 .tweetnumberLabels {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 20;
     -fx-text-fill: -grey-dark;
 }
 
+#progressIndicator .arc {
+    -fx-stroke: -accent;
+}
+
+/*
+* Header
+*/
+#headerborder {
+    -fx-stroke-width: 3;
+    -fx-fill: -gray;
+    -fx-stroke: -gray;
+    -fx-background-color: -gray;
+}
+#header{
+    -fx-background-color: -white;
+}
+/*
+* Image
+*/
+#profileImageBox {
+    -fx-border-radius: 50%;
+    -fx-border-color: -grey-dark;
+}
 
 /*
 * Buttons & Icons
@@ -49,9 +75,8 @@
     -fx-background-color: white;
 }
 
-
 .TitleListviewLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
@@ -65,24 +90,26 @@
 */
 .accordion > .titled-pane {
     -fx-padding: 0 0 1em 0;
-    -fx-border-radius: 10%;
-    -fx-background-radius: 10%;
 }
 
-.accordion > .titled-pane > .tittle {
-    -fx-border-radius: 15pt;
-    -fx-background-radius: 15pt;
-}
-
-.accordion .titled-pane > .title {
+.accordion > .titled-pane > .title {
+    -fx-background-radius: 10pt;
     -fx-background-color: -white;
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
 
-.titled-pane > .title > .text {
+.accordion > .titled-pane > .title > .text {
     -fx-fill: -primary;
+}
+
+.accordion > .titled-pane > *.content {
+    -fx-background-radius: 10pt;
+    -fx-border-radius: 10pt;
+    -fx-background-color: WHITE;
+    -fx-text-fill: -primary;
+    -fx-border-style: hidden;
 }
 
 .titled-pane > .title > .arrow-button .arrow {
@@ -90,15 +117,17 @@
 }
 
 /*
-* Image
+* List of hastags
 */
-#profilepicture {
-
+#listHashtags {
+    -fx-background-radius: 10 10 10 10px;
+    -fx-padding: 0 10 0 10;
+    -fx-font-size: 15;
+    -fx-font-family: Roboto;
+    -fx-background-color: WHITE;
+    -fx-border-style: hidden;
 }
 
-#pictureBox {
-    -fx-border-color: -primary;
-    -fx-border-style: solid;
-    -fx-border-width: 1;
-
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: WHITE;
 }
