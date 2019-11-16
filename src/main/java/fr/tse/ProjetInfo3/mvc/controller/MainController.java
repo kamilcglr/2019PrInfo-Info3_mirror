@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTabPane;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
@@ -37,6 +38,9 @@ public class MainController {
     @FXML
     private HashtagTabController hashtagTabController;
     @FXML
+    private MyPIsTabController myPIsTabController;
+    
+    @FXML
     private Tab userTabFromMain;
     //@FXML
     //private Tab hashtagTabFromMain;
@@ -55,6 +59,7 @@ public class MainController {
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
+
         //hashtagTabController.injectMainController(this);
     }
 
@@ -104,6 +109,25 @@ public class MainController {
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
             });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+
+	public void goToEditPiPane(String message) {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabEdit.fxml"));
+        try {
+            AnchorPane editPiTab = fxmlLoader.load();
+            PiTabController piTabController = fxmlLoader.getController();
+            piTabController.injectMainController(this);
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(editPiTab);
+                tab.setText("éditer le Point");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+          
         } catch (IOException e) {
             e.printStackTrace();
         }
