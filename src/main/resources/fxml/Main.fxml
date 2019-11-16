@@ -35,6 +35,11 @@
                         <fx:include fx:id="loginTab" source="Login.fxml"/>
                     </content>
                 </Tab>-->
+                <Tab fx:id="myPITabFromMain" text="Mes Points d'intérêt">
+                    <content>
+                        <fx:include fx:id="myPITab" source="MyPI.fxml"/>
+                    </content>
+                </Tab>
                 <StackPane.margin>
                     <Insets />
                 </StackPane.margin>
