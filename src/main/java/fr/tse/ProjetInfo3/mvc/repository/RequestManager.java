@@ -20,7 +20,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 /**
  * @author Sergiy
  * @author kamilcaglar
- * @author Taha
+ * @author TahaAlami
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...
  */
