@@ -3,8 +3,6 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -14,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="PIPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/piTabEdit.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.PiTabCreateController">
+<AnchorPane fx:id="pIPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/piTabEdit.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.PiTabCreateController">
     <children>
         <StackPane fx:id="dialogStackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -90,8 +88,8 @@
                         </ScrollPane>
                         <JFXButton fx:id="discardJFXButton" onAction="#discardJFXButtonPressed" text="Annuler" GridPane.halignment="LEFT" GridPane.rowIndex="7" />
                         <JFXButton fx:id="saveJFXButton" onAction="#saveJFXButtonPressed" text="Sauvegarder" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-                        <JFXTextField fx:id="descriptionJFXTextJield" alignment="CENTER" prefHeight="88.0" prefWidth="1200.0" promptText="Veillez entrer une description de votre Point d'Intêret" GridPane.columnSpan="4" GridPane.rowIndex="1" />
-                        <JFXTextField fx:id="creationDateJFXTextJield" alignment="CENTER" prefHeight="82.0" prefWidth="432.0" GridPane.columnIndex="3" />
+                        <JFXTextField fx:id="descriptionJFXTextField" alignment="CENTER" prefHeight="88.0" prefWidth="1200.0" promptText="Veillez entrer une description de votre Point d'Intêret" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="creationDateJFXTextField" alignment="CENTER" prefHeight="82.0" prefWidth="432.0" GridPane.columnIndex="3" />
                      </children>
                   </GridPane>
                </children>
@@ -99,7 +97,4 @@
             </children>
         </StackPane>
     </children>
-   <padding>
-      <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
-   </padding>
 </AnchorPane>

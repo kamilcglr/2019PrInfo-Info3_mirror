@@ -36,7 +36,6 @@ public class InterestPoint {
 		this.dateOfCreation = dateOfCreation;
 		this.hashtags = hashtags;
 		this.users = users;
-		
 	}
 	
 
@@ -199,5 +198,13 @@ public class InterestPoint {
 			return other.users == null;
 		} else return users.equals(other.users);
 	}
+
+	@Override
+	public String toString() {
+		return "InterestPoint [name=" + name + ", description=" + description + ", dateOfCreation=" + dateOfCreation
+				+ "]";
+	}
+	
+	
 	
 }

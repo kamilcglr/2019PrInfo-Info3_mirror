@@ -102,12 +102,16 @@ public class MainController {
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
     	try {
             AnchorPane newUserTab = fxmlLoader.load();
+            PiTabCreateController piTabCreateController = fxmlLoader.getController();
             Platform.runLater(() -> {
                 Tab tab = new Tab();
                 tab.setContent(newUserTab);
                 tab.setText("Création d'un Point d'Intêret");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
+                
+                piTabCreateController.injectTabContainer(tabPane);
+                piTabCreateController.injectTab(tab);
             });
         } catch (IOException e) {
             e.printStackTrace();
