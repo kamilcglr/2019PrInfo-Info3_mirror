@@ -1,3 +1,6 @@
+/*
+* Labels
+*/
 #questionLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 30;
@@ -34,8 +37,19 @@
     -fx-font-family: 'Raleway Medium', sans-serif;
     -fx-font-size: 20;
 }
+/*
+ * Search Bar
+ */
 
+.jfx-text-field .input-line {
+    -fx-background-color: -primary;
+}
 
+.jfx-text-field {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 25;
+}
 /*******************************************************************************
 *                                                                              *
 * JFX Snackbar     Background, button and text                                 *

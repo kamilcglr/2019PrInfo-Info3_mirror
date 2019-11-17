@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,6 +12,9 @@ import java.util.List;
  */
 
 public class InterestPoint {
+	private String name;
+	private String description;
+	private Date dateOfCreation;
 	
 	private List<Hashtag> hashtags;
 	private List<User> users;
@@ -18,7 +22,10 @@ public class InterestPoint {
 	private String title;
 	private List<InterestPoint> interestPoints;
 	
-	public InterestPoint() {
+	public InterestPoint(String name, String description, Date dateOfCreation) {
+		this.name = name;
+		this.description = description;
+		this.dateOfCreation = dateOfCreation;
 		this.hashtags = new ArrayList<Hashtag>();
 		this.users = new ArrayList<User>();
 		this.interestPoints = new ArrayList<InterestPoint>();
@@ -26,7 +33,15 @@ public class InterestPoint {
 	}
 
 	public InterestPoint(List<Hashtag> hashtags, List<User> users,String title) {
+      this.hashtags = hashtags;
+      this.users = users;
+      this.title = title;
+	}
+	public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users) {
 		super();
+		this.name = name;
+		this.description = description;
+		this.dateOfCreation = dateOfCreation;
 		this.hashtags = hashtags;
 		this.users = users;
 		this.title = title;
@@ -37,8 +52,12 @@ public class InterestPoint {
 		this.hashtags = hashtags;
 		this.title = title;
 	}
-	public InterestPoint(List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
+
+	public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
 		super();
+		this.name = name;
+		this.description = description;
+		this.dateOfCreation = dateOfCreation;
 		this.hashtags = hashtags;
 		this.users = users;
 		this.interestPoints = interestPoints;
@@ -97,8 +116,9 @@ public class InterestPoint {
 	 * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
 	 */
 
-	public boolean createInterestPoint(Hashtag hashtag, User user,String title) {
-		InterestPoint interestPoint = new InterestPoint();
+
+	public boolean createInterestPoint(Hashtag hashtag, User user, String name, String description, Date dateOfCreation) {
+		InterestPoint interestPoint = new InterestPoint(name, description, dateOfCreation);
 		// create a list of Interest of point to check (after)  if the interest point already exist
 		for(InterestPoint ip : interestPoints) {
 			if(ip.equals(interestPoint)) 
@@ -189,6 +209,11 @@ public class InterestPoint {
 
 	public List<InterestPoint> getInterestPoints() {
 		return interestPoints;
+
+	@Override
+	public String toString() {
+		return "InterestPoint [name=" + name + ", description=" + description + ", dateOfCreation=" + dateOfCreation
+				+ "]";
 	}
 	
 	
