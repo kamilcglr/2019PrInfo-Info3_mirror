@@ -195,7 +195,7 @@ public class SearchTabController {
         } else {
             progressLabel.setVisible(true);
             progressLabel.setText("Recherche en cours");
-            searchIsRunning(true);
+            //searchIsRunning(true);
             launchSearch(research, typeOfSearch);
         }
     }
@@ -270,11 +270,11 @@ public class SearchTabController {
                         //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
                     }
-                    searchIsRunning(false);
+                    //searchIsRunning(false);
                 } catch (Exception e) {
                     //Most of the time we will catch Exception from Twitter4j
                     //Stop animations
-                    searchIsRunning(false);
+                    //searchIsRunning(false);
 
                     //this is necessary to update the ui because we are in a separated thread
                     Platform.runLater(() -> {
@@ -346,6 +346,7 @@ public class SearchTabController {
      *
      * @param searching true if searching
      */
+
     private void searchIsRunning(boolean searching) {
         if (searching) {
          //   progressIndicator.setVisible(true);
@@ -358,6 +359,7 @@ public class SearchTabController {
         }
 
     }
+
 
     /**
      * Desactive or active the search field and button

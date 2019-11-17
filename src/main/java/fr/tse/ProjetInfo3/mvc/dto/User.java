@@ -245,7 +245,8 @@ public class User {
     }
 
     public String getProfile_image_url_https() {
-        return profile_image_url_https;
+        //We want the original picture, so we susbtract the _normal.jpg
+        return profile_image_url_https.replace("_normal", "");
     }
 
     public void setProfile_image_url_https(String profile_image_url_https) {
