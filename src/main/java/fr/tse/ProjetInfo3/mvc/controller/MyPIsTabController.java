@@ -1,13 +1,11 @@
-package fr.tse.ProjetInfo3.mvc.controller;
+	package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.io.FileInputStream;
 import java.net.URL;
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
@@ -15,21 +13,13 @@ import com.jfoenix.controls.JFXPopup;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -60,16 +50,17 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		InterestPoint ip = initializeListOfInterestPoints();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String spacing = "\t\t\t\t\t\t\t\t";
 		
 		for(InterestPoint interestPoint : ip.getInterestPoints()) {
 			for(User us : interestPoint.getUsers()) {
 				for(Hashtag hash : interestPoint.getHashtags()) {
-					try {
-						listPI.getItems().add(interestPoint.getTitle()+"\t "+us.getDate()+"\n"+"@"+us.getName()+" "+hash.getHashtag());
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+						try {
+							listPI.getItems().add(interestPoint.getTitle()+spacing+sdf.format(us.parseTwitterUTC())+"\n"+"@"+us.getName()+" "+hash.getHashtag());
+						} catch (ParseException e1) {
+							e1.printStackTrace();
+						}
 				}
 			}
 		}
@@ -119,15 +110,19 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 		Hashtag president = new Hashtag("#president");
 		Hashtag congres = new Hashtag("#congrés");
 		Hashtag meetup = new Hashtag("#meetup");
+		
 		hashtags.add(president);
 		hashtags.add(congres);
 		hashtags.add(meetup);
+		
 		List<User> users = new ArrayList<>();
         RequestManager requestManager = new RequestManager();
 		User trump = requestManager.getUser("realdonaldtrump");
 		User macron = requestManager.getUser("EmmanuelMacron");
+		
 		users.add(trump);
 		users.add(macron);
+		
 		InterestPoint ip = new InterestPoint(hashtags, users,"Politique");
 		List<InterestPoint> interestPoints = new ArrayList<InterestPoint>();
 		interestPoints.add(ip);
