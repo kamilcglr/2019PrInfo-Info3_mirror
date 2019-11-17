@@ -69,7 +69,7 @@ public class HashtagTabController {
             JFXListCell jfxListCell = fxmlLoader.load();
             TweetController tweetController = fxmlLoader.getController();
             tweetController.injectHashtagTabController(this);
-            tweetController.populate();
+            //tweetController.populate();
             topFiveList.getItems().add(jfxListCell);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
