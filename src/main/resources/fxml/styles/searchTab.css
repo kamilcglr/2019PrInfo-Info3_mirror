@@ -48,6 +48,7 @@
 .jfx-text-field {
     -jfx-focus-color: -accent;
     -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 25;
 }
 /*******************************************************************************
 *                                                                              *

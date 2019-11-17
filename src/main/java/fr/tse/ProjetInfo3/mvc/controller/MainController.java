@@ -1,21 +1,25 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXSnackbar;
-import com.jfoenix.controls.JFXSnackbarLayout;
-import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.*;
+import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Kamil CAGLAR
@@ -33,6 +37,13 @@ public class MainController {
     @FXML
     private StackPane stackPane;
     @FXML
+    private JFXDrawer drawer;
+    @FXML
+    private JFXHamburger hamburger;
+    /*
+    * Controllers
+    * */
+    @FXML
     private SearchTabController searchTabController;
     @FXML
     private PiTabController piTabController;
@@ -43,9 +54,12 @@ public class MainController {
     @FXML
     private MyPIController myPIController;
     @FXML
-    private Tab userTabFromMain;
+    private ToolBarController toolBarController;
+
     //@FXML
     //private Tab hashtagTabFromMain;
+    @FXML
+    private Tab userTabFromMain;
     @FXML
     private Tab piTabEditFromMain;
     @FXML
@@ -69,7 +83,39 @@ public class MainController {
         //hashtagTabController.injectMainController(this);
         //myPIController.injectMainController(this);
         
-        goToPICreatePane();
+        //goToPICreatePane();
+
+        initDrawer();
+    }
+
+    /**
+     * Contains the toolbar on the right
+     */
+    private void initDrawer() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ToolBar.fxml"));
+            VBox toolbar = loader.load();
+            drawer.setSidePane(toolbar);
+            ToolBarController toolBarController = loader.getController();
+            toolBarController.injectMainController(this);
+        } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        HamburgerSlideCloseTransition task = new HamburgerSlideCloseTransition(hamburger);
+        task.setRate(-1);
+        hamburger.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event event) -> {
+            drawer.toggle();
+        });
+        drawer.setOnDrawerOpening((event) -> {
+            task.setRate(task.getRate() * -1);
+            task.play();
+            drawer.toFront();
+        });
+        drawer.setOnDrawerClosed((event) -> {
+            drawer.toBack();
+            task.setRate(task.getRate() * -1);
+            task.play();
+        });
     }
 
     /**
@@ -136,6 +182,11 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void goToHome(){
+        tabPane.getSelectionModel().select(searchTabFromMain);
+        drawer.close();
     }
 }
 

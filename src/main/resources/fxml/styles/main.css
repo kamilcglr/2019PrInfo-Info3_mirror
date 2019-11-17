@@ -34,6 +34,51 @@
     -fx-background-color: -main-bg-color;
 }
 
+.jfx-tab-pane {
+    -fx-background-color: -main-bg-color;
+}
+
+
+/*******************************************************************************
+*                                                                              *
+* Hamburger and toolbar styling                                                *
+*                                                                              *
+*******************************************************************************/
+/*Hamburger Styling*/
+.jfx-hamburger-icon {
+    -fx-spacing: 7;
+}
+.jfx-hamburger {
+    -fx-background-color: transparent;
+}
+
+.jfx-hamburger StackPane {
+    -fx-background-color: -accent;
+}
+.jfx-hamburger-icon StackPane {
+    -fx-background-color: -accent;
+    -fx-background-radius: 5px;
+}
+
+/*Toolbar buttons*/
+.toolbar-button
+{
+    -fx-border-color: transparent;
+    -fx-background-color: derive(-accent, 10%);
+    -fx-background-radius: 0px;
+    -fx-border-radius: 0px;
+}
+.toolbar-button:hover
+{
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+}
+
+.toolbar-button:hover .toolbar-button-icon, .toolbar-button:hover .toolbar-button-icon
+{
+    -fx-fill: white;
+}
+
 /*******************************************************************************
 *                                                                              *
 * JFX Decorator     Border of the window in material design                                                           *
@@ -70,10 +115,12 @@
  *                                                                             *
  ******************************************************************************/
 
+
+/* Breaking change ! remove default font everywhere
 .jfx-tab-pane {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 25;
-}
+}*/
 
 .jfx-tab-pane .tab-header-background {
     -fx-background-color: -primary;
@@ -88,6 +135,7 @@
 .jfx-tab-pane .headers-region .tab {
     -fx-border-style: hidden;
 }
+
 /*Correct border on closable tabs*/
 .jfx-tab-pane .headers-region .tab .tab-container .tab-label {
     -fx-padding: 6 10 6 10;
@@ -128,12 +176,12 @@
     -fx-background-color: transparent;
 }
 
-/*ok but background */
+/*TODO  background */
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track {
     /*-fx-background-color: -main-bg-color;
     -fx-border-color: -main-bg-color;*/
-    -fx-background-color: transparent;
+    -fx-background-color: transparent!important;
     -fx-background-radius: 0.0em;
     -fx-border-radius: 2.0em;
 }

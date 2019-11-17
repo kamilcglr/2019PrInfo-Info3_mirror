@@ -131,8 +131,8 @@
             </stylesheets>
         </StackPane>
     </children>
-    <stylesheets>
-        <URL value="@styles/userTab.css" />
-        <URL value="@styles/main.css" />
-    </stylesheets>
+   <stylesheets>
+      <URL value="@styles/main.css" />
+      <URL value="@styles/userTab.css" />
+   </stylesheets>
 </AnchorPane>
