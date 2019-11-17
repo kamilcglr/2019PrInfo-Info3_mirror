@@ -204,11 +204,17 @@ public class User {
         return statuses_count;
     }
     
-    public Date getDate() throws ParseException {
-    	SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM d HH:mm:ss z yyyy", Locale.UK );
-    	Date d = dateFormat.parse(this.getCreated_at());
-    	return d;
-    }
+    public  Date parseTwitterUTC() 
+    		throws ParseException {
+    	
+    	 	String twitterFormat="EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+
+    	 	// Important note. Only ENGLISH Locale works.
+    		SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+    		sf.setLenient(true);
+
+    	  	return sf.parse(this.getCreated_at());
+    	}
     public void setStatuses_count(long statuses_count) {
         this.statuses_count = statuses_count;
     }
