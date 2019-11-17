@@ -25,6 +25,7 @@ import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -111,6 +112,8 @@ public class SearchTabController {
                     } else if (userToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
                             searchField.setText("@" + new_value);
+                            listt.getItems().clear();
+                            showPropositionList(new_value);    
                         }
                     }
                 }
@@ -197,6 +200,20 @@ public class SearchTabController {
         }
     }
 
+    /**
+     * This method displays a list of propositions based on the newValue of the searchField
+     * @param newValue
+     */
+	private void showPropositionList(String newValue) {
+		  ObservableList<String> items =listt.getItems();
+      		 SearchViewer searchViewer=new SearchViewer();
+               //Here we remove the @ to make our research of propositions
+               List<String> users =searchViewer.getListPropositions(newValue);
+               //We go through the proposition list
+                 	users.forEach(use->items.add(use));
+                 //items.forEach(item->System.out.println(item));
+                 
+    }
     @FXML
     /**
      * If user pressed enter key in the search field, we call searchButtonPressed()
@@ -231,27 +248,17 @@ public class SearchTabController {
                         mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
-                        SearchViewer searchViewer=new SearchViewer();
-                        //Here we remove the @ to make our research of propositions
-                        List<String> users =searchViewer.getListPropositions(research.substring(1));
-                        //We go through the proposition list
-                        for(String user : users) {
-                        	//if we find the exact name in the list 
-                        	//we show the user's tab
-                        	if(user.equals(research.substring(1))) {
-                        		UserViewer userViewer = new UserViewer();
-                                userViewer.searchScreenName(research);
-                           	 	mainController.goToUserPane(userViewer);
-                           	 	}
-                        	//if not we show the proposition list 
-                           	 else {
-                           	  ObservableList<String> items =listt.getItems();
-                          	users.forEach(use->items.add(use));
-                          items.forEach(item->System.out.println(item));
-                           	 }
-                        	}
+                    	//we add a listener to searchField so that eachtime we change the searchField we get a new proposition list
+                    	searchField.textProperty().addListener(
+                                (observable, old_value, new_value) -> {
+                                	//we clear the old list of propositions to avoid adding items to the end of the list each time
+                                	listt.getItems().clear();
+                                	if(new_value.length()>2)
+                                	showPropositionList(new_value.substring(1));
+                                });
                         //We get the user we chose from the list
                         String newResearch=listt.getSelectionModel().getSelectedItem();
+                        //we search the user and go to the user tab
                         if(newResearch != null) {
                         	 UserViewer userViewer = new UserViewer();
                              userViewer.searchScreenName(newResearch);

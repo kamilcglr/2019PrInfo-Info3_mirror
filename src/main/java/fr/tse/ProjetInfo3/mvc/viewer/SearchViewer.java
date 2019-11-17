@@ -9,6 +9,15 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.collections.ObservableList;
 
+
+
+/**
+ * @author Laïla
+ *
+ */
+
+
+
 public class SearchViewer {
     private User user;
     private RequestManager requestManager;
@@ -19,12 +28,13 @@ public class SearchViewer {
         requestManager = new RequestManager();
 
     }
-    
+    /**
+     * This method gets the list of propositions based on a String, and use the method of the RequestManager class
+     * @param userProposition
+     * @return users :list of propositions
+     */
     public List<String> getListPropositions(String userProposition) {
-        //ObservableList<String> items =listView.getItems();;
     	List<String> users= requestManager.getUsersbyName(userProposition);
-    	//users.forEach(user->items.add(user));
-    	//items.forEach(item->System.out.println(item));
     	return users;
     	    }
     

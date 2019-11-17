@@ -221,7 +221,7 @@ public class RequestManager {
 		try {
 			response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-			System.out.println(response.body());
+			//System.out.println(response.body());
 			if (response.body().contains("code\":50")) {
 				throw new RequestManagerException("Unknown user");
 			}
@@ -265,7 +265,9 @@ public class RequestManager {
 			super(errorMessage);
 		}
 	}
-
+	/**
+	 * @author Laïla Class for OAuth
+	 */
 	public class OAuthSample {
 		private OAuthConfig oauthConfig;
 		private OAuthSignature signature;
