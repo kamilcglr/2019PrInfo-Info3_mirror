@@ -5,14 +5,17 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import com.jfoenix.controls.JFXSnackbar;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ListView;
+//import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -22,6 +25,8 @@ import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -76,6 +81,9 @@ public class SearchTabController {
     private JFXButton signinButton;
 
     private String research;
+    
+    @FXML
+    private ListView<String> listt;
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -104,6 +112,8 @@ public class SearchTabController {
                     } else if (userToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
                             searchField.setText("@" + new_value);
+                            listt.getItems().clear();
+                            showPropositionList(new_value);    
                         }
                     }
                 }
@@ -190,6 +200,20 @@ public class SearchTabController {
         }
     }
 
+    /**
+     * This method displays a list of propositions based on the newValue of the searchField
+     * @param newValue
+     */
+	private void showPropositionList(String newValue) {
+		  ObservableList<String> items =listt.getItems();
+      		 SearchViewer searchViewer=new SearchViewer();
+               //Here we remove the @ to make our research of propositions
+               List<String> users =searchViewer.getListPropositions(newValue);
+               //We go through the proposition list
+                 	users.forEach(use->items.add(use));
+                 //items.forEach(item->System.out.println(item));
+                 
+    }
     @FXML
     /**
      * If user pressed enter key in the search field, we call searchButtonPressed()
@@ -224,12 +248,27 @@ public class SearchTabController {
                         mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
-                        UserViewer userViewer = new UserViewer();
-                        userViewer.searchScreenName(research);
-
+                    	//we add a listener to searchField so that eachtime we change the searchField we get a new proposition list
+                    	searchField.textProperty().addListener(
+                                (observable, old_value, new_value) -> {
+                                	//we clear the old list of propositions to avoid adding items to the end of the list each time
+                                	listt.getItems().clear();
+                                	if(new_value.length()>2)
+                                	showPropositionList(new_value.substring(1));
+                                });
+                        //We get the user we chose from the list
+                        String newResearch=listt.getSelectionModel().getSelectedItem();
+                        //we search the user and go to the user tab
+                        if(newResearch != null) {
+                        	 UserViewer userViewer = new UserViewer();
+                             userViewer.searchScreenName(newResearch);
+                        	 	mainController.goToUserPane(userViewer);
+                        }
+                        //then we launch the research
+                       
+                        
                         //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane(userViewer);
                     }
                     //searchIsRunning(false);
                 } catch (Exception e) {
@@ -260,6 +299,13 @@ public class SearchTabController {
         thread.start();
     }
 
+    /**
+     * Search for user's propositions
+     * 
+     * 
+     */
+   
+    
     /**
      * Launch dialog to inform the user
      *
@@ -300,18 +346,20 @@ public class SearchTabController {
      *
      * @param searching true if searching
      */
-//    private void searchIsRunning(boolean searching) {
-//        if (searching) {
-//            progressIndicator.setVisible(true);
-//            searchButton.setVisible(false);
-//            activateField(false, false);
-//        } else {
-//            progressIndicator.setVisible(false);
-//            searchButton.setVisible(true);
-//            activateField(true, false);
-//        }
-//
-//    }
+
+    private void searchIsRunning(boolean searching) {
+        if (searching) {
+         //   progressIndicator.setVisible(true);
+            searchButton.setVisible(false);
+            activateField(false, false);
+        } else {
+           // progressIndicator.setVisible(false);
+            searchButton.setVisible(true);
+            activateField(true, false);
+        }
+
+    }
+
 
     /**
      * Desactive or active the search field and button

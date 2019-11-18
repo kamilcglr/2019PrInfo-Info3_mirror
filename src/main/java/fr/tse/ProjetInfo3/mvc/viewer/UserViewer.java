@@ -46,6 +46,7 @@ public class UserViewer {
     public User getUser() {
         return user;
     }
+    
 
     public Map<String, Integer> topHashtag(List<Tweet> tweetList) {
         Map<String, Integer> hashtagUsedSorted;

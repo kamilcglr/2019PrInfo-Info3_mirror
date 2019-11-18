@@ -1,8 +1,26 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mgiorda.oauth.HttpMethod;
+import com.mgiorda.oauth.OAuthConfig;
+import com.mgiorda.oauth.OAuthConfigBuilder;
+import com.mgiorda.oauth.OAuthSignature;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
@@ -20,6 +38,7 @@ import java.util.stream.Collectors;
  * @author Sergiy
  * @author Kamil CAGLAR
  * @author Taha
+ * @author Laïla
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...
  */
@@ -171,7 +190,39 @@ public class RequestManager {
         }
         return tweets;
     }
+  
+	public List<String> getUsersbyName(String userProposition) {
+		OAuthSample oAuthSample = new OAuthSample();
+		String url = "https://api.twitter.com/1.1/users/search.json?q="+userProposition;
+		HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
+				.setHeader("Authorization", oAuthSample.getheader(url)).build();
+		HttpResponse<String> response = null;
+		// Create a list of users
+		List<User> users = new ArrayList<>();
+		try {
+			response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
+			//System.out.println(response.body());
+			if (response.body().contains("code\":50")) {
+				throw new RequestManagerException("Unknown user");
+			}
+			Gson gson = new GsonBuilder().setPrettyPrinting() // human-readable json
+					.setLenient().create();
+			Type userListType = new TypeToken<ArrayList<User>>() {
+			}.getType();
+			users = gson.fromJson(response.body(), userListType);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (response.body().contains("code\":50")) {
+				throw new RequestManagerException("Unknown user");
+			}
+		}
+		List<String> userNames=new ArrayList<>();
+		users.forEach(user->userNames.add(user.getScreen_name()));
+		return userNames;
+
+	}
     public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
         int tentatives = 0;
@@ -315,5 +366,32 @@ public class RequestManager {
             super(errorMessage);
         }
     }
+	/**
+	 * @author Laïla Class for OAuth
+	 */
+	public class OAuthSample {
+		private OAuthConfig oauthConfig;
+		private OAuthSignature signature;
+
+		public String getheader(String url) {
+			oauthConfig = new OAuthConfigBuilder("PahWHDFSZ02bTaqFUVamZ0iBI",
+					"mGDqU2cwWrw85cMvj7YOBSczI8qZQM0IKKymdbRL82sXqtyhhr")
+							.setTokenKeys("4664421557-y8N6WL3BVrhBTIfuzZcHqRmNZeGDkt0TbAFoz9g",
+									"riGJEs4QhZWjOgQyQJY4jQJM8nCRnsfHisU1Vnq1VpDiv")
+							.build();
+
+			signature = oauthConfig.buildSignature(HttpMethod.GET, url).create();
+
+			try {
+				System.out.println(signature.getAsHeader());
+				return signature.getAsHeader().replace(signature.getSignature(),
+						URLEncoder.encode(signature.getSignature(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+	}
 
 }
