@@ -9,47 +9,62 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="myPIsPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.MyPIsTabController">
+<AnchorPane fx:id="myPIsPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.MyPIsTabController">
     <children>
-        <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane fx:id="anchorPane">
-                    
+
                 </AnchorPane>
-            <GridPane prefHeight="200.0" prefWidth="200.0">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="300.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <JFXListView fx:id="listPI" prefHeight="347.0" prefWidth="646.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                  <Label alignment="CENTER" text="Mes points d'intérêt" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
-                  <JFXButton fx:id="addPI" onAction="#addPIPressed" text="Ajouter" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                  <JFXButton fx:id="editPI" alignment="TOP_RIGHT" onAction="#editPIPressed" text="Editer" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-               </children>
-            </GridPane>
+                <GridPane prefHeight="200.0" prefWidth="200.0">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="200.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints minWidth="200.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="300.0" vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <JFXListView fx:id="listPI" prefHeight="347.0" prefWidth="646.0" GridPane.columnIndex="1"
+                                     GridPane.columnSpan="4" GridPane.rowIndex="2"/>
+                        <Label fx:id="titleLabel" alignment="CENTER" text="Mes points d'intérêts"
+                               GridPane.columnSpan="3" GridPane.halignment="LEFT"/>
+                        <JFXButton fx:id="addPI" onAction="#addPIPressed" text="Ajouter" GridPane.columnIndex="4"
+                                   GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-plus" styleClass="icon"/>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="editPI" alignment="TOP_RIGHT" onAction="#editPIPressed" text="Editer"
+                                   GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="4"
+                                   GridPane.valignment="CENTER">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-edit" styleClass="icon"/>
+                            </graphic>
+                        </JFXButton>
+                    </children>
+                </GridPane>
             </children>
-         <stylesheets>
-            <URL value="@styles/myPIsTab.css" />
-            <URL value="@styles/main.css" />
-         </stylesheets>
+            <stylesheets>
+                <URL value="@styles/myPIsTab.css"/>
+                <URL value="@styles/main.css"/>
+            </stylesheets>
         </StackPane>
     </children>
     <stylesheets>
-       <URL value="@styles/myPIsTab.css" />
-        <URL value="@styles/main.css" />
+        <URL value="@styles/myPIsTab.css"/>
+        <URL value="@styles/main.css"/>
     </stylesheets>
 </AnchorPane>

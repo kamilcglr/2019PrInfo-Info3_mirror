@@ -11,14 +11,14 @@
                 <FontIcon iconLiteral="fas-home" iconSize="32" styleClass="toolbar-button-icon" />
             </graphic>
         </JFXButton>
-        <JFXButton contentDisplay="TOP" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Favoris" textAlignment="CENTER">
-            <graphic>
-                <FontIcon iconLiteral="fas-heart" iconSize="32" styleClass="toolbar-button-icon" />
-            </graphic>
-        </JFXButton>
-        <JFXButton contentDisplay="TOP" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Points d'intérêts" textAlignment="CENTER" wrapText="true">
+        <JFXButton fx:id="piButton" contentDisplay="TOP" onAction="#piButtonPressed" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Points d'intérêts" textAlignment="CENTER" wrapText="true">
             <graphic>
                 <FontIcon iconLiteral="fas-map-marker-alt" iconSize="32" styleClass="toolbar-button-icon" />
+            </graphic>
+        </JFXButton>
+        <JFXButton fx:id="favoriteButton" contentDisplay="TOP" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Favoris" textAlignment="CENTER">
+            <graphic>
+                <FontIcon iconLiteral="fas-heart" iconSize="32" styleClass="toolbar-button-icon" />
             </graphic>
         </JFXButton>
 

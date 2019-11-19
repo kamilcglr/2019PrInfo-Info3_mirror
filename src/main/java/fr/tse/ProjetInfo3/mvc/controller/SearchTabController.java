@@ -26,8 +26,6 @@ import org.kordamp.ikonli.javafx.Icon;
 
 import java.util.List;
 
-//import javafx.scene.control.ProgressIndicator;
-
 
 /**
  * @author Kamil CAGLAR
@@ -69,8 +67,8 @@ public class SearchTabController {
     private JFXButton searchButton;
 
 
-    //@FXML
-    //private JFXSpinner progressIndicator;
+   @FXML
+   private JFXSpinner progressIndicator;
 
     @FXML
     private Label progressLabel;
@@ -104,7 +102,7 @@ public class SearchTabController {
         activateField(false, true);
         propositionList.setVisible(false);
         propositionProgressBar.setVisible(false);
-        //progressIndicator.setVisible(false);
+        progressIndicator.setVisible(false);
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
@@ -370,11 +368,11 @@ public class SearchTabController {
      */
     private void searchIsRunning(boolean searching) {
         if (searching) {
-            //   progressIndicator.setVisible(true);
+            progressIndicator.setVisible(true);
             searchButton.setVisible(false);
             activateField(false, false);
         } else {
-            // progressIndicator.setVisible(false);
+            progressIndicator.setVisible(false);
             searchButton.setVisible(true);
             activateField(true, false);
         }
@@ -400,10 +398,4 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
-    
-    @FXML
-    private void myPibuttonPressed(ActionEvent event) {
-    	mainController.goToMyPisPane();
-    }
-
 }
