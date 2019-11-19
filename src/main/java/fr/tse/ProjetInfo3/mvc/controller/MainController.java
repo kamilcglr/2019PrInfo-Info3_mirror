@@ -3,19 +3,17 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
-import javafx.collections.ObservableList;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
-import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -83,11 +81,12 @@ public class MainController {
      */
     private PIViewer piViewer;
 
+    private Tab myPisTab;
+
     /*This function is launched when Mainwindow is launched */
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
-
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -180,21 +179,34 @@ public class MainController {
 
 
     public void goToMyPisPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
-        try {
-            AnchorPane myPiTab = fxmlLoader.load();
-            MyPIsTabController myPisTabController = fxmlLoader.getController();
-            myPisTabController.injectMainController(this);
+        if (myPisTab == null) { //the tab is not initialised/charged in memory
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
+            try {
+                AnchorPane myPiTab = fxmlLoader.load();
+                MyPIsTabController myPisTabController = fxmlLoader.getController();
+                myPisTabController.injectMainController(this);
+                Platform.runLater(() -> {
+                    myPisTab = new Tab();
+                    myPisTab.setContent(myPiTab);
+                    myPisTab.setText("Mes Points d'interets");
+                    tabPane.getTabs().add(myPisTab);
+                    tabPane.getSelectionModel().select(myPisTab);
+                    myPisTab.setOnClosed(new EventHandler<Event>() {
+                        @Override
+                        public void handle(Event e) {
+                            myPisTab = null;
+                        }
+                    });
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else { //the tab is already initialized
             Platform.runLater(() -> {
-                Tab tab = new Tab();
-                tab.setContent(myPiTab);
-                tab.setText("Mes Points d'interets");
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
+                tabPane.getSelectionModel().select(myPisTab);
             });
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         drawer.close();
     }
 
