@@ -1,7 +1,9 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,5 +29,11 @@ class RequestManagerTest {
         //tweets.forEach(tweet -> System.out.println(tweet.getUser()));
     }
 
+    @org.junit.jupiter.api.Test
+    void searchUsersTest() throws IOException, InterruptedException {
+        RequestManager requestManager = new RequestManager();
+        List<String> users = requestManager.getUsersbyName("donald");
+        users.forEach(user -> System.out.println(user));
+    }
 
 }
