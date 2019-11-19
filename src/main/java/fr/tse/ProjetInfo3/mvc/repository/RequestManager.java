@@ -30,8 +30,9 @@ import java.util.stream.Collectors;
 
 /**
  * @author Sergiy
+ * @author kamilcaglar
+ * @author TahaAlami
  * @author Kamil CAGLAR
- * @author Taha
  * @author Laïla
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...

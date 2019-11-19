@@ -68,6 +68,7 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
+
     //@FXML
     //private JFXSpinner progressIndicator;
 
@@ -79,6 +80,9 @@ public class SearchTabController {
 
     @FXML
     private JFXButton signinButton;
+    
+    @FXML
+    private JFXButton myPibutton;
 
     @FXML
     private ListView<String> propositionList;
@@ -376,7 +380,7 @@ public class SearchTabController {
         }
 
     }
-
+  
     /**
      * Desactive or active the search field and button
      *
@@ -396,6 +400,10 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
-
+    
+    @FXML
+    private void myPibuttonPressed(ActionEvent event) {
+    	mainController.goToMyPisPane();
+    }
 
 }

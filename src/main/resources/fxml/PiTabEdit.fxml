@@ -37,7 +37,7 @@
                     </rowConstraints>
                      <children>
                         <JFXTextField alignment="CENTER" text="Edition/Création d’un PI" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" />
-                        <JFXTextField alignment="CENTER" text="Nom du PI" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="nomPI" alignment="CENTER" text="Nom du PI" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                         <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="2" GridPane.rowSpan="5">
                           <content>
                             <AnchorPane prefHeight="200.0" prefWidth="200.0">

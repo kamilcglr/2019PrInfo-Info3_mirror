@@ -1,6 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author kamilcaglar
@@ -223,7 +227,18 @@ public class User {
     public long getStatuses_count() {
         return statuses_count;
     }
+    
+    public  Date parseTwitterUTC() 
+    		throws ParseException {
+    	
+    	 	String twitterFormat="EEE MMM dd HH:mm:ss ZZZZZ yyyy";
 
+    	 	// Important note. Only ENGLISH Locale works.
+    		SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+    		sf.setLenient(true);
+
+    	  	return sf.parse(this.getCreated_at());
+    	}
     public void setStatuses_count(long statuses_count) {
         this.statuses_count = statuses_count;
     }
