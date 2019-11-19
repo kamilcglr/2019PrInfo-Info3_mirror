@@ -2,6 +2,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
+
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -114,7 +116,7 @@ public class MainController {
         }
 	}
 
-	public void goToEditPiPane(String message) {
+	public void goToEditPiPane(InterestPoint interestPoint) {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabEdit.fxml"));
         try {
             AnchorPane editPiTab = fxmlLoader.load();
