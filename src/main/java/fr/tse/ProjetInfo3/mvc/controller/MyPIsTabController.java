@@ -38,6 +38,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     @FXML
     private JFXButton addPI;
 
+    InterestPoint ip ;
+    
     @FXML
     private JFXButton editPI;
     
@@ -49,7 +51,9 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		InterestPoint ip = initializeListOfInterestPoints();
+		// Initialisation d'un point d'interet
+		ip = initializeListOfInterestPoints();
+		// Convertion de la date en format lisible
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		String spacing = "\t\t\t\t\t\t\t\t";
 		
@@ -65,6 +69,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 			}
 		}
 		
+		
 		editPI.setOnAction(e -> editButtonClicked());
 		
 	}
@@ -72,14 +77,17 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 	
 
 	private void editButtonClicked() {
-		//InterestPoint ip = new InterestPoint();
-		String message = "";
-		ObservableList<String> ips = listPI.getSelectionModel().getSelectedItems();
-		for(String s : ips) {
-			message +=s+"\n";
+		// En cliquant sur le point d'interet de notre choix puis edit les informations de ce dernier 
+		// seront transmis via cette methode vers le mainController
+		
+		InterestPoint returnedInterestPoint= new InterestPoint();
+		for(InterestPoint i : ip.getInterestPoints()) {
+			returnedInterestPoint.setHashtags(i.getHashtags());
+			returnedInterestPoint.setTitle(i.getTitle());
+			returnedInterestPoint.setTweets(i.getTweets());
 		}
-		System.out.println(message);
-		mainController.goToEditPiPane(message);
+		
+		mainController.goToEditPiPane(returnedInterestPoint);
 	}
 
 
