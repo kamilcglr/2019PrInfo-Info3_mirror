@@ -35,9 +35,33 @@ public class User {
     /**
      * Our own attributes, they are not alimented by the API
      */
+    
+    
     private List<Tweet> listoftweets;
 
-    public List<Tweet> getListoftweets() {
+    public User(long id, String name, String screen_name, String location, String description, String url,
+			Boolean verified, long followers_count, long friends_count, long listed_count, long favourites_count,
+			long statuses_count, String created_at, String profile_banner_url, String profile_image_url_https,
+			List<Tweet> listoftweets) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.screen_name = screen_name;
+		this.location = location;
+		this.description = description;
+		this.url = url;
+		this.verified = verified;
+		this.followers_count = followers_count;
+		this.friends_count = friends_count;
+		this.listed_count = listed_count;
+		this.favourites_count = favourites_count;
+		this.statuses_count = statuses_count;
+		this.created_at = created_at;
+		this.profile_banner_url = profile_banner_url;
+		this.profile_image_url_https = profile_image_url_https;
+		this.listoftweets = listoftweets;
+	}
+	public List<Tweet> getListoftweets() {
         return listoftweets;
     }
     /* ************************************************** */
@@ -236,7 +260,8 @@ public class User {
     }
 
     public String getProfile_image_url_https() {
-        return profile_image_url_https;
+        //We want the original picture, so we susbtract the _normal.jpg
+        return profile_image_url_https.replace("_normal", "");
     }
 
     public void setProfile_image_url_https(String profile_image_url_https) {

@@ -1,3 +1,6 @@
+/*
+* Labels
+*/
 #questionLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 30;
@@ -35,6 +38,31 @@
     -fx-font-size: 20;
 }
 
+/*
+ * Search Bar
+ */
+.jfx-text-field .input-line {
+    -fx-background-color: -primary;
+}
+
+.jfx-text-field {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 25;
+}
+
+#propositionList {
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+    -fx-border-color: -accent;
+    -fx-font-family: "Roboto Medium", sans-serif;
+}
+
+.list-cell:odd, .list-cell:even {
+    -fx-background-radius: 15pt;
+    -fx-font-family: "Roboto Medium", sans-serif;
+    -fx-font-size: 15;
+}
 
 /*******************************************************************************
 *                                                                              *

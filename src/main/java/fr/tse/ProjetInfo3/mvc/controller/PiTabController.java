@@ -22,15 +22,16 @@ public class PiTabController {
     
     private MainController mainController;
     
- 	/*Controller can acces to this Tab */
+    
+    /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
     }
     
-    /*This function is launched when this tab is launched */
+    
     @FXML
     private void initialize() {
-        
+    	
     }
 }
 
