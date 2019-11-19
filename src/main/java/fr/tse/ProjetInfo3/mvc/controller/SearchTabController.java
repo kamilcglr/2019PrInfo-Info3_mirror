@@ -66,7 +66,6 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-
    @FXML
    private JFXSpinner progressIndicator;
 

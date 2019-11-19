@@ -42,6 +42,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     @FXML
     private JFXButton addPI;
 
+    InterestPoint ip ;
+    
     @FXML
     private JFXButton editPI;
 
@@ -102,7 +104,59 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         }
     }
 
-    @FXML
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// Initialisation d'un point d'interet
+		ip = initializeListOfInterestPoints();
+		// Convertion de la date en format lisible
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String spacing = "\t\t\t\t\t\t\t\t";
+		
+		for(InterestPoint interestPoint : ip.getInterestPoints()) {
+			for(User us : interestPoint.getUsers()) {
+				for(Hashtag hash : interestPoint.getHashtags()) {
+						try {
+							listPI.getItems().add(interestPoint.getTitle()+spacing+sdf.format(us.parseTwitterUTC())+"\n"+"@"+us.getName()+" "+hash.getHashtag());
+						} catch (ParseException e1) {
+							e1.printStackTrace();
+						}
+				}
+			}
+		}
+		
+		
+		editPI.setOnAction(e -> editButtonClicked());
+		
+	}
+	
+	
+
+	private void editButtonClicked() {
+		// En cliquant sur le point d'interet de notre choix puis edit les informations de ce dernier 
+		// seront transmis via cette methode vers le mainController
+		
+		InterestPoint returnedInterestPoint= new InterestPoint();
+		for(InterestPoint i : ip.getInterestPoints()) {
+			returnedInterestPoint.setHashtags(i.getHashtags());
+			returnedInterestPoint.setTitle(i.getTitle());
+			returnedInterestPoint.setTweets(i.getTweets());
+		}
+		
+		mainController.goToEditPiPane(returnedInterestPoint);
+	}
+
+
+	@FXML
+	private void load(ActionEvent event) {
+		if(!listPI.isExpanded()) {
+			listPI.setExpanded(true);
+			listPI.depthProperty().set(1);
+		}else {
+			listPI.setExpanded(false);
+			listPI.depthProperty().set(0);
+		}
+	}
+	  @FXML
     void addPIPressed(ActionEvent event) {
         //New PI, then we add true in the parameters
         mainController.goToPICreateOrEditPane(true, null);
