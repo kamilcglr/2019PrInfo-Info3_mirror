@@ -5,6 +5,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,7 +28,7 @@ class UserViewerTest {
      * TODO We have to add more unit test
      */
     @Test
-    void searchScreenName() {
+    void searchScreenName() throws IOException, InterruptedException {
         user = requestManager.getUser("realDonaldTrump");
         assertEquals(user.getScreen_name(), "realDonaldTrump");
 
