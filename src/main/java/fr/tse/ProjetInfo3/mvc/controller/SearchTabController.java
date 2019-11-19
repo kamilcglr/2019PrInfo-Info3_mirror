@@ -63,8 +63,8 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-	@FXML 
-	private JFXSpinner progressIndicator;
+    @FXML
+    private JFXSpinner progressIndicator;
 	 
     @FXML
     private Label progressLabel;
@@ -305,7 +305,7 @@ public class SearchTabController {
      */
     private void searchIsRunning(boolean searching) {
         if (searching) {
-            //progressIndicator.setVisible(true);
+            progressIndicator.setVisible(true);
             searchButton.setVisible(false);
             activateField(false, false);
         } else {
