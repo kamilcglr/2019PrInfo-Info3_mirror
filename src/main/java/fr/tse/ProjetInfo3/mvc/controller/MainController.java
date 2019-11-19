@@ -1,6 +1,8 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.collections.ObservableList;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
@@ -42,9 +44,10 @@ public class MainController {
     private JFXDrawer drawer;
     @FXML
     private JFXHamburger hamburger;
+
     /*
-    * Controllers
-    * */
+     * Controllers
+     * */
     @FXML
     private SearchTabController searchTabController;
     @FXML
@@ -55,10 +58,7 @@ public class MainController {
     private HashtagTabController hashtagTabController;
     @FXML
     private MyPIsTabController myPIsTabController;
-    
-    @FXML
-    private Tab userTabFromMain;
-  
+
     private MyPIController myPIController;
     @FXML
     private ToolBarController toolBarController;
@@ -77,21 +77,26 @@ public class MainController {
     private Tab searchTabFromMain;
     @FXML
     private Tab loginTabFromMain;
-   
-    
+
+    /*
+     * Viewers
+     */
+    private PIViewer piViewer;
+
     /*This function is launched when Mainwindow is launched */
     @FXML
     private void initialize() {
+        piViewer = new PIViewer();
+
+        //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
         /*the controller can be used in other Tabs*/
         searchTabController.injectMainController(this);
         userTabController.injectMainController(this);
         piTabController.injectMainController(this);
-
         //hashtagTabController.injectMainController(this);
-        //myPIController.injectMainController(this);
-        
+
         //goToPICreatePane();
 
         initDrawer();
@@ -174,8 +179,8 @@ public class MainController {
     }
 
 
-	public void goToMyPisPane() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
+    public void goToMyPisPane() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
         try {
             AnchorPane myPiTab = fxmlLoader.load();
             MyPIsTabController myPisTabController = fxmlLoader.getController();
@@ -186,19 +191,26 @@ public class MainController {
                 tab.setText("Mes Points d'interets");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-    
-    public void goToPICreatePane() {
-    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
-    	try {
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        drawer.close();
+    }
+
+    public void goToPICreateOrEditPane(boolean isNew, InterestPoint interestPointToEdit) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
+        try {
             AnchorPane newUserTab = fxmlLoader.load();
             PiTabCreateController piTabCreateController = fxmlLoader.getController();
+
             Platform.runLater(() -> {
                 Tab tab = new Tab();
                 tab.setContent(newUserTab);
                 tab.setText("Création d'un Point d'Intêret");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-                
+
                 piTabCreateController.injectTabContainer(tabPane);
                 piTabCreateController.injectTab(tab);
             });
@@ -206,32 +218,9 @@ public class MainController {
             e.printStackTrace();
         }
 
-	}
-
-	public void goToEditPiPane(String message) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabEdit.fxml"));
-        try {
-            AnchorPane editPiTab = fxmlLoader.load();
-            PiTabController piTabController = fxmlLoader.getController();
-            piTabController.injectMainController(this);
-            Platform.runLater(() -> {
-                Tab tab = new Tab();
-                tab.setContent(editPiTab);
-                tab.setText("éditer le Point");
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-            });
-          
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
-    
-    
-
     }
 
-    public void goToHome(){
+    public void goToHome() {
         tabPane.getSelectionModel().select(searchTabFromMain);
         drawer.close();
     }
