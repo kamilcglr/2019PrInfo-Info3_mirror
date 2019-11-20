@@ -20,21 +20,21 @@
                                     <fx:include fx:id="searchTab" source="SearchTab.fxml" />
                                 </content>
                             </Tab>
-                            <Tab fx:id="userTabFromMain" text="Utilisateur">
+                           <!-- <Tab fx:id="userTabFromMain" text="Utilisateur">
                                 <content>
                                     <fx:include fx:id="userTab" source="UserTab.fxml" />
                                 </content>
-                            </Tab>
+                            </Tab>-->
                             <!--  <Tab fx:id="hashtagTabFromMain" text="Hashtag">
                                   <content>
                                                               <fx:include fx:id="hashtagTab" source="HashtagTab.fxml" />
                                                           </content>
                                                                       </Tab>-->
-                            <Tab fx:id="piTabFromMain" text="Points d'intérêts">
+                           <!-- <Tab fx:id="piTabFromMain" text="Points d'intérêts">
                                 <content>
                                     <fx:include fx:id="piTab" source="PiTab.fxml" />
                                 </content>
-                            </Tab>
+                            </Tab>-->
                         </JFXTabPane>
                         <JFXHamburger fx:id="hamburger" alignment="TOP_RIGHT" AnchorPane.rightAnchor="0.0">
                             <padding>

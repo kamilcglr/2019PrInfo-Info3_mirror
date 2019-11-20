@@ -1,8 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
@@ -62,6 +60,10 @@ public class MainController {
     @FXML
     private ToolBarController toolBarController;
 
+
+    /*
+     * These are necessary for tests
+     * */
     //@FXML
     //private Tab hashtagTabFromMain;
     @FXML
@@ -93,8 +95,8 @@ public class MainController {
 
         /*the controller can be used in other Tabs*/
         searchTabController.injectMainController(this);
-        userTabController.injectMainController(this);
-        piTabController.injectMainController(this);
+        //userTabController.injectMainController(this);
+        //piTabController.injectMainController(this);
         //hashtagTabController.injectMainController(this);
 
         //goToPICreatePane();
@@ -180,18 +182,21 @@ public class MainController {
 
 
     public void goToMyPisPane() {
+        //We declare this controller here, it will be used when the tab already exist in the else
         if (myPisTab == null) { //the tab is not initialised/charged in memory
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MyPIsTab.fxml"));
             try {
                 AnchorPane myPiTab = fxmlLoader.load();
-                MyPIsTabController myPisTabController = fxmlLoader.getController();
-                myPisTabController.injectMainController(this);
+                myPIsTabController = fxmlLoader.getController();
+                myPIsTabController.injectMainController(this);
                 Platform.runLater(() -> {
                     myPisTab = new Tab();
                     myPisTab.setContent(myPiTab);
                     myPisTab.setText("Mes Points d'interets");
                     tabPane.getTabs().add(myPisTab);
                     tabPane.getSelectionModel().select(myPisTab);
+                    //do this task at the end !
+                    myPIsTabController.setPiViewer(piViewer);
                     myPisTab.setOnClosed(new EventHandler<Event>() {
                         @Override
                         public void handle(Event e) {
@@ -206,28 +211,28 @@ public class MainController {
         } else { //the tab is already initialized
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
+                myPIsTabController.refreshPIs();
             });
         }
-        drawer.close();
+        if (!drawer.isClosed()){
+            drawer.close();
+        }
     }
 
-    public void goToPICreateOrEditPane(boolean isNew, InterestPoint interestPointToEdit) {
+    public void goToPICreateOrEditPane(boolean isNew, PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
         try {
             AnchorPane newUserTab = fxmlLoader.load();
             PiTabCreateController piTabCreateController = fxmlLoader.getController();
-
+            piTabCreateController.injectMainController(this);
+            piTabCreateController.setPiViewer(piViewer);
             Platform.runLater(() -> {
                 Tab tab = new Tab();
                 tab.setContent(newUserTab);
-                tab.setText("Création d'un Point d'Intêret");
+                tab.setText("Création d'un Point d'Intérêt");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-                if (isNew){
-
-                }else{
-
-                }
+                piTabCreateController.setIsNew(isNew);
                 piTabCreateController.injectTabContainer(tabPane);
                 piTabCreateController.injectTab(tab);
             });
@@ -239,6 +244,25 @@ public class MainController {
     public void goToHome() {
         tabPane.getSelectionModel().select(searchTabFromMain);
         drawer.close();
+    }
+
+    public void goToSelectedPi(PIViewer piViewer) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+        try {
+            AnchorPane piTab = fxmlLoader.load();
+            PiTabController piTabController = fxmlLoader.getController();
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(piTab);
+                tab.setText(piViewer.getSelectedInterestPoint().getName());
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+                //do this task at the end !
+                piTabController.setDatas(piViewer);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

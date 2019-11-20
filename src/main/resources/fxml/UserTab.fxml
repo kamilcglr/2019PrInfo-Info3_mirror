@@ -65,9 +65,9 @@
                                             </GridPane.margin>
                                         </JFXToggleNode>
 
-                                        <Label fx:id="description" alignment="CENTER" maxWidth="200.0" text="Description" wrapText="true">
+                                        <Label fx:id="description" alignment="TOP_LEFT" maxWidth="200.0" text="Description" wrapText="true" GridPane.halignment="LEFT">
                                  <GridPane.margin>
-                                    <Insets top="75.0" />
+                                    <Insets left="5.0" top="75.0" />
                                  </GridPane.margin>
                                  <padding>
                                     <Insets bottom="10.0" top="10.0" />

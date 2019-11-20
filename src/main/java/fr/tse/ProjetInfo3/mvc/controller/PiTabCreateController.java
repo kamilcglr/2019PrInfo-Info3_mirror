@@ -11,9 +11,12 @@ import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -23,6 +26,8 @@ import javafx.scene.text.Text;
  */
 public class PiTabCreateController {
     private MainController mainController;
+
+    private PIViewer piViewer;
 
     /* Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -35,6 +40,10 @@ public class PiTabCreateController {
 
     public void injectTab(Tab tab) {
         this.tab = tab;
+    }
+
+    public void setPiViewer(PIViewer piViewer) {
+        this.piViewer = piViewer;
     }
 
     Date date;
@@ -84,52 +93,30 @@ public class PiTabCreateController {
     /**
      * This function has to be called just after initialisation of this controller
      */
-    public void setPI(InterestPoint interestPoint) {
+    public void setIsNew(boolean isNew) {
         this.isNew = isNew;
-        this.interestPoint = interestPoint;
+        //if the PI already exists, we show it
+        if (isNew) {
+            //TODO fill the entries with the Interest Point attributes
+        }
     }
-
 
     /**
      * Events
      **/
     @FXML
     public void discardJFXButtonPressed(ActionEvent event) {
-        BoxBlur blur = new BoxBlur(2, 2, 2);
 
-        JFXDialogLayout dialogLayout = new JFXDialogLayout();
-        dialogLayout.setBody(new Text("La création du point d'intêret a été annulée"));
+        launchDialog("Annulation", "La création du point d'intêret a été annulée", "D'accord", false);
 
-        JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.TOP);
-        anchorPane.setEffect(blur);
-        dialog.show();
-        dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-            @Override
-            public void handle(JFXDialogEvent event) {
-                tabPane.getTabs().remove(tab);
-            }
-        });
     }
 
     @FXML
     public void saveJFXButtonPressed(ActionEvent event) {
         interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(),
                 date);
-        PIViewer piViewer = new PIViewer();
         piViewer.addInterestPointToDatabase(interestPoint);
-        BoxBlur blur = new BoxBlur(2, 2, 2);
-        JFXDialogLayout dialogLayout = new JFXDialogLayout();
-        dialogLayout.setBody(new Text("Votre point d'intêret a été enregistré"));
-
-        JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.TOP);
-        anchorPane.setEffect(blur);
-        dialog.show();
-        dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-            @Override
-            public void handle(JFXDialogEvent event) {
-                tabPane.getTabs().remove(tab);
-            }
-        });
+        launchDialog("Enregistrement réussi", "Votre point d'intêret a été enregistré", "D'accord", true);
     }
 
     @FXML
@@ -139,6 +126,52 @@ public class PiTabCreateController {
 
     @FXML
     public void addUserJFXButtonPressed(ActionEvent event) {
+    }
 
+    /**
+     * Launch dialog to inform the user
+     *
+     * @param header      label of the header
+     * @param text        content printed inside
+     * @param labelButton label inside of button
+     */
+    private void launchDialog(String header, String text, String labelButton, boolean success) {
+        Label headerLabel = new Label(header);
+        Text bodyText = new Text(text);
+        JFXButton button = new JFXButton(labelButton);
+
+        BoxBlur blur = new BoxBlur(3, 3, 3);
+
+        button.getStyleClass().add("dialog-button");
+        if (success) {
+            headerLabel.getStyleClass().add("dialog-header");
+        } else {
+            headerLabel.getStyleClass().add("dialog-header-fail");
+        }
+        bodyText.getStyleClass().add("dialog-text");
+
+        JFXDialogLayout dialogLayout = new JFXDialogLayout();
+        dialogLayout.setPadding(new Insets(10));
+        JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+            dialog.close();
+        });
+
+        dialogLayout.setHeading(headerLabel);
+        dialogLayout.setBody(bodyText);
+        dialogLayout.setActions(button);
+        dialog.show();
+        dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
+            anchorPane.setEffect(null);
+        });
+        anchorPane.setEffect(blur);
+
+        dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+            @Override
+            public void handle(JFXDialogEvent event) {
+                tabPane.getTabs().remove(tab);
+                mainController.goToMyPisPane();
+            }
+        });
     }
 }

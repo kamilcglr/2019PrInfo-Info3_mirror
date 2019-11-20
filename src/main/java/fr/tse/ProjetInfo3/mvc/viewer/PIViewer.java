@@ -20,33 +20,53 @@ import java.util.List;
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
 
-    public PIViewer() {
-    }
+    private InterestPoint selectedInterestPoint;
 
-    /**
-     * At the moment, this function calls generatePIs, but in the futur, it we get the list from database
-     */
-    public List<InterestPoint> getlistOfInterestPoint() {
+    public PIViewer() {
         try {
-            return generatePIs();
+            generatePIsDemo();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return null;
         }
     }
 
-    public void addInterestPointToDatabase(InterestPoint interestPoint){
+    /**
+     * At the moment, this function calls generatePIs, but in the futur, it will get the list from database
+     */
+    public List<InterestPoint> getlistOfInterestPoint() {
+        return listOfInterestPoint;
+    }
+
+    public void setSelectedInterestPoint(int index) {
+        this.selectedInterestPoint = listOfInterestPoint.get(index);
+    }
+
+    /**
+     * Return the selected interest Point which was selected in MyPIsController
+     * This function is used inside PICreate
+     */
+    public InterestPoint getSelectedInterestPoint() {
+        return this.selectedInterestPoint;
+    }
+
+    /**
+     * In the futur, this function will add the created Interest Point into the database
+     */
+    public void addInterestPointToDatabase(InterestPoint interestPoint) {
         listOfInterestPoint.add(interestPoint);
     }
 
-    public List<InterestPoint> getListOfInterestPointFromDataBase(){
+    /**
+     * In the futur, this function will return the created Interest Point into the database
+     */
+    public List<InterestPoint> getListOfInterestPointFromDataBase() {
         return listOfInterestPoint;
     }
 
     /**
      * This function generate a list of PIs for the tests
      */
-    private List<InterestPoint> generatePIs() throws IOException, InterruptedException {
+    public void generatePIsDemo() throws IOException, InterruptedException {
         //First IP
         List<Hashtag> hashtags = new ArrayList<>();
         Hashtag president = new Hashtag("#president");
@@ -94,11 +114,7 @@ public class PIViewer {
         ip2.setHashtags(hashtags1);
         ip2.setUsers(users2);
 
-
-        List<InterestPoint> interestPoints = new ArrayList<InterestPoint>();
-        interestPoints.add(ip1);
-        interestPoints.add(ip2);
-
-        return interestPoints;
+        listOfInterestPoint.add(ip1);
+        listOfInterestPoint.add(ip2);
     }
 }

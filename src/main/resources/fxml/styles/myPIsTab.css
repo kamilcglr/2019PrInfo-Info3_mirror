@@ -47,17 +47,7 @@
 *                                                                              *
 *******************************************************************************/
 
-#editPI {
-    -jfx-button-type: FLAT;
-    -fx-background-color: -accent;
-    -fx-text-fill: white;
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 20;
-    -fx-border-radius: 15pt;
-    -fx-background-radius: 15pt;
-}
-
-#addPI {
+.actionButton {
     -jfx-button-type: FLAT;
     -fx-background-color: -accent;
     -fx-text-fill: white;
