@@ -3,13 +3,11 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -45,6 +43,8 @@ public class PiTabCreateController {
 
     boolean isNew; //if true, it is teh creation of a PI, else false (edition of existing PI)
 
+    private InterestPoint interestPoint;
+
     @FXML
     private StackPane dialogStackPane;
 
@@ -67,7 +67,7 @@ public class PiTabCreateController {
     private JFXTextField nameJFXTextField;
 
     @FXML
-    private JFXTextField descriptionJFXTextField;
+    private JFXTextArea descriptionJFXTextArea;
 
     @FXML
     private JFXTextField creationDateJFXTextField;
@@ -83,11 +83,11 @@ public class PiTabCreateController {
 
     /**
      * This function has to be called just after initialisation of this controller
-	 * @param isNew true if new PI
      */
-    public void setMode(boolean isNew){
-    	this.isNew = isNew;
-	}
+    public void setPI(InterestPoint interestPoint) {
+        this.isNew = isNew;
+        this.interestPoint = interestPoint;
+    }
 
 
     /**
@@ -113,10 +113,10 @@ public class PiTabCreateController {
 
     @FXML
     public void saveJFXButtonPressed(ActionEvent event) {
-        InterestPoint interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextField.getText(),
+        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(),
                 date);
-        System.out.println(interestPoint.toString());
-
+        PIViewer piViewer = new PIViewer();
+        piViewer.addInterestPointToDatabase(interestPoint);
         BoxBlur blur = new BoxBlur(2, 2, 2);
         JFXDialogLayout dialogLayout = new JFXDialogLayout();
         dialogLayout.setBody(new Text("Votre point d'intêret a été enregistré"));

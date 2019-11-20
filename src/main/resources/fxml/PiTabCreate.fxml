@@ -42,7 +42,7 @@
                           </rowConstraints>
                            <children>
                               <Label fx:id="titleLabel" text="Création / Edition d'un Point d'intéret" wrapText="true" GridPane.columnSpan="2147483647" GridPane.valignment="TOP" />
-                              <JFXTextArea fx:id="descriptionTextArea" labelFloat="true" promptText="Vous pouvez entrer une description" styleClass="secondFields" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1">
+                              <JFXTextArea fx:id="descriptionJFXTextArea" labelFloat="true" promptText="Vous pouvez entrer une description" styleClass="secondFields" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="30.0" top="30.0" />
                                  </GridPane.margin>

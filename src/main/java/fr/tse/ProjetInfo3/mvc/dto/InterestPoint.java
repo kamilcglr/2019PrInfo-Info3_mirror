@@ -1,8 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -21,6 +23,11 @@ public class InterestPoint {
     private List<Tweet> tweets;
     private String title;
     private List<InterestPoint> interestPoints;
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+    public InterestPoint() {
+    }
 
     public InterestPoint(String name, String description, Date dateOfCreation) {
         this.name = name;
@@ -220,6 +227,16 @@ public class InterestPoint {
     public String toString() {
         return "InterestPoint [name=" + name + ", description=" + description + ", dateOfCreation=" + dateOfCreation
                 + "]";
+    }
+
+    public String toStringMinimal() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        String spacing = "\t\t\t\t\t\t\t\t";
+
+        String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
+        String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
+
+        return name + " " + simpleDateFormat.format(dateOfCreation) + " " + listUsers + " " + listHashtags;
     }
 
 }

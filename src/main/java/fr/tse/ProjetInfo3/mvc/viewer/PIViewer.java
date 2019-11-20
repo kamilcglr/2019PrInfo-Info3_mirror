@@ -10,22 +10,23 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * This class contains the list of PIs of the user
  * it transfers DTOs from DATABASE (repository) to Controllers
- * */
+ */
 public class PIViewer {
-    private List<InterestPoint> listOfInterestPoint;
+    private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
 
-    public PIViewer(){
+    public PIViewer() {
     }
 
     /**
      * At the moment, this function calls generatePIs, but in the futur, it we get the list from database
      */
-    public List<InterestPoint> getlistOfInterestPoint(){
+    public List<InterestPoint> getlistOfInterestPoint() {
         try {
             return generatePIs();
         } catch (IOException | InterruptedException e) {
@@ -34,9 +35,17 @@ public class PIViewer {
         }
     }
 
+    public void addInterestPointToDatabase(InterestPoint interestPoint){
+        listOfInterestPoint.add(interestPoint);
+    }
+
+    public List<InterestPoint> getListOfInterestPointFromDataBase(){
+        return listOfInterestPoint;
+    }
+
     /**
      * This function generate a list of PIs for the tests
-     * */
+     */
     private List<InterestPoint> generatePIs() throws IOException, InterruptedException {
         //First IP
         List<Hashtag> hashtags = new ArrayList<>();
@@ -56,7 +65,12 @@ public class PIViewer {
         users.add(trump);
         users.add(macron);
 
-        InterestPoint ip1 = new InterestPoint(hashtags, users, "Politique");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date date = new Date();
+        InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalités politiques", date);
+        ip1.setHashtags(hashtags);
+        ip1.setUsers(users);
 
         //Second IP
         List<Hashtag> hashtags1 = new ArrayList<>();
@@ -64,19 +78,21 @@ public class PIViewer {
         Hashtag city = new Hashtag("#Saint-Etienne");
         Hashtag dep = new Hashtag("#42");
 
-        hashtags.add(example);
-        hashtags.add(city);
-        hashtags.add(dep);
+        hashtags1.add(example);
+        hashtags1.add(city);
+        hashtags1.add(dep);
 
         List<User> users2 = new ArrayList<>();
         User sobun = requestManager.getUser("sobunung");
         User kamil = requestManager.getUser("kamilcglr");
 
-        users.add(sobun);
-        users.add(kamil);
+        users2.add(sobun);
+        users2.add(kamil);
 
-        InterestPoint ip2 = new InterestPoint(hashtags, users, "Mes amis");
-
+        Date date2 = new Date();
+        InterestPoint ip2 = new InterestPoint("Mes amis", "Suivi des amis", date2);
+        ip2.setHashtags(hashtags1);
+        ip2.setUsers(users2);
 
 
         List<InterestPoint> interestPoints = new ArrayList<InterestPoint>();

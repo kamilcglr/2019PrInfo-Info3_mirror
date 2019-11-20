@@ -195,6 +195,7 @@ public class MainController {
                     myPisTab.setOnClosed(new EventHandler<Event>() {
                         @Override
                         public void handle(Event e) {
+                            tabPane.getTabs().remove(myPisTab);
                             myPisTab = null;
                         }
                     });
@@ -207,6 +208,8 @@ public class MainController {
                 tabPane.getSelectionModel().select(myPisTab);
             });
         }
+        drawer.close();
+    }
 
     public void goToPICreateOrEditPane(boolean isNew, InterestPoint interestPointToEdit) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
@@ -220,14 +223,17 @@ public class MainController {
                 tab.setText("Création d'un Point d'Intêret");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
+                if (isNew){
 
+                }else{
+
+                }
                 piTabCreateController.injectTabContainer(tabPane);
                 piTabCreateController.injectTab(tab);
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void goToHome() {

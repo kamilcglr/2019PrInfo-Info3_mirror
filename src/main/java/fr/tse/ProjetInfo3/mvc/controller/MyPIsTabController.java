@@ -1,30 +1,21 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
-
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -42,10 +33,12 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     @FXML
     private JFXButton addPI;
 
-    InterestPoint ip ;
-    
     @FXML
     private JFXButton editPI;
+
+    @FXML
+
+    private InterestPoint ip;
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -56,32 +49,27 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
         // Everything is in a separated thread because it is a heavy task (calls to Databse...)
         // We do not want a frozen interface
-        Platform.runLater(()-> isLoading(true));
+        Platform.runLater(() -> isLoading(true));
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 List<InterestPoint> ip = null;
+                List<InterestPoint> ipSaved = null;
                 try {
                     ip = initializeListOfInterestPoints();
+                    PIViewer piViewer = new PIViewer();
+                    ipSaved = piViewer.getListOfInterestPointFromDataBase();
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-                String spacing = "\t\t\t\t\t\t\t\t";
-
                 //sets the datas
                 for (InterestPoint interestPoint : ip) {
-                    for (User us : interestPoint.getUsers()) {
-                        for (Hashtag hash : interestPoint.getHashtags()) {
-                            try {
-                                listPI.getItems().add(interestPoint.getTitle() + spacing + sdf.format(us.parseTwitterUTC()) + "\n" + "@" + us.getName() + " " + hash.getHashtag());
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                    }
+                    listPI.getItems().add(interestPoint.toStringMinimal());
                 }
-                Platform.runLater(()-> isLoading(false));
+                for (InterestPoint interestPoint : ipSaved) {
+                    listPI.getItems().add(interestPoint.toStringMinimal());
+                }
+                Platform.runLater(() -> isLoading(false));
                 return null;
             }
         };
@@ -104,59 +92,21 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         }
     }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// Initialisation d'un point d'interet
-		ip = initializeListOfInterestPoints();
-		// Convertion de la date en format lisible
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		String spacing = "\t\t\t\t\t\t\t\t";
-		
-		for(InterestPoint interestPoint : ip.getInterestPoints()) {
-			for(User us : interestPoint.getUsers()) {
-				for(Hashtag hash : interestPoint.getHashtags()) {
-						try {
-							listPI.getItems().add(interestPoint.getTitle()+spacing+sdf.format(us.parseTwitterUTC())+"\n"+"@"+us.getName()+" "+hash.getHashtag());
-						} catch (ParseException e1) {
-							e1.printStackTrace();
-						}
-				}
-			}
-		}
-		
-		
-		editPI.setOnAction(e -> editButtonClicked());
-		
-	}
-	
-	
 
-	private void editButtonClicked() {
-		// En cliquant sur le point d'interet de notre choix puis edit les informations de ce dernier 
-		// seront transmis via cette methode vers le mainController
-		
-		InterestPoint returnedInterestPoint= new InterestPoint();
-		for(InterestPoint i : ip.getInterestPoints()) {
-			returnedInterestPoint.setHashtags(i.getHashtags());
-			returnedInterestPoint.setTitle(i.getTitle());
-			returnedInterestPoint.setTweets(i.getTweets());
-		}
-		
-		mainController.goToEditPiPane(returnedInterestPoint);
-	}
+    private void editButtonClicked() {
+        // En cliquant sur le point d'interet de notre choix puis edit les informations de ce dernier
+        // seront transmis via cette methode vers le mainController
 
+        InterestPoint returnedInterestPoint = new InterestPoint();
+        for (InterestPoint i : ip.getInterestPoints()) {
+            returnedInterestPoint.setHashtags(i.getHashtags());
+            returnedInterestPoint.setTitle(i.getTitle());
+            returnedInterestPoint.setTweets(i.getTweets());
+        }
+        mainController.goToPICreateOrEditPane(false, returnedInterestPoint);
+    }
 
-	@FXML
-	private void load(ActionEvent event) {
-		if(!listPI.isExpanded()) {
-			listPI.setExpanded(true);
-			listPI.depthProperty().set(1);
-		}else {
-			listPI.setExpanded(false);
-			listPI.depthProperty().set(0);
-		}
-	}
-	  @FXML
+    @FXML
     void addPIPressed(ActionEvent event) {
         //New PI, then we add true in the parameters
         mainController.goToPICreateOrEditPane(true, null);
@@ -185,7 +135,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     /**
      * TODO add spinner or progressBar during loading
      */
-    private void isLoading(boolean isLoading){
+    private void isLoading(boolean isLoading) {
 
     }
 }
