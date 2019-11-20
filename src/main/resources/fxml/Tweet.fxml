@@ -25,6 +25,7 @@
             <Label fx:id="nbretweet" styleClass="nbrtlike" text="Nb retweet" GridPane.rowIndex="2" />
             <Label fx:id="nbLikes" styleClass="nbrtlike" text="Nb like" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Text fx:id="texttweet" strokeType="OUTSIDE" strokeWidth="0.0" text="Contenu Tweet" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+            <Label fx:id="username" text="username" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </graphic>

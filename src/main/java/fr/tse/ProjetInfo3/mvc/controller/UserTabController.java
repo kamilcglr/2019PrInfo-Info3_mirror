@@ -72,9 +72,6 @@ public class UserTabController {
 
     @FXML
     private TitledPane titledTweet;
-
-    @FXML
-    private Pane thirdpane;
     /*
      * We will populate this fields/labels by the result of search
      */
@@ -164,22 +161,27 @@ public class UserTabController {
         profileImageView.setImage(image);
     }
 
-//    @FXML
-//    private void addTweetsToList() {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
-//        ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
-//
-//        try {
-//            //For the tests
-//            JFXListCell jfxListCell = fxmlLoader.load();
-//            TweetController tweetController = fxmlLoader.getController();
-//            tweetController.injectUserTabController(this);
-//            tweetController.populate();
-//            listTweets.getItems().add(jfxListCell);
-//        } catch (IOException exception) {
-//            throw new RuntimeException(exception);
-//        }
-//    }
+    @FXML
+    private void addTweetsToList(List<Tweet> toptweets) {
+        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+        ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
+
+        try {
+            if(userViewer != null){
+                for(Tweet tweet : toptweets){
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+                    JFXListCell jfxListCell = fxmlLoader.load();
+                    listTweetCell.add(jfxListCell);
+                    TweetController tweetController = (TweetController) fxmlLoader.getController();
+                    tweetController.injectUserTabController(this);
+                    tweetController.populate(tweet);
+                    listTweets.getItems().add(jfxListCell);
+                }
+            }
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     private char getTypeSearch() {
         return 'd';
@@ -230,12 +232,10 @@ public class UserTabController {
     }
 
     private Task<Void> setTopTweets() {
-//            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
-//            ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
 
-        Platform.runLater(() -> {
+//        Platform.runLater(() -> {
 //            progressIndicator.setVisible(true);
-        });
+//        });
         char typeResearch = getTypeSearch();
         switch (typeResearch) {
             case 'd':
@@ -247,10 +247,12 @@ public class UserTabController {
                 Tweeted = userViewer.topTweets(tweetList);
                 break;
         }
-        ObservableList<Label> TweetsToPrint = FXCollections.observableArrayList();
+
+        ObservableList<Tweet> TweetsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (Tweet tweet : Tweeted.keySet()) {
-            TweetsToPrint.add(new Label(tweet + " " + Tweeted.get(tweet)));
+            TweetsToPrint.add(tweet);
+            System.out.println(tweet);
             i++;
             if (i == 5) {
                 break;
@@ -258,19 +260,9 @@ public class UserTabController {
         }
 
         Platform.runLater(() -> {
-            listTweets.getItems().addAll(TweetsToPrint);
+            addTweetsToList(TweetsToPrint);
             titledTweet.setMaxHeight(50*TweetsToPrint.size());
-
-
-//            progressIndicator.setVisible(false);
-//            try {
-//                JFXListCell jfxListCell = fxmlLoader.load();
-//                TweetController tweetController = fxmlLoader.getController();
-//                tweetController.injectUserTabController(this);
-//                for (Tweet tweet in )
-//            } catch (IOException exception) {
-//                throw new RuntimeException(exception);
-//                }
+            //progressIndicator.setVisible(false);
         });
         return null;
     }
