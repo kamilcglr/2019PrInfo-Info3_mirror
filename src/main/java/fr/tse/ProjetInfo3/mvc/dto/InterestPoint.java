@@ -21,7 +21,6 @@ public class InterestPoint {
     private List<Hashtag> hashtags;
     private List<User> users;
     private List<Tweet> tweets;
-    private String title;
     private List<InterestPoint> interestPoints;
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -39,10 +38,9 @@ public class InterestPoint {
         this.tweets = new ArrayList<Tweet>();
     }
 
-    public InterestPoint(List<Hashtag> hashtags, List<User> users, String title) {
+    public InterestPoint(List<Hashtag> hashtags, List<User> users) {
         this.hashtags = hashtags;
         this.users = users;
-        this.title = title;
     }
 
     public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users) {
@@ -52,13 +50,11 @@ public class InterestPoint {
         this.dateOfCreation = dateOfCreation;
         this.hashtags = hashtags;
         this.users = users;
-        this.title = title;
     }
 
-    public InterestPoint(List<Hashtag> hashtags, String title) {
+    public InterestPoint(List<Hashtag> hashtags) {
         super();
         this.hashtags = hashtags;
-        this.title = title;
     }
 
     public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
@@ -138,7 +134,6 @@ public class InterestPoint {
 
         interestPoint.hashtags.add(hashtag);
         interestPoint.users.add(user);
-        interestPoint.setTitle(title);
         interestPoint.interestPoints.add(interestPoint);
         return true;
     }
@@ -155,6 +150,30 @@ public class InterestPoint {
                 return interestPoints.remove(interestPoint);
         }
         return false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
     }
 
     public List<Hashtag> getHashtags() {
@@ -205,14 +224,6 @@ public class InterestPoint {
 
     public void setTweets(List<Tweet> tweets) {
         this.tweets = tweets;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public void setInterestPoints(List<InterestPoint> interestPoints) {
