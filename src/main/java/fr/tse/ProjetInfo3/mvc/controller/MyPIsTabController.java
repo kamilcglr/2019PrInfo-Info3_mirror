@@ -71,7 +71,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
                     piViewer.setSelectedInterestPoint(listPI.getSelectionModel().getSelectedIndex());
                     if (newValue != null) {
                         seeButton.setVisible(true);
-                        editPI.setVisible(true);
+                        //editPI.setVisible(true);
                     }
                 }
             }

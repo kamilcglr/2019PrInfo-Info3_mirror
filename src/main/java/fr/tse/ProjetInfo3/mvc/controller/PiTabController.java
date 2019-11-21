@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXButton;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
@@ -36,6 +37,9 @@ public class PiTabController {
     @FXML
     private Label nbTweets;
 
+    @FXML
+    private JFXButton editButton;
+
 
     private MainController mainController;
 
@@ -55,6 +59,8 @@ public class PiTabController {
         accordion.setVisible(false);
         nbTweets.setVisible(false);
         nbTweetsLabel.setVisible(false);
+        editButton.setVisible(false);
+
     }
 
     public void setDatas(PIViewer piViewer) {

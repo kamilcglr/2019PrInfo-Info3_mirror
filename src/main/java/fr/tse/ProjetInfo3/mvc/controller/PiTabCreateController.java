@@ -18,6 +18,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -82,10 +83,17 @@ public class PiTabCreateController {
     private JFXTextField creationDateJFXTextField;
 
     @FXML
+    private GridPane suivisGrid;
+
+    @FXML
+    private GridPane suivisGrid2;
+
+    @FXML
     private void initialize() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         date = new Date();
-
+        suivisGrid.setVisible(false);
+        suivisGrid2.setVisible(false);
         creationDateJFXTextField.setEditable(false);
         creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
     }
@@ -107,7 +115,7 @@ public class PiTabCreateController {
     @FXML
     public void discardJFXButtonPressed(ActionEvent event) {
 
-        launchDialog("Annulation", "La création du point d'intêret a été annulée", "D'accord", false);
+        launchDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
 
     }
 
@@ -116,7 +124,7 @@ public class PiTabCreateController {
         interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(),
                 date);
         piViewer.addInterestPointToDatabase(interestPoint);
-        launchDialog("Enregistrement réussi", "Votre point d'intêret a été enregistré", "D'accord", true);
+        launchDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
     }
 
     @FXML

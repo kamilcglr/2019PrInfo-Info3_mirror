@@ -134,7 +134,7 @@
 
 /*Add space to left*/
 .jfx-tab-pane .tab-header-area {
-    -fx-padding: 0 -30 0 30;
+    -fx-padding: 0 0 0 0;
 }
 
 /*Correct border on closable tabs*/
