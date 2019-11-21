@@ -1,0 +1,144 @@
+#gridPane {
+    -fx-background-color: -main-bg-color;
+}
+
+/*
+* Labels
+*/
+#titleLabel {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.listLabels {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
+}
+
+/*
+ * Fields
+ */
+.jfx-text-field .input-line {
+    -fx-background-color: -primary;
+}
+
+.jfx-text-field {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+}
+
+.jfx-text-area {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+}
+
+.jfx-text-area .input-line {
+    -fx-background-color: -primary;
+}
+
+#nameJFXTextField, #creationDateJFXTextField {
+    -fx-font-size: 20;
+}
+
+.secondFields {
+    -fx-font-size: 15;
+}
+
+/*******************************************************************************
+*                                                                              *
+* Buttons                                 *
+*                                                                              *
+*******************************************************************************/
+#discardJFXButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -gray;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+#saveJFXButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+#saveIcon {
+    -fx-fill: WHITE;
+}
+
+.moreButtons {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
+
+.moreButtonsIcon {
+    -fx-fill: WHITE;
+}
+
+/*******************************************************************************
+*                                                                              *
+* JFX Snackbar     Background, button and text                                 *
+*                                                                              *
+*******************************************************************************/
+
+.jfx-snackbar-layout {
+    -fx-background-color: -red;
+}
+
+.jfx-snackbar-toast {
+    -fx-text-fill: -white;
+}
+
+.jfx-snackbar-action {
+    -fx-background-color: -white;
+    -fx-text-fill: -red;
+
+}
+
+/*
+* Dialog
+*/
+
+/*
+* Dialog
+*/
+
+.dialog-button {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+.dialog-text {
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
+}
+
+.dialog-header {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -primary;
+}
+
+.dialog-header-fail {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -red;
+}

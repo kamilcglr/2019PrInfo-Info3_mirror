@@ -67,7 +67,7 @@ public class HashtagTabController {
 
             //For the tests
             JFXListCell jfxListCell = fxmlLoader.load();
-            TweetController tweetController = (TweetController) fxmlLoader.getController();
+            TweetController tweetController = fxmlLoader.getController();
             tweetController.injectHashtagTabController(this);
             tweetController.populate();
             topFiveList.getItems().add(jfxListCell);

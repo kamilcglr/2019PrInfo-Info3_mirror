@@ -23,11 +23,66 @@
     -main-bg-color: #e5e9ed;
     -primary: #55ACEE;
     -accent: #48ac98ff;
-    -accent2:#cad7caff;
+    -accent2: #cad7caff;
     -gray: #66757F;
     -grey-dark: #292F33;
-    -red:#cb7c7aff;
-    -white:#ffffff;
+    -red: #cb7c7aff;
+    -white: #ffffff;
+}
+
+.root {
+    -fx-background-color: -main-bg-color;
+}
+
+.jfx-tab-pane {
+    -fx-background-color: -main-bg-color;
+}
+
+
+/*******************************************************************************
+*                                                                              *
+* Hamburger and toolbar styling                                                *
+*                                                                              *
+*******************************************************************************/
+/*Hamburger Styling*/
+.jfx-hamburger-icon {
+    -fx-spacing: 7;
+}
+.jfx-hamburger {
+    -fx-background-color: transparent;
+}
+
+.jfx-hamburger StackPane {
+    -fx-background-color: -accent;
+}
+.jfx-hamburger-icon StackPane {
+    -fx-background-color: -accent;
+    -fx-background-radius: 5px;
+}
+
+/*Toolbar buttons*/
+.toolbar-button
+{
+   /* -fx-border-color: transparent;
+    -fx-background-color: derive(-accent, 10%);
+    -fx-background-radius: 0px;
+    -fx-border-radius: 0px;*/
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+    -fx-background-radius: 0px;
+    -fx-border-radius: 0px;
+}
+.toolbar-button:hover
+{
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+   /* -fx-background-color: -accent;
+    -fx-text-fill: white;*/
+}
+
+.toolbar-button:hover .toolbar-button-icon, .toolbar-button:hover .toolbar-button-icon
+{
+    -fx-fill: white;
 }
 
 /*******************************************************************************
@@ -60,14 +115,18 @@
     -fx-background-color: WHITE;
 }
 
-.root {
-    -fx-background-color: -main-bg-color;
-}
+/*******************************************************************************
+ *                                                                             *
+ * Tab Pane		                                                       *
+ *                                                                             *
+ ******************************************************************************/
 
+
+/* Breaking change ! remove default font everywhere
 .jfx-tab-pane {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 25;
-}
+}*/
 
 .jfx-tab-pane .tab-header-background {
     -fx-background-color: -primary;
@@ -75,7 +134,17 @@
 
 /*Add space to left*/
 .jfx-tab-pane .tab-header-area {
-    -fx-padding: 0 -30 0 30;
+    -fx-padding: 0 0 0 0;
+}
+
+/*Correct border on closable tabs*/
+.jfx-tab-pane .headers-region .tab {
+    -fx-border-style: hidden;
+}
+
+/*Correct border on closable tabs*/
+.jfx-tab-pane .headers-region .tab .tab-container .tab-label {
+    -fx-padding: 6 10 6 10;
 }
 
 .jfx-tab-pane .tab .tab-label {
@@ -88,67 +157,80 @@
     -fx-background-color: WHITE;
 }
 
-.jfx-text-field .input-line {
-    -fx-background-color: -primary;
-}
-
-.jfx-text-field {
-    -jfx-focus-color: -accent;
-    -fx-font-family: 'Roboto Medium', sans-serif;
-}
-
 /*******************************************************************************
  *                                                                             *
  * Scroll Bar			                                                       *
  *                                                                             *
  ******************************************************************************/
-
-.scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
-    -fx-background-color: #F1F1F1;
-    -fx-background-insets: 0.0;
+.scroll-bar:vertical .track-background {
+    visibility: hidden;
 }
 
-.scroll-bar:vertical > .thumb, .scroll-bar:horizontal > .thumb {
-    -fx-background-color: #BCBCBC;
-    -fx-background-insets: 0.0;
-    -fx-background-radius: 1.0;
-}
-
-/* Up- and Down-Button Padding */
-.scroll-bar:vertical > .increment-button, .scroll-bar:vertical > .decrement-button {
-    -fx-padding: 5 2 5 2;
-}
-
-/* Left- and Right-Button Padding */
-.scroll-bar:horizontal > .increment-button, .scroll-bar:horizontal > .decrement-button {
-    -fx-padding: 2 5 2 5;
-}
-
-.scroll-bar > .increment-button, .scroll-bar > .decrement-button, .scroll-bar:hover > .increment-button, .scroll-bar:hover > .decrement-button {
+.scroll-bar:vertical {
     -fx-background-color: transparent;
 }
 
-.scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: rgb(150.0, 150.0, 150.0);
+.scroll-bar:vertical .track-background {
+    visibility: hidden;
 }
 
-/* Up Arrow */
-.scroll-bar:vertical > .increment-button > .increment-arrow {
-    -fx-shape: "M298 426h428l-214 214z";
+.scroll-bar:vertical .track {
+    visibility: hidden;
 }
 
-/* Down Arrow */
-.scroll-bar:vertical > .decrement-button > .decrement-arrow {
-    -fx-shape: "M298 598l214-214 214 214h-428z";
+.hide-thumb .scroll-bar:vertical .thumb {
+    -fx-background-color: transparent;
 }
 
-/* Right Arrow */
-.scroll-bar:horizontal > .increment-button > .increment-arrow {
-    -fx-shape: "M0 428l0 -428l214 214l-214 214z";
+/*TODO  background */
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    /*-fx-background-color: -main-bg-color;
+    -fx-border-color: -main-bg-color;*/
+    -fx-background-color: transparent!important;
+    -fx-background-radius: 0.0em;
+    -fx-border-radius: 2.0em;
 }
 
-/* Left Arrow */
-.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
-    -fx-shape: "M214 0l0 428l-214 -214l214 -214z";
+
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0.0em;
+    -fx-padding: 0.0 0.0 10.0 0.0;
+
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0.0em;
+    -fx-padding: 0.0 10.0 0.0 0.0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0.15em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0.0 0.15em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: derive(black, 90.0%);
+    -fx-background-insets: 2.0, 0.0, 0.0;
+    -fx-background-radius: 2.0em;
+}
+
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: derive(#4D4C4F, 10.0%);
+    -fx-background-insets: 2.0, 0.0, 0.0;
+    -fx-background-radius: 2.0em;
 }
 

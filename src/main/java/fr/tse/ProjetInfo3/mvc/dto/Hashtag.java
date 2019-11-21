@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.tse.ProjetInfo3.mvc.dao;
+package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.util.List;
 
@@ -12,8 +12,14 @@ import java.util.List;
  */
 public class Hashtag {
 	private String hashtag;
+
 	private List<Tweet> tweets;
 
+
+	public Hashtag(String hashtag) {
+		super();
+		this.hashtag = hashtag;
+	}
 
 	public String getHashtag() {
 		return hashtag;

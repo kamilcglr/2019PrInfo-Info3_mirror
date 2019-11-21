@@ -2,26 +2,29 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
-import com.jfoenix.controls.JFXSnackbar;
-import fr.tse.ProjetInfo3.mvc.services.RequestManager;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.Icon;
 
-import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -63,26 +66,51 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-    @FXML
-    private ProgressIndicator progressIndicator;
+   @FXML
+   private JFXSpinner progressIndicator;
 
     @FXML
     private Label progressLabel;
+
+    @FXML
+    private JFXButton loginButton;
+
+    @FXML
+    private JFXButton signinButton;
+    
+    @FXML
+    private JFXButton myPibutton;
+
+    @FXML
+    private ListView<String> propositionList;
+
+    @FXML
+    private JFXProgressBar propositionProgressBar;
 
     private String research;
 
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
+        //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
+        loginButton.setVisible(false);
+        signinButton.setVisible(false);
+
+
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
+        propositionList.setVisible(false);
+        propositionProgressBar.setVisible(false);
         progressIndicator.setVisible(false);
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces and add the # or @ at the begining
          */
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
         searchField.textProperty().addListener(
                 (observable, old_value, new_value) -> {
+                    propositionList.getItems().clear();
+                    propositionList.setVisible(false);
                     if (new_value.contains(" ")) {
                         searchField.setText(old_value);
                     }
@@ -93,6 +121,14 @@ public class SearchTabController {
                     } else if (userToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
                             searchField.setText("@" + new_value);
+                        }
+
+                        if (new_value.length() > 2) {
+                            pause.setOnFinished(event -> {
+                                propositionProgressBar.setVisible(true);
+                                showPropositionList(new_value.substring(1));
+                            });
+                            pause.playFromStart();
                         }
                     }
                 }
@@ -145,17 +181,19 @@ public class SearchTabController {
             activateField(false, true);
         }
     }
+
     @FXML
     public void loginButtonPressed(ActionEvent event) {
-    	mainController.goToLoginPane();
+        mainController.goToLoginPane();
     }
+
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
      * */
     @FXML
-    private void searchButtonPressed(ActionEvent event) throws IOException {
-        //get the content of the fied
+    private void searchButtonPressed(ActionEvent event) {
+        //get the content of the field
         String research = searchField.getText();
         //u for user, h for hastag
         char typeOfSearch = 'e';
@@ -166,7 +204,6 @@ public class SearchTabController {
         } else {
             //TODO create error here
         }
-
         //verify if it is empty or contains only the @/#
         if (research.length() <= 1) {
             launchDialog("Aucune saisie", "Veuillez saisir au moins un caractère", "D'accord");
@@ -176,6 +213,50 @@ public class SearchTabController {
             searchIsRunning(true);
             launchSearch(research, typeOfSearch);
         }
+    }
+
+    /**
+     * This method displays a list of propositions based on the newValue of the searchField
+     *
+     * @param newValue
+     */
+    private void showPropositionList(String newValue) {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() {
+                ObservableList<String> items = propositionList.getItems();
+                SearchViewer searchViewer = new SearchViewer();
+                //Here we remove the @ to make our research of propositions
+                List<String> users = searchViewer.getListPropositions(newValue);
+                //We go through the proposition list
+                Platform.runLater(()->{
+                    items.addAll(users);
+                    if(items.size()>0){
+                        propositionList.setVisible(true);
+                    }
+                    propositionProgressBar.setVisible(false);
+                });
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    /**
+     * If user pressed enter key in the search field, we call searchButtonPressed()
+     */
+    @FXML
+    private void onEnter(ActionEvent event) {
+        searchButtonPressed(event);
+    }
+
+    @FXML
+    private void listClicked(MouseEvent event) {
+        searchField.setText(propositionList.getSelectionModel().getSelectedItem());
+        propositionList.setVisible(false);
+        progressLabel.setVisible(false);
     }
 
     /**
@@ -204,19 +285,22 @@ public class SearchTabController {
                         mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
-                        UserViewer userViewer = new UserViewer();
-                        userViewer.searchScreenName(research);
 
+                        //We get the user we chose from the list
+                        String newResearch = research;
+                        //we search the user and go to the user tab
+                        if (newResearch != null) {
+                            UserViewer userViewer = new UserViewer();
+                            userViewer.searchScreenName(newResearch);
+                            mainController.goToUserPane(userViewer);
+                        }
                         //we go to this part when user exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToUserPane(userViewer);
                     }
                     searchIsRunning(false);
                 } catch (Exception e) {
-                    //Most of the time we will catch Exception from Twitter4j
-                    //Stop animations
-                    searchIsRunning(false);
 
+                    searchIsRunning(false);
                     //this is necessary to update the ui because we are in a separated thread
                     Platform.runLater(() -> {
                         //hide progress label because we will use snackbar
@@ -227,10 +311,11 @@ public class SearchTabController {
                         if (e instanceof RequestManager.RequestManagerException) {
                             snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, l'utilisateur " + research + " n'existe pas.", "D'accord", b -> snackbar.close())));
                         } else {
-                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie","D'accord", b -> snackbar.close())));
+                            snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout("Désolé, la recherche n'a pas aboutie", "D'accord", b -> snackbar.close())));
                         }
                     });
-                    System.out.println("Something went wrong : " + e);
+                    System.out.println("Something went wrong : ");
+                    e.printStackTrace();
                 }
                 return null;
             }
@@ -292,13 +377,15 @@ public class SearchTabController {
         }
 
     }
-
+  
     /**
      * Desactive or active the search field and button
      *
      * @param activate : boolean, if true, activate search button and field
      */
     private void activateField(boolean activate, boolean delete) {
+        propositionProgressBar.setVisible(false);
+        propositionList.setVisible(false);
         if (activate) {
             searchField.setDisable(false);
             searchButton.setDisable(false);
@@ -310,5 +397,4 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
-
 }
