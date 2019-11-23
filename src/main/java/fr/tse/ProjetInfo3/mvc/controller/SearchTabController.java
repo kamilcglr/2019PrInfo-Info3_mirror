@@ -26,6 +26,7 @@ import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -112,27 +113,38 @@ public class SearchTabController {
                 (observable, old_value, new_value) -> {
                     propositionList.getItems().clear();
                     propositionList.setVisible(false);
-                    if (new_value.contains(" ")) {
-                        searchField.setText(old_value);
-                    }
+                    //#82 will delete this, deprecated
+                    //if (new_value.contains(" ")) {
+                    //    searchField.setText(old_value);
+                    //}
                     if (hashtagToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
                             searchField.setText("#" + new_value);
                         }
                     } else if (userToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
-                            searchField.setText("@" + new_value);
+                            //searchField.setText("@" + new_value);
+                            searchField.setText(new_value);
                         }
                         if (new_value.length() > 2) {
                             pause.setOnFinished(event -> {
                                 propositionProgressBar.setVisible(true);
-                                showPropositionList(new_value.substring(1));
+                                //showPropositionList(new_value.substring(1));
+                                showPropositionList(new_value);
                             });
                             pause.playFromStart();
                         }
                     }
                 }
         );
+
+        propositionList.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<Student> call(ListView<Student> studentListView) {
+                return new StudentListViewCell();
+            }
+        });
+
     }
 
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
@@ -227,10 +239,11 @@ public class SearchTabController {
                 ObservableList<String> items = propositionList.getItems();
                 SearchViewer searchViewer = new SearchViewer();
                 //Here we remove the @ to make our research of propositions
-                List<String> users = searchViewer.getListPropositions(newValue);
+                Map<String,String> usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
                 //We go through the proposition list
                 Platform.runLater(()->{
-                    items.addAll(users);
+
+                    items.addAll(usersNamesAndScreenNames.keySet());
                     if(items.size()>0){
                         propositionList.setVisible(true);
                     }
@@ -242,6 +255,8 @@ public class SearchTabController {
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
+
+
     }
 
     /**

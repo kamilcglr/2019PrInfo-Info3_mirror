@@ -4,6 +4,7 @@ package fr.tse.ProjetInfo3.mvc.repository;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -117,18 +118,27 @@ public class RequestManager {
         return parseUsers(request, true).get(0);
     }
 
-    //TODO Comments
-    public List<String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
-        //"&include_entities=false"permits to reduce the size of users object, we don't need them
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&include_entities=false";
-        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
-                .setHeader("Authorization", oAuthManager.getheader(url)).build();
+    /**
+     * Search a list of users by name, or screen_name
+     *
+     * @param userProposition name of a user, or at least the beginning of a name
+     * @return Map of Names and screen_names of user
+     */
+    public Map<String, String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
 
-        //False, because we need multiple users
+        //if the proposition contains spaces we will remove them
+        //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces
+        String spaceRemoved = userProposition.replace(" ", "%20");
+
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + spaceRemoved +"&count=20&include_entities=false";
+        //String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false";
+        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
+                .setHeader("Authorization", oAuthManager.getheader(userProposition)).build();
+
         List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-        List<String> userNames = new ArrayList<>();
-        users.forEach(user -> userNames.add(user.getScreen_name()));
-        return userNames;
+        Map<String,String> userNamesANDScreenName = new HashMap<>();
+        users.forEach(user -> userNamesANDScreenName.put(user.getName(), user.getScreen_name()));
+        return userNamesANDScreenName;
     }
 
     public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
@@ -384,8 +394,11 @@ public class RequestManager {
                     .build();
 
             signature = oauthConfig.buildSignature(HttpMethod.GET, url).create();
-            return signature.getAsHeader().replace(signature.getSignature(),
-                    URLEncoder.encode(signature.getSignature(), StandardCharsets.UTF_8));
+            System.out.println(signature.getAsHeader());
+            return signature.getAsHeader();
+
+           // return signature.getAsHeader().replace(signature.getSignature(),
+           //         URLEncoder.encode(signature.getSignature(), StandardCharsets.UTF_8));
         }
     }
 
