@@ -236,7 +236,7 @@ public class RequestManager {
         HttpRequest request;
         long max_id = 0L;
         try {
-            while (tweets.size() < count && (tentatives < 10)) {
+            while (tweets.size() < count && (tentatives < 100)) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -247,6 +247,7 @@ public class RequestManager {
                 //Sometimes twitter API gives bad result then we increment tentatives
                 if (response.body().equals("[]")) {
                     tentatives++;
+                    System.out.println("tentatives" + tentatives);
                     continue;
                 }
                 Gson gson = new GsonBuilder()
@@ -266,6 +267,7 @@ public class RequestManager {
 
                 tweets.addAll(tempList);
             }
+            System.out.println("Test tweet getters, request Manager :" + tweets.size());
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {

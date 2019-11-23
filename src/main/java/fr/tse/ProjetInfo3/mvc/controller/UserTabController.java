@@ -196,7 +196,7 @@ public class UserTabController {
         char typeResearch = getTypeSearch();
         switch (typeResearch) {
             case 'd':
-                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
+                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 3194);
                 hashtagUsed = userViewer.topHashtag(tweetList);
                 break;
             case 'c':
