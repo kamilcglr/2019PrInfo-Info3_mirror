@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -122,7 +123,6 @@ public class SearchTabController {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
                             searchField.setText("@" + new_value);
                         }
-
                         if (new_value.length() > 2) {
                             pause.setOnFinished(event -> {
                                 propositionProgressBar.setVisible(true);
@@ -252,11 +252,16 @@ public class SearchTabController {
         searchButtonPressed(event);
     }
 
+    /**
+     * If user choose an entry in the list, we launch the search by firing an event
+     * @param event
+     */
     @FXML
     private void listClicked(MouseEvent event) {
         searchField.setText(propositionList.getSelectionModel().getSelectedItem());
         propositionList.setVisible(false);
         progressLabel.setVisible(false);
+        searchButton.fire();
     }
 
     /**

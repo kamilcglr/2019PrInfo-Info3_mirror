@@ -26,7 +26,7 @@ public class UserViewer {
      * Calls request manager getUSer to find the user given as parameter
      * If the user does not exist or an exception occurs with the Requestmanager
      * we throws the exception to the controller. Then the controller alert the user
-     * that something wrong occured (e.g. the user does not exist)
+     * that something wrong occurred (e.g. the user does not exist)
      *
      * @param screen_name
      */
