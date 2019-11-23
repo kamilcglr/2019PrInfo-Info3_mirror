@@ -261,7 +261,7 @@ public class UserTabController {
 
         Platform.runLater(() -> {
             addTweetsToList(TweetsToPrint);
-            titledTweet.setMaxHeight(50*TweetsToPrint.size());
+            titledTweet.setMaxHeight(70*TweetsToPrint.size());
             //progressIndicator.setVisible(false);
         });
         return null;

@@ -10,8 +10,15 @@
     -fx-text-fill: -grey-dark;
 }
 
-#texttweet{
+#texttweet {
     -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 12;
+    -fx-font-size: 14;
     -fx-text-fill: -grey-dark;
+}
+#Likeicon {
+    -fx-icon-color: -red;
+}
+
+#RTicon{
+    -fx-icon-color: -accent;
 }

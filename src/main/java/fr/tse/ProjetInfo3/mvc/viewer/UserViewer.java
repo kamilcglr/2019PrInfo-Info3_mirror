@@ -55,7 +55,7 @@ public class UserViewer {
 
         for (Tweet tweet : tweetList) {
             if (!Tweeted.containsKey(tweet)){
-                int PopularCount=(int)tweet.getRetweet_count()+(int)tweet.getFavorite_count();
+                int PopularCount=(int)tweet.getRetweet_count() +(int)tweet.getFavorite_count();
                 Tweeted.put(tweet, PopularCount);
             }
         }

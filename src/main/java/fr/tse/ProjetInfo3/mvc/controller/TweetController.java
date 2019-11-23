@@ -17,8 +17,6 @@ public class TweetController {
         this.userTabController = userTabController;
     }
 
-    @FXML
-    private Label author;
 
     @FXML
     private Label nbretweet;
@@ -27,21 +25,17 @@ public class TweetController {
     private Label nbLikes;
 
     @FXML
-    private Label username;
-
-    @FXML
-    private Text textTweet;
+    private Label texttweet;
 
     /**
      * For the moment this function has not any parameters, it will take Tweet tweet after Hashtag method implementation*/
     public void populate(Tweet tweet) {
-        author.setText(tweet.getUser().getScreen_name());
-        username.setText(tweet.getUser().getName());
+
         Integer RTCount = (int) tweet.getRetweet_count();
         Integer FavCount = (int) tweet.getFavorite_count();
         nbretweet.setText(RTCount.toString());
         nbLikes.setText(FavCount.toString());
-        textTweet.setText(tweet.getFull_text());
+        texttweet.setText(tweet.getFull_text());
         }
 
 }
