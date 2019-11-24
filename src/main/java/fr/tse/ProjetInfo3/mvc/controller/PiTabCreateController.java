@@ -6,11 +6,14 @@ import java.util.Date;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -92,11 +95,24 @@ public class PiTabCreateController {
 
 	@FXML
 	private GridPane suivisGrid2;
+	
+	@FXML
+	private JFXListView<Hashtag> hashtagList;
+	
+	@FXML
+	private JFXListView<User> userList;
 
 	@FXML
 	private void initialize() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		date = new Date();
+		
+		hashtagList.setMouseTransparent(true);
+		hashtagList.setFocusTraversable(false);
+		
+		userList.setMouseTransparent(true);
+		userList.setFocusTraversable(false);
+		
 		suivisGrid.setVisible(true);
 		suivisGrid2.setVisible(true);
 		creationDateJFXTextField.setEditable(true);
@@ -193,11 +209,14 @@ public class PiTabCreateController {
 
 	private void launchHashtagInputDialog() {
 		Label headerLabel = new Label("Ajout de nouveau hashtag");
+		Text bodyText = new Text("Veuillez entrer un hashtag valide");
 		TextField inputHashtag = new TextField();
+
 		JFXButton cancelButton = new JFXButton("Annuler");
 		JFXButton addButton = new JFXButton("Ajouter");
-		
+
 		headerLabel.getStyleClass().add("dialog-header");
+		bodyText.getStyleClass().add("dialog-text");
 		cancelButton.getStyleClass().add("dialog-button");
 		addButton.getStyleClass().add("dialog-button");
 
@@ -206,29 +225,35 @@ public class PiTabCreateController {
 		JFXDialogLayout dialogLayout = new JFXDialogLayout();
 		dialogLayout.setPadding(new Insets(10));
 		JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
-		
+
 		addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
-			
 			dialog.close();
 		});
-		
-		
+
+		cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+			dialog.close();
+		});
+
+		dialogLayout.setStyle("-fx-background-color:#292F33");
+		headerLabel.setStyle("-fx-text-fill:WHITE");
+		cancelButton.setStyle("-fx-background-color:#292F33");
+		addButton.setStyle("-fx-background-color:#292F33");
+
 		dialogLayout.setHeading(headerLabel);
-		dialogLayout.setBody(inputHashtag);
+		dialogLayout.setBody(bodyText, inputHashtag);
 		dialogLayout.setActions(cancelButton, addButton);
 		dialog.show();
-		
+
 		dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
 			anchorPane.setEffect(null);
 		});
-		
+
 		anchorPane.setEffect(blur);
 
 		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
 			@Override
 			public void handle(JFXDialogEvent event) {
-				tabPane.getTabs().remove(tab);
-				mainController.goToMyPisPane();
+				anchorPane.setEffect(null);
 			}
 		});
 	}
