@@ -29,6 +29,7 @@ import javafx.scene.shape.Circle;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +68,9 @@ public class UserTabController {
     private JFXSpinner progressIndicator;
 
     @FXML
+    private Label lastAnalysedLabel;
+
+    @FXML
     private TitledPane titledHashtag;
     @FXML
     private Pane thirdpane;
@@ -91,6 +95,7 @@ public class UserTabController {
     private Circle avatar;
     @FXML
     private ImageView profileImageView;
+
     private Image profileImage;
 
     /**************************************************************/
@@ -117,10 +122,6 @@ public class UserTabController {
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
             buildPicture();
-            //Image profilePic = new Image(userToPrint.getProfile_image_url_https());
-            //profileImageView.setImage(profilePic);
-            //profileImageView.setClip(avatar);
-            //avatar.setFill(new ImagePattern(profilePic));
         });
 
         Thread thread = new Thread(setTopHashtags());
@@ -136,8 +137,7 @@ public class UserTabController {
         JFXScrollPane.smoothScrolling(scrollPane);
 
         listHashtags.setCellFactory(param -> new Cell());
-
-
+        lastAnalysedLabel.setVisible(false);
     }
 
     //TODO
@@ -197,17 +197,14 @@ public class UserTabController {
         Platform.runLater(() -> {
             progressIndicator.setVisible(true);
         });
-        char typeResearch = getTypeSearch();
-        switch (typeResearch) {
-            case 'd':
-                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
-                hashtagUsed = userViewer.topHashtag(tweetList);
-                break;
-            case 'c':
-                tweetList = userViewer.getTweetsByDate(userToPrint.getScreen_name(), getDate());
-                hashtagUsed = userViewer.topHashtag(tweetList);
-                break;
+
+        long numberOfRequest = userToPrint.getStatuses_count();
+        if (numberOfRequest > 3194) {
+            numberOfRequest = 3194;
         }
+        tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), (int) numberOfRequest);
+        hashtagUsed = userViewer.topHashtag(tweetList);
+
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (String hashtag : hashtagUsed.keySet()) {
@@ -221,6 +218,11 @@ public class UserTabController {
             listHashtags.getItems().addAll(hashtagsToPrint);
             titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
             progressIndicator.setVisible(false);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                    date);
+            lastAnalysedLabel.setVisible(true);
         });
         return null;
     }
@@ -234,7 +236,7 @@ public class UserTabController {
         Label hashtagLabel = new Label("");
         Label nbTweetLabel = new Label("");
 
-        public Cell() {
+        Cell() {
             super();
             classementLabel.getStyleClass().add("indexLabel");
             hashtagLabel.getStyleClass().add("hashtagTextLabel");

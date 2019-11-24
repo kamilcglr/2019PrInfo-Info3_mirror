@@ -125,6 +125,7 @@
                                     </TitledPane>
                                  </children>
                               </VBox>
+                              <Label fx:id="lastAnalysedLabel" text="XXX tweets ont été analysés depuis le Date" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
 
                                     </children>
                                 </GridPane>

@@ -44,6 +44,13 @@
     -fx-stroke: -accent;
 }
 
+#lastAnalysedLabel{
+    -fx-padding: 0 0 0 10;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-style: italic;
+}
+
 /*
 * Header
 */
