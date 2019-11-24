@@ -431,6 +431,7 @@ public class SearchTabController {
         });
         treeView.setShowRoot(false);
         treeView.getColumns().setAll(name, screen_name);
+        treeView.setFixedCellSize(25);
     }
 
     /**

@@ -244,7 +244,7 @@
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
     -fx-font-size: 15;
-    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-padding : 10 0 10 0;
 }
 
@@ -273,9 +273,12 @@
 .tree-table-view .tree-table-cell {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
+    -fx-cell-size: 20px;
 }
 
 .tree-table-row-cell{
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
+    -fx-cell-size: 20px;
 }
+

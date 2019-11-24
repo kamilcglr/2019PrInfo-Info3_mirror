@@ -138,6 +138,7 @@ public class UserTabController {
 
         listHashtags.setCellFactory(param -> new Cell());
         lastAnalysedLabel.setVisible(false);
+
     }
 
     //TODO
