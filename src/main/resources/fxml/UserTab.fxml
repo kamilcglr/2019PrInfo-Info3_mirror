@@ -47,7 +47,7 @@
                               <RowConstraints minHeight="20.0" />
                               <RowConstraints minHeight="200.0" />
                               <RowConstraints minHeight="100.0" vgrow="ALWAYS" />
-                                      
+
                                   </rowConstraints>
                                     <children>
                               <StackPane fx:id="header" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="5" />
@@ -106,9 +106,17 @@
                               <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
                                  <children>
                                   <TitledPane fx:id="titledHashtag" animated="false" expanded="false" text="# les plus utilisés">
+
                                        <content>
-                                          <JFXListView fx:id="listHashtags" focusTraversable="false" />
+                                          <JFXListView fx:id="listHashtags" focusTraversable="false">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                          </JFXListView>
                                        </content>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
                                   </TitledPane>
                                   <TitledPane animated="false" expanded="false" text="Top 5 des tweets">
                                        <content>

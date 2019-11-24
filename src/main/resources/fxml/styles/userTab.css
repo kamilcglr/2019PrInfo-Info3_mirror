@@ -1,6 +1,7 @@
-#gridPane{
+#gridPane {
     -fx-background-color: -main-bg-color;
 }
+
 /*
 * Labels
 */
@@ -52,9 +53,11 @@
     -fx-stroke: -gray;
     -fx-background-color: -gray;
 }
-#header{
+
+#header {
     -fx-background-color: -white;
 }
+
 /*
 * Image
 */
@@ -80,18 +83,12 @@
     -fx-background-color: white;
 }
 
-.TitleListviewLabel {
-    -fx-font-family: 'Roboto Medium', sans-serif;
-    -fx-font-size: 20;
-    -fx-text-fill: -primary;
-}
-
 #favoriteIcon {
     -fx-icon-color: -red;
 }
 
 /*
-* Accordion TODO add radius on titled pane
+* Title pane
 */
 .titled-pane {
     -fx-padding: 0 0 1em 0;
@@ -110,9 +107,7 @@
 }
 
 .titled-pane > *.content {
-    -fx-background-radius: 10pt;
-    -fx-border-radius: 10pt;
-    -fx-background-color: WHITE;
+    -fx-background-color: transparent;
     -fx-text-fill: -primary;
     -fx-border-style: hidden;
 }
@@ -121,18 +116,45 @@
     -fx-background-color: -primary
 }
 
+.titled-pane > .content > * {
+    -fx-padding: 5 0 10 0;
+}
+
 /*
 * List of hastags
 */
 #listHashtags {
-    -fx-background-radius: 10 10 10 10px;
-    -fx-padding: 0 10 0 10;
+    -fx-background-radius: 10pt;
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+
     -fx-font-size: 15;
-    -fx-font-family: Roboto;
-    -fx-background-color: WHITE;
     -fx-border-style: hidden;
+    -fx-background-color: WHITE;
 }
 
 .jfx-list-cell:odd, .jfx-list-cell:even {
     -fx-background-color: WHITE;
+}
+
+.indexLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-padding: 0 0 0 10;
+}
+
+.hashtagTextLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-padding: 0 0 0 10;
+
+}
+
+.nbTweetLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-style: italic;
+    -fx-padding: 0 0 0 10;
+}
+
+#vbox{
+    -fx-padding: 10;
 }

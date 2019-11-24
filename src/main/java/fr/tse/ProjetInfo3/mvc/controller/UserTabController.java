@@ -6,27 +6,28 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class UserTabController {
     private GridPane gridPane;
 
     @FXML
-    private JFXListView listTweets;
+    private JFXListView<JFXListCell> listTweets;
 
     @FXML
     private JFXButton compareButton;
@@ -85,7 +86,7 @@ public class UserTabController {
     @FXML
     private Label nbFollowing;
     @FXML
-    private JFXListView listHashtags;
+    private JFXListView<ResultHashtag> listHashtags;
     @FXML
     private Circle avatar;
     @FXML
@@ -133,6 +134,9 @@ public class UserTabController {
         compareButton.setVisible(false);
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
+
+        listHashtags.setCellFactory(param -> new Cell());
+
 
     }
 
@@ -196,7 +200,7 @@ public class UserTabController {
         char typeResearch = getTypeSearch();
         switch (typeResearch) {
             case 'd':
-                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 3194);
+                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
                 hashtagUsed = userViewer.topHashtag(tweetList);
                 break;
             case 'c':
@@ -204,10 +208,10 @@ public class UserTabController {
                 hashtagUsed = userViewer.topHashtag(tweetList);
                 break;
         }
-        ObservableList<Label> hashtagsToPrint = FXCollections.observableArrayList();
+        ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (String hashtag : hashtagUsed.keySet()) {
-            hashtagsToPrint.add(new Label(hashtag + " " + hashtagUsed.get(hashtag)));
+            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagUsed.get(hashtag).toString()));
             i++;
             if (i == 5) {
                 break;
@@ -215,9 +219,65 @@ public class UserTabController {
         }
         Platform.runLater(() -> {
             listHashtags.getItems().addAll(hashtagsToPrint);
-            titledHashtag.setMaxHeight(50*hashtagsToPrint.size());
+            titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
             progressIndicator.setVisible(false);
         });
         return null;
+    }
+
+    /**
+     * This class will represent a result of a linked hashtag
+     */
+    static class Cell extends ListCell<ResultHashtag> {
+        HBox hBox = new HBox();
+        Label classementLabel = new Label("");
+        Label hashtagLabel = new Label("");
+        Label nbTweetLabel = new Label("");
+
+        public Cell() {
+            super();
+            classementLabel.getStyleClass().add("indexLabel");
+            hashtagLabel.getStyleClass().add("hashtagTextLabel");
+            nbTweetLabel.getStyleClass().add("nbTweetLabel");
+            hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
+        }
+
+        public void updateItem(ResultHashtag resultHashtag, boolean empty) {
+            super.updateItem(resultHashtag, empty);
+
+            if (resultHashtag != null && !empty) {
+                classementLabel.setText(resultHashtag.getClassementIndex());
+                hashtagLabel.setText(resultHashtag.getHashtagName());
+                nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
+                setGraphic(hBox);
+            }
+        }
+    }
+
+    /**
+     * This class will represent a result of a linked hashtag
+     */
+    private static class ResultHashtag {
+        private final String classementIndex;
+        private final String hashtagName;
+        private final String nbTweets;
+
+        ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
+            this.classementIndex = classementIndex;
+            this.hashtagName = hashtagName;
+            this.nbTweets = nbTweets;
+        }
+
+        String getClassementIndex() {
+            return classementIndex;
+        }
+
+        String getHashtagName() {
+            return hashtagName;
+        }
+
+        String getNbTweets() {
+            return nbTweets;
+        }
     }
 }
