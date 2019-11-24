@@ -19,6 +19,9 @@
     src: url('../../fonts/Roboto/Roboto-Bold.ttf');
 }
 
+@font-face {
+    src: url('../../fonts/Roboto/Roboto-LightItalic.ttf');
+}
 .root {
     -main-bg-color: #e5e9ed;
     -primary: #55ACEE;
