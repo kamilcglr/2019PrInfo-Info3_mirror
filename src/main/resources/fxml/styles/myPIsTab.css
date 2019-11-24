@@ -22,6 +22,7 @@
 }
 
 .jfx-list-cell:hover {
+    /*This not respects the standard !*/
     -fx-background-color: #81b9cc;
 }
 
