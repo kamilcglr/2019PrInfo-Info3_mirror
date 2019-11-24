@@ -125,18 +125,17 @@ public class RequestManager {
      * @return Map of Names and screen_names of user
      */
     public Map<String, String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false";
 
         //if the proposition contains spaces we will remove them
         //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces
-        String spaceRemoved = userProposition.replace(" ", "%20");
+        String urlSpaceRemoved = url.replace(" ", "%20");
 
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + spaceRemoved +"&count=20&include_entities=false";
-        //String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false";
-        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
-                .setHeader("Authorization", oAuthManager.getheader(userProposition)).build();
+        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(urlSpaceRemoved))
+                .setHeader("Authorization", oAuthManager.getheader(url)).build();
 
         List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-        Map<String,String> userNamesANDScreenName = new HashMap<>();
+        Map<String, String> userNamesANDScreenName = new HashMap<>();
         users.forEach(user -> userNamesANDScreenName.put(user.getName(), user.getScreen_name()));
         return userNamesANDScreenName;
     }
@@ -392,13 +391,9 @@ public class RequestManager {
             oauthConfig = new OAuthConfigBuilder(consumer, consumerSecret)
                     .setTokenKeys(accessToken, accessTokensecret)
                     .build();
-
             signature = oauthConfig.buildSignature(HttpMethod.GET, url).create();
-            System.out.println(signature.getAsHeader());
-            return signature.getAsHeader();
-
-           // return signature.getAsHeader().replace(signature.getSignature(),
-           //         URLEncoder.encode(signature.getSignature(), StandardCharsets.UTF_8));
+            return signature.getAsHeader().replace(signature.getSignature(),
+                    URLEncoder.encode(signature.getSignature(), StandardCharsets.UTF_8));
         }
     }
 

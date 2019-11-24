@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Test if request manager sends correct information
@@ -38,8 +39,10 @@ class RequestManagerTest {
     @org.junit.jupiter.api.Test
     void searchUsersTest() throws IOException, InterruptedException {
         RequestManager requestManager = new RequestManager();
-        List<String> users = requestManager.getUsersbyName("donald");
-        users.forEach(user -> System.out.println(user));
+        Map<String,String> users = requestManager.getUsersbyName("donald trump");
+        for (Map.Entry<String, String> entry : users.entrySet()) {
+            System.out.println(entry.getKey() + "\t\t\t" + entry.getValue());
+        }
     }
 
 }
