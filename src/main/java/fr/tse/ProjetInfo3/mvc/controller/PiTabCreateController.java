@@ -3,7 +3,11 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
@@ -15,6 +19,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -92,9 +97,9 @@ public class PiTabCreateController {
 	private void initialize() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		date = new Date();
-		suivisGrid.setVisible(false);
-		suivisGrid2.setVisible(false);
-		creationDateJFXTextField.setEditable(false);
+		suivisGrid.setVisible(true);
+		suivisGrid2.setVisible(true);
+		creationDateJFXTextField.setEditable(true);
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
 	}
 
@@ -132,7 +137,7 @@ public class PiTabCreateController {
 
 	@FXML
 	public void addHashtagJFXButtonPressed(ActionEvent event) {
-
+		launchHashtagInputDialog();
 	}
 
 	/**
@@ -183,10 +188,48 @@ public class PiTabCreateController {
 	}
 
 	private void launchUserInputDialog() {
-
+		BoxBlur blur = new BoxBlur(3, 3, 3);
 	}
 
 	private void launchHashtagInputDialog() {
+		Label headerLabel = new Label("Ajout de nouveau hashtag");
+		TextField inputHashtag = new TextField();
+		JFXButton cancelButton = new JFXButton("Annuler");
+		JFXButton addButton = new JFXButton("Ajouter");
 		
+		headerLabel.getStyleClass().add("dialog-header");
+		cancelButton.getStyleClass().add("dialog-button");
+		addButton.getStyleClass().add("dialog-button");
+
+		BoxBlur blur = new BoxBlur(3, 3, 3);
+
+		JFXDialogLayout dialogLayout = new JFXDialogLayout();
+		dialogLayout.setPadding(new Insets(10));
+		JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
+		
+		addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+			
+			dialog.close();
+		});
+		
+		
+		dialogLayout.setHeading(headerLabel);
+		dialogLayout.setBody(inputHashtag);
+		dialogLayout.setActions(cancelButton, addButton);
+		dialog.show();
+		
+		dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
+			anchorPane.setEffect(null);
+		});
+		
+		anchorPane.setEffect(blur);
+
+		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+			@Override
+			public void handle(JFXDialogEvent event) {
+				tabPane.getTabs().remove(tab);
+				mainController.goToMyPisPane();
+			}
+		});
 	}
 }
