@@ -240,12 +240,16 @@ public class RequestManager {
     public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
         int tentatives = 0;
+        //Manouche methods TODO
+        boolean oldFailed = false;
+        int successiveFails = 0;
+
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
         long max_id = 0L;
         try {
-            while (tweets.size() < count && (tentatives < 100)) {
+            while (tweets.size() < count && (tentatives < 100) && successiveFails < 5) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -253,12 +257,21 @@ public class RequestManager {
                     throw new RequestManagerException("Unknown user");
                 }
 
-                //Sometimes twitter API gives bad result then we increment tentatives
+                //Sometimes twitter API gives bad result then we increment tentatives and wait 1 second
                 if (response.body().equals("[]")) {
                     tentatives++;
+                    if (oldFailed) {
+                        successiveFails++;
+                    }
+                    oldFailed = true;
+                    Thread.sleep(1000);
                     System.out.println("tentatives" + tentatives);
                     continue;
+                } else {
+                    oldFailed = false;
+                    successiveFails = 0;
                 }
+
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting() //human-readable json
                         .setDateFormat(TwitterDateParser.twitterFormat)
@@ -276,7 +289,6 @@ public class RequestManager {
 
                 tweets.addAll(tempList);
             }
-            System.out.println("Test tweet getters, request Manager :" + tweets.size());
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
