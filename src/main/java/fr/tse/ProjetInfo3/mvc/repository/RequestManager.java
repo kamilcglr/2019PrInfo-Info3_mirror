@@ -9,9 +9,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,7 +17,10 @@ import com.mgiorda.oauth.HttpMethod;
 import com.mgiorda.oauth.OAuthConfig;
 import com.mgiorda.oauth.OAuthConfigBuilder;
 import com.mgiorda.oauth.OAuthSignature;
+import com.sun.javadoc.Parameter;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.Statuses;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
@@ -274,50 +274,106 @@ public class RequestManager {
         }
         return tweets;
     }
+    
+    /*  ****************************************************************************************************************
+     *  Functions with Hashtags
+     *  ***************************************************************************************************************/
 
+    /**
+     * @author Laïla
+     * Method to get tweets that contains #
+     * @param label 	the hashtag that we search
+     *
+     */
     public List<Tweet> searchTweets(String label) {
-
         String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23" + label;
-
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(url))
-                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-                .build();
+        int tentatives = 0;
+        List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
-        // Create a tweet Object
-        ArrayList<Tweet> hundredRetweets = new ArrayList<>();
+        long max_id = 0L;
         try {
-            response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        	 while (tweets.size() <300) {
+            	HttpRequest request = HttpRequest.newBuilder()
+                        .GET()
+                        .uri(URI.create(url))
+                        .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                        .build();
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+                if (response.body().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
 
-            if (response.body().contains("code\":50")) {
-                throw new RequestManagerException("Unknown user");
-            }
-            Gson gson = new GsonBuilder()
-                    .setPrettyPrinting() //human-readable json
-                    .setLenient()
-                    .create();
-            // assign the line below to the tweet object
-            /*String newBody = removeLastChar(response.body());
-            String tableOfTweets = newBody.replace("{\"statuses\":","")+"]";
-            System.out.println(tableOfTweets);*/
-            Map jsonJavaRootObject = new Gson().fromJson(response.body(), Map.class);
-            System.out.println(jsonJavaRootObject.get("statuses"));
-            // take just the table
-            Type listType = new TypeToken<ArrayList<Tweet>>() {
-            }.getType();
-            //hundredRetweets = gson.fromJson(jsonJavaRootObject.get("statuses").toString(),listType);
+                //Sometimes twitter API gives bad result then we increment tentatives
+                if (response.body().equals("[]")) {
+                    tentatives++;
+                    //continue;
+                }
+                
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        //.setLenient()
+                        .setDateFormat(TwitterDateParser.twitterFormat)
+                        .create();
 
+                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
+                }.getType();
+                //gson will complete the attributes of object if it finds elements that have the same name
+               Statuses tempList = gson.fromJson(response.body(), Statuses.class);
+               tempList.getTweets().forEach(tweet-> tweets.add(tweet));
+               //tweets.forEach(tweet->System.out.println(tweet.toString()));
+        	 }
+               System.out.println(tentatives);
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
-        return hundredRetweets;
+        System.out.println(response.body());
+        return tweets;
+    }
+/**
+ * @author Laïla
+ * @param label is the hashtag we're looking for
+ * @return the list of unique users who have used the #
+**/
+    public List<User> getUsersFromHashtag(String label) {
+
+        List<Tweet> tweets = searchTweets(label);
+        List<User> users = new ArrayList<>();
+        tweets.forEach(tweet->users.add(tweet.getUser()));
+        List<User> listWithoutDuplicates = new ArrayList<>(
+        	      new HashSet<>(users));
+        return listWithoutDuplicates;
     }
 
+
+    /**
+     * @author Laïla
+     * @param label is the hashtag we're looking for
+     * @return the list of hashtags linked to that #
+    **/
+    public List<String> getHashtagLinked(String label) {
+
+       List<Tweet> tweets = searchTweets(label);
+       List<String> hashtags= new ArrayList<>();
+       List<String> result=null;
+       tweets.forEach(tweet->tweet.getEntities().getHashtags().forEach(hashtag->hashtags.add(hashtag.getText())));
+       //We lowercase evry # so we can get only linked ones
+       result = hashtags.stream()
+               .map(String::toLowerCase)
+               .collect(Collectors.toList());
+       //We remove the # that we're looking from the list
+       label=label.toLowerCase();
+       while(result.contains(label)) {
+    	   result.remove(label);
+       }
+        return result;
+
+    }
+    
+    
     /**
      * @author kamil CAGLAR
      * Porvides a request for getting the tweets from user timeline

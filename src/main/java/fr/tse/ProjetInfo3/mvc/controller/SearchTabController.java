@@ -278,11 +278,14 @@ public class SearchTabController {
                     //if search does not throw error
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
-                        hastagViewer.searchHashtag(research);
+                        hastagViewer.searchHashtag(research.substring(1));
+                        hastagViewer.setHashtag(research.substring(1));
+                        mainController.goToHashtagPane(hastagViewer);
+
+                      //  System.out.println(research.substring(1));
 
                         //we go to this part when hashtag exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
 

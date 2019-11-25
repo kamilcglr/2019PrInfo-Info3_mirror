@@ -172,8 +172,34 @@ public class MainController {
     }
 
     public void goToHashtagPane(HastagViewer hastagViewer) {
-        //tabPane.getSelectionModel().select(hashtagTabFromMain);
-        //hashtagTabController.setHastagViewer(hastagViewer);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
+        try {
+            AnchorPane newUserTab = fxmlLoader.load();
+            HashtagTabController hashtagTabController = fxmlLoader.getController();
+            hashtagTabController.injectMainController(this);
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(newUserTab);
+                tab.setText("#"+hastagViewer.getHashtag());
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+
+            //Heavy task inside this thread, we go to user pane before
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    hashtagTabController.setHastagViewer(hastagViewer);
+                    return null;
+                }
+            };
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToLoginPane() {

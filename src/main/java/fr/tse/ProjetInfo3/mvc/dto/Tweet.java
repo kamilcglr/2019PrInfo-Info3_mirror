@@ -15,14 +15,13 @@ public class Tweet {
 
     private Date created_at;
     private long id;
-    private String full_text;
+    private String text;
     private Boolean truncated;
     private User user;
 
     private long quoted_status_id;
     private Tweet quoted_status;
     private Tweet retweeted_status;
-
     private long quote_count;
     private long reply_count;
     private long retweet_count;
@@ -40,7 +39,7 @@ public class Tweet {
         return "Tweet{" +
                 "created_at=" + created_at +
                 ", id=" + id +
-                ", text='" + full_text + '\'' +
+                ", text='" +text + '\'' +
                 ", truncated=" + truncated +
                 ", user=" + user +
                 ", quoted_status_id=" + quoted_status_id +
@@ -68,7 +67,7 @@ public class Tweet {
         if (retweet_count != tweet.retweet_count) return false;
         if (favorite_count != tweet.favorite_count) return false;
         if (created_at != null ? !created_at.equals(tweet.created_at) : tweet.created_at != null) return false;
-        if (full_text != null ? !full_text.equals(tweet.full_text) : tweet.full_text != null) return false;
+        if (text != null ? !text.equals(tweet.text) : tweet.text != null) return false;
         if (truncated != null ? !truncated.equals(tweet.truncated) : tweet.truncated != null) return false;
         if (user != null ? !user.equals(tweet.user) : tweet.user != null) return false;
         if (quoted_status != null ? !quoted_status.equals(tweet.quoted_status) : tweet.quoted_status != null)
@@ -82,7 +81,7 @@ public class Tweet {
     public int hashCode() {
         int result = created_at != null ? created_at.hashCode() : 0;
         result = 31 * result + (int) (id ^ (id >>> 32));
-        result = 31 * result + (full_text != null ? full_text.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (truncated != null ? truncated.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (int) (quoted_status_id ^ (quoted_status_id >>> 32));
@@ -122,11 +121,11 @@ public class Tweet {
 
 
     public String getFull_text() {
-        return full_text;
+        return text;
     }
 
     public void setFull_text(String full_text) {
-        this.full_text = full_text;
+        this.text = full_text;
     }
 
     public Boolean getTruncated() {
