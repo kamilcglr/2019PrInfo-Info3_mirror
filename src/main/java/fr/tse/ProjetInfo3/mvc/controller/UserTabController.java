@@ -11,23 +11,23 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +54,7 @@ public class UserTabController {
     private GridPane gridPane;
 
     @FXML
-    private JFXListView listTweets;
+    private JFXListView<JFXListCell> listTweets;
 
     @FXML
     private JFXButton compareButton;
@@ -64,6 +64,9 @@ public class UserTabController {
 
     @FXML
     private JFXSpinner progressIndicator;
+
+    @FXML
+    private Label lastAnalysedLabel;
 
     @FXML
     private TitledPane titledHashtag;
@@ -85,11 +88,12 @@ public class UserTabController {
     @FXML
     private Label nbFollowing;
     @FXML
-    private JFXListView listHashtags;
+    private JFXListView<ResultHashtag> listHashtags;
     @FXML
     private Circle avatar;
     @FXML
     private ImageView profileImageView;
+
     private Image profileImage;
 
     /**************************************************************/
@@ -116,13 +120,9 @@ public class UserTabController {
             nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
             buildPicture();
-            //Image profilePic = new Image(userToPrint.getProfile_image_url_https());
-            //profileImageView.setImage(profilePic);
-            //profileImageView.setClip(avatar);
-            //avatar.setFill(new ImagePattern(profilePic));
         });
 
-        Thread thread = new Thread(setTopHashtags());
+        Thread thread = new Thread(getTweets());
         thread.setDaemon(true);
         thread.start();
     }
@@ -133,6 +133,9 @@ public class UserTabController {
         compareButton.setVisible(false);
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
+
+        listHashtags.setCellFactory(param -> new Cell());
+        lastAnalysedLabel.setVisible(false);
 
     }
 
@@ -189,25 +192,40 @@ public class UserTabController {
         return twitterDate;
     }
 
-    private Task<Void> setTopHashtags() {
+    /**
+     * Called by setUser, it gets the tweets of a user,
+     * then create Two concurrent thread to check the top Hashtag and top Tweets
+     */
+    private Task<Void> getTweets() {
         Platform.runLater(() -> {
             progressIndicator.setVisible(true);
         });
-        char typeResearch = getTypeSearch();
-        switch (typeResearch) {
-            case 'd':
-                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
-                hashtagUsed = userViewer.topHashtag(tweetList);
-                break;
-            case 'c':
-                tweetList = userViewer.getTweetsByDate(userToPrint.getScreen_name(), getDate());
-                hashtagUsed = userViewer.topHashtag(tweetList);
-                break;
+
+        long numberOfRequest = userToPrint.getStatuses_count();
+        if (numberOfRequest > 3194) {
+            numberOfRequest = 3194;
         }
-        ObservableList<Label> hashtagsToPrint = FXCollections.observableArrayList();
+        tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), (int) numberOfRequest);
+
+        Thread thread = new Thread(setTopHashtags());
+        thread.setDaemon(true);
+        thread.start();
+
+        //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
+        //Thread thread = new Thread(settoptweets());
+        //thread.setDaemon(true);
+        //thread.start();
+
+        return null;
+    }
+
+    private Task<Void> setTopHashtags() {
+        hashtagUsed = userViewer.topHashtag(tweetList);
+
+        ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (String hashtag : hashtagUsed.keySet()) {
-            hashtagsToPrint.add(new Label(hashtag + " " + hashtagUsed.get(hashtag)));
+            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagUsed.get(hashtag).toString()));
             i++;
             if (i == 5) {
                 break;
@@ -215,9 +233,70 @@ public class UserTabController {
         }
         Platform.runLater(() -> {
             listHashtags.getItems().addAll(hashtagsToPrint);
-            titledHashtag.setMaxHeight(50*hashtagsToPrint.size());
+            titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
             progressIndicator.setVisible(false);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                    date);
+            lastAnalysedLabel.setVisible(true);
         });
         return null;
+    }
+
+    /**
+     * This class will represent a result of a linked hashtag
+     */
+    static class Cell extends ListCell<ResultHashtag> {
+        HBox hBox = new HBox();
+        Label classementLabel = new Label("");
+        Label hashtagLabel = new Label("");
+        Label nbTweetLabel = new Label("");
+
+        Cell() {
+            super();
+            classementLabel.getStyleClass().add("indexLabel");
+            hashtagLabel.getStyleClass().add("hashtagTextLabel");
+            nbTweetLabel.getStyleClass().add("nbTweetLabel");
+            hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
+        }
+
+        public void updateItem(ResultHashtag resultHashtag, boolean empty) {
+            super.updateItem(resultHashtag, empty);
+
+            if (resultHashtag != null && !empty) {
+                classementLabel.setText(resultHashtag.getClassementIndex());
+                hashtagLabel.setText(resultHashtag.getHashtagName());
+                nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
+                setGraphic(hBox);
+            }
+        }
+    }
+
+    /**
+     * This class will represent a result of a linked hashtag
+     */
+    private static class ResultHashtag {
+        private final String classementIndex;
+        private final String hashtagName;
+        private final String nbTweets;
+
+        ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
+            this.classementIndex = classementIndex;
+            this.hashtagName = hashtagName;
+            this.nbTweets = nbTweets;
+        }
+
+        String getClassementIndex() {
+            return classementIndex;
+        }
+
+        String getHashtagName() {
+            return hashtagName;
+        }
+
+        String getNbTweets() {
+            return nbTweets;
+        }
     }
 }

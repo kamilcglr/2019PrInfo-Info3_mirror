@@ -2,14 +2,15 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXProgressBar?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleNode?>
 <?import com.jfoenix.controls.JFXTogglePane?>
-<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -18,116 +19,80 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<?import com.jfoenix.controls.JFXSpinner?>
-<AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.SearchTabController">
+<AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.SearchTabController">
     <children>
-        <StackPane fx:id="dialogStackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="dialogStackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane fx:id="anchorPane">
                     <children>
-                        <GridPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <GridPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <JFXButton fx:id="searchButton" alignment="CENTER" buttonType="RAISED"
-                                           contentDisplay="CENTER" onAction="#searchButtonPressed" prefHeight="42.0"
-                                           prefWidth="0.0" textAlignment="JUSTIFY" GridPane.columnIndex="4"
-                                           GridPane.halignment="LEFT" GridPane.rowIndex="3"
-                                           GridPane.valignment="CENTER">
+                                <JFXButton fx:id="searchButton" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#searchButtonPressed" prefHeight="42.0" prefWidth="0.0" textAlignment="JUSTIFY" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon iconColor="#48ac98" iconLiteral="fas-search" iconSize="32"/>
+                                        <FontIcon iconColor="#48ac98" iconLiteral="fas-search" iconSize="32" />
                                     </graphic>
                                     <GridPane.margin>
-                                        <Insets/>
+                                        <Insets />
                                     </GridPane.margin>
                                 </JFXButton>
-                                <JFXTextField fx:id="searchField" onAction="#onEnter" GridPane.columnIndex="1"
-                                              GridPane.columnSpan="3" GridPane.rowIndex="3"/>
-                                <JFXTogglePane GridPane.rowIndex="2" GridPane.rowSpan="3"/>
-                                <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER"
-                                       prefHeight="34.0" prefWidth="416.0" text="Que voulez-vous chercher ? "
-                                       textAlignment="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER"
-                                       GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
-                                <JFXToggleNode fx:id="userToggle" onAction="#userTogglePressed" styleClass="toggle"
-                                               GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-                                               GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                <JFXTextField fx:id="searchField" onAction="#onEnter" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                <JFXTogglePane GridPane.rowIndex="2" GridPane.rowSpan="3" />
+                                <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="416.0" text="Que voulez-vous chercher ? " textAlignment="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                                <JFXToggleNode fx:id="userToggle" onAction="#userTogglePressed" styleClass="toggle" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="userIcon" iconColor="#48ac98" iconLiteral="far-user"
-                                                  iconSize="32" styleClass="toggleIcon"/>
+                                        <FontIcon fx:id="userIcon" iconColor="#48ac98" iconLiteral="far-user" iconSize="32" styleClass="toggleIcon" />
                                     </graphic>
                                 </JFXToggleNode>
-                                <JFXToggleNode fx:id="hashtagToggle" onAction="#hashtagTogglePressed"
-                                               styleClass="toggle" GridPane.columnIndex="3" GridPane.halignment="LEFT"
-                                               GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                <JFXToggleNode fx:id="hashtagToggle" onAction="#hashtagTogglePressed" styleClass="toggle" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="hashtagIcon" iconColor="#48ac98" iconLiteral="fas-hashtag"
-                                                  iconSize="32" styleClass="toggleIcon"/>
+                                        <FontIcon fx:id="hashtagIcon" iconColor="#48ac98" iconLiteral="fas-hashtag" iconSize="32" styleClass="toggleIcon" />
                                     </graphic>
                                 </JFXToggleNode>
-                                <JFXButton fx:id="loginButton" contentDisplay="RIGHT" onAction="#loginButtonPressed"
-                                           styleClass="logginSigninButtons" text="Login" GridPane.columnIndex="4"
-                                           GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="loginButton" contentDisplay="RIGHT" onAction="#loginButtonPressed" styleClass="logginSigninButtons" text="Login" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16"
-                                                  styleClass="logginSigninIcons"/>
+                                        <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" styleClass="logginSigninButtons"
-                                           text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT"
-                                           GridPane.valignment="CENTER">
+                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16"
-                                                  styleClass="logginSigninIcons"/>
+                                        <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3"
-                                       GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
+                                <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
 
-                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1"
-                                      GridPane.columnSpan="3" GridPane.rowIndex="4">
-                                    <children>
-                                        <ListView fx:id="propositionList" onMouseClicked="#listClicked"
-                                                  prefHeight="200.0" prefWidth="200.0">
-                                            <padding>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                                            </padding>
-                                            <VBox.margin>
-                                                <Insets top="5.0"/>
-                                            </VBox.margin>
-                                        </ListView>
-                                    </children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                           <children>
+                              <JFXTreeTableView fx:id="treeView" onMouseClicked="#treeViewClicked">
+                                 <columnResizePolicy>
+                                    <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </JFXTreeTableView>
+                           </children>
                                 </VBox>
-                                <VBox maxHeight="10.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
-                                      GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                                <VBox maxHeight="10.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
                                     <children>
-                                        <JFXProgressBar fx:id="propositionProgressBar"
-                                                        maxHeight="1.7976931348623157E308"
-                                                        maxWidth="1.7976931348623157E308"/>
+                                        <JFXProgressBar fx:id="propositionProgressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                                     </children>
                                     <GridPane.margin>
-                                        <Insets left="10.0" right="10.0"/>
+                                        <Insets left="10.0" right="10.0" />
                                     </GridPane.margin>
                                 </VBox>
-                                <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" prefHeight="45.0"
-                                            prefWidth="45.0" GridPane.columnIndex="4" GridPane.halignment="LEFT"
-                                            GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER"
-                                            GridPane.vgrow="NEVER"/>
+                                <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
                             </children>
                         </GridPane>
                     </children>
@@ -136,7 +101,7 @@
         </StackPane>
     </children>
     <stylesheets>
-        <URL value="@styles/searchTab.css"/>
-        <URL value="@styles/main.css"/>
+        <URL value="@styles/searchTab.css" />
+        <URL value="@styles/main.css" />
     </stylesheets>
 </AnchorPane>

@@ -4,6 +4,7 @@ package fr.tse.ProjetInfo3.mvc.repository;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -117,18 +118,26 @@ public class RequestManager {
         return parseUsers(request, true).get(0);
     }
 
-    //TODO Comments
-    public List<String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
-        //"&include_entities=false"permits to reduce the size of users object, we don't need them
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&include_entities=false";
-        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(url))
+    /**
+     * Search a list of users by name, or screen_name
+     *
+     * @param userProposition name of a user, or at least the beginning of a name
+     * @return Map of Names and screen_names of user
+     */
+    public Map<String, String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false";
+
+        //if the proposition contains spaces we will remove them
+        //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces
+        String urlSpaceRemoved = url.replace(" ", "%20");
+
+        HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(urlSpaceRemoved))
                 .setHeader("Authorization", oAuthManager.getheader(url)).build();
 
-        //False, because we need multiple users
         List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-        List<String> userNames = new ArrayList<>();
-        users.forEach(user -> userNames.add(user.getScreen_name()));
-        return userNames;
+        Map<String, String> userNamesANDScreenName = new HashMap<>();
+        users.forEach(user -> userNamesANDScreenName.put(user.getName(), user.getScreen_name()));
+        return userNamesANDScreenName;
     }
 
     public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
@@ -229,14 +238,18 @@ public class RequestManager {
      * TODO optimize the List format
      */
     public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
-        //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
+        //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
+        //Manouche methods TODO
+        boolean oldFailed = false;
+        int successiveFails = 0;
+
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
         long max_id = 0L;
         try {
-            while (tweets.size() < count && (tentatives < 10)) {
+            while (tweets.size() < count && (tentatives < 100) && successiveFails < 5) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -244,11 +257,23 @@ public class RequestManager {
                     throw new RequestManagerException("Unknown user");
                 }
 
-                //Sometimes twitter API gives bad result then we increment tentatives
+                //Sometimes twitter API gives bad result then we increment tentatives and wait 1 second
                 if (response.body().equals("[]")) {
                     tentatives++;
+                    if (oldFailed) {
+                        successiveFails++;
+                    }
+                    oldFailed = true;
+                    Thread.sleep(1000);
                     continue;
+                } else {
+                    oldFailed = false;
+                    successiveFails = 0;
                 }
+
+                System.out.println("successive fails :" + tentatives);
+                System.out.println("tentatives :" + tentatives);
+
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting() //human-readable json
                         .setDateFormat(TwitterDateParser.twitterFormat)
@@ -380,7 +405,6 @@ public class RequestManager {
             oauthConfig = new OAuthConfigBuilder(consumer, consumerSecret)
                     .setTokenKeys(accessToken, accessTokensecret)
                     .build();
-
             signature = oauthConfig.buildSignature(HttpMethod.GET, url).create();
             return signature.getAsHeader().replace(signature.getSignature(),
                     URLEncoder.encode(signature.getSignature(), StandardCharsets.UTF_8));
