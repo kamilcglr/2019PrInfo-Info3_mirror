@@ -238,7 +238,7 @@ public class RequestManager {
      * TODO optimize the List format
      */
     public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
-        //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
+        //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
         //Manouche methods TODO
         boolean oldFailed = false;
@@ -265,12 +265,14 @@ public class RequestManager {
                     }
                     oldFailed = true;
                     Thread.sleep(1000);
-                    System.out.println("tentatives" + tentatives);
                     continue;
                 } else {
                     oldFailed = false;
                     successiveFails = 0;
                 }
+
+                System.out.println("successive fails :" + tentatives);
+                System.out.println("tentatives :" + tentatives);
 
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting() //human-readable json
