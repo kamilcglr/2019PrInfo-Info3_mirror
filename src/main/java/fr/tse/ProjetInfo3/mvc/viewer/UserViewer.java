@@ -54,7 +54,7 @@ public class UserViewer {
         Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
 
         for (Tweet tweet : tweetList) {
-            if (!Tweeted.containsKey(tweet)){
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null){
                 int PopularCount=(int)tweet.getRetweet_count() +(int)tweet.getFavorite_count();
                 Tweeted.put(tweet, PopularCount);
             }
