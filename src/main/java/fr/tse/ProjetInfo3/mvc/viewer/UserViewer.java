@@ -37,6 +37,7 @@ public class UserViewer {
         user = requestManager.getUser(screen_name);
     }
 
+    //Not used for the moment, we keep it until end, we can use for graph
     public List<Tweet> getTweetsByDate(String screen_name, Date date) {
         return requestManager.getTweetsFromUserByDate(screen_name, date);
     }

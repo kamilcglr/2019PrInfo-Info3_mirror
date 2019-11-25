@@ -6,8 +6,6 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -124,7 +122,7 @@ public class UserTabController {
             buildPicture();
         });
 
-        Thread thread = new Thread(setTopHashtags());
+        Thread thread = new Thread(getTweets());
         thread.setDaemon(true);
         thread.start();
     }
@@ -194,7 +192,11 @@ public class UserTabController {
         return twitterDate;
     }
 
-    private Task<Void> setTopHashtags() {
+    /**
+     * Called by setUser, it gets the tweets of a user,
+     * then create Two concurrent thread to check the top Hashtag and top Tweets
+     */
+    private Task<Void> getTweets() {
         Platform.runLater(() -> {
             progressIndicator.setVisible(true);
         });
@@ -204,6 +206,20 @@ public class UserTabController {
             numberOfRequest = 3194;
         }
         tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), (int) numberOfRequest);
+
+        Thread thread = new Thread(setTopHashtags());
+        thread.setDaemon(true);
+        thread.start();
+
+        //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
+        //Thread thread = new Thread(settoptweets());
+        //thread.setDaemon(true);
+        //thread.start();
+
+        return null;
+    }
+
+    private Task<Void> setTopHashtags() {
         hashtagUsed = userViewer.topHashtag(tweetList);
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
