@@ -1,39 +1,39 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSpinner;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
-import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
 import org.kordamp.ikonli.javafx.Icon;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 
 //import java.awt.Label;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class HashtagTabController {
     private MainController mainController;
 
     private HastagViewer hastagViewer;
+
+    private Hashtag hashtagToPrint;
+
     Map<String, Integer> hashtagUsed;
 
+    private List<Tweet> tweetList;
+
     @FXML
-    private Label hashtag;
-    
+    private Label hashtagLabel;
+
     @FXML
     private Icon expandTweetsIcon;
 
@@ -55,7 +55,6 @@ public class HashtagTabController {
     @FXML
     private GridPane gridPane;
 
-    private String ourHashtag;
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -64,27 +63,44 @@ public class HashtagTabController {
 
     public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
         this.hastagViewer = hastagViewer;
-        ourHashtag = hastagViewer.getHashtag();
+        hashtagToPrint = hastagViewer.getHashtag();
 
-      Platform.runLater(() -> {
-            hashtag.setText("#" + ourHashtag);
-           nbUserLabel.setText(hastagViewer.getNumberOfUniqueAccounts(ourHashtag).toString());
-           nbTweetLabel.setText(hastagViewer.getNumberOfTweets(ourHashtag).toString());
-            List<String> hashtags=hastagViewer.getHashtagsLinked(ourHashtag);
-
-
-        });
-      Thread thread = new Thread(setTopHashtags());
-      thread.setDaemon(true);
-      thread.start();
-    }
-    private Task<Void> setTopHashtags() {
         Platform.runLater(() -> {
-           // progressIndicator.setVisible(true);
+            hashtagLabel.setText("#" + hashtagToPrint.getHashtagName());
         });
-        List<String> hashtags=hastagViewer.getHashtagsLinked(ourHashtag);
-        hashtagUsed=hastagViewer.topHashtag(hashtags);
-        
+
+        Thread thread = new Thread(getTweetFromHashtag());
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    /**
+     * Called by setHashtag, it gets the tweets of a hashtag,
+     * then create concurrent thread to analyze data
+     */
+    private Task<Void> getTweetFromHashtag() {
+        Platform.runLater(() -> {
+            progressIndicator.setVisible(true);
+        });
+
+        Thread thread = new Thread(setTopLinkedHashtag());
+        thread.setDaemon(true);
+        thread.start();
+
+        Thread thread2 = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
+        thread2.setDaemon(true);
+        thread2.start();
+
+        return null;
+    }
+
+    private Task<Void> setTopLinkedHashtag() {
+        Platform.runLater(() -> {
+            progressIndicator.setVisible(true);
+        });
+        List<String> hashtags = hastagViewer.getHashtagsLinked();
+        hashtagUsed = hastagViewer.topHashtag(hashtags);
+
         ObservableList<Label> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (String hashtag : hashtagUsed.keySet()) {
@@ -96,9 +112,21 @@ public class HashtagTabController {
         }
         Platform.runLater(() -> {
             topTenLinkedList.getItems().addAll(hashtagsToPrint);
-            titledHashtag.setMaxHeight(50*hashtagsToPrint.size());
-           // progressIndicator.setVisible(false);
+            titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
+            progressIndicator.setVisible(false);
         });
+
         return null;
     }
+
+    private Task<Void> setNumberOfUniqueAccountAndNumberOfTweets() {
+        Platform.runLater(() -> {
+            nbUserLabel.setText(hastagViewer.getNumberOfUniqueAccounts().toString());
+            nbTweetLabel.setText(hastagViewer.getNumberOfTweets().toString());
+        });
+
+        return null;
+    }
+
+
 }
