@@ -1,16 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -18,14 +8,19 @@ import com.mgiorda.oauth.HttpMethod;
 import com.mgiorda.oauth.OAuthConfig;
 import com.mgiorda.oauth.OAuthConfigBuilder;
 import com.mgiorda.oauth.OAuthSignature;
-import com.sun.javadoc.Parameter;
-
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Statuses;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -299,128 +294,111 @@ public class RequestManager {
         }
         return tweets;
     }
-    
+
     /*  ****************************************************************************************************************
      *  Functions with Hashtags
      *  ***************************************************************************************************************/
 
     /**
+     * @param hashtagName the hashtag that we search
+     * @return list of tweets that contain this hashtag
      * @author Laïla
-     * Method to get tweets that contains #
-     * @param label 	the hashtag that we search
-     *
+     * Method to get tweets that contains #. Uses the bearer token method.
+     * We limit the number of request to 45 for the moment, 45*100 = 4500 tweets
      */
-    public List<Tweet> searchTweets(String label) {
-        String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23" + label;
+    public List<Tweet> searchTweets(String hashtagName, int count) {
         int tentatives = 0;
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
+        HttpRequest request;
         long max_id = 0L;
+
         try {
-        	 while (tweets.size() <300) {
-            	HttpRequest request = HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create(url))
-                        .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
-                        .build();
+            while (tweets.size() < count) {
+                //100 is the max for this type f research !
+                request = buildHashtagTweetRequest(hashtagName, "100", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-                if (response.body().contains("code\":50")) {
-                    throw new RequestManagerException("Unknown user");
-                }
-
-                //Sometimes twitter API gives bad result then we increment tentatives
+                //If there is 0 tweets about this, we test 5 times then we stop.
                 if (response.body().equals("[]")) {
                     tentatives++;
-                    //continue;
+                    if (tentatives > 5) {
+                        break;
+                    }
                 }
-                
+
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting() //human-readable json
                         //.setLenient()
                         .setDateFormat(TwitterDateParser.twitterFormat)
                         .create();
 
-                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
-                }.getType();
                 //gson will complete the attributes of object if it finds elements that have the same name
-               Statuses tempList = gson.fromJson(response.body(), Statuses.class);
-               tempList.getTweets().forEach(tweet-> tweets.add(tweet));
-               //tweets.forEach(tweet->System.out.println(tweet.toString()));
-        	 }
-               System.out.println(tentatives);
+                //we use statuses because twitter sends statuses in this search {statuses : [...
+                Statuses tempStatuses = gson.fromJson(response.body(), Statuses.class);
+                List<Tweet> tempList = tempStatuses.getTweets();
+
+                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
+                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+                 */
+                max_id = tempList.get(tempList.size() - 1).getId() - 1;
+
+                tweets.addAll(tempList);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if (response.body().contains("code\":50")) {
                 throw new RequestManagerException("Unknown user");
             }
         }
-        System.out.println(response.body());
         return tweets;
     }
-/**
- * @author Laïla
- * @param label is the hashtag we're looking for
- * @return the list of unique users who have used the #
-**/
-    public List<User> getUsersFromHashtag(String label) {
 
-        List<Tweet> tweets = searchTweets(label);
-        List<User> users = new ArrayList<>();
-        tweets.forEach(tweet->users.add(tweet.getUser()));
-        List<User> listWithoutDuplicates = new ArrayList<>(
-        	      new HashSet<>(users));
-        return listWithoutDuplicates;
-    }
-
-
-    /**
-     * @author Laïla
-     * @param label is the hashtag we're looking for
-     * @return the list of hashtags linked to that #
-    **/
-    public List<String> getHashtagLinked(String label) {
-
-       List<Tweet> tweets = searchTweets(label);
-       List<String> hashtags= new ArrayList<>();
-       List<String> result=null;
-       tweets.forEach(tweet->tweet.getEntities().getHashtags().forEach(hashtag->hashtags.add(hashtag.getText())));
-       //We lowercase evry # so we can get only linked ones
-       result = hashtags.stream()
-               .map(String::toLowerCase)
-               .collect(Collectors.toList());
-       //We remove the # that we're looking from the list
-       label=label.toLowerCase();
-       while(result.contains(label)) {
-    	   result.remove(label);
-       }
-        return result;
-
-    }
-    
-    
     /**
      * @author kamil CAGLAR
      * Porvides a request for getting the tweets from user timeline
      * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
      */
     private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
-        String link = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count + "&tweet_mode=extended";
+        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count + "&tweet_mode=extended";
 
         if (max_id > 0) {
-            link = link + "&max_id=" + max_id.toString();
+            url = url + "&max_id=" + max_id.toString();
         }
 
         //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(link))
+                .uri(URI.create(url))
                 .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
                 .build();
 
         return request;
     }
 
+    /**
+     * @author kamil CAGLAR
+     * Porvides a request for getting the tweets that contains a specifi #.
+     * It is the mix of recent and popular.
+     * https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets
+     * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
+     */
+    private HttpRequest buildHashtagTweetRequest(String hashtagName, String count, Long max_id) {
+        String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23" + hashtagName + "&count=" + count + "&tweet_mode=extended";
+
+        if (max_id > 0) {
+            url = url + "&max_id=" + max_id.toString();
+        }
+
+        //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("Authorization", "Bearer " + bearer.getAccess_token())
+                .build();
+
+        return request;
+    }
 
     /*  ****************************************************************************************************************
      *  Sub classes to identify

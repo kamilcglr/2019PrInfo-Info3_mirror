@@ -174,13 +174,13 @@ public class MainController {
     public void goToHashtagPane(HastagViewer hastagViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
         try {
-            AnchorPane newUserTab = fxmlLoader.load();
+            AnchorPane newHashtagTab = fxmlLoader.load();
             HashtagTabController hashtagTabController = fxmlLoader.getController();
             hashtagTabController.injectMainController(this);
             Platform.runLater(() -> {
                 Tab tab = new Tab();
-                tab.setContent(newUserTab);
-                tab.setText("#"+hastagViewer.getHashtag());
+                tab.setContent(newHashtagTab);
+                tab.setText("#" + hastagViewer.getHashtag().getHashtagName());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
             });
@@ -193,6 +193,7 @@ public class MainController {
                     return null;
                 }
             };
+
             Thread thread = new Thread(task);
             thread.setDaemon(true);
             thread.start();
@@ -240,7 +241,7 @@ public class MainController {
                 myPIsTabController.refreshPIs();
             });
         }
-        if (!drawer.isClosed()){
+        if (!drawer.isClosed()) {
             drawer.close();
         }
     }

@@ -293,7 +293,6 @@ public class SearchTabController {
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
                         hastagViewer.searchHashtag(research.substring(1));
-                        hastagViewer.setHashtag(research.substring(1));
                         mainController.goToHashtagPane(hastagViewer);
 
                       //  System.out.println(research.substring(1));
