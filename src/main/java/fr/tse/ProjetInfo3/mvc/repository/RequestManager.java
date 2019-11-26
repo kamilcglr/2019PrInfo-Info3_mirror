@@ -21,6 +21,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  * It contains methods that will return POJO like user, tweet...
  */
 public class RequestManager {
+
     //We get this bearer only once, we will use it to make the calls
     private RequestManager.Bearer bearer;
     private OAuthManager oAuthManager;
@@ -247,7 +250,6 @@ public class RequestManager {
             while (tweets.size() < count && (tentatives < 100) && successiveFails < 5) {
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
                 if (response.body().contains("code\":50")) {
                     throw new RequestManagerException("Unknown user");
                 }
@@ -317,6 +319,7 @@ public class RequestManager {
             while (tweets.size() < count) {
                 //100 is the max for this type f research !
                 request = buildHashtagTweetRequest(hashtagName, "100", max_id);
+
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 //If there is 0 tweets about this, we test 5 times then we stop.
