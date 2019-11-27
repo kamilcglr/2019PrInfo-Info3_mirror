@@ -1,61 +1,97 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXSpinner;
+import com.jfoenix.controls.JFXProgressBar;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
-import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.GridPane;
-import org.kordamp.ikonli.javafx.Icon;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 
 //import java.awt.Label;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class HashtagTabController {
+    /**
+     * Non FXML elements
+     */
     private MainController mainController;
 
     private HastagViewer hastagViewer;
+
+    private Hashtag hashtagToPrint;
+
+    //Used to know how many tweets we have during search
+    private int numberOfTweetReceived;
+
     Map<String, Integer> hashtagUsed;
 
-    @FXML
-    private Label hashtag;
-    
-    @FXML
-    private Icon expandTweetsIcon;
+    private List<Tweet> tweetList;
 
-    @FXML
-    private Icon expandHashtagIcon;
 
+    /**
+     * Elements that will be populated with result
+     */
     @FXML
-    private JFXListView topFiveList;
+    private Label hashtagLabel;
     @FXML
-    private JFXSpinner progressIndicator;
+    private Label nbTweetsLabel;
     @FXML
-    private Label nbTweetLabel;
+    private Label nbUsersLabel;
     @FXML
-    private Label nbUserLabel;
+    private Label tweetsLabel;
     @FXML
-    private JFXListView topTenLinkedList;
+    private Label usersLabel;
+
+    //lists
+    @FXML
+    private VBox vbox;
+    @FXML
+    private JFXListView topFiveTweetsList;
+    @FXML
+    private JFXListView<ResultHashtag> topTenLinkedList;
     @FXML
     private TitledPane titledHashtag;
     @FXML
-    private GridPane gridPane;
+    private Label lastAnalysedLabel;
 
-    private String ourHashtag;
+    //Progress indicator
+    @FXML
+    private JFXProgressBar progressBar;
+    @FXML
+    private Label progressLabel;
+
+    /*This function is launched when this tab is launched */
+    @FXML
+    private void initialize() {
+        showHashtagElements(false);
+        progressBar.setVisible(false);
+        progressLabel.setVisible(false);
+
+        topTenLinkedList.setCellFactory(param -> new Cell());
+    }
+
+    private void showHashtagElements(boolean hide) {
+        vbox.setVisible(hide);
+        nbTweetsLabel.setVisible(hide);
+        nbUsersLabel.setVisible(hide);
+        tweetsLabel.setVisible(hide);
+        usersLabel.setVisible(hide);
+        lastAnalysedLabel.setVisible(hide);
+
+    }
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -64,41 +100,108 @@ public class HashtagTabController {
 
     public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
         this.hastagViewer = hastagViewer;
-        ourHashtag = hastagViewer.getHashtag();
+        hashtagToPrint = hastagViewer.getHashtag();
 
-      Platform.runLater(() -> {
-            hashtag.setText("#" + ourHashtag);
-           nbUserLabel.setText(hastagViewer.getNumberOfUniqueAccounts(ourHashtag).toString());
-           nbTweetLabel.setText(hastagViewer.getNumberOfTweets(ourHashtag).toString());
-            List<String> hashtags=hastagViewer.getHashtagsLinked(ourHashtag);
+        hastagViewer.getSearchProgression();
 
-
-        });
-      Thread thread = new Thread(setTopHashtags());
-      thread.setDaemon(true);
-      thread.start();
-    }
-    private Task<Void> setTopHashtags() {
         Platform.runLater(() -> {
-           // progressIndicator.setVisible(true);
+            hashtagLabel.setText("#" + hashtagToPrint.getHashtagName());
         });
-        List<String> hashtags=hastagViewer.getHashtagsLinked(ourHashtag);
-        hashtagUsed=hastagViewer.topHashtag(hashtags);
-        
-        ObservableList<Label> hashtagsToPrint = FXCollections.observableArrayList();
+
+        Thread thread = new Thread(getTweetFromHashtag());
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    /**
+     * Called by setHashtag, it gets the tweets of a hashtag,
+     * then create concurrent thread to analyze data
+     * This task is very long.
+     * Do not change the order. We have to wait to get all tweets before doing analysis
+     */
+    private Task<Void> getTweetFromHashtag() {
+        Platform.runLater(() -> {
+            initProgress(false);
+        });
+        try {
+            //search and get tweets from hashtag first
+            hastagViewer.search(hashtagToPrint.getHashtagName(), progressBar);
+            this.tweetList = hastagViewer.getTweetList();
+
+            //Tweet are collected
+            Platform.runLater(() -> {
+                initProgress(true);
+            });
+
+            Thread thread = new Thread(setTopLinkedHashtag());
+            thread.setDaemon(true);
+            thread.start();
+
+            Thread thread2 = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
+            thread2.setDaemon(true);
+            thread2.start();
+
+            //Wait for the two other tasks
+            while (thread.isAlive() && thread2.isAlive()) {
+                Thread.sleep(1000);
+            }
+            Platform.runLater(() -> {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+                lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                        date);
+
+                showHashtagElements(true);
+                progressBar.setVisible(false);
+                progressLabel.setVisible(false);
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Task<Void> setTopLinkedHashtag() {
+        List<String> hashtags = hastagViewer.getHashtagsLinked();
+        hashtagUsed = hastagViewer.topHashtag(hashtags);
+
+        ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (String hashtag : hashtagUsed.keySet()) {
-            hashtagsToPrint.add(new Label(hashtag + "\t\t\t" + hashtagUsed.get(hashtag)));
+            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagUsed.get(hashtag).toString()));
             i++;
-            if (i == 5) {
+            if (i == 10) {
                 break;
             }
         }
         Platform.runLater(() -> {
             topTenLinkedList.getItems().addAll(hashtagsToPrint);
-            titledHashtag.setMaxHeight(50*hashtagsToPrint.size());
-           // progressIndicator.setVisible(false);
+            titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
+        });
+
+        return null;
+    }
+
+    private Task<Void> setNumberOfUniqueAccountAndNumberOfTweets() {
+        Platform.runLater(() -> {
+            nbUsersLabel.setText(hastagViewer.getNumberOfUniqueAccounts().toString());
+            nbTweetsLabel.setText(hastagViewer.getNumberOfTweets().toString());
         });
         return null;
     }
+
+    private void initProgress(boolean isIndeterminate) {
+        if (!isIndeterminate) {
+            progressBar.setVisible(true);
+            progressBar.setProgress(0);
+            progressLabel.setVisible(true);
+            progressLabel.setText("Récupération des tweets depuis Twitter.com");
+        } else {
+            progressBar.setProgress(-1);
+            progressLabel.setText("Analyse des tweets");
+        }
+    }
+
+
 }

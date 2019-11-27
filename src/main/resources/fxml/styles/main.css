@@ -41,6 +41,10 @@
     -fx-background-color: -main-bg-color;
 }
 
+GridPane {
+    -fx-background-color: -main-bg-color;
+}
+
 
 /*******************************************************************************
 *                                                                              *
@@ -282,3 +286,36 @@
     -fx-cell-size: 20px;
 }
 
+
+/*
+* Title pane
+*/
+.titled-pane {
+    -fx-padding: 0 0 1em 0;
+}
+
+.titled-pane > .title {
+    -fx-background-radius: 10pt;
+    -fx-background-color: -white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: -primary;
+}
+
+.titled-pane > *.content {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary;
+    -fx-border-style: hidden;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: -primary
+}
+
+.titled-pane > .content > * {
+    -fx-padding: 5 0 10 0;
+}
