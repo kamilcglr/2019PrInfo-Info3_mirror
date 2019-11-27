@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXListCell;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -17,6 +18,8 @@ public class TweetController {
         this.userTabController = userTabController;
     }
 
+    @FXML
+    private JFXListCell  tweetCell;
 
     @FXML
     private Label nbretweet;

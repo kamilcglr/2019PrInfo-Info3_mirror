@@ -6,6 +6,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -167,12 +168,18 @@ public class UserTabController {
         ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
 
         try {
-            if(userViewer != null){
-                for(Tweet tweet : toptweets){
+            if (userViewer != null) {
+                for (Tweet tweet : toptweets) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
                     JFXListCell jfxListCell = fxmlLoader.load();
+                    jfxListCell.setMinWidth(listTweets.getWidth() - listTweets.getWidth() * 0.1);
+                    listTweets.widthProperty().addListener((obs, oldval, newval) -> {
+                        Double test = newval.doubleValue() - newval.doubleValue() * 0.1;
+                        jfxListCell.setMinWidth(test);
+                    });
                     listTweetCell.add(jfxListCell);
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
+
                     tweetController.injectUserTabController(this);
                     tweetController.populate(tweet);
                     listTweets.getItems().add(jfxListCell);
@@ -225,7 +232,7 @@ public class UserTabController {
         }
         Platform.runLater(() -> {
             listHashtags.getItems().addAll(hashtagsToPrint);
-            titledHashtag.setMaxHeight(50*hashtagsToPrint.size());
+            titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
 //            progressIndicator.setVisible(false);
         });
         return null;
@@ -261,7 +268,7 @@ public class UserTabController {
 
         Platform.runLater(() -> {
             addTweetsToList(TweetsToPrint);
-            titledTweet.setMaxHeight(70*TweetsToPrint.size());
+            titledTweet.setMaxHeight(70 * TweetsToPrint.size());
             //progressIndicator.setVisible(false);
         });
         return null;
