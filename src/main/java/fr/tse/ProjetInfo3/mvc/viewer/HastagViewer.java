@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc.viewer;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
@@ -22,9 +23,16 @@ public class HastagViewer {
         hashtag = new Hashtag();
     }
 
-    public void searchHashtag(String hashtag) throws Exception {
+    public void setHashtag(String hashtag) throws Exception {
         this.hashtag.setHashtagName(hashtag);
-        tweets = requestManager.searchTweets(hashtag, 4500);
+    }
+
+    public void search(String hashtag, JFXProgressBar progressBar) throws Exception {
+        tweets = requestManager.searchTweets(hashtag, 4500, progressBar);
+    }
+
+    public List<Tweet> getTweetList() {
+        return tweets;
     }
 
     public Integer getNumberOfTweets() {
@@ -102,5 +110,12 @@ public class HastagViewer {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
+    }
+
+    /**
+     * Gets the number of tweets received by the request manager during search process
+     */
+    public int getSearchProgression() {
+        return requestManager.getSizeOfList();
     }
 }

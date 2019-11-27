@@ -3,6 +3,9 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
+
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -13,10 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -247,59 +247,5 @@ public class UserTabController {
         return null;
     }
 
-    /**
-     * This class will represent a result of a linked hashtag
-     */
-    static class Cell extends ListCell<ResultHashtag> {
-        HBox hBox = new HBox();
-        Label classementLabel = new Label("");
-        Label hashtagLabel = new Label("");
-        Label nbTweetLabel = new Label("");
 
-        Cell() {
-            super();
-            classementLabel.getStyleClass().add("indexLabel");
-            hashtagLabel.getStyleClass().add("hashtagTextLabel");
-            nbTweetLabel.getStyleClass().add("nbTweetLabel");
-            hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
-        }
-
-        public void updateItem(ResultHashtag resultHashtag, boolean empty) {
-            super.updateItem(resultHashtag, empty);
-
-            if (resultHashtag != null && !empty) {
-                classementLabel.setText(resultHashtag.getClassementIndex());
-                hashtagLabel.setText(resultHashtag.getHashtagName());
-                nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
-                setGraphic(hBox);
-            }
-        }
-    }
-
-    /**
-     * This class will represent a result of a linked hashtag
-     */
-    private static class ResultHashtag {
-        private final String classementIndex;
-        private final String hashtagName;
-        private final String nbTweets;
-
-        ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
-            this.classementIndex = classementIndex;
-            this.hashtagName = hashtagName;
-            this.nbTweets = nbTweets;
-        }
-
-        String getClassementIndex() {
-            return classementIndex;
-        }
-
-        String getHashtagName() {
-            return hashtagName;
-        }
-
-        String getNbTweets() {
-            return nbTweets;
-        }
-    }
 }
