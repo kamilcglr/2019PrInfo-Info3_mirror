@@ -1,7 +1,3 @@
-#gridPane {
-    -fx-background-color: -main-bg-color;
-}
-
 /*
 * Labels
 */
@@ -28,7 +24,7 @@
     /*-fx-border-color: -grey-dark;*/
 }
 
-.tweetLabels {
+.countLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
@@ -95,39 +91,6 @@
 }
 
 /*
-* Title pane
-*/
-.titled-pane {
-    -fx-padding: 0 0 1em 0;
-}
-
-.titled-pane > .title {
-    -fx-background-radius: 10pt;
-    -fx-background-color: -white;
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 20;
-    -fx-text-fill: -primary;
-}
-
-.titled-pane > .title > .text {
-    -fx-fill: -primary;
-}
-
-.titled-pane > *.content {
-    -fx-background-color: transparent;
-    -fx-text-fill: -primary;
-    -fx-border-style: hidden;
-}
-
-.titled-pane > .title > .arrow-button .arrow {
-    -fx-background-color: -primary
-}
-
-.titled-pane > .content > * {
-    -fx-padding: 5 0 10 0;
-}
-
-/*
 * List of hastags
 */
 #listHashtags {
@@ -135,7 +98,6 @@
     -fx-border-insets: 10 0 0 0;
     -fx-background-insets: 10 0 0 0;
     -fx-padding: 10 10 0 10;
-
     -fx-font-size: 15;
     -fx-border-style: hidden;
     -fx-background-color: WHITE;
@@ -153,15 +115,10 @@
 .hashtagTextLabel {
     -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-padding: 0 0 0 10;
-
 }
 
 .nbTweetLabel {
     -fx-font-family: 'Roboto Light', sans-serif;
     -fx-font-style: italic;
     -fx-padding: 0 0 0 10;
-}
-
-#vbox{
-    -fx-padding: 10;
 }
