@@ -9,6 +9,7 @@ import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -50,6 +51,8 @@ public class UserTabController {
 
     Map<String, Integer> hashtagUsed;
 
+    Map<Tweet, Integer> Tweeted;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -65,16 +68,17 @@ public class UserTabController {
     @FXML
     private JFXToggleNode favoriteToggle;
 
-    @FXML
-    private JFXSpinner progressIndicator;
+//    @FXML
+//    private JFXSpinner progressIndicator;
 
     @FXML
     private Label lastAnalysedLabel;
 
     @FXML
     private TitledPane titledHashtag;
+
     @FXML
-    private Pane thirdpane;
+    private TitledPane titledTweet;
     /*
      * We will populate this fields/labels by the result of search
      */
@@ -100,7 +104,6 @@ public class UserTabController {
     private Image profileImage;
 
     /**************************************************************/
-
     /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
@@ -124,7 +127,7 @@ public class UserTabController {
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
             buildPicture();
         });
-
+      
         Thread thread = new Thread(getTweets());
         thread.setDaemon(true);
         thread.start();
@@ -163,17 +166,28 @@ public class UserTabController {
     }
 
     @FXML
-    private void addTweetsToList() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+    private void addTweetsToList(List<Tweet> toptweets) {
+        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
         ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
 
         try {
-            //For the tests
-            JFXListCell jfxListCell = fxmlLoader.load();
-            TweetController tweetController = fxmlLoader.getController();
-            tweetController.injectUserTabController(this);
-            tweetController.populate();
-            listTweets.getItems().add(jfxListCell);
+            if (userViewer != null) {
+                for (Tweet tweet : toptweets) {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+                    JFXListCell jfxListCell = fxmlLoader.load();
+                    jfxListCell.setMinWidth(listTweets.getWidth() - listTweets.getWidth() * 0.1);
+                    listTweets.widthProperty().addListener((obs, oldval, newval) -> {
+                        Double test = newval.doubleValue() - newval.doubleValue() * 0.1;
+                        jfxListCell.setMinWidth(test);
+                    });
+                    listTweetCell.add(jfxListCell);
+                    TweetController tweetController = (TweetController) fxmlLoader.getController();
+
+                    tweetController.injectUserTabController(this);
+                    tweetController.populate(tweet);
+                    listTweets.getItems().add(jfxListCell);
+                }
+            }
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -201,7 +215,7 @@ public class UserTabController {
      */
     private Task<Void> getTweets() {
         Platform.runLater(() -> {
-            progressIndicator.setVisible(true);
+//            progressIndicator.setVisible(true);
         });
 
         long numberOfRequest = userToPrint.getStatuses_count();
@@ -215,9 +229,9 @@ public class UserTabController {
         thread.start();
 
         //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
-        //Thread thread = new Thread(settoptweets());
-        //thread.setDaemon(true);
-        //thread.start();
+        Thread thread = new Thread(settoptweets());
+        thread.setDaemon(true);
+        thread.start();
 
         return null;
     }
@@ -237,6 +251,41 @@ public class UserTabController {
         Platform.runLater(() -> {
             listHashtags.getItems().addAll(hashtagsToPrint);
             titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
+
+            progressIndicator.setVisible(false);
+        });
+        return null;
+    }
+
+    private Task<Void> setTopTweets() {
+
+        char typeResearch = getTypeSearch();
+        switch (typeResearch) {
+            case 'd':
+                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
+                Tweeted = userViewer.topTweets(tweetList);
+                break;
+            case 'c':
+                tweetList = userViewer.getTweetsByDate(userToPrint.getScreen_name(), getDate());
+                Tweeted = userViewer.topTweets(tweetList);
+                break;
+        }
+
+        ObservableList<Tweet> TweetsToPrint = FXCollections.observableArrayList();
+        int i = 0;
+        for (Tweet tweet : Tweeted.keySet()) {
+            TweetsToPrint.add(tweet);
+            System.out.println(tweet);
+            i++;
+            if (i == 5) {
+                break;
+            }
+        }
+
+        Platform.runLater(() -> {
+            addTweetsToList(TweetsToPrint);
+            titledTweet.setMaxHeight(70 * TweetsToPrint.size());
+
             progressIndicator.setVisible(false);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());

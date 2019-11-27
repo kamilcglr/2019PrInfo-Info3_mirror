@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXListView;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
@@ -18,7 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 
-//import java.awt.Label;
+import java.io.IOException;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;

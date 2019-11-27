@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
+
 /**
  * This class makes the research for an user
  * Print the result on the User Page
@@ -48,6 +50,28 @@ public class UserViewer {
 
     public User getUser() {
         return user;
+    }
+
+    public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
+        Map<Tweet, Integer> TweetsSorted;
+        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+
+        for (Tweet tweet : tweetList) {
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null){
+                int PopularCount=(int)tweet.getRetweet_count() +(int)tweet.getFavorite_count();
+                Tweeted.put(tweet, PopularCount);
+            }
+        }
+
+        TweetsSorted = Tweeted
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(
+                        toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                LinkedHashMap::new));
+
+        return TweetsSorted;
     }
 
 
@@ -94,7 +118,7 @@ public class UserViewer {
 
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
 
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     }

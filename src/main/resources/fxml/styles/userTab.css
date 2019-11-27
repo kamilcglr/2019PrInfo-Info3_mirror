@@ -122,3 +122,11 @@
     -fx-font-style: italic;
     -fx-padding: 0 0 0 10;
 }
+
+#listTweets{
+    -fx-background-color: #F5F5F5;
+}
+
+#listTweets .jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: #F5F5F5 !important;
+}
