@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,8 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    private RequestManager mainRequestManager;
+
     @FXML
     private AnchorPane root;
 
@@ -23,6 +26,7 @@ public class Main extends Application {
      * Constructor
      */
     public Main() {
+        mainRequestManager = new RequestManager();
     }
 
     public static void main(String[] args) {

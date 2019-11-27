@@ -1,0 +1,63 @@
+#titleLabel {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.jfx-list-cell:selected {
+    -fx-background-color: #3dBc91;
+}
+
+.jfx-list-cell {
+    -fx-background-insets: 0.0;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-font-family: 'Raleway Regular', sans-serif;
+}
+
+.jfx-list-cell .jfx-rippler {
+    /*This not respects the standard !*/
+    -fx-rippler-fill: BLUE;
+}
+
+.jfx-list-cell:hover {
+    /*This not respects the standard !*/
+    -fx-background-color: #81b9cc;
+}
+
+.jfx-list-view {
+    -fx-background-insets: 0;
+    -fx-cell-vertical-margin: 10.0;
+    -fx-vertical-gap: 10;
+    -fx-pref-width: 150;
+}
+
+.jfx-pop-container {
+    -fx-background-color: WHITE;
+}
+
+#listPI {
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+}
+
+/*******************************************************************************
+*                                                                              *
+* Buttons                             									       *
+*                                                                              *
+*******************************************************************************/
+
+.actionButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+.icon {
+    -fx-fill: white;
+}

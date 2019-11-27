@@ -4,6 +4,9 @@ import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.layout.HBox;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,15 +31,15 @@ public class UserViewer {
      * Calls request manager getUSer to find the user given as parameter
      * If the user does not exist or an exception occurs with the Requestmanager
      * we throws the exception to the controller. Then the controller alert the user
-     * that something wrong occured (e.g. the user does not exist)
+     * that something wrong occurred (e.g. the user does not exist)
      *
      * @param screen_name
      */
     public void searchScreenName(String screen_name) throws Exception {
         user = requestManager.getUser(screen_name);
-        System.out.println(user);
     }
 
+    //Not used for the moment, we keep it until end, we can use for graph
     public List<Tweet> getTweetsByDate(String screen_name, Date date) {
         return requestManager.getTweetsFromUserByDate(screen_name, date);
     }
@@ -71,6 +74,7 @@ public class UserViewer {
         return TweetsSorted;
     }
 
+
     public Map<String, Integer> topHashtag(List<Tweet> tweetList) {
         Map<String, Integer> hashtagUsedSorted;
         Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
@@ -95,12 +99,6 @@ public class UserViewer {
                     .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
 
         }
-        //This will not work to get hashtag from retweets
-        //List<String> hashtags = tweetList.stream()
-        //        .map(Tweet::getEntities)
-        //        .flatMap(subHashtags -> subHashtags.getHashtags().stream())
-        //        .map(Tweet.hashtags::getText)
-        //        .collect(Collectors.toList());
 
         for (String theme : hashtags) {
             Integer occurence = hashtagUsed.get(theme);
@@ -124,4 +122,6 @@ public class UserViewer {
         //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     }
+
+
 }

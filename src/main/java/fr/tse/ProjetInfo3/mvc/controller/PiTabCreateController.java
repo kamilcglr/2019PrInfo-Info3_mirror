@@ -3,132 +3,183 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
 /**
- * 
  * @author Sergiy
- *
  */
 public class PiTabCreateController {
-	private MainController mainController;
+    private MainController mainController;
 
-	/* Controller can acces to this Tab */
-	public void injectMainController(MainController mainController) {
-		this.mainController = mainController;
-	}
+    private PIViewer piViewer;
 
-	public void injectTabContainer(TabPane tabPane) {
-		this.tabPane = tabPane;
-	}
+    /* Controller can acces to this Tab */
+    public void injectMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
-	public void injectTab(Tab tab) {
-		this.tab = tab;
-	}
+    public void injectTabContainer(TabPane tabPane) {
+        this.tabPane = tabPane;
+    }
 
-	Date date;
+    public void injectTab(Tab tab) {
+        this.tab = tab;
+    }
 
-	TabPane tabPane;
-	Tab tab;
+    public void setPiViewer(PIViewer piViewer) {
+        this.piViewer = piViewer;
+    }
 
-	@FXML
-	private StackPane dialogStackPane;
+    Date date;
+    TabPane tabPane;
+    Tab tab;
 
-	@FXML
-	private AnchorPane anchorPane;
+    boolean isNew; //if true, it is teh creation of a PI, else false (edition of existing PI)
 
-	@FXML
-	private JFXButton addHashtagJFXButton;
+    private InterestPoint interestPoint;
 
-	@FXML
-	private JFXButton addUserJFXButton;
+    @FXML
+    private StackPane dialogStackPane;
 
-	@FXML
-	private JFXButton discardJFXButton;
+    @FXML
+    private AnchorPane anchorPane;
 
-	@FXML
-	private JFXButton saveJFXButton;
+    @FXML
+    private JFXButton addHashtagJFXButton;
 
-	@FXML
-	private JFXTextField nameJFXTextField;
+    @FXML
+    private JFXButton addUserJFXButton;
 
-	@FXML
-	private JFXTextField descriptionJFXTextField;
+    @FXML
+    private JFXButton discardJFXButton;
 
-	@FXML
-	private JFXTextField creationDateJFXTextField;
+    @FXML
+    private JFXButton saveJFXButton;
 
-	@FXML
-	private void initialize() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		date = new Date();
+    @FXML
+    private JFXTextField nameJFXTextField;
 
-		creationDateJFXTextField.setEditable(false);
-		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
-	}
+    @FXML
+    private JFXTextArea descriptionJFXTextArea;
 
-	/** Events **/
-	@FXML
-	public void discardJFXButtonPressed(ActionEvent event) {
-		BoxBlur blur = new BoxBlur(2, 2, 2);
+    @FXML
+    private JFXTextField creationDateJFXTextField;
 
-		JFXDialogLayout dialogLayout = new JFXDialogLayout();
-		dialogLayout.setBody(new Text("La création du point d'intêret a été annulée"));
+    @FXML
+    private GridPane suivisGrid;
 
-		JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.TOP);
-		anchorPane.setEffect(blur);
-		dialog.show();
-		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-			@Override
-			public void handle(JFXDialogEvent event) {
-				tabPane.getTabs().remove(tab);
-			}
-		});
-	}
+    @FXML
+    private GridPane suivisGrid2;
 
-	@FXML
-	public void saveJFXButtonPressed(ActionEvent event) {
-		InterestPoint interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextField.getText(),
-				date);
-		System.out.println(interestPoint.toString());
+    @FXML
+    private void initialize() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        date = new Date();
+        suivisGrid.setVisible(false);
+        suivisGrid2.setVisible(false);
+        creationDateJFXTextField.setEditable(false);
+        creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
+    }
 
-		BoxBlur blur = new BoxBlur(2, 2, 2);
-		JFXDialogLayout dialogLayout = new JFXDialogLayout();
-		dialogLayout.setBody(new Text("Votre point d'intêret a été enregistré"));
+    /**
+     * This function has to be called just after initialisation of this controller
+     */
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
+        //if the PI already exists, we show it
+        if (isNew) {
+            //TODO fill the entries with the Interest Point attributes
+        }
+    }
 
-		JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.TOP);
-		anchorPane.setEffect(blur);
-		dialog.show();
-		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-			@Override
-			public void handle(JFXDialogEvent event) {
-				tabPane.getTabs().remove(tab);
-			}
-		});
-	}
+    /**
+     * Events
+     **/
+    @FXML
+    public void discardJFXButtonPressed(ActionEvent event) {
 
-	@FXML
-	public void addHashtagJFXButtonPressed(ActionEvent event) {
+        launchDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
 
-	}
+    }
 
-	@FXML
-	public void addUserJFXButtonPressed(ActionEvent event) {
+    @FXML
+    public void saveJFXButtonPressed(ActionEvent event) {
+        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(),
+                date);
+        piViewer.addInterestPointToDatabase(interestPoint);
+        launchDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
+    }
 
-	}
+    @FXML
+    public void addHashtagJFXButtonPressed(ActionEvent event) {
+
+    }
+
+    @FXML
+    public void addUserJFXButtonPressed(ActionEvent event) {
+    }
+
+    /**
+     * Launch dialog to inform the user
+     *
+     * @param header      label of the header
+     * @param text        content printed inside
+     * @param labelButton label inside of button
+     */
+    private void launchDialog(String header, String text, String labelButton, boolean success) {
+        Label headerLabel = new Label(header);
+        Text bodyText = new Text(text);
+        JFXButton button = new JFXButton(labelButton);
+
+        BoxBlur blur = new BoxBlur(3, 3, 3);
+
+        button.getStyleClass().add("dialog-button");
+        if (success) {
+            headerLabel.getStyleClass().add("dialog-header");
+        } else {
+            headerLabel.getStyleClass().add("dialog-header-fail");
+        }
+        bodyText.getStyleClass().add("dialog-text");
+
+        JFXDialogLayout dialogLayout = new JFXDialogLayout();
+        dialogLayout.setPadding(new Insets(10));
+        JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+            dialog.close();
+        });
+
+        dialogLayout.setHeading(headerLabel);
+        dialogLayout.setBody(bodyText);
+        dialogLayout.setActions(button);
+        dialog.show();
+        dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
+            anchorPane.setEffect(null);
+        });
+        anchorPane.setEffect(blur);
+
+        dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+            @Override
+            public void handle(JFXDialogEvent event) {
+                tabPane.getTabs().remove(tab);
+                mainController.goToMyPisPane();
+            }
+        });
+    }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox prefHeight="445.0" prefWidth="154.0" styleClass="toolbar-container" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.ToolBarController">
+    <children>
+        <JFXButton contentDisplay="TOP" onAction="#homeButtonPressed" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Accueil" textAlignment="CENTER">
+            <graphic>
+                <FontIcon iconLiteral="fas-home" iconSize="32" styleClass="toolbar-button-icon" />
+            </graphic>
+        </JFXButton>
+        <JFXButton fx:id="piButton" contentDisplay="TOP" onAction="#piButtonPressed" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Points d'intérêts" textAlignment="CENTER" wrapText="true">
+            <graphic>
+                <FontIcon iconLiteral="fas-map-marker-alt" iconSize="32" styleClass="toolbar-button-icon" />
+            </graphic>
+        </JFXButton>
+        <JFXButton fx:id="favoriteButton" contentDisplay="TOP" prefHeight="400.0" prefWidth="160.0" styleClass="toolbar-button" text="Mes Favoris" textAlignment="CENTER">
+            <graphic>
+                <FontIcon iconLiteral="fas-heart" iconSize="32" styleClass="toolbar-button-icon" />
+            </graphic>
+        </JFXButton>
+
+    </children>
+</VBox>
