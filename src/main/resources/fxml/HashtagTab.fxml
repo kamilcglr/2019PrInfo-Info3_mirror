@@ -47,12 +47,12 @@
                                         <Label fx:id="usersLabel" styleClass="countLabel" text="Personnes ont réagi" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
                               <VBox fx:id="vbox" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                  <children>
-                                                <TitledPane fx:id="titledHashtag" animated="false" expanded="false" text="Top 10 des # liés">
+                                                <TitledPane fx:id="titledHashtag" expanded="false" text="Top 10 des # liés">
                                                     <content>
                                                         <JFXListView fx:id="topTenLinkedList" />
                                                     </content>
                                                 </TitledPane>
-                                                <TitledPane fx:id="listHashtags" animated="false" text="Top 5 des tweets">
+                                                <TitledPane fx:id="listHashtags" expanded="false" text="Top 5 des tweets">
                                                     <content>
                                                         <JFXListView fx:id="topFiveTweetsList" />
                                                     </content>

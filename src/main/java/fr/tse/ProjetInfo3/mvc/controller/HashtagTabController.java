@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXScrollPane;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
@@ -15,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
@@ -42,6 +44,8 @@ public class HashtagTabController {
 
     private List<Tweet> tweetList;
 
+    @FXML
+    private ScrollPane scrollPane;
 
     /**
      * Elements that will be populated with result
@@ -81,7 +85,7 @@ public class HashtagTabController {
         showHashtagElements(false);
         progressBar.setVisible(false);
         progressLabel.setVisible(false);
-
+        JFXScrollPane.smoothScrolling(scrollPane);
         topTenLinkedList.setCellFactory(param -> new Cell());
     }
 

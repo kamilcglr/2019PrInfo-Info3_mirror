@@ -22,159 +22,118 @@
 
 <!--<?import com.jfoenix.controls.JFXSpinner?>-->
 
-<AnchorPane fx:id="userPane" prefHeight="2000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.UserTabController">
+<AnchorPane fx:id="userPane" prefHeight="2000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.UserTabController">
     <children>
-        <StackPane fx:id="dialogStackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="dialogStackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane fx:id="anchorPane">
                     <children>
-                        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" vbarPolicy="AS_NEEDED"
-                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <content>
 
                                 <GridPane fx:id="gridPane" prefHeight="200.0">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="150.0"
-                                                           prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="150.0"
-                                                           prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="150.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="150.0" prefWidth="100.0" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints minHeight="250.0"/>
-                                        <RowConstraints minHeight="20.0"/>
-                                        <RowConstraints minHeight="100.0"/>
-                                        <RowConstraints minHeight="60.0"/>
-                                        <RowConstraints minHeight="700.0"/>
-                                        <RowConstraints minHeight="200.0" vgrow="ALWAYS"/>
-                                        <RowConstraints minHeight="20.0"/>
-                                        <RowConstraints minHeight="200.0"/>
-                                        <RowConstraints minHeight="100.0" vgrow="ALWAYS"/>
+                                        <RowConstraints minHeight="250.0" />
+                                        <RowConstraints minHeight="20.0" />
+                                        <RowConstraints minHeight="100.0" />
+                                        <RowConstraints minHeight="60.0" />
+                                        <RowConstraints minHeight="700.0" />
+                                        <RowConstraints minHeight="200.0" vgrow="ALWAYS" />
+                                        <RowConstraints minHeight="20.0" />
+                                        <RowConstraints minHeight="200.0" />
+                                        <RowConstraints minHeight="100.0" vgrow="ALWAYS" />
 
                                     </rowConstraints>
                                     <children>
-                                        <StackPane fx:id="header" prefHeight="150.0" prefWidth="200.0"
-                                                   GridPane.columnSpan="5"/>
-                                        <JFXButton fx:id="compareButton" contentDisplay="RIGHT" text="Comparer"
-                                                   GridPane.columnIndex="4" GridPane.halignment="LEFT"
-                                                   GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                        <StackPane fx:id="header" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="5" />
+                                        <JFXButton fx:id="compareButton" contentDisplay="RIGHT" text="Comparer" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets top="3.0"/>
+                                                <Insets top="3.0" />
                                             </GridPane.margin>
                                         </JFXButton>
-                                        <JFXToggleNode fx:id="favoriteToggle" GridPane.columnIndex="4"
-                                                       GridPane.halignment="RIGHT" GridPane.rowIndex="2"
-                                                       GridPane.valignment="TOP">
+                                        <JFXToggleNode fx:id="favoriteToggle" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP">
                                             <graphic>
-                                                <FontIcon fx:id="favoriteIcon" iconLiteral="far-heart" iconSize="40"/>
+                                                <FontIcon fx:id="favoriteIcon" iconLiteral="far-heart" iconSize="40" />
                                             </graphic>
                                             <GridPane.margin>
-                                                <Insets right="20.0" top="-5.0"/>
+                                                <Insets right="20.0" top="-5.0" />
                                             </GridPane.margin>
                                         </JFXToggleNode>
 
-                                        <Label fx:id="description" alignment="TOP_LEFT" maxWidth="200.0"
-                                               text="Description" wrapText="true" GridPane.halignment="LEFT">
+                                        <Label fx:id="description" alignment="TOP_LEFT" maxWidth="200.0" text="Description" wrapText="true" GridPane.halignment="LEFT">
                                             <GridPane.margin>
-                                                <Insets left="5.0" top="75.0"/>
+                                                <Insets left="5.0" top="75.0" />
                                             </GridPane.margin>
                                             <padding>
-                                                <Insets bottom="10.0" top="10.0"/>
+                                                <Insets bottom="10.0" top="10.0" />
                                             </padding>
                                         </Label>
-                                        <Label fx:id="username" focusTraversable="false" text="\@user" wrapText="true"
-                                               GridPane.columnSpan="3" GridPane.valignment="TOP">
+                                        <Label fx:id="username" focusTraversable="false" text="\@user" wrapText="true" GridPane.columnSpan="3" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets left="5.0" top="40.0"/>
+                                                <Insets left="5.0" top="40.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="twittername" text="TwitterName" GridPane.columnSpan="3"
-                                               GridPane.halignment="LEFT" GridPane.valignment="TOP">
+                                        <Label fx:id="twittername" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="nbTweet" styleClass="tweetnumberLabels" text="XXX"
-                                               GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                        <Label fx:id="nbTweet" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="nbFollowers" styleClass="tweetnumberLabels" text="XXX"
-                                               GridPane.rowIndex="2">
+                                        <Label fx:id="nbFollowers" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2">
                                             <GridPane.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="nbFollowing" styleClass="tweetnumberLabels" text="XXX"
-                                               GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+                                        <Label fx:id="nbFollowing" styleClass="tweetnumberLabels" text="XXX" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                             <GridPane.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="tweetsLabel" styleClass="countLabel" text="Tweets"
-                                               GridPane.halignment="RIGHT" GridPane.rowIndex="2"
-                                               GridPane.valignment="TOP"/>
-                                        <Label fx:id="followersLabel" styleClass="countLabel" text="Followers"
-                                               GridPane.halignment="RIGHT" GridPane.rowIndex="2"
-                                               GridPane.valignment="CENTER"/>
-                                        <Label fx:id="followingsLabel" styleClass="countLabel" text="Followings"
-                                               GridPane.halignment="RIGHT" GridPane.rowIndex="2"
-                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="tweetsLabel" styleClass="countLabel" text="Tweets" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+                                        <Label fx:id="followersLabel" styleClass="countLabel" text="Followers" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                        <Label fx:id="followingsLabel" styleClass="countLabel" text="Followings" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
 
-                                        <Line fx:id="headerborder" endX="5000.0" endY="0.7928932309150696" startX="-1.0"
-                                              GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"
-                                              GridPane.valignment="TOP" GridPane.vgrow="NEVER"/>
-                                        <HBox fx:id="profileImageBox" maxHeight="136.0" maxWidth="136.0"
-                                              minHeight="136.0" minWidth="136.0" GridPane.columnIndex="2"
-                                              GridPane.halignment="CENTER" GridPane.hgrow="NEVER"
-                                              GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                        <Line fx:id="headerborder" endX="5000.0" endY="0.7928932309150696" startX="-1.0" GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" />
+                                        <HBox fx:id="profileImageBox" maxHeight="136.0" maxWidth="136.0" minHeight="136.0" minWidth="136.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                             <children>
-                                                <ImageView fx:id="profileImageView" fitHeight="134.0" fitWidth="134.0"
-                                                           pickOnBounds="true" preserveRatio="true"/>
+                                                <ImageView fx:id="profileImageView" fitHeight="134.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true" />
                                             </children>
                                         </HBox>
-                                        <VBox fx:id="vBox" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1"
-                                              GridPane.columnSpan="3" GridPane.rowIndex="4">
+                                        <VBox fx:id="vBox" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
                                             <children>
-                                                <TitledPane fx:id="titledHashtag" animated="false" expanded="false"
-                                                            text="# les plus utilisés">
+                                                <TitledPane fx:id="titledHashtag" expanded="false" text="# les plus utilisés">
                                                     <content>
                                                         <JFXListView fx:id="listHashtags" focusTraversable="false">
                                                             <opaqueInsets>
-                                                                <Insets/>
+                                                                <Insets />
                                                             </opaqueInsets>
                                                         </JFXListView>
                                                     </content>
                                                     <opaqueInsets>
-                                                        <Insets/>
+                                                        <Insets />
                                                     </opaqueInsets>
                                                 </TitledPane>
-                                                <TitledPane fx:id="titledTweet" animated="false" expanded="false"
-                                                            text="Top 5 des tweets">
+                                                <TitledPane fx:id="titledTweet" expanded="false" text="Top 5 des tweets">
                                                     <content>
-                                                        <JFXListView fx:id="listTweets"/>
+                                                        <JFXListView fx:id="listTweets" />
                                                     </content>
                                                 </TitledPane>
                                             </children>
                                         </VBox>
-                                        <Label fx:id="lastAnalysedLabel"
-                                               text="XXX tweets ont été analysés depuis le Date"
-                                               GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                               GridPane.halignment="LEFT" GridPane.rowIndex="3"
-                                               GridPane.valignment="BOTTOM"/>
-                                        <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308"
-                                                        prefHeight="20.0" GridPane.columnIndex="1"
-                                                        GridPane.columnSpan="3" GridPane.rowIndex="3"
-                                                        GridPane.valignment="CENTER"/>
-                                        <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1"
-                                               GridPane.columnSpan="3" GridPane.halignment="CENTER"
-                                               GridPane.rowIndex="3"/>
+                                        <Label fx:id="lastAnalysedLabel" text="XXX tweets ont été analysés depuis le Date" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+                                        <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" progress="0.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                                        <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
 
                                     </children>
                                 </GridPane>
@@ -184,13 +143,13 @@
                 </AnchorPane>
             </children>
             <stylesheets>
-                <URL value="@styles/main.css"/>
-                <URL value="@styles/userTab.css"/>
+                <URL value="@styles/main.css" />
+                <URL value="@styles/userTab.css" />
             </stylesheets>
         </StackPane>
     </children>
     <stylesheets>
-        <URL value="@styles/main.css"/>
-        <URL value="@styles/userTab.css"/>
+        <URL value="@styles/main.css" />
+        <URL value="@styles/userTab.css" />
     </stylesheets>
 </AnchorPane>
