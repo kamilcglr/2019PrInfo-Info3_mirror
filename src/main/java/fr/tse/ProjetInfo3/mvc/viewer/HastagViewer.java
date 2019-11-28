@@ -9,6 +9,8 @@ import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
+import static java.util.stream.Collectors.toMap;
+
 public class HastagViewer {
 
     private RequestManager requestManager;
@@ -28,7 +30,7 @@ public class HastagViewer {
     }
 
     public void search(String hashtag, JFXProgressBar progressBar) throws Exception {
-        tweets = requestManager.searchTweets(hashtag, 4500, progressBar);
+        tweets = requestManager.searchTweets(hashtag, 200, progressBar);
     }
 
     public List<Tweet> getTweetList() {
@@ -117,5 +119,27 @@ public class HastagViewer {
      */
     public int getSearchProgression() {
         return requestManager.getSizeOfList();
+    }
+
+    public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
+        Map<Tweet, Integer> TweetsSorted;
+        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+
+        for (Tweet tweet : tweetList) {
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) {
+                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
+                Tweeted.put(tweet, PopularCount);
+            }
+        }
+
+        TweetsSorted = Tweeted
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(
+                        toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                LinkedHashMap::new));
+
+        return TweetsSorted;
     }
 }

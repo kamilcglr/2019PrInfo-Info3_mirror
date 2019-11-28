@@ -2,9 +2,11 @@
 
 <?import com.jfoenix.controls.JFXListCell?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -15,19 +17,31 @@
             <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints minHeight="50.0" />
+            <RowConstraints minHeight="10.0" />
+            <RowConstraints minHeight="70.0" />
             <RowConstraints />
          </rowConstraints>
          <children>
-            <Label fx:id="nbretweet" styleClass="nbrtlike" text="Nb retweet" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label fx:id="nbretweet" styleClass="nbrtlike" text="Nb retweet" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                <graphic>
                   <FontIcon fx:id="RTicon" iconLiteral="fas-retweet" iconSize="32" />
                </graphic></Label>
-            <Label fx:id="nbLikes" styleClass="nbrtlike" text="Nb like" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+            <Label fx:id="nbLikes" styleClass="nbrtlike" text="Nb like" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                <graphic>
                   <FontIcon fx:id="Likeicon" iconLiteral="fas-heart" iconSize="32" />
                </graphic></Label>
-            <Label fx:id="texttweet" text="Contenu Tweet" wrapText="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+            <Label fx:id="texttweet" text="Contenu Tweet" wrapText="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+            <Label fx:id="dateLabel" text="Label" GridPane.rowIndex="2" />
+            <HBox spacing="10.0" GridPane.valignment="TOP">
+               <children>
+                  <Label fx:id="authorLabel" text="Label" />
+                  <Label fx:id="authorIdLabel" text="Label">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
          </children>
       </GridPane>
    </graphic>

@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXScrollPane;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -14,11 +15,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 
+import java.io.IOException;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -38,6 +41,9 @@ public class HashtagTabController {
 
     Map<String, Integer> hashtagUsed;
 
+    Map<Tweet, Integer> Tweeted;
+
+
     private List<Tweet> tweetList;
 
     @FXML
@@ -52,6 +58,8 @@ public class HashtagTabController {
     private Thread threadsetTopLinkedHashtag;
 
     private Thread threadsetNumbers;
+
+    private Thread threadTopTweets;
 
     /**
      * Elements that will be populated with result
@@ -71,13 +79,16 @@ public class HashtagTabController {
     @FXML
     private VBox vbox;
     @FXML
-    private JFXListView topFiveTweetsList;
+    private JFXListView listTweets;
     @FXML
     private JFXListView<ResultHashtag> topTenLinkedList;
     @FXML
     private TitledPane titledHashtag;
     @FXML
     private Label lastAnalysedLabel;
+
+    @FXML
+    private TitledPane titledTweet;
 
     //Progress indicator
     @FXML
@@ -152,8 +163,12 @@ public class HashtagTabController {
             threadsetNumbers.setDaemon(true);
             threadsetNumbers.start();
 
+            threadTopTweets = new Thread(setTopTweets());
+            threadTopTweets.setDaemon(true);
+            threadTopTweets.start();
+
             //Wait for the two other tasks
-            while (threadsetTopLinkedHashtag.isAlive() && threadsetNumbers.isAlive()) {
+            while (threadsetTopLinkedHashtag.isAlive() && threadsetNumbers.isAlive() && threadTopTweets.isAlive()) {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {
@@ -202,6 +217,52 @@ public class HashtagTabController {
         return null;
     }
 
+    private Task<Void> setTopTweets() {
+        Tweeted = hastagViewer.topTweets(tweetList);
+        ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
+        int i = 0;
+        for (Tweet tweet : Tweeted.keySet()) {
+            tweetsToPrint.add(tweet);
+            System.out.println(tweet);
+            i++;
+            if (i == 5) {
+                break;
+            }
+        }
+
+        Platform.runLater(() -> {
+            addTweetsToList(tweetsToPrint);
+            titledTweet.setMaxHeight(70 * tweetsToPrint.size());
+        });
+        return null;
+    }
+
+    @FXML
+    private void addTweetsToList(List<Tweet> toptweets) {
+        ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
+        try {
+            if (hastagViewer != null) {
+                for (Tweet tweet : toptweets) {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+                    JFXListCell jfxListCell = fxmlLoader.load();
+                    jfxListCell.setMinWidth(listTweets.getWidth() - listTweets.getWidth() * 0.1);
+                    listTweets.widthProperty().addListener((obs, oldval, newval) -> {
+                        Double test = newval.doubleValue() - newval.doubleValue() * 0.1;
+                        jfxListCell.setMinWidth(test);
+                    });
+                    listTweetCell.add(jfxListCell);
+                    TweetController tweetController = (TweetController) fxmlLoader.getController();
+
+                    tweetController.injectHashtagTabController(this);
+                    tweetController.populate(tweet);
+                    listTweets.getItems().add(jfxListCell);
+                }
+            }
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     private void initProgress(boolean isIndeterminate) {
         if (!isIndeterminate) {
             progressBar.setVisible(true);
@@ -227,6 +288,9 @@ public class HashtagTabController {
         }
         if (threadsetTopLinkedHashtag != null) {
             threadsetTopLinkedHashtag.interrupt();
+        }
+        if (threadTopTweets != null) {
+            threadTopTweets.interrupt();
         }
     }
 }

@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
+import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
+
 public class TweetController {
     private HashtagTabController hashtagTabController;
     private UserTabController userTabController;
@@ -19,7 +21,7 @@ public class TweetController {
     }
 
     @FXML
-    private JFXListCell  tweetCell;
+    private JFXListCell tweetCell;
 
     @FXML
     private Label nbretweet;
@@ -30,15 +32,27 @@ public class TweetController {
     @FXML
     private Label texttweet;
 
-    /**
-     * For the moment this function has not any parameters, it will take Tweet tweet after Hashtag method implementation*/
-    public void populate(Tweet tweet) {
+    @FXML
+    private Label dateLabel;
 
-        Integer RTCount = (int) tweet.getRetweet_count();
-        Integer FavCount = (int) tweet.getFavorite_count();
-        nbretweet.setText(RTCount.toString());
-        nbLikes.setText(FavCount.toString());
+    @FXML
+    private Label authorLabel;
+
+    @FXML
+    private Label authorIdLabel;
+
+    /**
+     * For the moment this function has not any parameters, it will take Tweet tweet after Hashtag method implementation
+     */
+    public void populate(Tweet tweet) {
+        int RTCount = (int) tweet.getRetweet_count();
+        int FavCount = (int) tweet.getFavorite_count();
+        nbretweet.setText(Integer.toString(RTCount));
+        nbLikes.setText(Integer.toString(FavCount));
         texttweet.setText(tweet.getFull_text());
-        }
+        authorLabel.setText(tweet.getUser().getName());
+        authorIdLabel.setText(tweet.getUser().getName());
+        dateLabel.setText(frenchSimpleDateFormat.format(tweet.getCreated_at()));
+    }
 
 }
