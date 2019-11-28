@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
+import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
@@ -44,8 +45,8 @@ public class UserViewer {
         return requestManager.getTweetsFromUserByDate(screen_name, date);
     }
 
-    public List<Tweet> getTweetsByCount(String screen_name, int count) {
-        return requestManager.getTweetsFromUser(screen_name, count);
+    public List<Tweet> getTweetsByCount(String screen_name, int count, JFXProgressBar progressBar) {
+        return requestManager.getTweetsFromUser(screen_name, count, progressBar);
     }
 
     public User getUser() {
@@ -57,8 +58,8 @@ public class UserViewer {
         Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
 
         for (Tweet tweet : tweetList) {
-            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null){
-                int PopularCount=(int)tweet.getRetweet_count() +(int)tweet.getFavorite_count();
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) {
+                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
                 Tweeted.put(tweet, PopularCount);
             }
         }
@@ -122,6 +123,4 @@ public class UserViewer {
         //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     }
-
-
 }

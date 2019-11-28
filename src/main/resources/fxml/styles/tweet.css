@@ -1,26 +1,29 @@
-
-.nbrtlike{
+.nbrtlike {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 12;
     -fx-text-fill: -grey-dark;
 }
 
 #texttweet {
-    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-font-size: 14;
     -fx-text-fill: -grey-dark;
 }
+
 #Likeicon {
     -fx-icon-color: -red;
 }
 
-#RTicon{
+#RTicon {
     -fx-icon-color: -accent;
 }
 
-#tweetCell{
+#tweetCell {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
     -fx-background-color: white;
+}
 
+#tweetGrid{
+    -fx-background-color: white!important;
 }

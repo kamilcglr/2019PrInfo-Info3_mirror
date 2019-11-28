@@ -10,7 +10,7 @@
 
 <JFXListCell fx:id="tweetCell" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.TweetController">
    <graphic>
-      <GridPane>
+      <GridPane fx:id="tweetGrid">
          <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" />
          </columnConstraints>

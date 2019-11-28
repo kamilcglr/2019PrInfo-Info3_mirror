@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
 
@@ -24,6 +25,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -36,6 +38,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
 
 /**
  * @author Sobun UNG
@@ -54,6 +58,9 @@ public class UserTabController {
     Map<Tweet, Integer> Tweeted;
 
     @FXML
+    private VBox vBox;
+
+    @FXML
     private ScrollPane scrollPane;
 
     @FXML
@@ -68,8 +75,14 @@ public class UserTabController {
     @FXML
     private JFXToggleNode favoriteToggle;
 
-//    @FXML
-//    private JFXSpinner progressIndicator;
+    @FXML
+    private JFXSpinner progressIndicator;
+
+    @FXML
+    private JFXProgressBar progressBar;
+
+    @FXML
+    private Label progressLabel;
 
     @FXML
     private Label lastAnalysedLabel;
@@ -114,7 +127,7 @@ public class UserTabController {
      * Prints User simple infos (name, id...)
      * Prints top #
      * */
-    public void setUserViewer(UserViewer userViewer) {
+    public void setUserViewer(UserViewer userViewer) throws InterruptedException {
         this.userViewer = userViewer;
         userToPrint = userViewer.getUser();
 
@@ -127,7 +140,7 @@ public class UserTabController {
             nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
             buildPicture();
         });
-      
+
         Thread thread = new Thread(getTweets());
         thread.setDaemon(true);
         thread.start();
@@ -141,7 +154,8 @@ public class UserTabController {
         JFXScrollPane.smoothScrolling(scrollPane);
 
         listHashtags.setCellFactory(param -> new Cell());
-        lastAnalysedLabel.setVisible(false);
+
+        Platform.runLater(() -> hideLists(true));
 
     }
 
@@ -167,9 +181,7 @@ public class UserTabController {
 
     @FXML
     private void addTweetsToList(List<Tweet> toptweets) {
-        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
         ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
-
         try {
             if (userViewer != null) {
                 for (Tweet tweet : toptweets) {
@@ -194,7 +206,7 @@ public class UserTabController {
     }
 
     private char getTypeSearch() {
-        return 'd';
+        return 'c';
         //TODO getType by user
     }
 
@@ -213,25 +225,44 @@ public class UserTabController {
      * Called by setUser, it gets the tweets of a user,
      * then create Two concurrent thread to check the top Hashtag and top Tweets
      */
-    private Task<Void> getTweets() {
+    private Task<Void> getTweets() throws InterruptedException {
         Platform.runLater(() -> {
-//            progressIndicator.setVisible(true);
+            initProgress(false);
         });
 
         long numberOfRequest = userToPrint.getStatuses_count();
         if (numberOfRequest > 3194) {
             numberOfRequest = 3194;
         }
-        tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), (int) numberOfRequest);
+        tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), (int) numberOfRequest, progressBar);
+
+        //Tweet are collected
+        Platform.runLater(() -> {
+            initProgress(true);
+        });
 
         Thread thread = new Thread(setTopHashtags());
         thread.setDaemon(true);
         thread.start();
 
         //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
-        Thread thread = new Thread(settoptweets());
-        thread.setDaemon(true);
-        thread.start();
+        Thread thread2 = new Thread(setTopTweets());
+        thread2.setDaemon(true);
+        thread2.start();
+
+        //Wait for the two other tasks
+        while (thread.isAlive() && thread2.isAlive()) {
+            Thread.sleep(1000);
+        }
+        Platform.runLater(() -> {
+            String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                    date);
+
+            progressBar.setVisible(false);
+            progressLabel.setVisible(false);
+            hideLists(false);
+        });
 
         return null;
     }
@@ -251,30 +282,16 @@ public class UserTabController {
         Platform.runLater(() -> {
             listHashtags.getItems().addAll(hashtagsToPrint);
             titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
-
-            progressIndicator.setVisible(false);
         });
         return null;
     }
 
     private Task<Void> setTopTweets() {
-
-        char typeResearch = getTypeSearch();
-        switch (typeResearch) {
-            case 'd':
-                tweetList = userViewer.getTweetsByCount(userToPrint.getScreen_name(), 200);
-                Tweeted = userViewer.topTweets(tweetList);
-                break;
-            case 'c':
-                tweetList = userViewer.getTweetsByDate(userToPrint.getScreen_name(), getDate());
-                Tweeted = userViewer.topTweets(tweetList);
-                break;
-        }
-
-        ObservableList<Tweet> TweetsToPrint = FXCollections.observableArrayList();
+        Tweeted = userViewer.topTweets(tweetList);
+        ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (Tweet tweet : Tweeted.keySet()) {
-            TweetsToPrint.add(tweet);
+            tweetsToPrint.add(tweet);
             System.out.println(tweet);
             i++;
             if (i == 5) {
@@ -283,18 +300,27 @@ public class UserTabController {
         }
 
         Platform.runLater(() -> {
-            addTweetsToList(TweetsToPrint);
-            titledTweet.setMaxHeight(70 * TweetsToPrint.size());
-
-            progressIndicator.setVisible(false);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
-            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
-                    date);
-            lastAnalysedLabel.setVisible(true);
+            addTweetsToList(tweetsToPrint);
+            titledTweet.setMaxHeight(70 * tweetsToPrint.size());
         });
         return null;
     }
 
+    private void initProgress(boolean isIndeterminate) {
+        if (!isIndeterminate) {
+            progressBar.setVisible(true);
+            progressBar.setProgress(0);
+            progressLabel.setVisible(true);
+            progressLabel.setText("Récupération des tweets depuis Twitter.com");
+        } else {
+            progressBar.setProgress(-1);
+            progressLabel.setText("Analyse des tweets");
+        }
+    }
+
+    private void hideLists(boolean show) {
+        vBox.setVisible(!show);
+        lastAnalysedLabel.setVisible(!show);
+    }
 
 }

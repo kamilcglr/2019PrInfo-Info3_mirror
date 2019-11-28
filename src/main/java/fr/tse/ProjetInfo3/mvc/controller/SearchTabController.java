@@ -117,7 +117,7 @@ public class SearchTabController {
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         searchField.textProperty().addListener(
                 (observable, old_value, new_value) -> {
-                    //propositionList.getItems().clear();
+                    treeView.setRoot(null);
                     treeView.setVisible(false);
                     if (hashtagToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
@@ -431,6 +431,8 @@ public class SearchTabController {
         });
         treeView.setShowRoot(false);
         treeView.getColumns().setAll(name, screen_name);
+        treeView.getColumns().get(1).getStyleClass().add("idInList");
+        treeView.getColumns().get(0).getStyleClass().add("nameINList");
         treeView.setFixedCellSize(25);
     }
 
@@ -443,7 +445,7 @@ public class SearchTabController {
 
         ResultObject(String name, String sreen_name) {
             this.name = new SimpleStringProperty(name);
-            this.screen_name = new SimpleStringProperty(sreen_name);
+            this.screen_name = new SimpleStringProperty("@" + sreen_name);
         }
 
         public StringProperty getName() {

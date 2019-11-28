@@ -127,7 +127,7 @@ public class RequestManager {
      * @return Map of Names and screen_names of user
      */
     public Map<String, String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false";
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false&result_type=popular";
 
         //if the proposition contains spaces we will remove them
         //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces
@@ -239,7 +239,7 @@ public class RequestManager {
      * https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
      * TODO optimize the List format
      */
-    public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
+    public List<Tweet> getTweetsFromUser(String screen_name, int count, JFXProgressBar progressBar) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
         //Manouche methods TODO
@@ -290,6 +290,7 @@ public class RequestManager {
                 max_id = tempList.get(tempList.size() - 1).getId() - 1;
 
                 tweets.addAll(tempList);
+                sendProgress(progressBar, tweets.size(), count);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -58,6 +58,10 @@
     -fx-font-family: "Roboto Medium", sans-serif;
 }
 
+.idInList {
+    -fx-font-family: "Roboto Light", sans-serif;
+}
+
 .list-cell:odd, .list-cell:even {
     -fx-background-radius: 15pt;
     -fx-font-family: "Roboto Medium", sans-serif;

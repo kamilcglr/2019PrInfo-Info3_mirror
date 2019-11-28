@@ -123,7 +123,17 @@
     -fx-padding: 0 0 0 10;
 }
 
+/*
+* List of tweets
+*/
+
 #listTweets{
+    -fx-background-radius: 10pt;
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+    -fx-font-size: 15;
+    -fx-border-style: hidden;
     -fx-background-color: #F5F5F5;
 }
 
