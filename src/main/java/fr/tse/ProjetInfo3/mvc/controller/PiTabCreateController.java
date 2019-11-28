@@ -1,7 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
@@ -11,22 +14,28 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -55,13 +64,19 @@ public class PiTabCreateController {
 		this.piViewer = piViewer;
 	}
 
-	Date date;
-	TabPane tabPane;
-	Tab tab;
+	/** Controller variables **/
 
 	boolean isNew; // if true, it is teh creation of a PI, else false (edition of existing PI)
 
+	private Date date;
+
+	private TabPane tabPane;
+	private Tab tab;
 	private InterestPoint interestPoint;
+
+	private ObservableList<String> observableListHashtag;
+
+	/** PiTabCreate.fxml FXML elements **/
 
 	@FXML
 	private StackPane dialogStackPane;
@@ -91,32 +106,56 @@ public class PiTabCreateController {
 	private JFXTextField creationDateJFXTextField;
 
 	@FXML
+	private JFXTextField hashtagField;
+
+	@FXML
+	private JFXTextField userField;
+
+	@FXML
 	private GridPane suivisGrid;
 
 	@FXML
 	private GridPane suivisGrid2;
-	
+
 	@FXML
-	private JFXListView<Hashtag> hashtagList;
-	
+	private JFXListView<String> hashtagList;
+
 	@FXML
 	private JFXListView<User> userList;
+
+	/** HashtagCell.fxml FXML elements **/
+	@FXML
+	private Label hashtagLabel;
+
+	@FXML
+	private JFXButton removeHashtagJFXButton;
+
+	@FXML
+	private FontAwesomeSolid removeHashtagIcon;
+
+	@FXML
+	private GridPane gridPane;
+
+	/** UserCell.fxml FXML elements **/
 
 	@FXML
 	private void initialize() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		date = new Date();
-		
-		hashtagList.setMouseTransparent(true);
+
 		hashtagList.setFocusTraversable(false);
-		
-		userList.setMouseTransparent(true);
 		userList.setFocusTraversable(false);
-		
+
 		suivisGrid.setVisible(true);
 		suivisGrid2.setVisible(true);
 		creationDateJFXTextField.setEditable(true);
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
+
+		observableListHashtag = FXCollections.observableArrayList();
+		observableListHashtag.addAll("dsadas", "dsadas", "dsadas", "dsadas", "dsadas", "dsadas");
+
+		hashtagList.setItems(observableListHashtag);
+		hashtagList.setCellFactory(hastagListView -> new HashtagCell());
 	}
 
 	/**
@@ -148,12 +187,13 @@ public class PiTabCreateController {
 	}
 
 	@FXML
-	public void addUserJFXButtonPressed(ActionEvent event) {
+	public void addHashtagJFXButtonPressed(ActionEvent event) {
+		inputNewHashtag();
 	}
 
 	@FXML
-	public void addHashtagJFXButtonPressed(ActionEvent event) {
-		launchHashtagInputDialog();
+	public void addUserJFXButtonPressed(ActionEvent event) {
+		inputNewUser();
 	}
 
 	/**
@@ -203,58 +243,55 @@ public class PiTabCreateController {
 		});
 	}
 
-	private void launchUserInputDialog() {
-		BoxBlur blur = new BoxBlur(3, 3, 3);
+	private void inputNewUser() {
 	}
 
-	private void launchHashtagInputDialog() {
-		Label headerLabel = new Label("Ajout de nouveau hashtag");
-		Text bodyText = new Text("Veuillez entrer un hashtag valide");
-		TextField inputHashtag = new TextField();
+	private void inputNewHashtag() {
+		// String hashtagInput = hashtagField.getText();
 
-		JFXButton cancelButton = new JFXButton("Annuler");
-		JFXButton addButton = new JFXButton("Ajouter");
+		// if (hashtagInput.charAt(0) == '#') {
+		// hashtagInput = hashtagInput.substring(0, hashtagInput.length());
+		// }
 
-		headerLabel.getStyleClass().add("dialog-header");
-		bodyText.getStyleClass().add("dialog-text");
-		cancelButton.getStyleClass().add("dialog-button");
-		addButton.getStyleClass().add("dialog-button");
+		// hashtagList.getItems().add(hashtagInput);
 
-		BoxBlur blur = new BoxBlur(3, 3, 3);
+	}
 
-		JFXDialogLayout dialogLayout = new JFXDialogLayout();
-		dialogLayout.setPadding(new Insets(10));
-		JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
+	class HashtagCell extends ListCell<String> {
 
-		addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
-			dialog.close();
-		});
+		public HashtagCell() {
+			super();
+		}
 
-		cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
-			dialog.close();
-		});
+		@Override
+		protected void updateItem(String hashtagName, boolean empty) {
+			super.updateItem(hashtagName, empty);
 
-		dialogLayout.setStyle("-fx-background-color:#292F33");
-		headerLabel.setStyle("-fx-text-fill:WHITE");
-		cancelButton.setStyle("-fx-background-color:#292F33");
-		addButton.setStyle("-fx-background-color:#292F33");
+			if (empty || hashtagName == null) {
 
-		dialogLayout.setHeading(headerLabel);
-		dialogLayout.setBody(bodyText, inputHashtag);
-		dialogLayout.setActions(cancelButton, addButton);
-		dialog.show();
+				setText(null);
+				setGraphic(null);
 
-		dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
-			anchorPane.setEffect(null);
-		});
+			} else {
+				FXMLLoader fxmlLoader = null;
 
-		anchorPane.setEffect(blur);
+				if (fxmlLoader == null) {
+					fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagCell.fxml"));
+					fxmlLoader.setController(this);
 
-		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-			@Override
-			public void handle(JFXDialogEvent event) {
-				anchorPane.setEffect(null);
+					try {
+						fxmlLoader.load();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+				// hashtagLabel.setText("gdfgd");
+
+				setText(null);
+				setGraphic(gridPane);
 			}
-		});
+		}
 	}
 }
