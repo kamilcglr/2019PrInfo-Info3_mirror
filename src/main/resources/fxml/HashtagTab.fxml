@@ -52,9 +52,9 @@
                                                         <JFXListView fx:id="topTenLinkedList" />
                                                     </content>
                                                 </TitledPane>
-                                                <TitledPane fx:id="listHashtags" expanded="false" text="Top 5 des tweets">
+                                                <TitledPane fx:id="titledTweet" expanded="false" text="Top 5 des tweets">
                                                     <content>
-                                                        <JFXListView fx:id="topFiveTweetsList" />
+                                                        <JFXListView fx:id="listTweets" />
                                                     </content>
                                                 </TitledPane>
                                  </children>

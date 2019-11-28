@@ -22,6 +22,11 @@
 @font-face {
     src: url('../../fonts/Roboto/Roboto-LightItalic.ttf');
 }
+
+@font-face {
+    src: url('../../fonts/Roboto/Roboto-Light.ttf');
+}
+
 .root {
     -main-bg-color: #e5e9ed;
     -primary: #55ACEE;
@@ -249,7 +254,7 @@ GridPane {
     -fx-border-radius: 10pt;
     -fx-font-size: 15;
     -fx-font-family: 'Roboto Medium', sans-serif;
-    -fx-padding : 10 0 10 0;
+    -fx-padding: 10 0 10 0;
 }
 
 .tree-table-view .column-header-background {
@@ -280,7 +285,7 @@ GridPane {
     -fx-cell-size: 20px;
 }
 
-.tree-table-row-cell{
+.tree-table-row-cell {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
     -fx-cell-size: 20px;
@@ -323,23 +328,23 @@ GridPane {
 /*
 * Progression Indicators
 */
-#progressBar .bar{
+#progressBar .bar {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
     -fx-background-color: -primary;
 }
 
-#progressBar .secondary-bar{
+#progressBar .secondary-bar {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
 }
 
-#progressBar .track{
+#progressBar .track {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
 }
 
-#progressLabel{
+#progressLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 15;
 }

@@ -5,7 +5,7 @@
 }
 
 #texttweet {
-    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-family: 'Roboto Medium', sans-serif!important;
     -fx-font-size: 14;
     -fx-text-fill: -grey-dark;
 }
@@ -24,6 +24,16 @@
     -fx-background-color: white;
 }
 
-#tweetGrid{
-    -fx-background-color: white!important;
+#tweetGrid {
+    -fx-background-color: white !important;
+}
+
+#authorLabel {
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 10pt;
+}
+
+#authorIdLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-size: 10pt;
 }
