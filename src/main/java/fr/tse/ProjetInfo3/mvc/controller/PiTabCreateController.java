@@ -3,6 +3,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -259,8 +261,10 @@ public class PiTabCreateController {
 			cellGridPane.getColumnConstraints().addAll(column1, column2);
 			
 			hashtagLabel = new Label();
-			removeHashtagJFXButton = new JFXButton("-");
-			removeHashtagJFXButton.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white;");
+			removeHashtagJFXButton = new JFXButton();
+			//removeHashtagJFXButton.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white;");
+			removeHashtagJFXButton.setGraphic(new FontIcon("fas-minus"));
+			
 			
 			removeHashtagJFXButton.setPrefSize(50, 50);
 
