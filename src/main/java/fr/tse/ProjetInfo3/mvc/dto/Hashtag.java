@@ -3,6 +3,7 @@
  */
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,11 +11,26 @@ import java.util.List;
  * @author kamilcaglar
  * This class contains some tweets with with the same #
  */
-public class Hashtag {
+public class Hashtag implements Serializable {
+	private int id;
 	private String hashtag;
 
 	private List<Tweet> tweets;
 
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Hashtag(int id, String hashtag) {
+		super();
+		this.id = id;
+		this.hashtag = hashtag;
+	}
 
 	public Hashtag(String hashtag) {
 		super();
