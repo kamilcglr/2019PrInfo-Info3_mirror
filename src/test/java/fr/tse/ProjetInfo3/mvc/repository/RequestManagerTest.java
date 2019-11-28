@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
+import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 
 import java.io.IOException;
@@ -18,13 +19,13 @@ class RequestManagerTest {
         Instant start = Instant.now();
 
         RequestManager requestManager = new RequestManager();
-        List<Tweet> tweets = requestManager.getTweetsFromUser("sobunung", 3194);
+        List<Tweet> tweets = requestManager.getTweetsFromUser("sobunung", 3194, new JFXProgressBar());
         //tweets.forEach(System.out::println);
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
         System.out.println(timeElapsed);
-        System.out.println(tweets.get(tweets.size()-1));
+        System.out.println(tweets.get(tweets.size() - 1));
         System.out.println(tweets.size());
     }
 
@@ -39,7 +40,7 @@ class RequestManagerTest {
     @org.junit.jupiter.api.Test
     void searchUsersTest() throws IOException, InterruptedException {
         RequestManager requestManager = new RequestManager();
-        Map<String,String> users = requestManager.getUsersbyName("donald trump");
+        Map<String, String> users = requestManager.getUsersbyName("donald trump");
         for (Map.Entry<String, String> entry : users.entrySet()) {
             System.out.println(entry.getKey() + "\t\t\t" + entry.getValue());
         }

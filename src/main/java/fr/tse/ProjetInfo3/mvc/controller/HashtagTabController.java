@@ -92,7 +92,6 @@ public class HashtagTabController {
         tweetsLabel.setVisible(hide);
         usersLabel.setVisible(hide);
         lastAnalysedLabel.setVisible(hide);
-
     }
 
     /*Controller can acces to this Tab */
@@ -204,6 +203,5 @@ public class HashtagTabController {
             progressLabel.setText("Analyse des tweets");
         }
     }
-
 
 }

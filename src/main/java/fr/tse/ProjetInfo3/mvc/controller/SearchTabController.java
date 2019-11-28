@@ -443,7 +443,7 @@ public class SearchTabController {
 
         ResultObject(String name, String sreen_name) {
             this.name = new SimpleStringProperty(name);
-            this.screen_name = new SimpleStringProperty(sreen_name);
+            this.screen_name = new SimpleStringProperty("@" + sreen_name);
         }
 
         public StringProperty getName() {

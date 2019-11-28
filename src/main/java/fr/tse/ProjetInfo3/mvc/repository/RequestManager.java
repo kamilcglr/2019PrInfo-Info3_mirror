@@ -239,7 +239,7 @@ public class RequestManager {
      * https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
      * TODO optimize the List format
      */
-    public List<Tweet> getTweetsFromUser(String screen_name, int count) throws RequestManagerException {
+    public List<Tweet> getTweetsFromUser(String screen_name, int count, JFXProgressBar progressBar) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
         //Manouche methods TODO
@@ -290,6 +290,7 @@ public class RequestManager {
                 max_id = tempList.get(tempList.size() - 1).getId() - 1;
 
                 tweets.addAll(tempList);
+                sendProgress(progressBar, tweets.size(), count);
             }
         } catch (Exception e) {
             e.printStackTrace();

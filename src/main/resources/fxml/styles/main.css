@@ -319,3 +319,27 @@ GridPane {
 .titled-pane > .content > * {
     -fx-padding: 5 0 10 0;
 }
+
+/*
+* Progression Indicators
+*/
+#progressBar .bar{
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+    -fx-background-color: -primary;
+}
+
+#progressBar .secondary-bar{
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+}
+
+#progressBar .track{
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+}
+
+#progressLabel{
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 15;
+}
