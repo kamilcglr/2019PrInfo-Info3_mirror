@@ -1,10 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
@@ -22,9 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
@@ -32,10 +27,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -123,19 +116,6 @@ public class PiTabCreateController {
 	@FXML
 	private JFXListView<User> userList;
 
-	/** HashtagCell.fxml FXML elements **/
-	@FXML
-	private Label hashtagLabel;
-
-	@FXML
-	private JFXButton removeHashtagJFXButton;
-
-	@FXML
-	private FontAwesomeSolid removeHashtagIcon;
-
-	@FXML
-	private GridPane gridPane;
-
 	/** UserCell.fxml FXML elements **/
 
 	@FXML
@@ -152,7 +132,7 @@ public class PiTabCreateController {
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
 
 		observableListHashtag = FXCollections.observableArrayList();
-		observableListHashtag.addAll("dsadas", "dsadas", "dsadas", "dsadas", "dsadas", "dsadas");
+		observableListHashtag.addAll("dsadas");
 
 		hashtagList.setItems(observableListHashtag);
 		hashtagList.setCellFactory(hastagListView -> new HashtagCell());
@@ -247,20 +227,54 @@ public class PiTabCreateController {
 	}
 
 	private void inputNewHashtag() {
-		// String hashtagInput = hashtagField.getText();
+		String hashtagInput = hashtagField.getText();
 
-		// if (hashtagInput.charAt(0) == '#') {
-		// hashtagInput = hashtagInput.substring(0, hashtagInput.length());
-		// }
+		if (hashtagInput.charAt(0) == '#') {
+			hashtagInput = hashtagInput.substring(0, hashtagInput.length());
+		}
 
-		// hashtagList.getItems().add(hashtagInput);
+		hashtagList.getItems().add(hashtagInput);
 
 	}
 
-	class HashtagCell extends ListCell<String> {
+	public final class HashtagCell extends ListCell<String> {
+		GridPane cellGridPane;
+		ColumnConstraints column1;
+		ColumnConstraints column2;
+		
+		Label hashtagLabel;
+		JFXButton removeHashtagJFXButton;
 
 		public HashtagCell() {
 			super();
+			
+			cellGridPane = new GridPane();
+			cellGridPane.setPrefSize(550, 50);
+			
+			column1 = new ColumnConstraints();
+			column1.setPrefWidth(500);
+			column2 = new ColumnConstraints();
+			column2.setPrefWidth(50);
+			
+			cellGridPane.getColumnConstraints().addAll(column1, column2);
+			
+			hashtagLabel = new Label();
+			removeHashtagJFXButton = new JFXButton("-");
+			removeHashtagJFXButton.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white;");
+			
+			removeHashtagJFXButton.setPrefSize(50, 50);
+
+			removeHashtagJFXButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                System.out.println("Action: "+ getItem());
+	                String hashtagStringObject = getItem();
+	                hashtagList.getItems().remove(hashtagStringObject);  
+	            }
+	        });
+			
+			cellGridPane.add(hashtagLabel, 0, 0);
+			cellGridPane.add(removeHashtagJFXButton, 1, 0);
 		}
 
 		@Override
@@ -273,25 +287,12 @@ public class PiTabCreateController {
 				setGraphic(null);
 
 			} else {
-				FXMLLoader fxmlLoader = null;
-
-				if (fxmlLoader == null) {
-					fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagCell.fxml"));
-					fxmlLoader.setController(this);
-
-					try {
-						fxmlLoader.load();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-				}
-
-				// hashtagLabel.setText("gdfgd");
-
+				hashtagLabel.setText(hashtagName);
+				
 				setText(null);
-				setGraphic(gridPane);
+				setGraphic(cellGridPane);
 			}
 		}
 	}
+
 }
