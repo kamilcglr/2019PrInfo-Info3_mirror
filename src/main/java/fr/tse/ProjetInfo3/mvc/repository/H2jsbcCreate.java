@@ -11,45 +11,53 @@ import java.sql.Statement;
  * @author Laïla
  *
  */
-public class H2jsbcCreate {
-	 // JDBC driver name and database URL 
-	   static final String JDBC_DRIVER = "org.h2.Driver";   
-	   static final String DB_URL = "jdbc:h2:~/user";  
-	   
-	   //  Database credentials 
-	   static final String USER = "sa"; 
-	   static final String PASS = ""; 
-	  
+public class H2jsbcCreate {  
 	   public static void main(String[] args) { 
 	      Connection conn = null; 
 	      Statement stmt = null; 
 	      try { 
-	         // STEP 1: Register JDBC driver 
-	         Class.forName(JDBC_DRIVER); 
-	             
+	   
 	         //STEP 2: Open a connection 
 	         System.out.println("Connecting to database..."); 
-	         conn = DriverManager.getConnection(DB_URL,USER,PASS);  
+	         conn = SingletonDBConnection.getInstance();
 	         
 	         //STEP 3: Execute a query 
 	         System.out.println("Creating table in given database..."); 
 	         stmt = conn.createStatement(); 
-	         String sql =  "CREATE TABLE   userApp " + 
+	         String userapp =  "CREATE TABLE   userApp " + 
 	            "(id INTEGER not NULL, " + 
 	            " mail VARCHAR(255), " +  
 	            " twitter VARCHAR(255), " +  
 	            " password VARCHAR(20), " +  
-	            " PRIMARY KEY ( id ))";  
-	         stmt.executeUpdate(sql);
-	         System.out.println("Created table in given database..."); 
+	            " PRIMARY KEY ( id ))";
+	         
+	         String interestpoint =  "CREATE TABLE   interestpoint " + 
+		 	            "(interestpoint_id INTEGER AUTO_INCREMENT,"
+		 	            + "name VARCHAR(255) , " + 
+		 	            " description VARCHAR(255), " +  
+		 	            " created_at DATE,"
+		 	            + "PRIMARY KEY (interestpoint_id))";
+	         
+	         String hashtag = "CREATE TABLE   hashtag " + 
+		 	            "( hashtag_id INTEGER ,"
+		 	            + "hashtag VARCHAR(255),"
+		 	            + "PRIMARY KEY (hashtag_id),"
+		 	            + "interestpoint_id INTEGER,"
+		 	            + "CONSTRAINT FK_hashtag_interestpoint FOREIGN KEY (interestpoint_id) REFERENCES interestpoint(interestpoint_id))";
+	         
+	         
+	         stmt.executeUpdate(interestpoint);
+	         stmt.executeUpdate(hashtag);
+	         
+	         //stmt.executeUpdate("drop table interestpoint");
+	         //stmt.executeUpdate("drop table hashtag");
+	         
+	         System.out.println("Created tables in given database..."); 
 	         
 	         // STEP 4: Clean-up environment 
 	         stmt.close(); 
 	         conn.close(); 
-	      } catch(SQLException se) { 
-	         //Handle errors for JDBC 
-	         se.printStackTrace(); 
-	      } catch(Exception e) { 
+	      }  catch(Exception e) { 
 	         //Handle errors for Class.forName 
 	         e.printStackTrace(); 
 	      } finally { 
@@ -66,5 +74,4 @@ public class H2jsbcCreate {
 	      } //end try 
 	      System.out.println("Goodbye!");
 	   } 
-	
 }
