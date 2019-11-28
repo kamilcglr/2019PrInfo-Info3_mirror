@@ -6,8 +6,6 @@ import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.Tweet;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
@@ -21,10 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 
-import java.io.IOException;
 import java.util.List;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Map;
 
 public class HashtagTabController {
@@ -46,6 +42,16 @@ public class HashtagTabController {
 
     @FXML
     private ScrollPane scrollPane;
+
+    /*
+     * THREADS
+     * every thread should be declared here to kill them when exiting
+     */
+    private Thread threadgetTweetFromHashtag;
+
+    private Thread threadsetTopLinkedHashtag;
+
+    private Thread threadsetNumbers;
 
     /**
      * Elements that will be populated with result
@@ -113,9 +119,9 @@ public class HashtagTabController {
             hashtagLabel.setText("#" + hashtagToPrint.getHashtagName());
         });
 
-        Thread thread = new Thread(getTweetFromHashtag());
-        thread.setDaemon(true);
-        thread.start();
+        threadgetTweetFromHashtag = new Thread(getTweetFromHashtag());
+        threadgetTweetFromHashtag.setDaemon(true);
+        threadgetTweetFromHashtag.start();
     }
 
     /**
@@ -138,16 +144,16 @@ public class HashtagTabController {
                 initProgress(true);
             });
 
-            Thread thread = new Thread(setTopLinkedHashtag());
-            thread.setDaemon(true);
-            thread.start();
+            threadsetTopLinkedHashtag = new Thread(setTopLinkedHashtag());
+            threadsetTopLinkedHashtag.setDaemon(true);
+            threadsetTopLinkedHashtag.start();
 
-            Thread thread2 = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
-            thread2.setDaemon(true);
-            thread2.start();
+            threadsetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
+            threadsetNumbers.setDaemon(true);
+            threadsetNumbers.start();
 
             //Wait for the two other tasks
-            while (thread.isAlive() && thread2.isAlive()) {
+            while (threadsetTopLinkedHashtag.isAlive() && threadsetNumbers.isAlive()) {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {
@@ -208,4 +214,19 @@ public class HashtagTabController {
         }
     }
 
+    /**
+     * Called when tab is closed
+     */
+    public void killThreads() {
+        if (threadgetTweetFromHashtag != null) {
+            threadgetTweetFromHashtag.interrupt();
+        }
+        if (threadsetNumbers != null) {
+            threadsetNumbers.interrupt();
+
+        }
+        if (threadsetTopLinkedHashtag != null) {
+            threadsetTopLinkedHashtag.interrupt();
+        }
+    }
 }

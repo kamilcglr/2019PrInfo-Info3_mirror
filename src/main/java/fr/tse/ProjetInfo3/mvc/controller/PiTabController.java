@@ -70,5 +70,14 @@ public class PiTabController {
             piNameLabel.setText(interestPointToPrint.getName());
         });
     }
+
+    /**
+     * Called when tab is closed
+     */
+    public void killThreads() {
+        //if (threadGettweets != null) {
+        //    threadGettweets.interrupt();
+        //}
+    }
 }
 

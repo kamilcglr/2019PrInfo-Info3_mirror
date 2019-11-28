@@ -51,6 +51,17 @@ public class UserTabController {
 
     private User userToPrint;
 
+    /*
+     * THREADS
+     * every thread should be declared here to kill them when exiting
+     */
+    private Thread threadGettweets;
+
+    private Thread threadSetTophashtags;
+
+    private Thread threadSetTopTweets;
+
+
     private List<Tweet> tweetList;
 
     Map<String, Integer> hashtagUsed;
@@ -141,9 +152,9 @@ public class UserTabController {
             buildPicture();
         });
 
-        Thread thread = new Thread(getTweets());
-        thread.setDaemon(true);
-        thread.start();
+        threadGettweets = new Thread(getTweets());
+        threadGettweets.setDaemon(true);
+        threadGettweets.start();
     }
 
     @FXML
@@ -241,17 +252,17 @@ public class UserTabController {
             initProgress(true);
         });
 
-        Thread thread = new Thread(setTopHashtags());
-        thread.setDaemon(true);
-        thread.start();
+        threadSetTophashtags = new Thread(setTopHashtags());
+        threadSetTophashtags.setDaemon(true);
+        threadSetTophashtags.start();
 
         //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
-        Thread thread2 = new Thread(setTopTweets());
-        thread2.setDaemon(true);
-        thread2.start();
+        threadSetTopTweets = new Thread(setTopTweets());
+        threadSetTopTweets.setDaemon(true);
+        threadSetTopTweets.start();
 
         //Wait for the two other tasks
-        while (thread.isAlive() && thread2.isAlive()) {
+        while (threadSetTophashtags.isAlive() && threadSetTopTweets.isAlive()) {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
@@ -321,6 +332,22 @@ public class UserTabController {
     private void hideLists(boolean show) {
         vBox.setVisible(!show);
         lastAnalysedLabel.setVisible(!show);
+    }
+
+    /**
+     * Called when tab is closed
+     */
+    public void killThreads() {
+        if (threadGettweets != null) {
+            threadGettweets.interrupt();
+        }
+        if (threadSetTophashtags != null) {
+            threadSetTophashtags.interrupt();
+
+        }
+        if (threadSetTopTweets != null) {
+            threadSetTopTweets.interrupt();
+        }
     }
 
 }
