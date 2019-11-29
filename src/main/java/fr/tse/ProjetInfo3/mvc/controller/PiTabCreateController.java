@@ -27,6 +27,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -70,6 +72,7 @@ public class PiTabCreateController {
 	private InterestPoint interestPoint;
 
 	private ObservableList<String> observableListHashtag;
+	private ObservableList<User> observableListUser;
 
 	/** PiTabCreate.fxml FXML elements **/
 
@@ -134,10 +137,13 @@ public class PiTabCreateController {
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
 
 		observableListHashtag = FXCollections.observableArrayList();
-		observableListHashtag.addAll("dsadas");
+		observableListUser = FXCollections.observableArrayList();
 
 		hashtagList.setItems(observableListHashtag);
 		hashtagList.setCellFactory(hastagListView -> new HashtagCell());
+		
+		userList.setItems(observableListUser);
+		userList.setCellFactory(userListView -> new UserCell());
 	}
 
 	/**
@@ -243,40 +249,40 @@ public class PiTabCreateController {
 		GridPane cellGridPane;
 		ColumnConstraints column1;
 		ColumnConstraints column2;
-		
+
 		Label hashtagLabel;
 		JFXButton removeHashtagJFXButton;
 
 		public HashtagCell() {
 			super();
-			
+
 			cellGridPane = new GridPane();
 			cellGridPane.setPrefSize(550, 50);
-			
+
 			column1 = new ColumnConstraints();
 			column1.setPrefWidth(500);
 			column2 = new ColumnConstraints();
 			column2.setPrefWidth(50);
-				
+
 			cellGridPane.getColumnConstraints().addAll(column1, column2);
-			
+
 			hashtagLabel = new Label();
 			removeHashtagJFXButton = new JFXButton();
-			//removeHashtagJFXButton.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white;");
+			// removeHashtagJFXButton.setStyle("-fx-background-color: #F39C12;
+			// -fx-text-fill: white;");
 			removeHashtagJFXButton.setGraphic(new FontIcon("fas-minus"));
-			
-			
+
 			removeHashtagJFXButton.setPrefSize(50, 50);
 
 			removeHashtagJFXButton.setOnAction(new EventHandler<ActionEvent>() {
-	            @Override
-	            public void handle(ActionEvent event) {
-	                System.out.println("Action: "+ getItem());
-	                String hashtagStringObject = getItem();
-	                hashtagList.getItems().remove(hashtagStringObject);  
-	            }
-	        });
-			
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("Action: " + getItem());
+					String hashtagStringObject = getItem();
+					hashtagList.getItems().remove(hashtagStringObject);
+				}
+			});
+
 			cellGridPane.add(hashtagLabel, 0, 0);
 			cellGridPane.add(removeHashtagJFXButton, 1, 0);
 		}
@@ -292,11 +298,80 @@ public class PiTabCreateController {
 
 			} else {
 				hashtagLabel.setText(hashtagName);
-				
+
 				setText(null);
 				setGraphic(cellGridPane);
 			}
 		}
 	}
 
+	public final class UserCell extends ListCell<User> {
+		GridPane cellGridPane;
+		ColumnConstraints column1;
+		ColumnConstraints column2;
+		ColumnConstraints column3;
+		ColumnConstraints column4;
+		
+		ImageView profileImegeView;
+		Label screenNameLabel;
+		Label followersCountLabel;
+		JFXButton removeUserJFXButton;
+		
+		Image profilePicture;
+
+		public UserCell() {
+			super();
+			
+			cellGridPane = new GridPane();
+			cellGridPane.setPrefSize(550, 50);
+
+			column1 = new ColumnConstraints();
+			column1.setPrefWidth(50);
+			column2 = new ColumnConstraints();
+			column2.setPrefWidth(150);
+			column3 = new ColumnConstraints();
+			column3.setPrefWidth(300);
+			column4 = new ColumnConstraints();
+			column4.setPrefWidth(50);
+
+			cellGridPane.getColumnConstraints().addAll(column1, column2);
+
+			profileImegeView = new ImageView();
+			
+			screenNameLabel = new Label();
+			followersCountLabel = new Label();
+			
+			removeUserJFXButton = new JFXButton();
+			removeUserJFXButton.setGraphic(new FontIcon("fas-minus"));
+
+			removeUserJFXButton.setPrefSize(50, 50);
+
+			removeUserJFXButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("Action: " + getItem());
+					User userObject = getItem();
+					userList.getItems().remove(userObject);
+				}
+			});
+
+			cellGridPane.add(profileImegeView, 0, 0);
+			cellGridPane.add(screenNameLabel, 1, 0);
+			cellGridPane.add(followersCountLabel, 2, 0);
+			cellGridPane.add(removeUserJFXButton, 3, 0);
+		}
+
+		@Override
+		protected void updateItem(User user, boolean empty) {
+			super.updateItem(user, empty);
+			
+			profilePicture = new Image(user.getProfile_image_url_https());
+			
+			
+			
+			
+			
+
+		}	
+	}
 }
