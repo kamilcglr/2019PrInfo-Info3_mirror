@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -16,8 +17,12 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,7 +39,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * @author Sergiy
@@ -121,8 +128,14 @@ public class PiTabCreateController {
 	@FXML
 	private JFXListView<User> userList;
 
-	/** UserCell.fxml FXML elements **/
+	/** Proposition Box FXML elements **/
+	@FXML
+	private VBox propositionVBox;
 
+	@FXML
+	private JFXListView<String> propositionList;
+
+	/** Initialization method **/
 	@FXML
 	private void initialize() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -133,15 +146,40 @@ public class PiTabCreateController {
 
 		suivisGrid.setVisible(true);
 		suivisGrid2.setVisible(true);
+		propositionVBox.setVisible(false);
 		creationDateJFXTextField.setEditable(true);
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
+
+		/**
+		 * Proposition mechanism initialization - Taken from SearchTabController.java
+		 **/
+		PauseTransition pause = new PauseTransition(Duration.seconds(1));
+		userField.textProperty().addListener((observable, old_value, new_value) -> {
+			propositionList.getItems().clear();
+			propositionList.setVisible(false);
+			if (new_value.contains(" ")) {
+				userField.setText(old_value);
+			}
+
+			if (userField.getText().isEmpty() || !userField.getText(0, 1).equals("@")) {
+				userField.setText("@" + new_value);
+			}
+
+			if (new_value.length() > 2) {
+				pause.setOnFinished(event -> {
+					showPropositionList(new_value.substring(1));
+				});
+				pause.playFromStart();
+			}
+
+		});
 
 		observableListHashtag = FXCollections.observableArrayList();
 		observableListUser = FXCollections.observableArrayList();
 
 		hashtagList.setItems(observableListHashtag);
 		hashtagList.setCellFactory(hastagListView -> new HashtagCell());
-		
+
 		userList.setItems(observableListUser);
 		userList.setCellFactory(userListView -> new UserCell());
 	}
@@ -245,6 +283,36 @@ public class PiTabCreateController {
 
 	}
 
+	/**
+	 * This method displays a list of propositions based on the newValue of the
+	 * searchField. Taken from SearchTabController.java
+	 * 
+	 * @param newValue
+	 */
+	private void showPropositionList(String newValue) {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() {
+				ObservableList<String> items = propositionList.getItems();
+				SearchViewer searchViewer = new SearchViewer();
+				// Here we remove the @ to make our research of propositions
+				List<String> users = searchViewer.getListPropositions(newValue);
+				// We go through the proposition list
+				Platform.runLater(() -> {
+					items.addAll(users);
+					if (items.size() > 0) {
+						propositionVBox.setVisible(true);
+						propositionList.setVisible(true);
+					}
+				});
+				return null;
+			}
+		};
+		Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
+	}
+
 	public final class HashtagCell extends ListCell<String> {
 		GridPane cellGridPane;
 		ColumnConstraints column1;
@@ -305,23 +373,30 @@ public class PiTabCreateController {
 		}
 	}
 
+	/**
+	 * 
+	 * @author Sergiy
+	 * 
+	 *         A Cell element used as an entity shown in the Users JFXListView
+	 *
+	 */
 	public final class UserCell extends ListCell<User> {
 		GridPane cellGridPane;
 		ColumnConstraints column1;
 		ColumnConstraints column2;
 		ColumnConstraints column3;
 		ColumnConstraints column4;
-		
+
 		ImageView profileImegeView;
 		Label screenNameLabel;
 		Label followersCountLabel;
 		JFXButton removeUserJFXButton;
-		
+
 		Image profilePicture;
 
 		public UserCell() {
 			super();
-			
+
 			cellGridPane = new GridPane();
 			cellGridPane.setPrefSize(550, 50);
 
@@ -337,10 +412,10 @@ public class PiTabCreateController {
 			cellGridPane.getColumnConstraints().addAll(column1, column2);
 
 			profileImegeView = new ImageView();
-			
+
 			screenNameLabel = new Label();
 			followersCountLabel = new Label();
-			
+
 			removeUserJFXButton = new JFXButton();
 			removeUserJFXButton.setGraphic(new FontIcon("fas-minus"));
 
@@ -364,14 +439,9 @@ public class PiTabCreateController {
 		@Override
 		protected void updateItem(User user, boolean empty) {
 			super.updateItem(user, empty);
-			
-			profilePicture = new Image(user.getProfile_image_url_https());
-			
-			
-			
-			
-			
 
-		}	
+			profilePicture = new Image(user.getProfile_image_url_https());
+
+		}
 	}
 }
