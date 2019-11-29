@@ -10,14 +10,19 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
+import com.jfoenix.controls.JFXSnackbarLayout;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -27,6 +32,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
@@ -34,12 +40,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -183,14 +192,12 @@ public class PiTabCreateController {
 		userList.setItems(observableListUser);
 		userList.setCellFactory(userListView -> new UserCell());
 	}
-	
-	@FXML
-    private void propositionListClicked(MouseEvent event) {
-		userField.setText(propositionList.getSelectionModel().getSelectedItem());
-        propositionList.setVisible(false);
-    }
 
-	
+	@FXML
+	private void propositionListClicked(MouseEvent event) {
+		userField.setText(propositionList.getSelectionModel().getSelectedItem());
+		propositionList.setVisible(false);
+	}
 
 	/**
 	 * Events
@@ -222,7 +229,41 @@ public class PiTabCreateController {
 
 	@FXML
 	public void addUserJFXButtonPressed(ActionEvent event) {
-		
+		String query = userField.getText();
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() {
+				try {
+					String newResearch = query;
+
+					if (newResearch != null) {
+						UserViewer userViewer = new UserViewer();
+						userViewer.searchScreenName(newResearch);
+						userList.getItems().add(userViewer.getUser());
+					}
+
+				} catch (Exception e) {
+					Platform.runLater(() -> {
+						JFXSnackbar snackbar = new JFXSnackbar(anchorPane);
+						snackbar.getStyleClass().add("snackbar");
+						if (e instanceof RequestManager.RequestManagerException) {
+							snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
+									new JFXSnackbarLayout("Désolé, l'utilisateur " + query + " n'existe pas.",
+											"D'accord", b -> snackbar.close())));
+						} else {
+							snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(new JFXSnackbarLayout(
+									"Désolé, la recherche n'a pas aboutie", "D'accord", b -> snackbar.close())));
+						}
+					});
+					System.out.println("Something went wrong : ");
+					e.printStackTrace();
+				}
+				return null;
+			}
+		};
+		Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	/**
@@ -271,7 +312,7 @@ public class PiTabCreateController {
 			}
 		});
 	}
-	
+
 	/**
 	 * This function has to be called just after initialisation of this controller
 	 */
@@ -394,7 +435,7 @@ public class PiTabCreateController {
 		ColumnConstraints column3;
 		ColumnConstraints column4;
 
-		ImageView profileImegeView;
+		ImageView profileImageView;
 		Label screenNameLabel;
 		Label followersCountLabel;
 		JFXButton removeUserJFXButton;
@@ -416,9 +457,9 @@ public class PiTabCreateController {
 			column4 = new ColumnConstraints();
 			column4.setPrefWidth(50);
 
-			cellGridPane.getColumnConstraints().addAll(column1, column2);
+			cellGridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
 
-			profileImegeView = new ImageView();
+			profileImageView = new ImageView();
 
 			screenNameLabel = new Label();
 			followersCountLabel = new Label();
@@ -437,7 +478,7 @@ public class PiTabCreateController {
 				}
 			});
 
-			cellGridPane.add(profileImegeView, 0, 0);
+			cellGridPane.add(profileImageView, 0, 0);
 			cellGridPane.add(screenNameLabel, 1, 0);
 			cellGridPane.add(followersCountLabel, 2, 0);
 			cellGridPane.add(removeUserJFXButton, 3, 0);
@@ -446,9 +487,34 @@ public class PiTabCreateController {
 		@Override
 		protected void updateItem(User user, boolean empty) {
 			super.updateItem(user, empty);
+			
+			if (empty || user == null) {
 
-			profilePicture = new Image(user.getProfile_image_url_https());
+				setText(null);
+				setGraphic(null);
 
+			} else {
+				profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+				profileImageView.setImage(profilePicture);
+				
+		        Circle clip = new Circle(20, 20, 20);
+		        profileImageView.setClip(clip);
+		        
+		        SnapshotParameters parameters = new SnapshotParameters();
+		        parameters.setFill(Color.TRANSPARENT);
+		        
+		        WritableImage image = profileImageView.snapshot(parameters, null);
+		        
+		        profileImageView.setClip(null);
+		        profileImageView.setImage(image);
+				
+				
+				screenNameLabel.setText(user.getScreen_name());
+				followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
+
+				setText(null);
+				setGraphic(cellGridPane);
+			}
 		}
 	}
 }
