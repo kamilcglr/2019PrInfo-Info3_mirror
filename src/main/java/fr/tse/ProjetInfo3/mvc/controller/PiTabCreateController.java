@@ -183,17 +183,14 @@ public class PiTabCreateController {
 		userList.setItems(observableListUser);
 		userList.setCellFactory(userListView -> new UserCell());
 	}
+	
+	@FXML
+    private void propositionListClicked(MouseEvent event) {
+		userField.setText(propositionList.getSelectionModel().getSelectedItem());
+        propositionList.setVisible(false);
+    }
 
-	/**
-	 * This function has to be called just after initialisation of this controller
-	 */
-	public void setIsNew(boolean isNew) {
-		this.isNew = isNew;
-		// if the PI already exists, we show it
-		if (isNew) {
-			// TODO fill the entries with the Interest Point attributes
-		}
-	}
+	
 
 	/**
 	 * Events
@@ -214,12 +211,18 @@ public class PiTabCreateController {
 
 	@FXML
 	public void addHashtagJFXButtonPressed(ActionEvent event) {
-		inputNewHashtag();
+		String hashtagInput = hashtagField.getText();
+
+		if (hashtagInput.charAt(0) == '#') {
+			hashtagInput = hashtagInput.substring(0, hashtagInput.length());
+		}
+
+		hashtagList.getItems().add(hashtagInput);
 	}
 
 	@FXML
 	public void addUserJFXButtonPressed(ActionEvent event) {
-		inputNewUser();
+		
 	}
 
 	/**
@@ -268,19 +271,16 @@ public class PiTabCreateController {
 			}
 		});
 	}
-
-	private void inputNewUser() {
-	}
-
-	private void inputNewHashtag() {
-		String hashtagInput = hashtagField.getText();
-
-		if (hashtagInput.charAt(0) == '#') {
-			hashtagInput = hashtagInput.substring(0, hashtagInput.length());
+	
+	/**
+	 * This function has to be called just after initialisation of this controller
+	 */
+	public void setIsNew(boolean isNew) {
+		this.isNew = isNew;
+		// if the PI already exists, we show it
+		if (isNew) {
+			// TODO fill the entries with the Interest Point attributes
 		}
-
-		hashtagList.getItems().add(hashtagInput);
-
 	}
 
 	/**
@@ -313,6 +313,13 @@ public class PiTabCreateController {
 		thread.start();
 	}
 
+	/**
+	 * 
+	 * @author Sergiy
+	 * 
+	 *         A Cell element used as an entity shown in the Hashtag JFXListView
+	 *
+	 */
 	public final class HashtagCell extends ListCell<String> {
 		GridPane cellGridPane;
 		ColumnConstraints column1;
