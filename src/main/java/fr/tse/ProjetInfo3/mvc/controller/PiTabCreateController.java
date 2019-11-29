@@ -257,7 +257,7 @@ public class PiTabCreateController {
 			column1.setPrefWidth(500);
 			column2 = new ColumnConstraints();
 			column2.setPrefWidth(50);
-			
+				
 			cellGridPane.getColumnConstraints().addAll(column1, column2);
 			
 			hashtagLabel = new Label();
