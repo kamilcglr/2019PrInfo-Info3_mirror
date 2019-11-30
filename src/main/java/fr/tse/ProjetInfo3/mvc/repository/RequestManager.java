@@ -252,7 +252,6 @@ public class RequestManager {
         long max_id = 0L;
         try {
             while (tweets.size() < count && (tentatives < 100) && successiveFails < 5) {
-                System.out.println("requestmanager running");
                 request = buildUserTweetsRequest(screen_name, "200", max_id);
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 if (response.body().contains("code\":50")) {
