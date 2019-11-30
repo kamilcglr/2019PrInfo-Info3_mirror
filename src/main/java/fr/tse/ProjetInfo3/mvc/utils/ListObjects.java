@@ -1,20 +1,30 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
+import com.jfoenix.controls.JFXButton;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class ListObjects {
     /**
      * This class will represent a result of a linked hashtag
      */
-    public static class Cell extends ListCell<ResultHashtag> {
+    public static class HashtagCell extends ListCell<ResultHashtag> {
         HBox hBox = new HBox();
         Label classementLabel = new Label("");
         Label hashtagLabel = new Label("");
         Label nbTweetLabel = new Label("");
 
-        public Cell() {
+        public HashtagCell() {
             super();
             classementLabel.getStyleClass().add("indexLabel");
             hashtagLabel.getStyleClass().add("hashtagTextLabel");
@@ -58,6 +68,80 @@ public class ListObjects {
 
         String getNbTweets() {
             return nbTweets;
+        }
+    }
+
+    /*
+     * Used in topUser inside PITab
+     */
+    public static class TopUserCell extends ListCell<User> {
+        GridPane cellGridPane;
+        ColumnConstraints column1;
+        ColumnConstraints column2;
+        ColumnConstraints column3;
+
+        ImageView profileImageView;
+        Label screenNameLabel;
+        Label followersCountLabel;
+
+        Image profilePicture;
+
+        public TopUserCell() {
+            super();
+
+            cellGridPane = new GridPane();
+            cellGridPane.setPrefSize(550, 50);
+
+            column1 = new ColumnConstraints();
+            column1.setPrefWidth(50);
+            column2 = new ColumnConstraints();
+            column2.setPrefWidth(150);
+            column3 = new ColumnConstraints();
+            column3.setPrefWidth(300);
+
+            cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
+
+            profileImageView = new ImageView();
+
+            screenNameLabel = new Label();
+            followersCountLabel = new Label();
+
+            cellGridPane.add(profileImageView, 0, 0);
+            cellGridPane.add(screenNameLabel, 1, 0);
+            cellGridPane.add(followersCountLabel, 2, 0);
+        }
+
+        @Override
+        protected void updateItem(User user, boolean empty) {
+            super.updateItem(user, empty);
+
+            if (empty || user == null) {
+
+                setText(null);
+                setGraphic(null);
+
+            } else {
+                profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+                profileImageView.setImage(profilePicture);
+
+                Circle clip = new Circle(20, 20, 20);
+                profileImageView.setClip(clip);
+
+                SnapshotParameters parameters = new SnapshotParameters();
+                parameters.setFill(Color.TRANSPARENT);
+
+                WritableImage image = profileImageView.snapshot(parameters, null);
+
+                profileImageView.setClip(null);
+                profileImageView.setImage(image);
+
+
+                screenNameLabel.setText(user.getScreen_name());
+                followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
+
+                setText(null);
+                setGraphic(cellGridPane);
+            }
         }
     }
 }
