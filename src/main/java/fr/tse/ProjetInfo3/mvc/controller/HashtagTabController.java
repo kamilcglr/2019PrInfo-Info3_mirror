@@ -7,7 +7,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.application.Platform;
@@ -103,7 +103,7 @@ public class HashtagTabController {
         progressBar.setVisible(false);
         progressLabel.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
-        topTenLinkedList.setCellFactory(param -> new Cell());
+        topTenLinkedList.setCellFactory(param -> new HashtagCell());
     }
 
     private void showHashtagElements(boolean hide) {

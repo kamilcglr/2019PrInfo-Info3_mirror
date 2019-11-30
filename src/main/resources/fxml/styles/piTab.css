@@ -40,28 +40,18 @@
 }
 
 /*
-* Accordion TODO add radius on titled pane
+* List of users
 */
-.accordion > .titled-pane {
-    -fx-padding: 0 0 1em 0;
-    -fx-border-radius: 10%;
-    -fx-background-radius: 10%;
-}
-.accordion > .titled-pane > .tittle{
-    -fx-border-radius: 15pt;
-    -fx-background-radius: 15pt;
-}
-.accordion .titled-pane > .title {
-    -fx-background-color: -white;
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 20;
-    -fx-text-fill: -primary;
+#topFiveUserList {
+    -fx-background-radius: 10pt;
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+    -fx-font-size: 15;
+    -fx-border-style: hidden;
+    -fx-background-color: WHITE;
 }
 
-.titled-pane > .title > .text {
-    -fx-fill: -primary;
-}
-
-.titled-pane > .title > .arrow-button .arrow {
-    -fx-background-color: -primary
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: WHITE;
 }
