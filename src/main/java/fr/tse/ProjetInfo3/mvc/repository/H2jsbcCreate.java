@@ -39,7 +39,7 @@ public class H2jsbcCreate {
 		 	            + "PRIMARY KEY (interestpoint_id))";
 	         
 	         String hashtag = "CREATE TABLE   hashtag " + 
-		 	            "( hashtag_id INTEGER ,"
+		 	            "( hashtag_id INTEGER AUTO_INCREMENT,"
 		 	            + "hashtag VARCHAR(255),"
 		 	            + "PRIMARY KEY (hashtag_id),"
 		 	            + "interestpoint_id INTEGER,"

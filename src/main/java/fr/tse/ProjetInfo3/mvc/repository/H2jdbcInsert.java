@@ -34,10 +34,9 @@ public class H2jdbcInsert {
 	  
 	         
 	         InterestPointDAO dao = new InterestPointDAO();
-	         InterestPoint ip = new InterestPoint(1,"Santé","description sur la santé",new Date(10000));
-	         InterestPoint ip2 = new InterestPoint(2,"Politque","description sur la politique",new Date(10000));
-	         
+	         InterestPoint ip = new InterestPoint("Santé","description sur la santé",new Date(10000));
 	         List<Hashtag> hashtags = new ArrayList<>();
+	         
 	         Hashtag president = new Hashtag("#president");
 	         Hashtag congres = new Hashtag("#congrés");
 	         Hashtag meetup = new Hashtag("#meetup");
@@ -47,12 +46,7 @@ public class H2jdbcInsert {
 	         hashtags.add(meetup);
 	         
 	         ip.setHashtags(hashtags);
-	         
 	         dao.saveInterestPoint(ip);
-	         dao.saveInterestPoint(ip2);
-	         
-	         
-	         
 	         //stmt.executeUpdate(sql2); 
 	         System.out.println("Inserted records into the table..."); 
 	         

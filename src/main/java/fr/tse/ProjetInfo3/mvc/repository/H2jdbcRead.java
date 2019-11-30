@@ -39,8 +39,10 @@ public class H2jdbcRead {
 	         // STEP 3: Execute a query 
 	         System.out.println("Connected database successfully..."); 
 	         stmt = conn.createStatement(); 
-	         String sql = "SELECT * FROM interestpoint"; 
+	         String sql = "SELECT * FROM interestpoint "; 
+	         
 	         ResultSet rs = stmt.executeQuery(sql); 
+	         List<String> hashtags = new ArrayList<>();
 	         
 	         // STEP 4: Extract data from result set 
 	         while(rs.next()) { 
@@ -49,13 +51,14 @@ public class H2jdbcRead {
 	            String mail = rs.getString("name"); 
 	            String twitter = rs.getString("description"); 
 	            String password = rs.getString("created_at");  
-	            
 	            System.out.println("id : "+id);
 	            System.out.println("name : "+mail);
 	            System.out.println("description : "+twitter);
 	            System.out.println("created at : "+password);
 	            
 	         } 
+	         
+	         
 	         // STEP 5: Clean-up environment 
 	         rs.close(); 
 	      } catch(Exception e) { 

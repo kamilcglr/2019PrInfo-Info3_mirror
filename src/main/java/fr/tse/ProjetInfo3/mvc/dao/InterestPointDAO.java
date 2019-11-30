@@ -22,12 +22,12 @@ public class InterestPointDAO {
 	public InterestPoint saveInterestPoint(InterestPoint interestPoint) {
 		Connection connection = SingletonDBConnection.getInstance();
 		try { 
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO interestpoint(interestpoint_id,NAME,DESCRIPTION,CREATED_AT) "
-															 + "VALUES (?,?,?,?)");
-			ps.setInt(1, interestPoint.getId());
-			ps.setString(2, interestPoint.getName());
-			ps.setString(3, interestPoint.getDescription());
-			ps.setDate(4, (Date) interestPoint.getDateOfCreation());
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO interestpoint(NAME,DESCRIPTION,CREATED_AT) "
+															 + "VALUES (?,?,?)");
+			ps.setString(1, interestPoint.getName());
+			ps.setString(2, interestPoint.getDescription());
+			ps.setDate(3, (Date) interestPoint.getDateOfCreation());
+			saveHashtag(interestPoint);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -39,13 +39,11 @@ public class InterestPointDAO {
 	public InterestPoint saveHashtag(InterestPoint interestPoint) {
 		Connection connection = SingletonDBConnection.getInstance();
 		try { 
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO hashtag(hashtag_id,hashtag,interestpoint_id) "
-															 + "VALUES (?,?,?)");
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO hashtag(hashtag) "
+															 + "VALUES (?)");
 			
 			for(Hashtag hash:interestPoint.getHashtags()) {
-				ps.setInt(1, hash.getId());
-				ps.setString(2, hash.getHashtag());
-				ps.setInt(3, interestPoint.getId());
+				ps.setString(1, hash.getHashtag());
 			}
 			ps.executeUpdate();
 			ps.close();
