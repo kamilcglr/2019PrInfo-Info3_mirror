@@ -31,7 +31,15 @@ public class HastagViewer {
         tweets = requestManager.searchTweets(hashtag, 4500, progressBar);
     }
 
-    public List<Tweet> getTweetList() {
+    public List<Tweet> getTweets() {
+		return tweets;
+	}
+
+	public void setTweets(List<Tweet> tweets) {
+		this.tweets = tweets;
+	}
+
+	public List<Tweet> getTweetList() {
         return tweets;
     }
 

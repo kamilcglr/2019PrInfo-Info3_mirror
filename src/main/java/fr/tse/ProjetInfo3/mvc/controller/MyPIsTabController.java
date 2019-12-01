@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -44,7 +45,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     private InterestPoint ip;
 
     private PIViewer piViewer;
-
+    private PITabViewer piTabViewer;
+    
     public MyPIsTabController() {
     }
 
@@ -78,8 +80,9 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         });
     }
 
-    public void setPiViewer(PIViewer piViewer) {
+    public void setPiViewer(PIViewer piViewer,PITabViewer piTabViewer) {
         this.piViewer = piViewer;
+        this.piTabViewer=piTabViewer;
         // Everything is in a separated thread because it is a heavy task (calls to Databse...)
         // We do not want a frozen interface
         Platform.runLater(() -> isLoading(true));
@@ -124,7 +127,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     void seeButtonPressed(ActionEvent event) {
-        mainController.goToSelectedPi(piViewer);
+        mainController.goToSelectedPi(piViewer,piTabViewer);
     }
 
     /**

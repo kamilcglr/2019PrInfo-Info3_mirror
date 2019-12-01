@@ -366,6 +366,11 @@ public class RequestManager {
     }
 
     /**
+     * 
+     * 
+     */
+    
+    /**
      * @author kamil CAGLAR
      * Porvides a request for getting the tweets from user timeline
      * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header

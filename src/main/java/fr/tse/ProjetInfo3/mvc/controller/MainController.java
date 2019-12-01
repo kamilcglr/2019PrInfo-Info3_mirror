@@ -5,6 +5,7 @@ import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -83,6 +84,7 @@ public class MainController {
      * Viewers
      */
     private PIViewer piViewer;
+    private PITabViewer piTabViewer;
 
     private Tab myPisTab;
 
@@ -90,6 +92,7 @@ public class MainController {
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
+        piTabViewer=new PITabViewer();
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -223,7 +226,7 @@ public class MainController {
                     tabPane.getTabs().add(myPisTab);
                     tabPane.getSelectionModel().select(myPisTab);
                     //do this task at the end !
-                    myPIsTabController.setPiViewer(piViewer);
+                    myPIsTabController.setPiViewer(piViewer,piTabViewer);
                     myPisTab.setOnClosed(new EventHandler<Event>() {
                         @Override
                         public void handle(Event e) {
@@ -273,7 +276,7 @@ public class MainController {
         drawer.close();
     }
 
-    public void goToSelectedPi(PIViewer piViewer) {
+    public void goToSelectedPi(PIViewer piViewer,PITabViewer piTabViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
         try {
             AnchorPane piTab = fxmlLoader.load();
@@ -285,7 +288,7 @@ public class MainController {
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
                 //do this task at the end !
-                piTabController.setDatas(piViewer);
+                piTabController.setMyPITabViewer(piTabViewer,piViewer);
             });
         } catch (IOException e) {
             e.printStackTrace();

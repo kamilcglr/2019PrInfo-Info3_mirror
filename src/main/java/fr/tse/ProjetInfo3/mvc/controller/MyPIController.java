@@ -1,7 +1,12 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import com.jfoenix.controls.JFXButton;
 
+import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -12,6 +17,8 @@ import javafx.fxml.FXML;
  */
 public class MyPIController {
     private MainController mainController;
+    private PITabViewer piTabViewer;
+    Map<String,Integer> hashtags;
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -19,12 +26,11 @@ public class MyPIController {
     }
 
 
-    @FXML
-    private JFXButton createPIButton;
 
     @FXML
     private void initialize() {
 
     }
 
+ 
 }
