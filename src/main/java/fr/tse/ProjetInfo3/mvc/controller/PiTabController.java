@@ -9,10 +9,12 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,9 +65,11 @@ public class PiTabController {
 
     private PIViewer piViewer;
     private PITabViewer piTabViewer;
+    private UserViewer userViewer=new UserViewer();
     Map<String,Integer> hashtags;
     List<String> myHashtags=new ArrayList<>(); 
-
+    List<User> myUsers=new ArrayList<>(); 
+   // User user =new User(0, null, "realDonaldTrump", null, null, null, null, 0, 0, 0, 0, 0, null, null, null, null);
     
 
     private InterestPoint interestPointToPrint;
@@ -90,14 +94,22 @@ public class PiTabController {
 
 
     public void setMyPITabViewer(PITabViewer piTabViewer,PIViewer piViewer) {
-    	myHashtags.add("blackfriday");
-    	myHashtags.add("mardi");
+    	myHashtags.add("macron");
+    	myHashtags.add("trump");
+    	//myUsers.add("realdonaldtrump");
+    	try {
+			myUsers.add(userViewer.searchScreenNameU("@realdonaldtrump"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         this.piTabViewer = piTabViewer;
         this.piViewer=piViewer;
 		piTabViewer.getMyHashtags().forEach(ha->System.out.println(ha));
 
         this.interestPointToPrint = piViewer.getSelectedInterestPoint();
-        hashtags=piTabViewer.getListOfHashtagsforPI(progressBar,myHashtags);
+        hashtags=piTabViewer.getListOfHashtagsforPI(progressBar,myHashtags,myUsers);
 
         Platform.runLater(() -> {
             piNameLabel.setText(interestPointToPrint.getName());
@@ -110,7 +122,7 @@ public class PiTabController {
     
     private Task<Void> setTopLinkedHashtag() {
        // List<String> hashtagPI = piTabViewer.getHashtagsOfHashtags();
-        hashtags = piTabViewer.getListOfHashtagsforPI(progressBar,myHashtags);
+        hashtags = piTabViewer.getListOfHashtagsforPI(progressBar,myHashtags,myUsers);
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;

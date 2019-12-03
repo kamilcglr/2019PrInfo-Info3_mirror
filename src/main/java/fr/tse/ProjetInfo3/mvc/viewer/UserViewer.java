@@ -39,7 +39,9 @@ public class UserViewer {
     public void searchScreenName(String screen_name) throws Exception {
         user = requestManager.getUser(screen_name);
     }
-
+    public User searchScreenNameU(String screen_name) throws Exception {
+        return user = requestManager.getUser(screen_name);
+    }
     //Not used for the moment, we keep it until end, we can use for graph
     public List<Tweet> getTweetsByDate(String screen_name, Date date) {
         return requestManager.getTweetsFromUserByDate(screen_name, date);
@@ -51,6 +53,9 @@ public class UserViewer {
 
     public User getUser() {
         return user;
+    }
+    public void setUser(User user) {
+    	this.user=user;
     }
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
