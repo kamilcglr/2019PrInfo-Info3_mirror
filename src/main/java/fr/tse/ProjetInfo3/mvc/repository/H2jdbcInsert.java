@@ -32,6 +32,7 @@ public class H2jdbcInsert {
 	         stmt = conn.createStatement();  
 
 	  
+	         // testing the storing process we have made 
 	         
 	         InterestPointDAO dao = new InterestPointDAO();
 	         InterestPoint ip = new InterestPoint("Santé","description sur la santé",new Date(10000));
@@ -47,6 +48,7 @@ public class H2jdbcInsert {
 	         
 	         ip.setHashtags(hashtags);
 	         dao.saveInterestPoint(ip);
+	         
 	         //stmt.executeUpdate(sql2); 
 	         System.out.println("Inserted records into the table..."); 
 	         
