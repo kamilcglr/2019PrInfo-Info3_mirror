@@ -1,11 +1,9 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
 
+import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.dto.*;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.io.IOException;
@@ -24,11 +22,11 @@ public class PIViewer {
     private InterestPoint selectedInterestPoint;
 
     public PIViewer() {
-        try {
-            generatePIsDemo();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    generatePIsDemo();
+        //} catch (IOException | InterruptedException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     /**
@@ -168,13 +166,13 @@ public class PIViewer {
         }
         for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
             HastagViewer hastagViewer = new HastagViewer();
-            hastagViewer.setHashtag(hashtag.getHashtagName().substring(1));
-            hastagViewer.search(hashtag.getHashtagName().substring(1), progressBar);
+            hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
+            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar);
             tweetsToRetrun.addAll(hastagViewer.getTweetList());
-            System.out.println("tweets from " + hashtag.getHashtagName() + " received, number of tweets : " + tweetsToRetrun.size());
+            System.out.println("tweets from " + hashtag.getHashtag() + " received, number of tweets : " + tweetsToRetrun.size());
         }
         return tweetsToRetrun;
-    
+    }
     /*
      * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
      * in the db , the Interest Point does not contain the list of users , tweets , and hastags for the moment

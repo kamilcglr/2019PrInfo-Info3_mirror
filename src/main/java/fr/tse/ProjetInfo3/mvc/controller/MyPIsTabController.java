@@ -88,7 +88,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+                List<InterestPoint> interestPoints = piViewer.getListOfInterestPointFromDataBase();
                 //sets the datas
                 for (InterestPoint interestPoint : interestPoints) {
                     listPI.getItems().add(interestPoint.toStringMinimal());
@@ -158,7 +158,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     }
 
     public void refreshPIs() {
-        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        List<InterestPoint> interestPoints = piViewer.getListOfInterestPointFromDataBase();
         //sets the datas
         listPI.getItems().clear();
         for (InterestPoint interestPoint : interestPoints) {

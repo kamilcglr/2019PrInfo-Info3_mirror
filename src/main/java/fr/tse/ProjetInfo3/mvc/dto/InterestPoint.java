@@ -263,7 +263,7 @@ public class InterestPoint implements Serializable {
         String spacing = "\t\t\t\t\t\t\t\t";
 
         String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
-        String listHashtags = hashtags.stream().map(Hashtag::getHashtagName).collect(Collectors.joining(" "));
+        String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
 
         return name + " " + simpleDateFormat.format(dateOfCreation) + " " + listUsers + " " + listHashtags;
     }
