@@ -187,7 +187,7 @@ public class MainController {
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(newHashtagTab);
-                tab.setText("#" + hastagViewer.getHashtag().getHashtagName());
+                tab.setText("#" + hastagViewer.getHashtag().getHashtag());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
             });

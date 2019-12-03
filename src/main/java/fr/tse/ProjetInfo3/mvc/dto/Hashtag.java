@@ -15,41 +15,45 @@ import java.util.List;
  * This class contains some tweets with with the same #
  */
 public class Hashtag implements Serializable {
-	private int id;
-	private String hashtag;
+    private int id;
+    private String hashtag;
 
-	private List<Tweet> tweets;
+    private List<Tweet> tweets;
 
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public Hashtag(int id, String hashtag) {
-		super();
-		this.id = id;
-		this.hashtag = hashtag;
-	}
+    public Hashtag(int id, String hashtag) {
+        super();
+        this.id = id;
+        this.hashtag = hashtag;
+    }
 
-	public Hashtag(String hashtag) {
-		super();
-		this.hashtag = hashtag;
-	}
+    public Hashtag(String hashtag) {
+        super();
+        this.hashtag = hashtag;
+    }
 
-	public String getHashtag() {
-		return hashtag;
-	}
+    public Hashtag() {
 
-	public void setHashtag(String hashtag) {
-		this.hashtag = hashtag;
-	}
+    }
 
-	public List<Tweet> getTweets() {
-		return tweets;
-	}
+    public String getHashtag() {
+        return hashtag;
+    }
+
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
+    }
+
+    public List<Tweet> getTweets() {
+        return tweets;
+    }
 
 }

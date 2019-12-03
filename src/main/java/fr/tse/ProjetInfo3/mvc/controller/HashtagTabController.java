@@ -127,7 +127,7 @@ public class HashtagTabController {
         hastagViewer.getSearchProgression();
 
         Platform.runLater(() -> {
-            hashtagLabel.setText("#" + hashtagToPrint.getHashtagName());
+            hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
         });
 
         threadgetTweetFromHashtag = new Thread(getTweetFromHashtag());
@@ -147,7 +147,7 @@ public class HashtagTabController {
         });
         try {
             //search and get tweets from hashtag first
-            hastagViewer.search(hashtagToPrint.getHashtagName(), progressBar);
+            hastagViewer.search(hashtagToPrint.getHashtag(), progressBar);
             this.tweetList = hastagViewer.getTweetList();
 
             //Tweet are collected
