@@ -47,6 +47,22 @@
     -fx-font-size: 15;
 }
 
+/*
+ * Proposition list
+*/
+#propositionList{
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+    -fx-border-color: -accent;
+    -fx-font-family: "Roboto Medium", sans-serif;
+}
+
+.list-cell:odd, .list-cell:even {
+    -fx-background-radius: 15pt;
+    -fx-font-family: "Roboto Medium", sans-serif;
+    -fx-font-size: 15;
+}
+
 /*******************************************************************************
 *                                                                              *
 * Buttons                                 *
@@ -107,10 +123,6 @@
     -fx-text-fill: -red;
 
 }
-
-/*
-* Dialog
-*/
 
 /*
 * Dialog

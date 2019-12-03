@@ -56,7 +56,6 @@ public class MainController {
     @FXML
     private MyPIsTabController myPIsTabController;
 
-    private MyPIController myPIController;
     @FXML
     private ToolBarController toolBarController;
 

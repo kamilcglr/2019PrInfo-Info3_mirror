@@ -2,50 +2,59 @@
  * 
  */
 package fr.tse.ProjetInfo3.mvc.repository;
-import java.sql.Connection; 
-import java.sql.DriverManager; 
-import java.sql.SQLException; 
-import java.sql.Statement; 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint; 
 /**
  * @author Laïla
  *
  */
 public class H2jdbcInsert {
-	// JDBC driver name and database URL 
-	   static final String JDBC_DRIVER = "org.h2.Driver";   
-	   static final String DB_URL = "jdbc:h2:~/user";  
-	   
-	   //  Database credentials 
-	   static final String USER = "sa"; 
-	   static final String PASS = ""; 
-	  
 	   
 	   public static void main(String[] args) { 
 	      Connection conn = null; 
 	      Statement stmt = null; 
 	      try{
-	         // STEP 1: Register JDBC driver 
-	         Class.forName(JDBC_DRIVER);  
-	         
+	        
 	         // STEP 2: Open a connection 
 	         System.out.println("Connecting to a selected database..."); 
-	         conn = DriverManager.getConnection(DB_URL,USER,PASS); 
+	         conn = SingletonDBConnection.getInstance();
 	         System.out.println("Connected database successfully..."); 
 	         
 	         // STEP 3: Execute a query 
 	         stmt = conn.createStatement();  
-	         String sql = "INSERT INTO userApp " + "VALUES (100, 'Zara@zara.com', 'zara', 18)"; 
+
+	  
+	         // testing the storing process we have made 
 	         
-	         stmt.executeUpdate(sql); 
+	         InterestPointDAO dao = new InterestPointDAO();
+	         InterestPoint ip = new InterestPoint("Santé","description sur la santé",new Date(10000));
+	         List<Hashtag> hashtags = new ArrayList<>();
 	         
+	         Hashtag president = new Hashtag("#president");
+	         Hashtag congres = new Hashtag("#congrés");
+	         Hashtag meetup = new Hashtag("#meetup");
+
+	         hashtags.add(president);
+	         hashtags.add(congres);
+	         hashtags.add(meetup);
+	         
+	         ip.setHashtags(hashtags);
+	         dao.saveInterestPoint(ip);
+	         
+	         //stmt.executeUpdate(sql2); 
 	         System.out.println("Inserted records into the table..."); 
 	         
 	         // STEP 4: Clean-up environment 
 	         stmt.close(); 
 	         conn.close(); 
-	      } catch(SQLException se) { 
-	         // Handle errors for JDBC 
-	         se.printStackTrace(); 
 	      } catch(Exception e) { 
 	         // Handle errors for Class.forName 
 	         e.printStackTrace(); 

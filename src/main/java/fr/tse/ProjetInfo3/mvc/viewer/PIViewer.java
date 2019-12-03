@@ -1,7 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import com.jfoenix.controls.JFXProgressBar;
-import fr.tse.ProjetInfo3.mvc.dto.*;
+
+import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.io.IOException;
@@ -16,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
-
+    private static InterestPointDAO interestPointDAO = new InterestPointDAO();
     private InterestPoint selectedInterestPoint;
 
     public PIViewer() {
@@ -50,14 +54,16 @@ public class PIViewer {
      * In the futur, this function will add the created Interest Point into the database
      */
     public void addInterestPointToDatabase(InterestPoint interestPoint) {
-        listOfInterestPoint.add(interestPoint);
+        //listOfInterestPoint.add(interestPoint);
+    	interestPointDAO.saveInterestPoint(interestPoint);
     }
 
     /**
      * In the futur, this function will return the created Interest Point into the database
      */
     public List<InterestPoint> getListOfInterestPointFromDataBase() {
-        return listOfInterestPoint;
+        //return listOfInterestPoint;
+    	return interestPointDAO.getAllInterestPoints();
     }
 
     /**
@@ -82,7 +88,6 @@ public class PIViewer {
         users.add(u1);
         //users.add(u2);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         Date date = new Date();
         InterestPoint ip1 = new InterestPoint("Black friday", "Suivi des promotions", date);
@@ -169,5 +174,14 @@ public class PIViewer {
             System.out.println("tweets from " + hashtag.getHashtagName() + " received, number of tweets : " + tweetsToRetrun.size());
         }
         return tweetsToRetrun;
+    
+    /*
+     * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
+     * in the db , the Interest Point does not contain the list of users , tweets , and hastags for the moment
+     * */
+    public void createRestrictedPIinDatabase() {
+    	Date date = new Date();
+        InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalites politiques", date);
+        // TO-DO
     }
 }
