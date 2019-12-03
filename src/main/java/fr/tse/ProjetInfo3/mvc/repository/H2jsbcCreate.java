@@ -31,6 +31,11 @@ public class H2jsbcCreate {
 	            " password VARCHAR(20), " +  
 	            " PRIMARY KEY ( id ))";
 	         
+	         
+	         // we are creating interestpoint table and hashtag table 
+	         // hashtag table will have a foreign key wish is 
+	         // the interestpoint_id so we could for each PI store its hashtags !
+	         
 	         String interestpoint =  "CREATE TABLE   interestpoint " + 
 		 	            "(interestpoint_id INTEGER AUTO_INCREMENT,"
 		 	            + "name VARCHAR(255) , " + 
@@ -43,14 +48,14 @@ public class H2jsbcCreate {
 		 	            + "hashtag VARCHAR(255),"
 		 	            + "PRIMARY KEY (hashtag_id),"
 		 	            + "interestpoint_id INTEGER,"
-		 	            + "CONSTRAINT FK_hashtag_interestpoint FOREIGN KEY (interestpoint_id) REFERENCES interestpoint(interestpoint_id))";
+		 	            + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
 	         
 	         
 	         stmt.executeUpdate(interestpoint);
 	         stmt.executeUpdate(hashtag);
 	         
-	         //stmt.executeUpdate("drop table interestpoint");
-	         //stmt.executeUpdate("drop table hashtag");
+//	         stmt.executeUpdate("drop table interestpoint");
+//	         stmt.executeUpdate("drop table hashtag");
 	         
 	         System.out.println("Created tables in given database..."); 
 	         
