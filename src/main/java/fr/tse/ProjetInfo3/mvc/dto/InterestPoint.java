@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,8 @@ import java.util.stream.Collectors;
  * parameters are defined to have a variety of definition for an InterestPoint
  */
 
-public class InterestPoint {
+public class InterestPoint implements Serializable {
+	private int id;
     private String name;
     private String description;
     private Date dateOfCreation;
@@ -25,10 +27,26 @@ public class InterestPoint {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-    public InterestPoint() {
-    }
+    public int getId() {
+		return id;
+	}
 
-    public InterestPoint(String name, String description, Date dateOfCreation) {
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public InterestPoint() {
+    }
+	
+    public InterestPoint(int id, String name, String description, Date dateOfCreation) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.dateOfCreation = dateOfCreation;
+	}
+
+	public InterestPoint(String name, String description, Date dateOfCreation) {
         this.name = name;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
