@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -71,7 +72,7 @@
                                             <FontIcon iconLiteral="fas-plus" styleClass="moreButtonsIcon" />
                                         </graphic>
                                     </JFXButton>
-                                    <JFXListView GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                    <JFXListView fx:id="hashtagList" prefHeight="320.0" prefWidth="300.0" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
                                        <GridPane.margin>
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                        </GridPane.margin>
@@ -111,7 +112,7 @@
                                             <FontIcon iconLiteral="fas-plus" styleClass="moreButtonsIcon" />
                                         </graphic>
                                     </JFXButton>
-                                    <JFXListView GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                    <JFXListView fx:id="userList" prefHeight="320.0" prefWidth="300.0" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
                                        <GridPane.margin>
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                        </GridPane.margin>
@@ -136,6 +137,11 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
+                  <VBox fx:id="propositionVBox" layoutX="630.0" layoutY="340.0" minHeight="170.0" minWidth="500.0" prefHeight="180.0">
+                     <children>
+                        <JFXListView fx:id="propositionList" minHeight="170.0" minWidth="500.0" onMouseClicked="#propositionListClicked" />
+                     </children>
+                  </VBox>
                </children>
                 </AnchorPane>
             </children>
