@@ -31,9 +31,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
@@ -80,6 +82,8 @@ public class PiTabCreateController {
 	/** Controller variables **/
 
 	boolean isNew; // if true, it is teh creation of a PI, else false (edition of existing PI)
+	boolean userSelected;
+	boolean suppressionDone;
 
 	private Date date;
 
@@ -147,6 +151,9 @@ public class PiTabCreateController {
 	/** Initialization method **/
 	@FXML
 	private void initialize() {
+		userSelected = false;
+		suppressionDone = true;
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		date = new Date();
 
@@ -156,28 +163,36 @@ public class PiTabCreateController {
 		suivisGrid.setVisible(true);
 		suivisGrid2.setVisible(true);
 		propositionVBox.setVisible(false);
-		
+
 		creationDateJFXTextField.setEditable(true);
 		creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
+
+		hashtagField.setText("#");
+		userField.setText("@");
 
 		/**
 		 * Proposition mechanism initialization - Taken from SearchTabController.java
 		 **/
-		PauseTransition pause = new PauseTransition(Duration.seconds(1));
+
+		hashtagField.textProperty().addListener((observable, old_value, new_value) -> {
+			if (hashtagField.getText().isEmpty() || !hashtagField.getText(0, 1).equals("#")) {
+				hashtagField.setText("#" + new_value);
+			}
+		});
+
+		PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
 		userField.textProperty().addListener((observable, old_value, new_value) -> {
 			propositionList.getItems().clear();
 			propositionList.setVisible(false);
 			propositionVBox.setVisible(false);
-			
-			if (new_value.contains(" ")) {
-				userField.setText(old_value);
-			}
+			propositionList.setVerticalGap(20.0);
+			userSelected = false;
 
 			if (userField.getText().isEmpty() || !userField.getText(0, 1).equals("@")) {
 				userField.setText("@" + new_value);
 			}
 
-			if (new_value.length() > 2) {
+			if (new_value.length() > 2 && !userSelected) {
 				pause.setOnFinished(event -> {
 					showPropositionList(new_value.substring(1));
 				});
@@ -199,8 +214,10 @@ public class PiTabCreateController {
 	@FXML
 	private void propositionListClicked(MouseEvent event) {
 		userField.setText(propositionList.getSelectionModel().getSelectedItem());
+		userSelected = true;
+		propositionList.getItems().clear();
 		propositionList.setVisible(false);
-		userField.setText(" ");
+		propositionVBox.setVisible(false);
 	}
 
 	/**
@@ -221,18 +238,20 @@ public class PiTabCreateController {
 	@FXML
 	public void addHashtagJFXButtonPressed(ActionEvent event) {
 		String hashtagInput = hashtagField.getText();
-		hashtagInput = hashtagInput.replaceAll("\\s","");
+		hashtagInput = hashtagInput.replaceAll("\\s", "");
 
 		if (hashtagInput.charAt(0) == '#') {
 			hashtagInput = hashtagInput.substring(1, hashtagInput.length());
 		}
 
 		hashtagList.getItems().add(hashtagInput);
-		hashtagField.setText(" ");
+		hashtagField.setText("#");
 	}
 
 	@FXML
 	public void addUserJFXButtonPressed(ActionEvent event) {
+		userSelected = false;
+
 		String query = userField.getText();
 		Task<Void> task = new Task<Void>() {
 			@Override
@@ -243,7 +262,12 @@ public class PiTabCreateController {
 					if (newResearch != null) {
 						UserViewer userViewer = new UserViewer();
 						userViewer.searchScreenName(newResearch);
-						userList.getItems().add(userViewer.getUser());
+						observableListUser.add(userViewer.getUser());
+
+						userField.setText("@");
+						propositionList.getItems().clear();
+						propositionList.setVisible(false);
+						propositionVBox.setVisible(false);
 					}
 
 				} catch (Exception e) {
@@ -338,18 +362,20 @@ public class PiTabCreateController {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() {
-				ObservableList<String> items = propositionList.getItems();
-				SearchViewer searchViewer = new SearchViewer();
-				// Here we remove the @ to make our research of propositions
-				List<String> users = searchViewer.getListPropositions(newValue);
+
 				// We go through the proposition list
 				Platform.runLater(() -> {
+					ObservableList<String> items = propositionList.getItems();
+					SearchViewer searchViewer = new SearchViewer();
+					// Here we remove the @ to make our research of propositions
+					List<String> users = searchViewer.getListPropositions(newValue);
 					items.addAll(users);
-					if (items.size() > 0) {
+					propositionList.setItems(items);
+
+					if (!userSelected && items.size() > 0) {
 						propositionVBox.setVisible(true);
 						propositionList.setVisible(true);
-						propositionVBox.setPrefSize(101, 201);
-						propositionVBox.setPrefSize(100, 200);
+
 					}
 				});
 				return null;
@@ -376,7 +402,7 @@ public class PiTabCreateController {
 		Label hashtagIconLabel;
 		Label hashtagLabel;
 		JFXButton removeHashtagJFXButton;
-		
+
 		FontIcon hashtagIcon;
 		FontIcon minusIcon;
 
@@ -396,11 +422,11 @@ public class PiTabCreateController {
 			cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
 
 			hashtagIconLabel = new Label();
-			
+
 			hashtagIcon = new FontIcon("fas-hashtag");
 			hashtagIcon.setIconSize(18);
 			hashtagIconLabel.setGraphic(hashtagIcon);
-			
+
 			hashtagLabel = new Label();
 			removeHashtagJFXButton = new JFXButton();
 
@@ -417,10 +443,11 @@ public class PiTabCreateController {
 				public void handle(ActionEvent event) {
 					System.out.println("Action: " + getItem());
 					String hashtagStringObject = getItem();
-					hashtagList.getItems().remove(hashtagStringObject);
+
+					observableListHashtag.remove(hashtagStringObject);
 				}
 			});
-			
+
 			cellGridPane.add(hashtagIconLabel, 0, 0);
 			cellGridPane.add(hashtagLabel, 1, 0);
 			cellGridPane.add(removeHashtagJFXButton, 2, 0);
@@ -488,7 +515,7 @@ public class PiTabCreateController {
 			followersCountLabel = new Label();
 
 			removeUserJFXButton = new JFXButton();
-			
+
 			minusIcon = new FontIcon("fas-minus");
 			minusIcon.setIconSize(18);
 			minusIcon.setIconColor(Paint.valueOf("#CB7C7AFF"));
@@ -499,9 +526,32 @@ public class PiTabCreateController {
 			removeUserJFXButton.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("Action: " + getItem());
-					User userObject = getItem();
-					userList.getItems().remove(userObject);
+					ProgressIndicator progressIndicator = new ProgressIndicator();
+					VBox progressIndicatorBox = new VBox(progressIndicator);
+					progressIndicatorBox.setAlignment(Pos.CENTER);
+					dialogStackPane.getChildren().add(progressIndicatorBox);
+
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							if (suppressionDone) {
+								suppressionDone = false;
+
+								System.out.println("Action: " + getItem());
+								User userObject = getItem();
+
+								cellGridPane.setVisible(false);
+								observableListUser.remove(userObject);
+								userList.setItems(observableListUser);
+								userList.setCellFactory(userListView -> new UserCell());
+
+								dialogStackPane.getChildren().remove(progressIndicatorBox);
+								suppressionDone = true;
+							}
+						}
+
+					});
+
 				}
 			});
 
@@ -516,46 +566,35 @@ public class PiTabCreateController {
 			super.updateItem(user, empty);
 
 			if (empty || user == null) {
-
 				setText(null);
 				setGraphic(null);
 
 			} else {
-				
-				
-				Platform.runLater(new Runnable(){
-						
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+						profileImageView.setImage(profilePicture);
 
-						@Override
-						public void run() {
-							profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
-							profileImageView.setImage(profilePicture);
+						Circle clip = new Circle(20, 20, 20);
+						profileImageView.setClip(clip);
 
-							Circle clip = new Circle(20, 20, 20);
-							profileImageView.setClip(clip);
+						SnapshotParameters parameters = new SnapshotParameters();
+						parameters.setFill(Color.TRANSPARENT);
 
-							SnapshotParameters parameters = new SnapshotParameters();
-							parameters.setFill(Color.TRANSPARENT);
-							
-							
-							WritableImage image = profileImageView.snapshot(parameters, null);
-							
-							profileImageView.setClip(null);
-							profileImageView.setImage(image);
+						WritableImage image = profileImageView.snapshot(parameters, null);
 
-							screenNameLabel.setText(user.getScreen_name());
-							followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
-							
-							setText(null);
-							setGraphic(cellGridPane);
-							
-						}
-					});
-				
+						profileImageView.setClip(null);
+						profileImageView.setImage(image);
 
-				
+						screenNameLabel.setText(user.getScreen_name());
+						followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
 
-				
+						setText(null);
+						setGraphic(cellGridPane);
+					}
+				});
+
 			}
 		}
 	}
