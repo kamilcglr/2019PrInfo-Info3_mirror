@@ -75,10 +75,11 @@ public class ListObjects {
      * Used in topUser inside PITab
      */
     public static class TopUserCell extends ListCell<User> {
-        GridPane cellGridPane;
-        ColumnConstraints column1;
-        ColumnConstraints column2;
-        ColumnConstraints column3;
+        //GridPane cellGridPane;
+        //ColumnConstraints column1;
+        //ColumnConstraints column2;
+        //ColumnConstraints column3;
+        HBox hBox = new HBox();
 
         ImageView profileImageView;
         Label screenNameLabel;
@@ -89,26 +90,27 @@ public class ListObjects {
         public TopUserCell() {
             super();
 
-            cellGridPane = new GridPane();
-            cellGridPane.setPrefSize(550, 50);
-
-            column1 = new ColumnConstraints();
-            column1.setPrefWidth(50);
-            column2 = new ColumnConstraints();
-            column2.setPrefWidth(150);
-            column3 = new ColumnConstraints();
-            column3.setPrefWidth(300);
-
-            cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
+            //cellGridPane = new GridPane();
+            //cellGridPane.getStyleClass().add("cellGridPane");
+            //cellGridPane.setPrefSize(550, 50);
+            //column1 = new ColumnConstraints();
+            //column1.setPrefWidth(50);
+            //column2 = new ColumnConstraints();
+            //column2.setPrefWidth(150);
+            //column3 = new ColumnConstraints();
+            //column3.setPrefWidth(300);
+            //cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
 
             profileImageView = new ImageView();
 
             screenNameLabel = new Label();
             followersCountLabel = new Label();
 
-            cellGridPane.add(profileImageView, 0, 0);
-            cellGridPane.add(screenNameLabel, 1, 0);
-            cellGridPane.add(followersCountLabel, 2, 0);
+            //cellGridPane.add(profileImageView, 0, 0);
+            //cellGridPane.add(screenNameLabel, 1, 0);
+            //cellGridPane.add(followersCountLabel, 2, 0);
+
+            hBox.getChildren().addAll(profileImageView, screenNameLabel, followersCountLabel);
         }
 
         @Override
@@ -116,7 +118,6 @@ public class ListObjects {
             super.updateItem(user, empty);
 
             if (empty || user == null) {
-
                 setText(null);
                 setGraphic(null);
 
@@ -140,7 +141,7 @@ public class ListObjects {
                 followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
 
                 setText(null);
-                setGraphic(cellGridPane);
+                setGraphic(hBox);
             }
         }
     }

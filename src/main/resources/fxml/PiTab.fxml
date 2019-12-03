@@ -61,7 +61,7 @@
                                                 <FontIcon fx:id="editIcon" iconLiteral="fas-edit" iconSize="16" />
                                             </graphic>
                                         </JFXButton>
-                              <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                              <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" progress="0.04" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                     </children>
                                     <padding>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />

@@ -71,8 +71,8 @@ public class PIViewer {
         Hashtag h3 = new Hashtag("#darty");
 
         hashtags.add(h1);
-        hashtags.add(h2);
-        hashtags.add(h3);
+        //hashtags.add(h2);
+        //hashtags.add(h3);
 
         List<User> users = new ArrayList<>();
         RequestManager requestManager = new RequestManager();
@@ -80,7 +80,7 @@ public class PIViewer {
         User u2 = requestManager.getUser("Dealabs");
 
         users.add(u1);
-        users.add(u2);
+        //users.add(u2);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
