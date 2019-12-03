@@ -19,6 +19,14 @@
     src: url('../../fonts/Roboto/Roboto-Bold.ttf');
 }
 
+@font-face {
+    src: url('../../fonts/Roboto/Roboto-LightItalic.ttf');
+}
+
+@font-face {
+    src: url('../../fonts/Roboto/Roboto-Light.ttf');
+}
+
 .root {
     -main-bg-color: #e5e9ed;
     -primary: #55ACEE;
@@ -38,6 +46,10 @@
     -fx-background-color: -main-bg-color;
 }
 
+GridPane {
+    -fx-background-color: -main-bg-color;
+}
+
 
 /*******************************************************************************
 *                                                                              *
@@ -48,6 +60,7 @@
 .jfx-hamburger-icon {
     -fx-spacing: 7;
 }
+
 .jfx-hamburger {
     -fx-background-color: transparent;
 }
@@ -55,33 +68,32 @@
 .jfx-hamburger StackPane {
     -fx-background-color: -accent;
 }
+
 .jfx-hamburger-icon StackPane {
     -fx-background-color: -accent;
     -fx-background-radius: 5px;
 }
 
 /*Toolbar buttons*/
-.toolbar-button
-{
-   /* -fx-border-color: transparent;
-    -fx-background-color: derive(-accent, 10%);
-    -fx-background-radius: 0px;
-    -fx-border-radius: 0px;*/
+.toolbar-button {
+    /* -fx-border-color: transparent;
+     -fx-background-color: derive(-accent, 10%);
+     -fx-background-radius: 0px;
+     -fx-border-radius: 0px;*/
     -fx-border-color: transparent;
     -fx-background-color: white;
     -fx-background-radius: 0px;
     -fx-border-radius: 0px;
 }
-.toolbar-button:hover
-{
+
+.toolbar-button:hover {
     -fx-background-color: -accent;
     -fx-text-fill: white;
-   /* -fx-background-color: -accent;
-    -fx-text-fill: white;*/
+    /* -fx-background-color: -accent;
+     -fx-text-fill: white;*/
 }
 
-.toolbar-button:hover .toolbar-button-icon, .toolbar-button:hover .toolbar-button-icon
-{
+.toolbar-button:hover .toolbar-button-icon, .toolbar-button:hover .toolbar-button-icon {
     -fx-fill: white;
 }
 
@@ -187,7 +199,7 @@
 .scroll-bar:vertical .track {
     /*-fx-background-color: -main-bg-color;
     -fx-border-color: -main-bg-color;*/
-    -fx-background-color: transparent!important;
+    -fx-background-color: transparent !important;
     -fx-background-radius: 0.0em;
     -fx-border-radius: 2.0em;
 }
@@ -234,3 +246,105 @@
     -fx-background-radius: 2.0em;
 }
 
+
+/*Tree Table view*/
+.tree-table-view {
+    -fx-border-color: -accent;
+    -fx-background-radius: 10pt;
+    -fx-border-radius: 10pt;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-padding: 10 0 10 0;
+}
+
+.tree-table-view .column-header-background {
+    visibility: hidden;
+    -fx-padding: -2em;;
+}
+
+/* When a cell is selected*/
+.tree-table-view:focused .tree-table-row-cell:selected {
+    -fx-background-color: -accent;
+}
+
+.tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell {
+    -fx-text-fill: white;
+}
+
+.tree-table-view .tree-table-row-cell:hover {
+    -fx-background-color: -accent2;
+}
+
+.tree-table-view .tree-table-row-cell:hover .tree-table-cell {
+    -fx-text-fill: white;
+}
+
+.tree-table-view .tree-table-cell {
+    -fx-background-radius: 10pt;
+    -fx-border-radius: 10pt;
+    -fx-cell-size: 20px;
+}
+
+.tree-table-row-cell {
+    -fx-background-radius: 10pt;
+    -fx-border-radius: 10pt;
+    -fx-cell-size: 20px;
+}
+
+
+/*
+* Title pane
+*/
+.titled-pane {
+    -fx-padding: 0 0 1em 0;
+}
+
+.titled-pane > .title {
+    -fx-background-radius: 10pt;
+    -fx-background-color: -white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -primary;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: -primary;
+}
+
+.titled-pane > *.content {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary;
+    -fx-border-style: hidden;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: -primary
+}
+
+.titled-pane > .content > * {
+    -fx-padding: 5 0 10 0;
+}
+
+/*
+* Progression Indicators
+*/
+#progressBar .bar {
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+    -fx-background-color: -primary;
+}
+
+#progressBar .secondary-bar {
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+}
+
+#progressBar .track {
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+}
+
+#progressLabel {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 15;
+}

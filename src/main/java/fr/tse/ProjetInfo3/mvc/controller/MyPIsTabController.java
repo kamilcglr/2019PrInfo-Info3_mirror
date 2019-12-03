@@ -45,6 +45,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     private PIViewer piViewer;
 
+    private Thread thread;
+
     public MyPIsTabController() {
     }
 
@@ -95,7 +97,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
                 return null;
             }
         };
-        Thread thread = new Thread(task);
+        thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
     }
@@ -161,6 +163,15 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         listPI.getItems().clear();
         for (InterestPoint interestPoint : interestPoints) {
             listPI.getItems().add(interestPoint.toStringMinimal());
+        }
+    }
+
+    /**
+     * Called when tab is closed
+     */
+    public void killThreads() {
+        if (thread != null) {
+            thread.interrupt();
         }
     }
 

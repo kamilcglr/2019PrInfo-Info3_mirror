@@ -56,7 +56,6 @@ public class MainController {
     @FXML
     private MyPIsTabController myPIsTabController;
 
-    private MyPIController myPIController;
     @FXML
     private ToolBarController toolBarController;
 
@@ -146,8 +145,8 @@ public class MainController {
             AnchorPane newUserTab = fxmlLoader.load();
             UserTabController userTabController = fxmlLoader.getController();
             userTabController.injectMainController(this);
+            Tab tab = new Tab();
             Platform.runLater(() -> {
-                Tab tab = new Tab();
                 tab.setContent(newUserTab);
                 tab.setText(userViewer.getUser().getName());
                 tabPane.getTabs().add(tab);
@@ -166,14 +165,57 @@ public class MainController {
             thread.setDaemon(true);
             thread.start();
 
+            tab.setOnCloseRequest(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    userTabController.killThreads();
+                    thread.interrupt();
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void goToHashtagPane(HastagViewer hastagViewer) {
-        //tabPane.getSelectionModel().select(hashtagTabFromMain);
-        //hashtagTabController.setHastagViewer(hastagViewer);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
+        try {
+            AnchorPane newHashtagTab = fxmlLoader.load();
+            HashtagTabController hashtagTabController = fxmlLoader.getController();
+            hashtagTabController.injectMainController(this);
+            Tab tab = new Tab();
+            Platform.runLater(() -> {
+                tab.setContent(newHashtagTab);
+                tab.setText("#" + hastagViewer.getHashtag().getHashtagName());
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+
+            //Heavy task inside this thread, we go to user pane before
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    hashtagTabController.setHastagViewer(hastagViewer);
+                    return null;
+                }
+            };
+
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
+            tab.setOnCloseRequest(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    hashtagTabController.killThreads();
+                    thread.interrupt();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToLoginPane() {
@@ -204,7 +246,14 @@ public class MainController {
                             myPisTab = null;
                         }
                     });
+                    myPisTab.setOnCloseRequest(new EventHandler<Event>() {
+                        @Override
+                        public void handle(Event event) {
+                            myPIsTabController.killThreads();
+                        }
+                    });
                 });
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -214,7 +263,8 @@ public class MainController {
                 myPIsTabController.refreshPIs();
             });
         }
-        if (!drawer.isClosed()){
+
+        if (!drawer.isClosed()) {
             drawer.close();
         }
     }
@@ -251,14 +301,20 @@ public class MainController {
         try {
             AnchorPane piTab = fxmlLoader.load();
             PiTabController piTabController = fxmlLoader.getController();
+            Tab tab = new Tab();
             Platform.runLater(() -> {
-                Tab tab = new Tab();
                 tab.setContent(piTab);
                 tab.setText(piViewer.getSelectedInterestPoint().getName());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
                 //do this task at the end !
                 piTabController.setDatas(piViewer);
+            });
+            tab.setOnCloseRequest(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    piTabController.killThreads();
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
