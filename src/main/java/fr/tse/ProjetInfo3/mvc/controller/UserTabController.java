@@ -3,37 +3,29 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import javax.swing.*;
-import javax.swing.text.StyledEditorKit;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -164,7 +156,7 @@ public class UserTabController {
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
 
-        listHashtags.setCellFactory(param -> new Cell());
+        listHashtags.setCellFactory(param -> new HashtagCell());
 
         Platform.runLater(() -> hideLists(true));
 

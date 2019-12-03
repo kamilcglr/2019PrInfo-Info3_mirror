@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
+
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
@@ -10,9 +11,8 @@ import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class contains the list of PIs of the user
@@ -72,25 +72,25 @@ public class PIViewer {
     public void generatePIsDemo() throws IOException, InterruptedException {
         //First IP
         List<Hashtag> hashtags = new ArrayList<>();
-        Hashtag president = new Hashtag("#president");
-        Hashtag congres = new Hashtag("#congrés");
-        Hashtag meetup = new Hashtag("#meetup");
+        Hashtag h1 = new Hashtag("#blackfriday");
+        Hashtag h2 = new Hashtag("#amazon");
+        Hashtag h3 = new Hashtag("#darty");
 
-        hashtags.add(president);
-        hashtags.add(congres);
-        hashtags.add(meetup);
+        hashtags.add(h1);
+        //hashtags.add(h2);
+        //hashtags.add(h3);
 
         List<User> users = new ArrayList<>();
         RequestManager requestManager = new RequestManager();
-        User trump = requestManager.getUser("realdonaldtrump");
-        User macron = requestManager.getUser("EmmanuelMacron");
+        User u1 = requestManager.getUser("twandroid");
+        User u2 = requestManager.getUser("Dealabs");
 
-        users.add(trump);
-        users.add(macron);
+        users.add(u1);
+        //users.add(u2);
 
 
         Date date = new Date();
-        InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalités politiques", date);
+        InterestPoint ip1 = new InterestPoint("Black friday", "Suivi des promotions", date);
         ip1.setHashtags(hashtags);
         ip1.setUsers(users);
 
@@ -120,6 +120,60 @@ public class PIViewer {
         listOfInterestPoint.add(ip2);
     }
 
+    /**
+     * From a big list of tweets, return the top users by number of followers
+     * Excludes users that are already in interest Point
+     */
+    public List<User> getTopFiveUsers(List<Tweet> tweetList, List<User> usersToExclude) {
+        List<User> usersToReturn = new ArrayList<>();
+        for (Tweet tweet : tweetList) {
+            //ps : if PO asks us to retrieve the number of tweets we will use a map
+
+            //First we get the id of all users involved
+            User usertoAdd = tweet.getUser();
+            if (!usersToReturn.contains(usertoAdd)) {
+                usersToReturn.add(usertoAdd);
+            }
+            usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
+
+        }
+        //Sort by Followers Count
+        usersToReturn.sort(new Comparator<User>() {
+            @Override
+            public int compare(User u1, User u2) {
+                return (int) (u1.getFollowers_count() - u2.getFollowers_count());
+            }
+        });
+        Collections.reverse(usersToReturn);
+        return usersToReturn;
+    }
+
+    /*Return a list of tweets provided by user and hashtag
+     * TODO replace with function provided by laila and sobun*/
+    public List<Tweet> getTweets(JFXProgressBar progressBar) throws Exception {
+        List<Tweet> tweetsToRetrun = new ArrayList<>();
+
+        for (User userInIP : selectedInterestPoint.getUsers()) {
+            long numberOfRequest = userInIP.getStatuses_count();
+            if (numberOfRequest > 3194) {
+                numberOfRequest = 3194;
+            }
+            //TODO test to delete
+            //hardcode numberofrequest for tests
+            numberOfRequest = 600;
+            UserViewer userViewer = new UserViewer();
+            userViewer.searchScreenName(userInIP.getScreen_name());
+            tweetsToRetrun.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
+            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToRetrun.size());
+        }
+        for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
+            HastagViewer hastagViewer = new HastagViewer();
+            hastagViewer.setHashtag(hashtag.getHashtagName().substring(1));
+            hastagViewer.search(hashtag.getHashtagName().substring(1), progressBar);
+            tweetsToRetrun.addAll(hastagViewer.getTweetList());
+            System.out.println("tweets from " + hashtag.getHashtagName() + " received, number of tweets : " + tweetsToRetrun.size());
+        }
+        return tweetsToRetrun;
     
     /*
      * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
