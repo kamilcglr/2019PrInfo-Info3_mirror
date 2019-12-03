@@ -250,8 +250,6 @@ public class PiTabCreateController {
 
 	@FXML
 	public void addUserJFXButtonPressed(ActionEvent event) {
-		userSelected = false;
-		
 		String query = userField.getText();	
 		Task<Void> task = new Task<Void>() {
 			@Override
@@ -268,6 +266,8 @@ public class PiTabCreateController {
 						propositionList.getItems().clear();
 						propositionList.setVisible(false);
 						propositionVBox.setVisible(false);
+						
+						userSelected = false;
 					}
 
 				} catch (Exception e) {
@@ -377,7 +377,6 @@ public class PiTabCreateController {
 					if (!userSelected && items.size() > 0) {
 						propositionVBox.setVisible(true);
 						propositionList.setVisible(true);
-
 					}
 				});
 				return null;
