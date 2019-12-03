@@ -251,8 +251,8 @@ public class PiTabCreateController {
 	@FXML
 	public void addUserJFXButtonPressed(ActionEvent event) {
 		userSelected = false;
-
-		String query = userField.getText();
+		
+		String query = userField.getText();	
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() {
@@ -366,12 +366,14 @@ public class PiTabCreateController {
 				// We go through the proposition list
 				Platform.runLater(() -> {
 					ObservableList<String> items = propositionList.getItems();
-					SearchViewer searchViewer = new SearchViewer();
-					// Here we remove the @ to make our research of propositions
-					List<String> users = searchViewer.getListPropositions(newValue);
-					items.addAll(users);
-					propositionList.setItems(items);
-
+					if (!userSelected) {
+						SearchViewer searchViewer = new SearchViewer();
+						// Here we remove the @ to make our research of propositions
+						List<String> users = searchViewer.getListPropositions(newValue);
+						items.addAll(users);
+						propositionList.setItems(items);
+					}
+					
 					if (!userSelected && items.size() > 0) {
 						propositionVBox.setVisible(true);
 						propositionList.setVisible(true);
