@@ -4,17 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.jfoenix.controls.*;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.*;
+import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXSnackbar;
-import com.jfoenix.controls.JFXSnackbarLayout;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
@@ -34,11 +35,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -100,6 +96,8 @@ public class PiTabCreateController {
     /**
      * PiTabCreate.fxml FXML elements
      **/
+    @FXML
+    private ScrollPane scrollPane;
 
     @FXML
     private StackPane dialogStackPane;
@@ -126,7 +124,7 @@ public class PiTabCreateController {
     private JFXTextArea descriptionJFXTextArea;
 
     @FXML
-    private JFXTextField creationDateJFXTextField;
+    private Label creationDateLabel;
 
     @FXML
     private JFXTextField hashtagField;
@@ -140,11 +138,14 @@ public class PiTabCreateController {
     @FXML
     private GridPane suivisGrid2;
 
+    //We separate ListViews from Lsit of object, because we will need them when savign
     @FXML
-    private JFXListView<String> hashtagList;
+    private JFXListView<String> hashtagListView;
+    private List<Hashtag> hashtagList = new ArrayList<>();
 
     @FXML
-    private JFXListView<User> userList;
+    private JFXListView<User> userListView;
+    private List<User> userList = new ArrayList<>();
 
     /**
      * Proposition Box FXML elements
@@ -153,80 +154,115 @@ public class PiTabCreateController {
     private VBox propositionVBox;
 
     @FXML
-    private JFXListView<String> propositionList;
+    private JFXTreeTableView<ListObjects.ResultObject> treeView;
+
+    private Map<String, String> usersNamesAndScreenNames;
+
+    @FXML
+    private JFXProgressBar propositionProgressBar;
 
     /**
      * Initialization method
      **/
     @FXML
     private void initialize() {
+        JFXScrollPane.smoothScrolling(scrollPane);
+        propositionProgressBar.setVisible(false);
+        propositionProgressBar.setProgress(-1);
+
         userSelected = false;
         suppressionDone = true;
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         date = new Date();
 
-        hashtagList.setFocusTraversable(false);
-        userList.setFocusTraversable(false);
+        hashtagListView.setFocusTraversable(false);
+        userListView.setFocusTraversable(false);
 
         suivisGrid.setVisible(true);
         suivisGrid2.setVisible(true);
-        propositionVBox.setVisible(false);
 
-        creationDateJFXTextField.setEditable(true);
-        creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
+        creationDateLabel.setText("Créé le " + simpleDateFormat.format(date));
 
         hashtagField.setText("#");
-        userField.setText("@");
 
-        /**
+        /*
          * Proposition mechanism initialization - Taken from SearchTabController.java
-         **/
-
+         */
         hashtagField.textProperty().addListener((observable, old_value, new_value) -> {
             if (hashtagField.getText().isEmpty() || !hashtagField.getText(0, 1).equals("#")) {
                 hashtagField.setText("#" + new_value);
             }
         });
 
+        propositionVBox.setVisible(false);
+        initTreeView();
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         userField.textProperty().addListener((observable, old_value, new_value) -> {
-            propositionList.getItems().clear();
-            propositionList.setVisible(false);
-            propositionVBox.setVisible(false);
-            propositionList.setVerticalGap(20.0);
-            userSelected = false;
+            treeView.setRoot(null);
+            treeView.setVisible(false);
 
-            if (userField.getText().isEmpty() || !userField.getText(0, 1).equals("@")) {
-                userField.setText("@" + new_value);
-            }
-
+            //Not userSelected because we don't do search when user has chosen a user
             if (new_value.length() > 2 && !userSelected) {
+                propositionVBox.setVisible(false);
                 pause.setOnFinished(event -> {
-                    showPropositionList(new_value.substring(1));
+                    propositionProgressBar.setVisible(true);
+                    showPropositionList(new_value);
                 });
                 pause.playFromStart();
             }
-
         });
 
         observableListHashtag = FXCollections.observableArrayList();
         observableListUser = FXCollections.observableArrayList();
 
-        hashtagList.setItems(observableListHashtag);
-        hashtagList.setCellFactory(hastagListView -> new HashtagCell());
+        hashtagListView.setItems(observableListHashtag);
+        hashtagListView.setCellFactory(hastagListView -> new HashtagCell());
 
-        userList.setItems(observableListUser);
-        userList.setCellFactory(userListView -> new UserCell());
+        userListView.setItems(observableListUser);
+        userListView.setCellFactory(userListView -> new UserCell());
     }
 
+    /**
+     * If user choose an entry in the table, we launch the search by firing an event.
+     * But we have to take the screen_name fisrt from the list
+     *
+     * @param event
+     */
     @FXML
-    private void propositionListClicked(MouseEvent event) {
-        userField.setText(propositionList.getSelectionModel().getSelectedItem());
-        userSelected = true;
-        propositionList.getItems().clear();
-        propositionList.setVisible(false);
+    private void treeViewClicked(MouseEvent event) {
+        TreeItem<ListObjects.ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
+        userSelected = true; //keep userSelected before userField.setText
+        userField.setText(selectedResult.getValue().getScreen_name().get());
+        treeView.setVisible(false);
         propositionVBox.setVisible(false);
+        propositionProgressBar.setVisible(false);
+    }
+
+    /**
+     * Sets the column of treeView*
+     */
+    private void initTreeView() {
+        JFXTreeTableColumn<ListObjects.ResultObject, String> name = new JFXTreeTableColumn<>("");
+        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
+                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
+            }
+        });
+
+        JFXTreeTableColumn<ListObjects.ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
+        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
+                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
+            }
+        });
+        treeView.setShowRoot(false);
+        treeView.getColumns().setAll(name, screen_name);
+        treeView.getColumns().get(1).getStyleClass().add("idInList");
+        treeView.getColumns().get(0).getStyleClass().add("nameINList");
+        treeView.setFixedCellSize(25);
     }
 
     /**
@@ -237,9 +273,11 @@ public class PiTabCreateController {
         launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
     }
 
+
     @FXML
     public void saveJFXButtonPressed(ActionEvent event) {
-        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date);
+        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date, hashtagList, userList);
+
         piViewer.addInterestPointToDatabase(interestPoint);
         launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
     }
@@ -249,11 +287,13 @@ public class PiTabCreateController {
         String hashtagInput = hashtagField.getText();
         hashtagInput = hashtagInput.replaceAll("\\s", "");
 
+        //Remove thee # on the beginning before adding
         if (hashtagInput.charAt(0) == '#') {
-            hashtagInput = hashtagInput.substring(1, hashtagInput.length());
+            hashtagInput = hashtagInput.substring(1);
         }
-
-        hashtagList.getItems().add(hashtagInput);
+        Hashtag hashtag = new Hashtag(hashtagInput);
+        hashtagList.add(hashtag);
+        hashtagListView.getItems().add(hashtagInput);
         hashtagField.setText("#");
     }
 
@@ -270,12 +310,10 @@ public class PiTabCreateController {
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchScreenName(newResearch);
                         observableListUser.add(userViewer.getUser());
+                        userList.add(userViewer.getUser());
 
-                        userField.setText("@");
-                        propositionList.getItems().clear();
-                        propositionList.setVisible(false);
+                        treeView.setVisible(false);
                         propositionVBox.setVisible(false);
-
                         userSelected = false;
                     }
 
@@ -371,22 +409,22 @@ public class PiTabCreateController {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() {
+                SearchViewer searchViewer = new SearchViewer();
+                usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
 
-                // We go through the proposition list
+                ObservableList<ListObjects.ResultObject> resultObjects = FXCollections.observableArrayList();
+                for (Map.Entry<String, String> entry : usersNamesAndScreenNames.entrySet()) {
+                    resultObjects.add(new ListObjects.ResultObject(entry.getKey(), entry.getValue()));
+                }
                 Platform.runLater(() -> {
-                    ObservableList<String> items = propositionList.getItems();
-                    if (!userSelected) {
-                        SearchViewer searchViewer = new SearchViewer();
-                        // Here we remove the @ to make our research of propositions
-                        List<String> users = new ArrayList<>(searchViewer.getListPropositions(newValue).keySet());
-                        items.addAll(users);
-                        propositionList.setItems(items);
-                    }
+                    final TreeItem<ListObjects.ResultObject> root = new RecursiveTreeItem<ListObjects.ResultObject>(resultObjects, RecursiveTreeObject::getChildren);
+                    treeView.setRoot(root);
 
-                    if (!userSelected && items.size() > 0) {
+                    if (resultObjects.size() > 0) {
+                        treeView.setVisible(true);
                         propositionVBox.setVisible(true);
-                        propositionList.setVisible(true);
                     }
+                    propositionProgressBar.setVisible(false);
                 });
                 return null;
             }
@@ -398,7 +436,6 @@ public class PiTabCreateController {
 
     /**
      * @author Sergiy
-     * <p>
      * A Cell element used as an entity shown in the Hashtag JFXListView
      */
     public final class HashtagCell extends ListCell<String> {
@@ -451,7 +488,7 @@ public class PiTabCreateController {
                 public void handle(ActionEvent event) {
                     System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-
+                    hashtagList = hashtagList.stream().filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject)).collect(Collectors.toList());
                     observableListHashtag.remove(hashtagStringObject);
                 }
             });
@@ -547,9 +584,10 @@ public class PiTabCreateController {
                                 User userObject = getItem();
 
                                 cellGridPane.setVisible(false);
+                                userList.remove(userObject);
                                 observableListUser.remove(userObject);
-                                userList.setItems(observableListUser);
-                                userList.setCellFactory(userListView -> new UserCell());
+                                userListView.setItems(observableListUser);
+                                userListView.setCellFactory(userListView -> new UserCell());
 
                                 dialogStackPane.getChildren().remove(progressIndicatorBox);
                                 suppressionDone = true;

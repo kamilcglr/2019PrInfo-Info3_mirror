@@ -254,7 +254,7 @@ public class HashtagTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectHashtagTabController(this);
-                    tweetController.populate(tweet);
+                    tweetController.populate(tweet,true);
                     listTweets.getItems().add(jfxListCell);
                 }
             }

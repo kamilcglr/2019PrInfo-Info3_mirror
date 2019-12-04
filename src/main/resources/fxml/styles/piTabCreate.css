@@ -7,9 +7,8 @@
 */
 #titleLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 30;
+    -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
-    -fx-padding: 0 0 10 0;
 }
 
 .listLabels {
@@ -39,8 +38,18 @@
     -fx-background-color: -primary;
 }
 
-#nameJFXTextField, #creationDateJFXTextField {
+#nameJFXTextField {
     -fx-font-size: 20;
+}
+
+#creationDateLabel{
+    -fx-font-family: "Raleway", sans-serif;
+    -fx-font-size: 15;
+}
+
+#descriptionJFXTextArea{
+    -fx-font-family: "Roboto Light", sans-serif;
+    -fx-font-size: 15;
 }
 
 .secondFields {

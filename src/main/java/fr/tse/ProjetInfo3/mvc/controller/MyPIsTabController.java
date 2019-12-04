@@ -1,8 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
@@ -12,6 +10,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.io.IOException;
@@ -47,6 +46,12 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     private JFXButton seeButton;
 
     private PIViewer piViewer;
+
+    //Progress indicator
+    @FXML
+    private JFXSpinner progressIndicator;
+    @FXML
+    private Label progressIndicatorLabel;
 
     public MyPIsTabController() {
     }
@@ -102,6 +107,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
         //Get the PI and set them on the listView
         List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        PIListView.getItems().clear();
+
         for (InterestPoint interestPoint : interestPoints) {
             PIListView.getItems().add(interestPoint.toStringMinimal());
         }
@@ -159,10 +166,18 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     }
 
     /**
-     * TODO add spinner or progressBar during loading
+     *
      */
     private void isLoading(boolean isLoading) {
-
+        if (isLoading){
+            progressIndicatorLabel.setText("Récupération des sauvegardes, veuillez patienter...");
+            progressIndicator.setVisible(true);
+            progressIndicatorLabel.setVisible(true);
+        }
+        else{
+            progressIndicator.setVisible(false);
+            progressIndicatorLabel.setVisible(false);
+        }
     }
 
     /**

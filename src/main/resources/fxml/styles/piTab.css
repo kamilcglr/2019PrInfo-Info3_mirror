@@ -1,6 +1,7 @@
-#gridPane{
+#gridPane {
     -fx-background-color: -main-bg-color;
 }
+
 /*
 * Labels
 */
@@ -11,16 +12,32 @@
     -fx-padding: 0 0 10 0;
 }
 
-#nbTweetsLabel{
+#nbTweetsLabel {
     -fx-font-family: 'Raleway Regular', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -grey-dark;
 }
 
-#nbTweets{
+#nbTweets {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -grey-dark;
+}
+
+
+/*
+* Top Five Users
+*/
+.nameLabel{
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 0 0 0 10;
+}
+
+.followersCountLabel{
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 0 0 0 10;
 }
 
 /*
@@ -54,7 +71,8 @@
 
 .jfx-list-cell:odd, .jfx-list-cell:even {
     -fx-background-color: WHITE;
+}
 
-  .titled-pane > .title > .text {
+.titled-pane > .title > .text {
     -fx-fill: -primary;
 }

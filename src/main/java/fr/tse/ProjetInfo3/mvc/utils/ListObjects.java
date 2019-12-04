@@ -1,15 +1,15 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
-import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -71,6 +71,36 @@ public class ListObjects {
         }
     }
 
+    /**
+     * This class is used to print result inside the trreeTable
+     */
+    public static class ResultObject extends RecursiveTreeObject<ResultObject> {
+        private StringProperty name;
+        private StringProperty screen_name;
+
+
+        public ResultObject(String name, String sreen_name) {
+            this.name = new SimpleStringProperty(name);
+            this.screen_name = new SimpleStringProperty("@" + sreen_name);
+        }
+
+        public StringProperty getName() {
+            return name;
+        }
+
+        public void setName(StringProperty name) {
+            this.name = name;
+        }
+
+        public StringProperty getScreen_name() {
+            return screen_name;
+        }
+
+        public void setScreen_name(StringProperty screen_name) {
+            this.screen_name = screen_name;
+        }
+    }
+
     /*
      * Used in topUser inside PITab
      */
@@ -82,7 +112,7 @@ public class ListObjects {
         HBox hBox = new HBox();
 
         ImageView profileImageView;
-        Label screenNameLabel;
+        Label nameLabel;
         Label followersCountLabel;
 
         Image profilePicture;
@@ -103,14 +133,14 @@ public class ListObjects {
 
             profileImageView = new ImageView();
 
-            screenNameLabel = new Label();
+            nameLabel = new Label();
             followersCountLabel = new Label();
 
             //cellGridPane.add(profileImageView, 0, 0);
             //cellGridPane.add(screenNameLabel, 1, 0);
             //cellGridPane.add(followersCountLabel, 2, 0);
 
-            hBox.getChildren().addAll(profileImageView, screenNameLabel, followersCountLabel);
+            hBox.getChildren().addAll(profileImageView, nameLabel, followersCountLabel);
         }
 
         @Override
@@ -135,10 +165,14 @@ public class ListObjects {
 
                 profileImageView.setClip(null);
                 profileImageView.setImage(image);
+                profileImageView.getStyleClass().add("profileImageView");
 
 
-                screenNameLabel.setText(user.getScreen_name());
-                followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
+                nameLabel.setText(user.getName());
+                nameLabel.getStyleClass().add("nameLabel");
+
+                followersCountLabel.setText("Followers : " + Long.toString(user.getFollowers_count()));
+                followersCountLabel.getStyleClass().add("followersCountLabel");
 
                 setText(null);
                 setGraphic(hBox);
