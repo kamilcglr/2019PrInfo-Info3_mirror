@@ -199,7 +199,7 @@ public class UserTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectUserTabController(this);
-                    tweetController.populate(tweet);
+                    tweetController.populate(tweet,false);
                     listTweets.getItems().add(jfxListCell);
                 }
             }

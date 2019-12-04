@@ -42,17 +42,24 @@ public class TweetController {
     private Label authorIdLabel;
 
     /**
-     * For the moment this function has not any parameters, it will take Tweet tweet after Hashtag method implementation
+     * Populate the tweet
+     * @param printAuthor if true, we print the author field
      */
-    public void populate(Tweet tweet) {
+    public void populate(Tweet tweet, boolean printAuthor) {
         int RTCount = (int) tweet.getRetweet_count();
         int FavCount = (int) tweet.getFavorite_count();
         nbretweet.setText(Integer.toString(RTCount));
         nbLikes.setText(Integer.toString(FavCount));
         texttweet.setText(tweet.getFull_text());
-        authorLabel.setText(tweet.getUser().getName());
-        authorIdLabel.setText(tweet.getUser().getName());
         dateLabel.setText(frenchSimpleDateFormat.format(tweet.getCreated_at()));
+
+        if (printAuthor){
+            authorLabel.setText(tweet.getUser().getName());
+            authorIdLabel.setText("@" + tweet.getUser().getScreen_name());
+        }else{
+            authorLabel.setVisible(false);
+            authorIdLabel.setVisible(false);
+        }
     }
 
 }
