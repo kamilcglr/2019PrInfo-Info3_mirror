@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXProgressBar?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
@@ -13,10 +15,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import com.jfoenix.controls.JFXProgressBar?>
-
-
 
 <AnchorPane fx:id="PIPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.PiTabController">
     <children>
@@ -50,7 +48,10 @@
                                         <Accordion fx:id="accordion" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="3">
                                             <panes>
                                                 <TitledPane animated="false" text="Top 5 des utilisateurs" />
-                                                <TitledPane animated="false" text="Top 10 des tweets" />
+                                                <TitledPane fx:id="titledTweet" animated="false" text="Top 10 des tweets">
+                                       <content>
+                                          <JFXListView fx:id="listTweets" />
+                                       </content></TitledPane>
                                                 <TitledPane fx:id="titledHashtag" expanded="false" text="Top 10 des # liés">
                                                     <content>
                                                         <JFXListView fx:id="topTenLinkedList" />

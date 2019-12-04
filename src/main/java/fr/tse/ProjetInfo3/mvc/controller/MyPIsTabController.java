@@ -127,7 +127,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     void seeButtonPressed(ActionEvent event) {
-        mainController.goToSelectedPi(piViewer,piTabViewer);
+        mainController.goToSelectedPi(piViewer);
     }
 
     /**

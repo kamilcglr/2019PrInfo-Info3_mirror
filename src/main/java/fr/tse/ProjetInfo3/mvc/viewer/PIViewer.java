@@ -1,17 +1,15 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
+import com.jfoenix.controls.JFXProgressBar;
+import fr.tse.ProjetInfo3.mvc.dto.*;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * This class contains the list of PIs of the user
@@ -116,5 +114,56 @@ public class PIViewer {
 
         listOfInterestPoint.add(ip1);
         listOfInterestPoint.add(ip2);
+    }
+
+    /*Return a list of tweets provided by user and hashtag
+     * TODO replace with function provided by laila and sobun*/
+    public List<Tweet> getTweets(JFXProgressBar progressBar) throws Exception {
+        List<Tweet> tweetsToRetrun = new ArrayList<>();
+
+        for (User userInIP : selectedInterestPoint.getUsers()) {
+            long numberOfRequest = userInIP.getStatuses_count();
+            if (numberOfRequest > 3194) {
+                numberOfRequest = 3194;
+            }
+            //TODO test to delete
+            //hardcode numberofrequest for tests
+            numberOfRequest = 600;
+            UserViewer userViewer = new UserViewer();
+            userViewer.searchScreenName(userInIP.getScreen_name());
+            tweetsToRetrun.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
+            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToRetrun.size());
+        }
+        for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
+            HastagViewer hastagViewer = new HastagViewer();
+            hastagViewer.setHashtag(hashtag.getHashtagName().substring(1));
+            hastagViewer.search(hashtag.getHashtagName().substring(1), progressBar);
+            tweetsToRetrun.addAll(hastagViewer.getTweetList());
+            System.out.println("tweets from " + hashtag.getHashtagName() + " received, number of tweets : " + tweetsToRetrun.size());
+        }
+        return tweetsToRetrun;
+    }
+
+
+    public Map<Tweet, Integer> topTweets(List<Tweet> tweetList, JFXProgressBar progressBar) {
+        Map<Tweet, Integer> TweetsSorted;
+        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+
+        for (Tweet tweet : tweetList) {
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) { //On prend en compte les retweets pour l'instant
+                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
+                Tweeted.put(tweet, PopularCount);
+            }
+        }
+
+        TweetsSorted = Tweeted
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(
+                        toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                LinkedHashMap::new));
+
+        return TweetsSorted;
     }
 }

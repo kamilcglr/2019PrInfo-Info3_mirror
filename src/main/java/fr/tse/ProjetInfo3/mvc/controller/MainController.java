@@ -92,7 +92,7 @@ public class MainController {
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
-        piTabViewer=new PITabViewer();
+        piTabViewer = new PITabViewer();
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -226,7 +226,7 @@ public class MainController {
                     tabPane.getTabs().add(myPisTab);
                     tabPane.getSelectionModel().select(myPisTab);
                     //do this task at the end !
-                    myPIsTabController.setPiViewer(piViewer,piTabViewer);
+                    myPIsTabController.setPiViewer(piViewer, piTabViewer);
                     myPisTab.setOnClosed(new EventHandler<Event>() {
                         @Override
                         public void handle(Event e) {
@@ -276,24 +276,30 @@ public class MainController {
         drawer.close();
     }
 
-    public void goToSelectedPi(PIViewer piViewer,PITabViewer piTabViewer) {
+    public void goToSelectedPi(PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
         try {
             AnchorPane piTab = fxmlLoader.load();
             PiTabController piTabController = fxmlLoader.getController();
+            Tab tab = new Tab();
             Platform.runLater(() -> {
-                Tab tab = new Tab();
                 tab.setContent(piTab);
                 tab.setText(piViewer.getSelectedInterestPoint().getName());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
                 //do this task at the end !
-                piTabController.setMyPITabViewer(piTabViewer,piViewer);
+                piTabController.setDatas(piViewer);
+            });
+            tab.setOnCloseRequest(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 }
 

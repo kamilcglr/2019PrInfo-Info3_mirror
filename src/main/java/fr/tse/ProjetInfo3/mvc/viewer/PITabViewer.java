@@ -3,15 +3,17 @@
  */
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.jfoenix.controls.JFXProgressBar;
 
+import fr.tse.ProjetInfo3.mvc.controller.PiTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Laïla
@@ -19,10 +21,13 @@ import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
  */
 public class PITabViewer {
     private RequestManager requestManager;
+    private UserViewer userViewer;
     Map<String,Integer> TophashtagsOfHashtags;
     Map<String,Integer> TophashtagsOfUsers;
     List<String> hashtagsOfHashtags=new ArrayList<>();
     List<String>hashtagOfUsers=new ArrayList<>();
+    List<String>ListOfUsers=new ArrayList<>();
+
     public List<String> getHashtagsOfHashtags() {
 		return hashtagsOfHashtags;
 	}
@@ -47,10 +52,11 @@ public class PITabViewer {
 		this.myHashtags = myHashtags;
 	}
 
+	public List<String> getListOfUsers() { return ListOfUsers; }
+
 	private HastagViewer hastagViewer;
-    private UserViewer userViewer;
-    List<String> myHashtags=new ArrayList<>(); 
-    
+
+    List<String> myHashtags=new ArrayList<>();
 
     public PITabViewer(){
     	requestManager=new RequestManager();
@@ -79,5 +85,17 @@ public class PITabViewer {
     	TophashtagsOfHashtags=hastagViewer.topHashtag(hashtagsOfHashtags);
     	return TophashtagsOfHashtags;
     }
+
+    public List<Tweet> getListOfTweets (List<String> ListOfUsers,int count, JFXProgressBar progressBar){
+    	List<Tweet> tweetList = new ArrayList<>();
+    	for (int i =0;i<ListOfUsers.size();i++){
+			tweetList.addAll(requestManager.getTweetsFromUser(ListOfUsers.get(i),count,progressBar));
+		}
+		return tweetList;
+	}
+
+	public Map<Tweet, Integer> topTweetsFromUsers(List<Tweet> tweetList, JFXProgressBar progressBar) {
+		return userViewer.topTweets(tweetList);
+	}
 
 }

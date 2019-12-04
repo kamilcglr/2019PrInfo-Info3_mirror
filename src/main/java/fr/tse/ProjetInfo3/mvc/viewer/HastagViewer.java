@@ -28,7 +28,7 @@ public class HastagViewer {
     }
 
     public void search(String hashtag, JFXProgressBar progressBar) throws Exception {
-        tweets = requestManager.searchTweets(hashtag, 4500, progressBar);
+        tweets = requestManager.searchTweets(hashtag, 300, progressBar);
     }
 
     public List<Tweet> getTweets() {

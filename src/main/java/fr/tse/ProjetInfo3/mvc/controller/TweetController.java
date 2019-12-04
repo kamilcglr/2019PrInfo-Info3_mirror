@@ -9,6 +9,7 @@ import javafx.scene.text.Text;
 public class TweetController {
     private HashtagTabController hashtagTabController;
     private UserTabController userTabController;
+    private PiTabController piTabController;
 
     public void injectHashtagTabController(HashtagTabController hashtagTabController) {
         this.hashtagTabController = hashtagTabController;
@@ -18,6 +19,10 @@ public class TweetController {
         this.userTabController = userTabController;
     }
 
+    public void injectPiTabController(PiTabController piTabController) {
+        this.piTabController = piTabController;
+    }
+    
     @FXML
     private JFXListCell  tweetCell;
 
