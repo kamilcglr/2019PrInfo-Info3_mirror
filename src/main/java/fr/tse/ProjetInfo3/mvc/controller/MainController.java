@@ -320,15 +320,29 @@ public class MainController {
                 tab.setText(piViewer.getSelectedInterestPoint().getName());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-                //do this task at the end !
-                piTabController.setDatas(piViewer);
             });
+
+            //Heavy task inside this thread, we go to user pane before
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    piTabController.setDatas(piViewer);
+                    return null;
+                }
+            };
+
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
             tab.setOnCloseRequest(new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
                     piTabController.killThreads();
+                    thread.interrupt();
                 }
             });
+
         } catch (IOException e) {
             e.printStackTrace();
         }

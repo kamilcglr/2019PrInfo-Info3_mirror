@@ -179,9 +179,12 @@ public class PiTabController {
      * Called when tab is closed
      */
     public void killThreads() {
-        //if (threadGettweets != null) {
-        //    threadGettweets.interrupt();
-        //}
+        if (threadGetTweets != null) {
+            threadGetTweets.interrupt();
+        }
+        if (threadTopFiveUsers!=null){
+            threadTopFiveUsers.interrupt();
+        }
     }
 
 
