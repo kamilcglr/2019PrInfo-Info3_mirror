@@ -125,6 +125,64 @@ public class PIViewer {
         listOfInterestPoint.add(ip2);
     }
 
+
+    /*Return a list of tweets provided by user and hashtag
+     *TODO Optimize this to do multiple request at the same time
+     *  */
+    public List<Tweet> getTweets(JFXProgressBar progressBar, Label progressLabel) throws Exception {
+        List<Tweet> tweetsToReturn = new ArrayList<>();
+
+        if (selectedInterestPoint.getUsers() != null) {
+            tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar, progressLabel));
+        }
+        if (selectedInterestPoint.getHashtags() != null) {
+            tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar, progressLabel));
+        }
+        return tweetsToReturn;
+    }
+
+    private List<Tweet> getTweetsFromUsers(List<User> userList, JFXProgressBar progressBar, Label progressLabel) throws Exception {
+        List<Tweet> tweetsToReturn = new ArrayList<>();
+        for (User userInIP : selectedInterestPoint.getUsers()) {
+            Platform.runLater(() -> {
+                progressLabel.setText("Récupération des tweets de " + userInIP.getName());
+            });
+
+            long numberOfRequest = userInIP.getStatuses_count();
+            if (numberOfRequest > 3194) {
+                numberOfRequest = 3194;
+            }
+            //TODO tests to delete on main
+            //hardcoded numberofrequest for tests
+            numberOfRequest = 600;
+            UserViewer userViewer = new UserViewer();
+            userViewer.searchScreenName(userInIP.getScreen_name());
+
+            tweetsToReturn.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
+            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToReturn.size());
+
+        }
+        return tweetsToReturn;
+    }
+
+    private List<Tweet> getTweetsFromhashtags(List<Hashtag> hastagList, JFXProgressBar progressBar, javafx.scene.control.Label progressLabel) throws Exception {
+        List<Tweet> tweetsToReturn = new ArrayList<>();
+        for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
+            Platform.runLater(() -> {
+                progressLabel.setText("Récupération des tweets de #" + hashtag.getHashtag());
+            });
+
+            HastagViewer hastagViewer = new HastagViewer();
+            hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
+            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 300);
+
+            tweetsToReturn.addAll(hastagViewer.getTweetList());
+            System.out.println("tweets from " + hashtag.getHashtag() + " received, number of tweets : " + tweetsToReturn.size());
+
+        }
+        return tweetsToReturn;
+    }
+
     /**
      * From a big list of tweets, return the top users by number of followers
      * Excludes users that are already in interest Point
@@ -154,62 +212,14 @@ public class PIViewer {
         return usersToReturn;
     }
 
-    /*Return a list of tweets provided by user and hashtag
-     *TODO Optimize this to do multiple request at the same time
-     *  */
-    public List<Tweet> getTweets(JFXProgressBar progressBar, Label progressLabel) throws Exception {
-        List<Tweet> tweetsToReturn = new ArrayList<>();
-
-        if (selectedInterestPoint.getUsers() != null) {
-            tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar, progressLabel));
-        }
-        if (selectedInterestPoint.getHashtags() != null) {
-            tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar, progressLabel));
-        }
-        return tweetsToReturn;
+    /**
+     * From a big list of tweets, return the top Hashtags
+     * Excludes hashtags that are already in interest Point
+     */
+    public List<Hashtag> getLinkedHashtagList(List<Tweet> tweetList, List<User> usersToExclude) {
+        return null;
     }
 
-    private List<Tweet> getTweetsFromUsers(List<User> userList, JFXProgressBar progressBar, Label progressLabel) throws Exception {
-        List<Tweet> tweetsToReturn = new ArrayList<>();
-        for (User userInIP : selectedInterestPoint.getUsers()) {
-            Platform.runLater(()->{
-                progressLabel.setText("Récupération des tweets de " + userInIP.getName());
-            });
-
-            long numberOfRequest = userInIP.getStatuses_count();
-            if (numberOfRequest > 3194) {
-                numberOfRequest = 3194;
-            }
-            //TODO tests to delete on main
-            //hardcoded numberofrequest for tests
-            numberOfRequest = 600;
-            UserViewer userViewer = new UserViewer();
-            userViewer.searchScreenName(userInIP.getScreen_name());
-
-            tweetsToReturn.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
-            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToReturn.size());
-
-        }
-        return tweetsToReturn;
-    }
-
-    private List<Tweet> getTweetsFromhashtags(List<Hashtag> hastagList, JFXProgressBar progressBar, javafx.scene.control.Label progressLabel) throws Exception {
-        List<Tweet> tweetsToReturn = new ArrayList<>();
-        for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
-            Platform.runLater(()->{
-                progressLabel.setText("Récupération des tweets de #" + hashtag.getHashtag());
-            });
-
-            HastagViewer hastagViewer = new HastagViewer();
-            hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
-            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 300);
-
-            tweetsToReturn.addAll(hastagViewer.getTweetList());
-            System.out.println("tweets from " + hashtag.getHashtag() + " received, number of tweets : " + tweetsToReturn.size());
-
-        }
-        return tweetsToReturn;
-    }
 
     /*
      * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
@@ -220,25 +230,26 @@ public class PIViewer {
         InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalites politiques", date);
         // TO-DO
     }
+
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList, JFXProgressBar progressBar) {
         Map<Tweet, Integer> TweetsSorted;
-
         Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
-        for (Tweet tweet : tweetList) {
-                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
-            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) { //On prend en compte les retweets pour l'instant
-                Tweeted.put(tweet, PopularCount);
-        }
-            }
 
-                .entrySet()
+        for (Tweet tweet : tweetList) {
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) { //On prend en compte les retweets pour l'instant
+                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
+                Tweeted.put(tweet, PopularCount);
+            }
+        }
+
         TweetsSorted = Tweeted
+                .entrySet()
                 .stream()
-                .collect(
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(
                         toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                LinkedHashMap::new));
 
         return TweetsSorted;
     }
-                                LinkedHashMap::new));
 }
