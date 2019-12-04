@@ -26,11 +26,11 @@ public class HastagViewer {
     }
 
     public void setHashtag(String hashtag) throws Exception {
-        this.hashtag.setHashtagName(hashtag);
+        this.hashtag.setHashtag(hashtag);
     }
 
-    public void search(String hashtag, JFXProgressBar progressBar) throws Exception {
-        tweets = requestManager.searchTweets(hashtag, 200, progressBar);
+    public void search(String hashtag, JFXProgressBar progressBar, int count) throws Exception {
+        tweets = requestManager.searchTweets(hashtag, count, progressBar);
     }
 
     public List<Tweet> getTweetList() {
@@ -95,8 +95,8 @@ public class HastagViewer {
                 .collect(Collectors.toList());
 
         //We remove the # that we're looking from the list
-        while (result.contains(hashtag.getHashtagName().toLowerCase())) {
-            result.remove(hashtag.getHashtagName().toLowerCase());
+        while (result.contains(hashtag.getHashtag().toLowerCase())) {
+            result.remove(hashtag.getHashtag().toLowerCase());
         }
         return result;
     }

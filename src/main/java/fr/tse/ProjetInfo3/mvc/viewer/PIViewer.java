@@ -1,11 +1,9 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
 
+import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.ListOfInterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.dto.*;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 
 import java.io.IOException;
@@ -24,22 +22,24 @@ public class PIViewer {
     private InterestPoint selectedInterestPoint;
 
     public PIViewer() {
-        try {
-            generatePIsDemo();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    generatePIsDemo();
+        //} catch (IOException | InterruptedException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     /**
      * At the moment, this function calls generatePIs, but in the futur, it will get the list from database
      */
     public List<InterestPoint> getlistOfInterestPoint() {
+        listOfInterestPoint = getListOfInterestPointFromDataBase();
         return listOfInterestPoint;
     }
 
     public void setSelectedInterestPoint(int index) {
         this.selectedInterestPoint = listOfInterestPoint.get(index);
+        System.out.println(selectedInterestPoint);
     }
 
     /**
@@ -55,7 +55,7 @@ public class PIViewer {
      */
     public void addInterestPointToDatabase(InterestPoint interestPoint) {
         //listOfInterestPoint.add(interestPoint);
-    	interestPointDAO.saveInterestPoint(interestPoint);
+        interestPointDAO.saveInterestPoint(interestPoint);
     }
 
     /**
@@ -63,7 +63,7 @@ public class PIViewer {
      */
     public List<InterestPoint> getListOfInterestPointFromDataBase() {
         //return listOfInterestPoint;
-    	return interestPointDAO.getAllInterestPoints();
+        return interestPointDAO.getAllInterestPoints();
     }
 
     /**
@@ -149,38 +149,61 @@ public class PIViewer {
     }
 
     /*Return a list of tweets provided by user and hashtag
-     * TODO replace with function provided by laila and sobun*/
+     *TODO Optimize this to do multiple request at the same time
+     *  */
     public List<Tweet> getTweets(JFXProgressBar progressBar) throws Exception {
-        List<Tweet> tweetsToRetrun = new ArrayList<>();
+        List<Tweet> tweetsToReturn = new ArrayList<>();
 
+        if (selectedInterestPoint.getUsers() != null) {
+            tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar));
+        }
+        if (selectedInterestPoint.getHashtags() != null) {
+            tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar));
+
+        }
+        return tweetsToReturn;
+    }
+
+    private List<Tweet> getTweetsFromUsers(List<User> userList, JFXProgressBar progressBar) throws Exception {
+        List<Tweet> tweetsToReturn = new ArrayList<>();
         for (User userInIP : selectedInterestPoint.getUsers()) {
             long numberOfRequest = userInIP.getStatuses_count();
             if (numberOfRequest > 3194) {
                 numberOfRequest = 3194;
             }
-            //TODO test to delete
-            //hardcode numberofrequest for tests
+            //TODO tests to delete on main
+            //hardcoded numberofrequest for tests
             numberOfRequest = 600;
             UserViewer userViewer = new UserViewer();
             userViewer.searchScreenName(userInIP.getScreen_name());
-            tweetsToRetrun.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
-            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToRetrun.size());
+
+            tweetsToReturn.addAll(userViewer.getTweetsByCount(userInIP.getScreen_name(), (int) numberOfRequest, progressBar));
+            System.out.println("tweets from " + userInIP.getName() + " received, number of tweets : " + tweetsToReturn.size());
+
         }
+        return tweetsToReturn;
+    }
+
+    private List<Tweet> getTweetsFromhashtags(List<Hashtag> hastagList, JFXProgressBar progressBar) throws Exception {
+        List<Tweet> tweetsToReturn = new ArrayList<>();
         for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
             HastagViewer hastagViewer = new HastagViewer();
-            hastagViewer.setHashtag(hashtag.getHashtagName().substring(1));
-            hastagViewer.search(hashtag.getHashtagName().substring(1), progressBar);
-            tweetsToRetrun.addAll(hastagViewer.getTweetList());
-            System.out.println("tweets from " + hashtag.getHashtagName() + " received, number of tweets : " + tweetsToRetrun.size());
+            hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
+            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 600);
+
+            tweetsToReturn.addAll(hastagViewer.getTweetList());
+            System.out.println("tweets from " + hashtag.getHashtag() + " received, number of tweets : " + tweetsToReturn.size());
+
         }
-        return tweetsToRetrun;
-    
+        return tweetsToReturn;
+    }
+
     /*
      * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
      * in the db , the Interest Point does not contain the list of users , tweets , and hastags for the moment
      * */
     public void createRestrictedPIinDatabase() {
-    	Date date = new Date();
+        Date date = new Date();
         InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalites politiques", date);
         // TO-DO
     }

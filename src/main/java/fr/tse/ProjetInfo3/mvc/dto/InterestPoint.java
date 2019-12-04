@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 
 public class InterestPoint implements Serializable {
-	private int id;
+    private int id;
     private String name;
     private String description;
     private Date dateOfCreation;
@@ -28,25 +28,25 @@ public class InterestPoint implements Serializable {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public InterestPoint() {
+        return id;
     }
-	
-    public InterestPoint(int id, String name, String description, Date dateOfCreation) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.dateOfCreation = dateOfCreation;
-	}
 
-	public InterestPoint(String name, String description, Date dateOfCreation) {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public InterestPoint() {
+    }
+
+    public InterestPoint(int id, String name, String description, Date dateOfCreation) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public InterestPoint(String name, String description, Date dateOfCreation) {
         this.name = name;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
@@ -262,10 +262,17 @@ public class InterestPoint implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String spacing = "\t\t\t\t\t\t\t\t";
 
-        String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
-        String listHashtags = hashtags.stream().map(Hashtag::getHashtagName).collect(Collectors.joining(" "));
+        String interestPointMinimal = name + " " + simpleDateFormat.format(dateOfCreation);
+        if (users != null) {
+            String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
+            interestPointMinimal+= " " + listUsers;
+        }
+        if (hashtags != null) {
+            String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
+            interestPointMinimal+= " " + listHashtags;
+        }
 
-        return name + " " + simpleDateFormat.format(dateOfCreation) + " " + listUsers + " " + listHashtags;
+        return interestPointMinimal;
     }
 
 }

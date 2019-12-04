@@ -35,6 +35,7 @@ import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDa
 
 /**
  * @author Sobun UNG
+ * @author kamilcaglar
  **/
 public class UserTabController {
     private MainController mainController;
@@ -43,13 +44,12 @@ public class UserTabController {
 
     private User userToPrint;
 
-    /*
-     * THREADS
-     * every thread should be declared here to kill them when exiting
+    /* THREADS
+     * Every thread should be declared here to kill them when exiting
      */
-    private Thread threadGettweets;
+    private Thread threadGetTweets;
 
-    private Thread threadSetTophashtags;
+    private Thread threadSetTopHashtags;
 
     private Thread threadSetTopTweets;
 
@@ -144,9 +144,9 @@ public class UserTabController {
             buildPicture();
         });
 
-        threadGettweets = new Thread(getTweets());
-        threadGettweets.setDaemon(true);
-        threadGettweets.start();
+        threadGetTweets = new Thread(getTweets());
+        threadGetTweets.setDaemon(true);
+        threadGetTweets.start();
     }
 
     @FXML
@@ -244,9 +244,9 @@ public class UserTabController {
             initProgress(true);
         });
 
-        threadSetTophashtags = new Thread(setTopHashtags());
-        threadSetTophashtags.setDaemon(true);
-        threadSetTophashtags.start();
+        threadSetTopHashtags = new Thread(setTopHashtags());
+        threadSetTopHashtags.setDaemon(true);
+        threadSetTopHashtags.start();
 
         //Set top tweets, but it can be dangerous with the shared tweetlist, we have to test
         threadSetTopTweets = new Thread(setTopTweets());
@@ -254,7 +254,7 @@ public class UserTabController {
         threadSetTopTweets.start();
 
         //Wait for the two other tasks
-        while (threadSetTophashtags.isAlive() && threadSetTopTweets.isAlive()) {
+        while (threadSetTopHashtags.isAlive() && threadSetTopTweets.isAlive()) {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
@@ -330,11 +330,11 @@ public class UserTabController {
      * Called when tab is closed
      */
     public void killThreads() {
-        if (threadGettweets != null) {
-            threadGettweets.interrupt();
+        if (threadGetTweets != null) {
+            threadGetTweets.interrupt();
         }
-        if (threadSetTophashtags != null) {
-            threadSetTophashtags.interrupt();
+        if (threadSetTopHashtags != null) {
+            threadSetTopHashtags.interrupt();
 
         }
         if (threadSetTopTweets != null) {
