@@ -3,7 +3,10 @@
  */
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.jfoenix.controls.JFXProgressBar;
 
@@ -24,9 +27,14 @@ public class PITabViewer {
     private UserViewer userViewer;
     Map<String,Integer> TophashtagsOfHashtags;
     Map<String,Integer> TophashtagsOfUsers;
+    Map<String,Integer> Tophashtags=new HashMap<String, Integer>();
     List<String> hashtagsOfHashtags=new ArrayList<>();
     List<String>hashtagOfUsers=new ArrayList<>();
-    List<String>ListOfUsers=new ArrayList<>();
+	private HastagViewer hastagViewer;
+    private UserViewer userViewer;
+    List<String> myHashtags=new ArrayList<>();
+    //List<User> myUsers=new ArrayList<>();
+
 
     public List<String> getHashtagsOfHashtags() {
 		return hashtagsOfHashtags;
@@ -52,23 +60,18 @@ public class PITabViewer {
 		this.myHashtags = myHashtags;
 	}
 
-	public List<String> getListOfUsers() { return ListOfUsers; }
 
-	private HastagViewer hastagViewer;
-
-    List<String> myHashtags=new ArrayList<>();
 
     public PITabViewer(){
     	requestManager=new RequestManager();
     	hastagViewer=new HastagViewer();
     	userViewer= new UserViewer();
-    	myHashtags.add("blackfriday");
-    	myHashtags.add("mardi");
-    }
-    
-    public Map<String,Integer> getListOfHashtagsforPI(JFXProgressBar progressBar,List<String> myhashtags) {
-    	
 
+
+    	
+    }
+
+    public Map<String,Integer> getListOfHashtagsforPI(JFXProgressBar progressBar,List<String> myhashtags,List<User> myUsers) {
     	for(String hashtag: myHashtags) {
     		try {
 				//hastagViewer.setHashtag(hashtag);
@@ -76,26 +79,33 @@ public class PITabViewer {
 				hastagViewer.setHashtag(hashtag);
 	    		hashtagsOfHashtags.addAll(hastagViewer.getHashtagLinked());
 
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     	}
-    	
+    	for(User user: myUsers) {
+    		try {
+    		userViewer.setUser(user);
+    		List<Tweet> tweets=userViewer.getTweetsByCount(user.getScreen_name(), 3400, progressBar);
+    		TophashtagsOfUsers=userViewer.topHashtag(tweets);
+    		//TophashtagsOfUsers.putAll(userViewer.topHashtag(tweets));
+    		TophashtagsOfUsers.forEach((k,v)->System.out.println(k+" "+v));
+        	//Tophashtags.putAll(TophashtagsOfUsers);
+
+    		} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     	TophashtagsOfHashtags=hastagViewer.topHashtag(hashtagsOfHashtags);
-    	return TophashtagsOfHashtags;
+
+    	Tophashtags=TophashtagsOfHashtags;
+    	Tophashtags.putAll(TophashtagsOfUsers);
+
+
+    	return Tophashtags;
     }
-
-    public List<Tweet> getListOfTweets (List<String> ListOfUsers,int count, JFXProgressBar progressBar){
-    	List<Tweet> tweetList = new ArrayList<>();
-    	for (int i =0;i<ListOfUsers.size();i++){
-			tweetList.addAll(requestManager.getTweetsFromUser(ListOfUsers.get(i),count,progressBar));
-		}
-		return tweetList;
-	}
-
-	public Map<Tweet, Integer> topTweetsFromUsers(List<Tweet> tweetList, JFXProgressBar progressBar) {
-		return userViewer.topTweets(tweetList);
-	}
 
 }

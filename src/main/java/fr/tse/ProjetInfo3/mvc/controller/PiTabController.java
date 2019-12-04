@@ -13,6 +13,7 @@ import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.Cell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
@@ -63,7 +64,7 @@ public class PiTabController {
 
 
     private MainController mainController;
-
+    
     @FXML
     private JFXListView<ResultHashtag> topTenLinkedList;
     @FXML
