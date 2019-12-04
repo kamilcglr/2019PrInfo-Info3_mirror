@@ -25,6 +25,9 @@ public class HastagViewer {
         hashtag = new Hashtag();
     }
 
+    /**
+     * Sets the hashtag, remove #
+     */
     public void setHashtag(String hashtag) throws Exception {
         this.hashtag.setHashtag(hashtag);
     }

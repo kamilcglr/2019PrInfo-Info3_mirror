@@ -4,6 +4,8 @@ import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultObject;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -45,6 +47,8 @@ public class SearchTabController {
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
     }
+
+    boolean userSelected;
 
     /*
      * We re-declare fxml variable here (fx:id="hashtagToggle"), with the SAME name ot use them
@@ -88,7 +92,6 @@ public class SearchTabController {
     @FXML
     private JFXProgressBar propositionProgressBar;
 
-    //Test
     @FXML
     private JFXTreeTableView<ResultObject> treeView;
 
@@ -108,11 +111,12 @@ public class SearchTabController {
         treeView.setVisible(false);
         propositionProgressBar.setVisible(false);
         progressIndicator.setVisible(false);
+        userSelected = false;
 
         initTreeView();
         /*
          * When the text in the input field is changed,
-         * we constantly remove spaces and add the # or @ at the begining
+         * we constantly remove spaces (forhashtag) and add the # or @ at the begining
          */
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         searchField.textProperty().addListener(
@@ -123,7 +127,7 @@ public class SearchTabController {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
                             searchField.setText("#" + new_value);
                         }
-                    } else if (userToggle.isSelected()) {
+                    } else if (userToggle.isSelected() && !userSelected) {
                         if (new_value.length() > 2) {
                             pause.setOnFinished(event -> {
                                 propositionProgressBar.setVisible(true);
@@ -267,6 +271,7 @@ public class SearchTabController {
     @FXML
     private void treeViewClicked(MouseEvent event) {
         TreeItem<ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
+        userSelected = true; //keep userSelected before userField.setText
         searchField.setText(selectedResult.getValue().getScreen_name().get());
         treeView.setVisible(false);
         progressLabel.setVisible(false);
@@ -292,6 +297,7 @@ public class SearchTabController {
                     //if search does not throw error
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
+                        //Remove # from researchfield
                         hastagViewer.setHashtag(research.substring(1));
                         mainController.goToHashtagPane(hastagViewer);
 
@@ -302,6 +308,7 @@ public class SearchTabController {
 
                         //we search the user and go to the user tab
                         if (research != null) {
+                            userSelected = false;
                             UserViewer userViewer = new UserViewer();
                             userViewer.searchScreenName(research);
                             mainController.goToUserPane(userViewer);
@@ -436,34 +443,7 @@ public class SearchTabController {
         treeView.setFixedCellSize(25);
     }
 
-    /**
-     * This class is used to print result inside the trreeTable
-     */
-    private static class ResultObject extends RecursiveTreeObject<ResultObject> {
-        private StringProperty name;
-        private StringProperty screen_name;
 
-        ResultObject(String name, String sreen_name) {
-            this.name = new SimpleStringProperty(name);
-            this.screen_name = new SimpleStringProperty("@" + sreen_name);
-        }
-
-        public StringProperty getName() {
-            return name;
-        }
-
-        public void setName(StringProperty name) {
-            this.name = name;
-        }
-
-        public StringProperty getScreen_name() {
-            return screen_name;
-        }
-
-        public void setScreen_name(StringProperty screen_name) {
-            this.screen_name = screen_name;
-        }
-    }
 
 
 }

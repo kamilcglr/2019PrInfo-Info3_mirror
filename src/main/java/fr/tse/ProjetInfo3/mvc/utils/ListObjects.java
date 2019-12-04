@@ -1,7 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -68,6 +71,36 @@ public class ListObjects {
 
         String getNbTweets() {
             return nbTweets;
+        }
+    }
+
+    /**
+     * This class is used to print result inside the trreeTable
+     */
+    public static class ResultObject extends RecursiveTreeObject<ResultObject> {
+        private StringProperty name;
+        private StringProperty screen_name;
+
+
+        public ResultObject(String name, String sreen_name) {
+            this.name = new SimpleStringProperty(name);
+            this.screen_name = new SimpleStringProperty("@" + sreen_name);
+        }
+
+        public StringProperty getName() {
+            return name;
+        }
+
+        public void setName(StringProperty name) {
+            this.name = name;
+        }
+
+        public StringProperty getScreen_name() {
+            return screen_name;
+        }
+
+        public void setScreen_name(StringProperty screen_name) {
+            this.screen_name = screen_name;
         }
     }
 
