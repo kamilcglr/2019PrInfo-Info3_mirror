@@ -231,14 +231,12 @@ public class MainController {
                 AnchorPane myPiTab = fxmlLoader.load();
                 myPIsTabController = fxmlLoader.getController();
                 myPIsTabController.injectMainController(this);
+                myPisTab = new Tab();
                 Platform.runLater(() -> {
-                    myPisTab = new Tab();
                     myPisTab.setContent(myPiTab);
                     myPisTab.setText("Mes Points d'interets");
                     tabPane.getTabs().add(myPisTab);
                     tabPane.getSelectionModel().select(myPisTab);
-                    //do this task at the end !
-                    myPIsTabController.setPiViewer(piViewer);
                     myPisTab.setOnClosed(new EventHandler<Event>() {
                         @Override
                         public void handle(Event e) {
@@ -246,18 +244,33 @@ public class MainController {
                             myPisTab = null;
                         }
                     });
-                    myPisTab.setOnCloseRequest(new EventHandler<Event>() {
-                        @Override
-                        public void handle(Event event) {
-                            myPIsTabController.killThreads();
-                        }
-                    });
+                });
+
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        myPIsTabController.setPiViewer(piViewer);
+                        return null;
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+                myPisTab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                        myPIsTabController.killThreads();
+                        thread.interrupt();
+                    }
                 });
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else { //the tab is already initialized
+        } else {
+            //the tab is already initialized, so we just refresh the list of PIs
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
                 myPIsTabController.refreshPIs();

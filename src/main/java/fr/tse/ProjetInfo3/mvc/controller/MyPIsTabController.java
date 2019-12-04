@@ -26,8 +26,13 @@ import java.util.ResourceBundle;
 public class MyPIsTabController extends ListView<String> implements Initializable {
     private MainController mainController;
 
+    /* THREADS
+     * Every thread should be declared here to kill them when exiting
+     */
+    private Thread threadGetPIs;
+
     @FXML
-    private JFXListView<String> listPI;
+    private JFXListView<String> PIListView;
 
     @FXML
     private JFXPopup popup;
@@ -41,11 +46,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     @FXML
     private JFXButton seeButton;
 
-    private InterestPoint ip;
-
     private PIViewer piViewer;
-
-    private Thread thread;
 
     public MyPIsTabController() {
     }
@@ -66,11 +67,11 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
         //When user select an item, we change the selected Interest Point inside PIVIerwer
         //Then, when editing or showing it, we only pass PIViewer as Argument
-        listPI.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        PIListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (listPI.getSelectionModel().getSelectedIndex() != -1) {
-                    piViewer.setSelectedInterestPoint(listPI.getSelectionModel().getSelectedIndex());
+                if (PIListView.getSelectionModel().getSelectedIndex() != -1) {
+                    piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
                     if (newValue != null) {
                         seeButton.setVisible(true);
                         //editPI.setVisible(true);
@@ -80,36 +81,43 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         });
     }
 
+    /*
+     * Loads the Pis from database
+     */
     public void setPiViewer(PIViewer piViewer) {
         this.piViewer = piViewer;
+
         // Everything is in a separated thread because it is a heavy task (calls to Databse...)
         // We do not want a frozen interface
+        threadGetPIs = new Thread(getListOfPIs());
+        threadGetPIs.setDaemon(true);
+        threadGetPIs.start();
+    }
+
+    /*
+     * Task where we get the Pis from database and print them on the listView
+     * */
+    private Task<Void> getListOfPIs() {
         Platform.runLater(() -> isLoading(true));
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                List<InterestPoint> interestPoints = piViewer.getListOfInterestPointFromDataBase();
-                //sets the datas
-                for (InterestPoint interestPoint : interestPoints) {
-                    listPI.getItems().add(interestPoint.toStringMinimal());
-                }
-                Platform.runLater(() -> isLoading(false));
-                return null;
-            }
-        };
-        thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
+
+        //Get the PI and set them on the listView
+        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        for (InterestPoint interestPoint : interestPoints) {
+            PIListView.getItems().add(interestPoint.toStringMinimal());
+        }
+
+        Platform.runLater(() -> isLoading(false));
+        return null;
     }
 
     @FXML
     private void load(ActionEvent event) {
-        if (!listPI.isExpanded()) {
-            listPI.setExpanded(true);
-            listPI.depthProperty().set(1);
+        if (!PIListView.isExpanded()) {
+            PIListView.setExpanded(true);
+            PIListView.depthProperty().set(1);
         } else {
-            listPI.setExpanded(false);
-            listPI.depthProperty().set(0);
+            PIListView.setExpanded(false);
+            PIListView.depthProperty().set(0);
         }
     }
 
@@ -134,13 +142,13 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      * index of selected interest Point inside PIViewer
      */
     private void setIndexOfSelectedPi() {
-        if (listPI.getSelectionModel().getSelectedIndex() != 0) {
-            piViewer.setSelectedInterestPoint(listPI.getSelectionModel().getSelectedIndex());
+        if (PIListView.getSelectionModel().getSelectedIndex() != 0) {
+            piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
         }
     }
 
     /**
-     * calls the viewer to get IP from database
+     * Calls the viewer to get IP from database
      *
      * @return List of user IPs
      * @throws IOException
@@ -157,21 +165,24 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     }
 
+    /**
+     * Calls the viewer to get PIs
+     */
     public void refreshPIs() {
-        List<InterestPoint> interestPoints = piViewer.getListOfInterestPointFromDataBase();
-        //sets the datas
-        listPI.getItems().clear();
-        for (InterestPoint interestPoint : interestPoints) {
-            listPI.getItems().add(interestPoint.toStringMinimal());
+        if (threadGetPIs != null) {
+            threadGetPIs.interrupt();
         }
+        threadGetPIs = new Thread(getListOfPIs());
+        threadGetPIs.setDaemon(true);
+        threadGetPIs.start();
     }
 
     /**
      * Called when tab is closed
      */
     public void killThreads() {
-        if (thread != null) {
-            thread.interrupt();
+        if (threadGetPIs != null) {
+            threadGetPIs.interrupt();
         }
     }
 
