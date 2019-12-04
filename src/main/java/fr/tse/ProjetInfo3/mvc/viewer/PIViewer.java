@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
+
 /**
  * This class contains the list of PIs of the user
  * it transfers DTOs from DATABASE (repository) to Controllers
@@ -218,4 +220,25 @@ public class PIViewer {
         InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalites politiques", date);
         // TO-DO
     }
+    public Map<Tweet, Integer> topTweets(List<Tweet> tweetList, JFXProgressBar progressBar) {
+        Map<Tweet, Integer> TweetsSorted;
+
+        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+        for (Tweet tweet : tweetList) {
+                int PopularCount = (int) tweet.getRetweet_count() + (int) tweet.getFavorite_count();
+            if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) { //On prend en compte les retweets pour l'instant
+                Tweeted.put(tweet, PopularCount);
+        }
+            }
+
+                .entrySet()
+        TweetsSorted = Tweeted
+                .stream()
+                .collect(
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                        toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+
+        return TweetsSorted;
+    }
+                                LinkedHashMap::new));
 }

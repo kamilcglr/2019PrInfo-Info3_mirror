@@ -5,6 +5,7 @@ import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -82,6 +83,7 @@ public class MainController {
      * Viewers
      */
     private PIViewer piViewer;
+    private PITabViewer piTabViewer;
 
     private Tab myPisTab;
 
@@ -89,6 +91,7 @@ public class MainController {
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
+        piTabViewer = new PITabViewer();
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -347,6 +350,7 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
 
 }
 

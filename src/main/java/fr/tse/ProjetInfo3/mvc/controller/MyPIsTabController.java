@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
