@@ -133,9 +133,10 @@ public class PIViewer {
             if (!usersToReturn.contains(usertoAdd)) {
                 usersToReturn.add(usertoAdd);
             }
-            usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
 
         }
+        usersToReturn =  usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
+
         //Sort by Followers Count
         usersToReturn.sort(new Comparator<User>() {
             @Override
@@ -187,7 +188,7 @@ public class PIViewer {
         for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
             HastagViewer hastagViewer = new HastagViewer();
             hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
-            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 600);
+            hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 300);
 
             tweetsToReturn.addAll(hastagViewer.getTweetList());
             System.out.println("tweets from " + hashtag.getHashtag() + " received, number of tweets : " + tweetsToReturn.size());
