@@ -51,7 +51,6 @@ public class PIViewer {
     }
 
     /**
-     * In the futur, this function will add the created Interest Point into the database
      */
     public void addInterestPointToDatabase(InterestPoint interestPoint) {
         //listOfInterestPoint.add(interestPoint);
@@ -159,7 +158,6 @@ public class PIViewer {
         }
         if (selectedInterestPoint.getHashtags() != null) {
             tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar));
-
         }
         return tweetsToReturn;
     }

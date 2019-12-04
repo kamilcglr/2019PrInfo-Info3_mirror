@@ -56,33 +56,14 @@ public class InterestPoint implements Serializable {
         this.tweets = new ArrayList<Tweet>();
     }
 
-    public InterestPoint(List<Hashtag> hashtags, List<User> users) {
-        this.hashtags = hashtags;
-        this.users = users;
-    }
-
-    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users) {
-        super();
+    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users){
         this.name = name;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
         this.hashtags = hashtags;
         this.users = users;
-    }
-
-    public InterestPoint(List<Hashtag> hashtags) {
-        super();
-        this.hashtags = hashtags;
-    }
-
-    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
-        super();
-        this.name = name;
-        this.description = description;
-        this.dateOfCreation = dateOfCreation;
-        this.hashtags = hashtags;
-        this.users = users;
-        this.interestPoints = interestPoints;
+        this.interestPoints = new ArrayList<InterestPoint>();
+        this.tweets = new ArrayList<Tweet>();
     }
 
     /*
@@ -258,6 +239,10 @@ public class InterestPoint implements Serializable {
                 + "]";
     }
 
+    /**
+     * Return a string that resume the Interest Point
+     * @return string interestPointName + date + users + hashtags
+     */
     public String toStringMinimal() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String spacing = "\t\t\t\t\t\t\t\t";

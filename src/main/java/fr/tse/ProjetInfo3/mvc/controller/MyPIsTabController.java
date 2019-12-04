@@ -102,6 +102,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
         //Get the PI and set them on the listView
         List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        PIListView.getItems().clear();
+
         for (InterestPoint interestPoint : interestPoints) {
             PIListView.getItems().add(interestPoint.toStringMinimal());
         }

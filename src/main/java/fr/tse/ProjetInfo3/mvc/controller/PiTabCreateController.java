@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.jfoenix.controls.JFXButton;
@@ -140,11 +142,14 @@ public class PiTabCreateController {
     @FXML
     private GridPane suivisGrid2;
 
+    //We separate ListViews from Lsit of object, because we will need them when savign
     @FXML
-    private JFXListView<String> hashtagList;
+    private JFXListView<String> hashtagListView;
+    private List<Hashtag> hashtagList = new ArrayList<>();
 
     @FXML
-    private JFXListView<User> userList;
+    private JFXListView<User> userListView;
+    private List<User> userList = new ArrayList<>();
 
     /**
      * Proposition Box FXML elements
@@ -166,8 +171,8 @@ public class PiTabCreateController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         date = new Date();
 
-        hashtagList.setFocusTraversable(false);
-        userList.setFocusTraversable(false);
+        hashtagListView.setFocusTraversable(false);
+        userListView.setFocusTraversable(false);
 
         suivisGrid.setVisible(true);
         suivisGrid2.setVisible(true);
@@ -177,12 +182,10 @@ public class PiTabCreateController {
         creationDateJFXTextField.setText("Créé le " + simpleDateFormat.format(date));
 
         hashtagField.setText("#");
-        userField.setText("@");
 
-        /**
+        /*
          * Proposition mechanism initialization - Taken from SearchTabController.java
-         **/
-
+         */
         hashtagField.textProperty().addListener((observable, old_value, new_value) -> {
             if (hashtagField.getText().isEmpty() || !hashtagField.getText(0, 1).equals("#")) {
                 hashtagField.setText("#" + new_value);
@@ -213,11 +216,11 @@ public class PiTabCreateController {
         observableListHashtag = FXCollections.observableArrayList();
         observableListUser = FXCollections.observableArrayList();
 
-        hashtagList.setItems(observableListHashtag);
-        hashtagList.setCellFactory(hastagListView -> new HashtagCell());
+        hashtagListView.setItems(observableListHashtag);
+        hashtagListView.setCellFactory(hastagListView -> new HashtagCell());
 
-        userList.setItems(observableListUser);
-        userList.setCellFactory(userListView -> new UserCell());
+        userListView.setItems(observableListUser);
+        userListView.setCellFactory(userListView -> new UserCell());
     }
 
     @FXML
@@ -237,9 +240,11 @@ public class PiTabCreateController {
         launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
     }
 
+
     @FXML
     public void saveJFXButtonPressed(ActionEvent event) {
-        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date);
+        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date, hashtagList, userList);
+
         piViewer.addInterestPointToDatabase(interestPoint);
         launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
     }
@@ -252,8 +257,9 @@ public class PiTabCreateController {
         if (hashtagInput.charAt(0) == '#') {
             hashtagInput = hashtagInput.substring(1, hashtagInput.length());
         }
-
-        hashtagList.getItems().add(hashtagInput);
+        Hashtag hashtag = new Hashtag(hashtagInput);
+        hashtagList.add(hashtag);
+        hashtagListView.getItems().add(hashtagInput);
         hashtagField.setText("#");
     }
 
@@ -270,8 +276,8 @@ public class PiTabCreateController {
                         UserViewer userViewer = new UserViewer();
                         userViewer.searchScreenName(newResearch);
                         observableListUser.add(userViewer.getUser());
+                        userList.add(userViewer.getUser());
 
-                        userField.setText("@");
                         propositionList.getItems().clear();
                         propositionList.setVisible(false);
                         propositionVBox.setVisible(false);
@@ -398,7 +404,6 @@ public class PiTabCreateController {
 
     /**
      * @author Sergiy
-     * <p>
      * A Cell element used as an entity shown in the Hashtag JFXListView
      */
     public final class HashtagCell extends ListCell<String> {
@@ -451,7 +456,7 @@ public class PiTabCreateController {
                 public void handle(ActionEvent event) {
                     System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-
+                    hashtagList = hashtagList.stream().filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject)).collect(Collectors.toList());
                     observableListHashtag.remove(hashtagStringObject);
                 }
             });
@@ -547,9 +552,10 @@ public class PiTabCreateController {
                                 User userObject = getItem();
 
                                 cellGridPane.setVisible(false);
+                                userList.remove(userObject);
                                 observableListUser.remove(userObject);
-                                userList.setItems(observableListUser);
-                                userList.setCellFactory(userListView -> new UserCell());
+                                userListView.setItems(observableListUser);
+                                userListView.setCellFactory(userListView -> new UserCell());
 
                                 dialogStackPane.getChildren().remove(progressIndicatorBox);
                                 suppressionDone = true;
