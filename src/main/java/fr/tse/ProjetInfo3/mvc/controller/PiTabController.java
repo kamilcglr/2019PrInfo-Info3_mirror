@@ -110,17 +110,16 @@ public class PiTabController {
     }
 
     private Task<Void> getTweets() {
-        //Platform.runLater(() -> {
-        //    initProgress(false);
-        //});
+        Platform.runLater(() -> {
+            initProgress(false);
+        });
         try {
-            //TODO replace with function created by laila and sobun
-            bigTweetList = piViewer.getTweets(progressBar);
+            bigTweetList = piViewer.getTweets(progressBar, progressLabel);
 
-            ////Tweet are collected
-            //Platform.runLater(() -> {
-            //    initProgress(true);
-            //});
+            //Tweet are collected
+            Platform.runLater(() -> {
+                initProgress(true);
+            });
 
             threadTopFiveUsers = new Thread(setTopFiveUsers());
             threadTopFiveUsers.setDaemon(true);
@@ -146,7 +145,7 @@ public class PiTabController {
 
                 // showHashtagElements(true);
                 progressBar.setVisible(false);
-                //progressLabel.setVisible(false);
+                progressLabel.setVisible(false);
             });
 
         } catch (Exception e) {
@@ -173,6 +172,17 @@ public class PiTabController {
         });
 
         return null;
+    }
+
+    private void initProgress(boolean isIndeterminate) {
+        if (!isIndeterminate) {
+            progressBar.setVisible(true);
+            progressBar.setProgress(0);
+            progressLabel.setVisible(true);
+        } else {
+            progressBar.setProgress(-1);
+            progressLabel.setText("Analyse des tweets");
+        }
     }
 
     /**

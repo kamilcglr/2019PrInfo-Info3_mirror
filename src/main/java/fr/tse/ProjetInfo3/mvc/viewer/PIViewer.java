@@ -3,12 +3,15 @@ package fr.tse.ProjetInfo3.mvc.viewer;
 
 import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.*;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +54,7 @@ public class PIViewer {
     }
 
     /**
+     *
      */
     public void addInterestPointToDatabase(InterestPoint interestPoint) {
         //listOfInterestPoint.add(interestPoint);
@@ -135,7 +139,7 @@ public class PIViewer {
             }
 
         }
-        usersToReturn =  usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
+        usersToReturn = usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
 
         //Sort by Followers Count
         usersToReturn.sort(new Comparator<User>() {
@@ -151,21 +155,25 @@ public class PIViewer {
     /*Return a list of tweets provided by user and hashtag
      *TODO Optimize this to do multiple request at the same time
      *  */
-    public List<Tweet> getTweets(JFXProgressBar progressBar) throws Exception {
+    public List<Tweet> getTweets(JFXProgressBar progressBar, Label progressLabel) throws Exception {
         List<Tweet> tweetsToReturn = new ArrayList<>();
 
         if (selectedInterestPoint.getUsers() != null) {
-            tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar));
+            tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar, progressLabel));
         }
         if (selectedInterestPoint.getHashtags() != null) {
-            tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar));
+            tweetsToReturn.addAll(getTweetsFromhashtags(selectedInterestPoint.getHashtags(), progressBar, progressLabel));
         }
         return tweetsToReturn;
     }
 
-    private List<Tweet> getTweetsFromUsers(List<User> userList, JFXProgressBar progressBar) throws Exception {
+    private List<Tweet> getTweetsFromUsers(List<User> userList, JFXProgressBar progressBar, Label progressLabel) throws Exception {
         List<Tweet> tweetsToReturn = new ArrayList<>();
         for (User userInIP : selectedInterestPoint.getUsers()) {
+            Platform.runLater(()->{
+                progressLabel.setText("Récupération des tweets de " + userInIP.getName());
+            });
+
             long numberOfRequest = userInIP.getStatuses_count();
             if (numberOfRequest > 3194) {
                 numberOfRequest = 3194;
@@ -183,9 +191,13 @@ public class PIViewer {
         return tweetsToReturn;
     }
 
-    private List<Tweet> getTweetsFromhashtags(List<Hashtag> hastagList, JFXProgressBar progressBar) throws Exception {
+    private List<Tweet> getTweetsFromhashtags(List<Hashtag> hastagList, JFXProgressBar progressBar, javafx.scene.control.Label progressLabel) throws Exception {
         List<Tweet> tweetsToReturn = new ArrayList<>();
         for (Hashtag hashtag : selectedInterestPoint.getHashtags()) {
+            Platform.runLater(()->{
+                progressLabel.setText("Récupération des tweets de #" + hashtag.getHashtag());
+            });
+
             HastagViewer hastagViewer = new HastagViewer();
             hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
             hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 300);
