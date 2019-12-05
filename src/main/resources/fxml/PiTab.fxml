@@ -56,7 +56,10 @@
                                        <content>
                                           <JFXListView fx:id="listTweets" />
                                        </content></TitledPane>
-                                                <TitledPane expanded="false" text="Top 10 des # liés" />
+                                                <TitledPane expanded="false" text="Top 10 des # liés">
+                                       <content>
+                                          <JFXListView fx:id="topTenLinkedList" />
+                                       </content></TitledPane>
                                  </children>
                               </VBox>
                                         <JFXButton fx:id="editButton" contentDisplay="RIGHT" text="Editer" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="TOP">

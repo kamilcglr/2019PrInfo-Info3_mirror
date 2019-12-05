@@ -95,3 +95,36 @@
 #listTweets .jfx-list-cell:odd, .jfx-list-cell:even {
     -fx-background-color: #F5F5F5 !important;
 }
+
+/*
+* List of hastags
+*/
+#listHashtags {
+    -fx-background-radius: 10pt;
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+    -fx-font-size: 15;
+    -fx-border-style: hidden;
+    -fx-background-color: WHITE;
+}
+
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: WHITE;
+}
+
+.indexLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-padding: 0 0 0 10;
+}
+
+.hashtagTextLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-padding: 0 0 0 10;
+}
+
+.nbTweetLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-style: italic;
+    -fx-padding: 0 0 0 10;
+}

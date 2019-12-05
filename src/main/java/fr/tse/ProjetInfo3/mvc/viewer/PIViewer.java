@@ -174,6 +174,7 @@ public class PIViewer {
 
             HastagViewer hastagViewer = new HastagViewer();
             hastagViewer.setHashtag(hashtag.getHashtag().substring(1));
+            //hardcoded numberofrequest for tests
             hastagViewer.search(hashtag.getHashtag().substring(1), progressBar, 300);
 
             tweetsToReturn.addAll(hastagViewer.getTweetList());
@@ -216,10 +217,61 @@ public class PIViewer {
      * From a big list of tweets, return the top Hashtags
      * Excludes hashtags that are already in interest Point
      */
-    public List<Hashtag> getLinkedHashtagList(List<Tweet> tweetList, List<User> usersToExclude) {
-        return null;
+    public Map<String, Integer> topHashtag(List<Tweet> tweetList, List<Hashtag> hashtagsToExclude) {
+        List<String> hashtagsToExcludeList = hashtagsToExclude.stream().map(Hashtag::getHashtag).collect(Collectors.toList());
+        Map<String, Integer> hashtagUsedSorted;
+        Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
+
+        List<String> hashtags = new ArrayList<>();
+        //Method to get hashtag from retweets
+        for (Tweet tweet : tweetList) {
+
+            //if the tweet is retweeted, then we get the #'s of retweeted tweet
+            if (tweet.getRetweeted_status() != null) {
+                hashtags.addAll(tweet
+                        .getRetweeted_status().getEntities().getHashtags()
+                        .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+            } else
+                //else, if the tweet is quoted, then we get the #'s of quoted tweet
+                if (tweet.getQuoted_status() != null) {
+                    hashtags.addAll(tweet
+                            .getQuoted_status().getEntities().getHashtags()
+                            .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+                }
+            hashtags.addAll(tweet.getEntities().getHashtags()
+                    .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+
+        }
+
+        for (String theme : hashtags) {
+            Integer occurence = hashtagUsed.get(theme);
+            hashtagUsed.put(theme, (occurence == null) ? 1 : occurence + 1);
+        }
+
+        hashtagUsedSorted = sortByValue(hashtagUsed);
+        hashtagUsedSorted = hashtagUsedSorted.entrySet()
+
+                .stream()
+
+                .filter(hashtag->!hashtagsToExcludeList.contains(hashtag.getKey()))
+
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        return hashtagUsedSorted;
     }
 
+    public Map<String, Integer> sortByValue(final Map<String, Integer> hashtagCounts) {
+
+        return hashtagCounts.entrySet()
+
+                .stream()
+
+                .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+    }
 
     /*
      * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation

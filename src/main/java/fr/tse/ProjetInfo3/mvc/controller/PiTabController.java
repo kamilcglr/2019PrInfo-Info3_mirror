@@ -74,8 +74,8 @@ public class PiTabController {
 
     private Thread threadTopFiveUsers;
 
-    //private Thread threadsetNumbers;
-    //
+    private Thread threadTopLinkedHashtags;
+
     private Thread threadTopTweets;
 
     @FXML
@@ -113,6 +113,8 @@ public class PiTabController {
         //topTenLinkedList.setCellFactory(param -> (ListCell<ListObjects.ResultHashtag>) new Cell());
 
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell());
+        topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell());
+
     }
 
     public void setDatas(PIViewer piViewer) {
@@ -143,9 +145,9 @@ public class PiTabController {
             threadTopFiveUsers.setDaemon(true);
             threadTopFiveUsers.start();
 
-            //threadsetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
-            //threadsetNumbers.setDaemon(true);
-            //threadsetNumbers.start();
+            threadTopLinkedHashtags = new Thread(setTopLinkedHashtags());
+            threadTopLinkedHashtags.setDaemon(true);
+            threadTopLinkedHashtags.start();
 
             threadTopTweets = new Thread(setTopTweets());
             threadTopTweets.setDaemon(true);
@@ -193,25 +195,24 @@ public class PiTabController {
         return null;
     }
 
-    //private Task<Void> setTopLinkedHashtag() {
-    //    hashtags = piViewer.getLinkedHashtagList(bigTweetList);
-//
-    //    int i = 0;
-    //    ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
-    //    for (String hashtag : hashtags.keySet()) {
-    //        i++;
-    //        hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtags.get(hashtag).toString()));
-    //        if (i == 10) {
-    //            break;
-    //        }
-    //    }
-    //    Platform.runLater(() -> {
-    //        topTenLinkedList.getItems().addAll(hashtagsToPrint);
-    //    });
-    //    //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
-    //    return null;
-//
-    //}
+    private Task<Void> setTopLinkedHashtags() {
+        hashtags = piViewer.topHashtag(bigTweetList, interestPointToPrint.getHashtags());
+
+        int i = 0;
+        ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
+        for (String hashtag : hashtags.keySet()) {
+            i++;
+            hashtagsToPrint.add(new ListObjects.ResultHashtag(String.valueOf(i), hashtag, hashtags.get(hashtag).toString()));
+            if (i == 10) {
+                break;
+            }
+        }
+        Platform.runLater(() -> {
+            topTenLinkedList.getItems().addAll(hashtagsToPrint);
+        });
+        //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
+        return null;
+    }
 
     @FXML
     private void addTweetsToList(List<Tweet> toptweets) {
@@ -230,7 +231,7 @@ public class PiTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectPiTabController(this);
-                    tweetController.populate(tweet,true);
+                    tweetController.populate(tweet, true);
                     listTweets.getItems().add(jfxListCell);
                 }
             }

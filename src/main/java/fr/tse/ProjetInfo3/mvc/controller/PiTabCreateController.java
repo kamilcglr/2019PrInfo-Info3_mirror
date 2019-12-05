@@ -456,6 +456,7 @@ public class PiTabCreateController {
 
             cellGridPane = new GridPane();
             cellGridPane.setPrefSize(550, 50);
+            cellGridPane.getStyleClass().add("userCellGridPane");
 
             column1 = new ColumnConstraints();
             column1.setPrefWidth(100);
@@ -540,6 +541,7 @@ public class PiTabCreateController {
 
             cellGridPane = new GridPane();
             cellGridPane.setPrefSize(550, 50);
+            cellGridPane.getStyleClass().add("userCellGridPane");
 
             column1 = new ColumnConstraints();
             column1.setPrefWidth(50);
@@ -632,7 +634,7 @@ public class PiTabCreateController {
                         profileImageView.setImage(image);
 
                         screenNameLabel.setText(user.getScreen_name());
-                        followersCountLabel.setText("Folowers: " + Long.toString(user.getFollowers_count()));
+                        followersCountLabel.setText("Followers: " + Long.toString(user.getFollowers_count()));
 
                         setText(null);
                         setGraphic(cellGridPane);
