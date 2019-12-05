@@ -304,4 +304,11 @@ public class PIViewer {
 
         return TweetsSorted;
     }
+
+
+    //Controller of PITabController
+    //Called by Sergiy PITabController
+    private void saveInterestPoint(){
+        //function to save in DAO
+    }
 }
