@@ -22,6 +22,7 @@
 }
 
 .jfx-list-cell:hover {
+    /*This not respects the standard !*/
     -fx-background-color: #81b9cc;
 }
 
@@ -36,7 +37,7 @@
     -fx-background-color: WHITE;
 }
 
-#listPI {
+#PIListView {
     -fx-border-radius: 20;
     -fx-background-radius: 20;
 }
@@ -59,4 +60,13 @@
 
 .icon {
     -fx-fill: white;
+}
+
+#progressIndicator .arc {
+    -fx-stroke: -accent;
+}
+
+#progressLabelIndicator {
+    -fx-font-family: 'Raleway Medium', sans-serif;
+    -fx-font-size: 15;
 }

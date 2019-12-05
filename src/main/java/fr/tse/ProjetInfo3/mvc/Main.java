@@ -3,7 +3,6 @@ package fr.tse.ProjetInfo3.mvc;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
-import fr.tse.ProjetInfo3.mvc.controller.MainController;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.application.Application;
 import javafx.collections.ObservableList;

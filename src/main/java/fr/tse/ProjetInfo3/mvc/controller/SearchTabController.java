@@ -1,30 +1,39 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultObject;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.Icon;
 
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,6 +47,8 @@ public class SearchTabController {
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
     }
+
+    boolean userSelected;
 
     /*
      * We re-declare fxml variable here (fx:id="hashtagToggle"), with the SAME name ot use them
@@ -66,8 +77,8 @@ public class SearchTabController {
     @FXML
     private JFXButton searchButton;
 
-   @FXML
-   private JFXSpinner progressIndicator;
+    @FXML
+    private JFXSpinner progressIndicator;
 
     @FXML
     private Label progressLabel;
@@ -77,17 +88,15 @@ public class SearchTabController {
 
     @FXML
     private JFXButton signinButton;
-    
-    @FXML
-    private JFXButton myPibutton;
-
-    @FXML
-    private ListView<String> propositionList;
 
     @FXML
     private JFXProgressBar propositionProgressBar;
 
-    private String research;
+    @FXML
+    private JFXTreeTableView<ResultObject> treeView;
+
+
+    private Map<String, String> usersNamesAndScreenNames;
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -99,40 +108,37 @@ public class SearchTabController {
 
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
-        propositionList.setVisible(false);
+        treeView.setVisible(false);
         propositionProgressBar.setVisible(false);
         progressIndicator.setVisible(false);
+        userSelected = false;
+
+        initTreeView();
         /*
          * When the text in the input field is changed,
-         * we constantly remove spaces and add the # or @ at the begining
+         * we constantly remove spaces (forhashtag) and add the # or @ at the begining
          */
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         searchField.textProperty().addListener(
                 (observable, old_value, new_value) -> {
-                    propositionList.getItems().clear();
-                    propositionList.setVisible(false);
-                    if (new_value.contains(" ")) {
-                        searchField.setText(old_value);
-                    }
+                    treeView.setRoot(null);
+                    treeView.setVisible(false);
                     if (hashtagToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
                             searchField.setText("#" + new_value);
                         }
-                    } else if (userToggle.isSelected()) {
-                        if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("@")) {
-                            searchField.setText("@" + new_value);
-                        }
-
+                    } else if (userToggle.isSelected() && !userSelected) {
                         if (new_value.length() > 2) {
                             pause.setOnFinished(event -> {
                                 propositionProgressBar.setVisible(true);
-                                showPropositionList(new_value.substring(1));
+                                showPropositionList(new_value);
                             });
                             pause.playFromStart();
                         }
                     }
                 }
         );
+
     }
 
     /*Only one Toggle can be pressed, so we change the color of the second Toggle */
@@ -171,7 +177,7 @@ public class SearchTabController {
 
             //Set floating label to help the user
             searchField.setLabelFloat(true);
-            searchField.setPromptText("Entrez l'identifiant @ de l'user que vous souhaitez chercher");
+            searchField.setPromptText("Entrez le nom ou l'identifiant de l'user que vous souhaitez chercher");
 
             activateField(true, true);
         } else {
@@ -224,15 +230,19 @@ public class SearchTabController {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() {
-                ObservableList<String> items = propositionList.getItems();
                 SearchViewer searchViewer = new SearchViewer();
-                //Here we remove the @ to make our research of propositions
-                List<String> users = searchViewer.getListPropositions(newValue);
-                //We go through the proposition list
-                Platform.runLater(()->{
-                    items.addAll(users);
-                    if(items.size()>0){
-                        propositionList.setVisible(true);
+                usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
+
+                ObservableList<ResultObject> resultObjects = FXCollections.observableArrayList();
+                for (Map.Entry<String, String> entry : usersNamesAndScreenNames.entrySet()) {
+                    resultObjects.add(new ResultObject(entry.getKey(), entry.getValue()));
+                }
+                Platform.runLater(() -> {
+                    final TreeItem<ResultObject> root = new RecursiveTreeItem<ResultObject>(resultObjects, RecursiveTreeObject::getChildren);
+                    treeView.setRoot(root);
+
+                    if (resultObjects.size() > 0) {
+                        treeView.setVisible(true);
                     }
                     propositionProgressBar.setVisible(false);
                 });
@@ -252,11 +262,20 @@ public class SearchTabController {
         searchButtonPressed(event);
     }
 
+    /**
+     * If user choose an entry in the table, we launch the search by firing an event.
+     * But we have to take the screen_name fisrt from the list
+     *
+     * @param event
+     */
     @FXML
-    private void listClicked(MouseEvent event) {
-        searchField.setText(propositionList.getSelectionModel().getSelectedItem());
-        propositionList.setVisible(false);
+    private void treeViewClicked(MouseEvent event) {
+        TreeItem<ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
+        userSelected = true; //keep userSelected before userField.setText
+        searchField.setText(selectedResult.getValue().getScreen_name().get());
+        treeView.setVisible(false);
         progressLabel.setVisible(false);
+        searchButton.fire();
     }
 
     /**
@@ -278,20 +297,20 @@ public class SearchTabController {
                     //if search does not throw error
                     if (typeOfSearch == 'h') {
                         HastagViewer hastagViewer = new HastagViewer();
-                        hastagViewer.searchHashtag(research);
+                        //Remove # from researchfield
+                        hastagViewer.setHashtag(research.substring(1));
+                        mainController.goToHashtagPane(hastagViewer);
 
                         //we go to this part when hashtag exists, else Exception is thrown
                         progressLabel.setVisible(false);
-                        mainController.goToHashtagPane(hastagViewer);
 
                     } else if (typeOfSearch == 'u') {
 
-                        //We get the user we chose from the list
-                        String newResearch = research;
                         //we search the user and go to the user tab
-                        if (newResearch != null) {
+                        if (research != null) {
+                            userSelected = false;
                             UserViewer userViewer = new UserViewer();
-                            userViewer.searchScreenName(newResearch);
+                            userViewer.searchScreenName(research);
                             mainController.goToUserPane(userViewer);
                         }
                         //we go to this part when user exists, else Exception is thrown
@@ -377,7 +396,7 @@ public class SearchTabController {
         }
 
     }
-  
+
     /**
      * Desactive or active the search field and button
      *
@@ -385,7 +404,7 @@ public class SearchTabController {
      */
     private void activateField(boolean activate, boolean delete) {
         propositionProgressBar.setVisible(false);
-        propositionList.setVisible(false);
+        treeView.setVisible(false);
         if (activate) {
             searchField.setDisable(false);
             searchButton.setDisable(false);
@@ -397,4 +416,34 @@ public class SearchTabController {
             searchField.setText("");
         }
     }
+
+    /**
+     * Sets the column of treeView*
+     */
+    private void initTreeView() {
+        JFXTreeTableColumn<ResultObject, String> name = new JFXTreeTableColumn<>("");
+        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
+                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
+            }
+        });
+
+        JFXTreeTableColumn<ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
+        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
+                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
+            }
+        });
+        treeView.setShowRoot(false);
+        treeView.getColumns().setAll(name, screen_name);
+        treeView.getColumns().get(1).getStyleClass().add("idInList");
+        treeView.getColumns().get(0).getStyleClass().add("nameINList");
+        treeView.setFixedCellSize(25);
+    }
+
+
+
+
 }

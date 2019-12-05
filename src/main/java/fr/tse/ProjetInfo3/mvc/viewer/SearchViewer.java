@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.viewer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import com.jfoenix.controls.JFXListView;
 
@@ -22,23 +23,22 @@ public class SearchViewer {
 
     public SearchViewer() {
         requestManager = new RequestManager();
-
     }
 
     /**
      * This method gets the list of propositions based on a String, and use the method of the RequestManager class
      *
-     * @param userProposition
-     * @return users :list of propositions
+     * @param userProposition name
+     * @return usersNamesAndScreenNames : Map of names and screen_names of user
      */
-    public List<String> getListPropositions(String userProposition) {
-        List<String> users = null;
+    public Map<String, String> getListPropositions(String userProposition) {
+        Map<String,String> usersNamesAndScreenNames = null;
         try {
-            users = requestManager.getUsersbyName(userProposition);
+            usersNamesAndScreenNames = requestManager.getUsersbyName(userProposition);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return users;
+        return usersNamesAndScreenNames;
     }
 
     public User getUser() {

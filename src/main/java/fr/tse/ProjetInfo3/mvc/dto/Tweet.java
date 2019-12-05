@@ -15,6 +15,8 @@ public class Tweet {
 
     private Date created_at;
     private long id;
+    //don't change this,
+    // you have to add tweet_mode=extended if there is not this entry in your result
     private String full_text;
     private Boolean truncated;
     private User user;
@@ -22,7 +24,6 @@ public class Tweet {
     private long quoted_status_id;
     private Tweet quoted_status;
     private Tweet retweeted_status;
-
     private long quote_count;
     private long reply_count;
     private long retweet_count;

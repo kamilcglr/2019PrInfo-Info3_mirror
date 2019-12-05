@@ -4,6 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <groupId>fr.tse</groupId>
     <artifactId>2019PrInfo-Info3</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -11,7 +20,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <javafx.version>11</javafx.version>
+        <javafx.version>13</javafx.version>
     </properties>
 
     <dependencies>
@@ -25,6 +34,27 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <!-- Uncomment for cross-platform fat jar-->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>linux</classifier>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>mac</classifier>
+        </dependency>
+        -->
 
         <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
         <!--  Permits to use material design (custom javafx elements)-->
@@ -36,16 +66,23 @@
 
 
         <!--  Permits to use icons from fontawesome-->
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-javafx</artifactId>
-            <version>11.3.4</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.kordamp.ikonli/ikonli-core -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>11.3.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-core</artifactId>
+            <version>11.3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>11.3.4</version>
+        </dependency>
+
 
         <!--  Library for parsing JSON from google-->
         <!--https://github.com/google/gson/blob/master/UserGuide.md-->
@@ -60,26 +97,17 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-		
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
         </dependency>
         <dependency>
-    		<groupId>com.h2database</groupId>
-    		<artifactId>h2</artifactId>
-    		<version>1.4.197</version>
-		</dependency>
-			<dependency>
-	    <groupId>com.github.giordamauro</groupId>
-	    <artifactId>oauth1-signature-builder</artifactId>
-	    <version>-SNAPSHOT</version>
-	</dependency>
+            <groupId>com.github.giordamauro</groupId>
+            <artifactId>oauth1-signature-builder</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
 
-       
-       
     </dependencies>
 
     <repositories>
@@ -88,11 +116,11 @@
             <name>jcenter</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-        
+
         <repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <build>
@@ -103,6 +131,7 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
+
                 </configuration>
             </plugin>
             <plugin>
@@ -113,7 +142,30 @@
                     <mainClass>fr.tse.ProjetInfo3.mvc.Main</mainClass>
                 </configuration>
             </plugin>
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>project-classifier</shadedClassifierName>
+                            <outputFile>shade\${project.artifactId}.jar</outputFile>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>fr.tse.ProjetInfo3.mvc.NewMain</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

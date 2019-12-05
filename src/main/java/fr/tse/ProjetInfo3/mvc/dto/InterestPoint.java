@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,8 @@ import java.util.stream.Collectors;
  * parameters are defined to have a variety of definition for an InterestPoint
  */
 
-public class InterestPoint {
+public class InterestPoint implements Serializable {
+    private int id;
     private String name;
     private String description;
     private Date dateOfCreation;
@@ -25,7 +27,23 @@ public class InterestPoint {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public InterestPoint() {
+    }
+
+    public InterestPoint(int id, String name, String description, Date dateOfCreation) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.dateOfCreation = dateOfCreation;
     }
 
     public InterestPoint(String name, String description, Date dateOfCreation) {
@@ -38,33 +56,14 @@ public class InterestPoint {
         this.tweets = new ArrayList<Tweet>();
     }
 
-    public InterestPoint(List<Hashtag> hashtags, List<User> users) {
-        this.hashtags = hashtags;
-        this.users = users;
-    }
-
-    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users) {
-        super();
+    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users){
         this.name = name;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
         this.hashtags = hashtags;
         this.users = users;
-    }
-
-    public InterestPoint(List<Hashtag> hashtags) {
-        super();
-        this.hashtags = hashtags;
-    }
-
-    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users, List<InterestPoint> interestPoints) {
-        super();
-        this.name = name;
-        this.description = description;
-        this.dateOfCreation = dateOfCreation;
-        this.hashtags = hashtags;
-        this.users = users;
-        this.interestPoints = interestPoints;
+        this.interestPoints = new ArrayList<InterestPoint>();
+        this.tweets = new ArrayList<Tweet>();
     }
 
     /*
@@ -240,14 +239,25 @@ public class InterestPoint {
                 + "]";
     }
 
+    /**
+     * Return a string that resume the Interest Point
+     * @return string interestPointName + date + users + hashtags
+     */
     public String toStringMinimal() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String spacing = "\t\t\t\t\t\t\t\t";
 
-        String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
-        String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
+        String interestPointMinimal = name + " " + simpleDateFormat.format(dateOfCreation);
+        if (users != null) {
+            String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
+            interestPointMinimal+= " " + listUsers;
+        }
+        if (hashtags != null) {
+            String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
+            interestPointMinimal+= " " + listHashtags;
+        }
 
-        return name + " " + simpleDateFormat.format(dateOfCreation) + " " + listUsers + " " + listHashtags;
+        return interestPointMinimal;
     }
 
 }

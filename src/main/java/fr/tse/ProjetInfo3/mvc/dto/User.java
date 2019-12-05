@@ -88,6 +88,7 @@ public class User {
                 '}';
     }
 
+    //Id is sufficient and necessary because twitter ensure us that it is unique
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,45 +96,12 @@ public class User {
 
         User user = (User) o;
 
-        if (id != user.id) return false;
-        if (followers_count != user.followers_count) return false;
-        if (friends_count != user.friends_count) return false;
-        if (listed_count != user.listed_count) return false;
-        if (favourites_count != user.favourites_count) return false;
-        if (statuses_count != user.statuses_count) return false;
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (screen_name != null ? !screen_name.equals(user.screen_name) : user.screen_name != null) return false;
-        if (location != null ? !location.equals(user.location) : user.location != null) return false;
-        if (description != null ? !description.equals(user.description) : user.description != null) return false;
-        if (url != null ? !url.equals(user.url) : user.url != null) return false;
-        if (verified != null ? !verified.equals(user.verified) : user.verified != null) return false;
-        if (created_at != null ? !created_at.equals(user.created_at) : user.created_at != null) return false;
-        if (profile_banner_url != null ? !profile_banner_url.equals(user.profile_banner_url) : user.profile_banner_url != null)
-            return false;
-        if (profile_image_url_https != null ? !profile_image_url_https.equals(user.profile_image_url_https) : user.profile_image_url_https != null)
-            return false;
-        return listoftweets != null ? listoftweets.equals(user.listoftweets) : user.listoftweets == null;
+        return id == user.id;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (screen_name != null ? screen_name.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (verified != null ? verified.hashCode() : 0);
-        result = 31 * result + (int) (followers_count ^ (followers_count >>> 32));
-        result = 31 * result + (int) (friends_count ^ (friends_count >>> 32));
-        result = 31 * result + (int) (listed_count ^ (listed_count >>> 32));
-        result = 31 * result + (int) (favourites_count ^ (favourites_count >>> 32));
-        result = 31 * result + (int) (statuses_count ^ (statuses_count >>> 32));
-        result = 31 * result + (created_at != null ? created_at.hashCode() : 0);
-        result = 31 * result + (profile_banner_url != null ? profile_banner_url.hashCode() : 0);
-        result = 31 * result + (profile_image_url_https != null ? profile_image_url_https.hashCode() : 0);
-        result = 31 * result + (listoftweets != null ? listoftweets.hashCode() : 0);
-        return result;
+        return (int) (id ^ (id >>> 32));
     }
 
     public long getId() {

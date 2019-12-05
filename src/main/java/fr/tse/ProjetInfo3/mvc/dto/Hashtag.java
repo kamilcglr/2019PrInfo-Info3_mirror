@@ -1,7 +1,11 @@
 /**
- * 
+ *
  */
 package fr.tse.ProjetInfo3.mvc.dto;
+
+import java.io.Serializable;
+
+import org.h2.engine.User;
 
 import java.util.List;
 
@@ -10,53 +14,46 @@ import java.util.List;
  * @author kamilcaglar
  * This class contains some tweets with with the same #
  */
-public class Hashtag {
-	private String hashtag;
+public class Hashtag implements Serializable {
+    private int id;
+    private String hashtag;
 
-	private List<Tweet> tweets;
+    private List<Tweet> tweets;
 
 
-	public Hashtag(String hashtag) {
-		super();
-		this.hashtag = hashtag;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getHashtag() {
-		return hashtag;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setHashtag(String hashtag) {
-		this.hashtag = hashtag;
-	}
+    public Hashtag(int id, String hashtag) {
+        super();
+        this.id = id;
+        this.hashtag = hashtag;
+    }
 
-	public List<Tweet> getTweets() {
-		return tweets;
-	}
+    public Hashtag(String hashtag) {
+        super();
+        this.hashtag = hashtag;
+    }
 
-	public void setTweets(List<Tweet> tweets) {
-		this.tweets = tweets;
-	}
+    public Hashtag() {
 
-	public Hashtag(String hashtag, List<Tweet> tweets) {
-		this.hashtag = hashtag;
-		this.tweets = tweets;
-	}
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public String getHashtag() {
+        return hashtag;
+    }
 
-		Hashtag hashtag1 = (Hashtag) o;
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
+    }
 
-		if (hashtag != null ? !hashtag.equals(hashtag1.hashtag) : hashtag1.hashtag != null) return false;
-		return tweets != null ? tweets.equals(hashtag1.tweets) : hashtag1.tweets == null;
-	}
+    public List<Tweet> getTweets() {
+        return tweets;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = hashtag != null ? hashtag.hashCode() : 0;
-		result = 31 * result + (tweets != null ? tweets.hashCode() : 0);
-		return result;
-	}
 }
