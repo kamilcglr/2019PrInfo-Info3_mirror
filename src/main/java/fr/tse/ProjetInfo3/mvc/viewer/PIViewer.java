@@ -44,7 +44,7 @@ public class PIViewer {
 
     public void setSelectedInterestPoint(int index) {
         this.selectedInterestPoint = listOfInterestPoint.get(index);
-        System.out.println(selectedInterestPoint);
+        System.out.println("Affichage : "+selectedInterestPoint.getId());
     }
 
     /**
@@ -62,7 +62,9 @@ public class PIViewer {
         //listOfInterestPoint.add(interestPoint);
         interestPointDAO.saveInterestPoint(interestPoint);
     }
-
+    public void deleteInterestPointFromDatabaseById(int id) {
+    	interestPointDAO.deleteSelectedInterestPointById(id);
+    }
     /**
      * In the futur, this function will return the created Interest Point into the database
      */
