@@ -195,5 +195,51 @@ public class InterestPointDAO {
         }
         return interestPoint;
     }
+    
+    // i had to name this method like this hahahah
+    public void deleteInterestPointFromHashtagsToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM hashtag WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    public void deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM twitteruser WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    public void deleteSelectedInterestPointById(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+		deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
+		deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(id);
+
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
 }
