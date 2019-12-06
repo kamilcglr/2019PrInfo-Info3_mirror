@@ -42,7 +42,10 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     private JFXButton editPI;
-
+    
+    @FXML
+    private JFXButton deletePI;
+    
     @FXML
     private JFXButton seeButton;
 
@@ -138,6 +141,11 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     void editPIPressed(ActionEvent event) {
         //Not new, then we add true in the parameters
         mainController.goToPICreateOrEditPane(false, piViewer);
+    }
+    
+    @FXML
+    void deletePIPressed(ActionEvent event) {
+    	mainController.goToPIDelete(piViewer);
     }
 
     @FXML
