@@ -41,28 +41,19 @@ public class H2jdbcRead {
 	         // STEP 3: Execute a query 
 	         System.out.println("Connected database successfully..."); 
 	         stmt = conn.createStatement(); 
-	         String sql = "SELECT * FROM interestpoint  "; 
+	         String sql = "select * from twitteruser where interestpoint_id = 1";
 	         
-	         ResultSet rs = stmt.executeQuery(sql); 
-	         List<String> hashtags = new ArrayList<>();
-	         InterestPointDAO dao = new InterestPointDAO();
-	         // STEP 4: Extract data from result set 
-//	         while(rs.next()) {
-//	        	 System.out.println("name: "+rs.getString("name"));
-//	        	 System.out.println("description: "+rs.getString("description"));
-//	        	 System.out.println("created_at: "+rs.getDate("created_at"));
-//	         }
-	         List<InterestPoint> interestPoints = dao.getAllInterestPoints();
+	         ResultSet rs = stmt.executeQuery(sql);
 	         
-	         for(InterestPoint i : interestPoints) {
-	        	 System.out.println("name : "+i.getName());
-	        	 System.out.println("description : "+i.getDescription());
-	        	 for(Hashtag h : i.getHashtags()) {
-	        		 System.out.println("hash : "+h.getHashtag());
-	        	 }
+	         while(rs.next()) {
+	        	 System.out.println("id: "+rs.getInt("interestpoint_id"));
+	        	 System.out.println("name : "+rs.getString("name"));
+	        	 System.out.println("description : "+rs.getString("description"));
 	         }
-	         // STEP 5: Clean-up environment 
-	         rs.close(); 
+	         
+	         
+	         System.out.println("deleted successfully");
+	         
 	      } catch(Exception e) { 
 	         // Handle errors for Class.forName 
 	         e.printStackTrace(); 
