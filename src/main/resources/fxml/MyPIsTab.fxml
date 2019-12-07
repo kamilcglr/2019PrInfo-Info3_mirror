@@ -46,7 +46,7 @@
                         </JFXButton>
                         <JFXButton fx:id="editPI" alignment="TOP_RIGHT" onAction="#editPIPressed" styleClass="actionButton" text="Editer" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                             <graphic>
-                                <FontIcon iconLiteral="fas-edit" styleClass="icon" />
+                                <FontIcon iconLiteral="fas-edit" styleClass="icon" text="" />
                             </graphic>
                         </JFXButton>
                         <JFXButton fx:id="seeButton" onAction="#seeButtonPressed" styleClass="actionButton" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
@@ -59,6 +59,8 @@
                      <padding>
                         <Insets left="50.0" />
                      </padding></Label>
+                  <JFXButton fx:id="deletePI" onAction="#deletePIPressed" styleClass="actionButton" text="Supprimer" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <JFXSpinner fx:id="deletionTime" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
             </children>

@@ -351,6 +351,26 @@ public class MainController {
         }
     }
 
+	public void goToPIDelete(PIViewer piViewer) {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+        try {
+            AnchorPane piTab = fxmlLoader.load();
+            PiTabController piTabController = fxmlLoader.getController();
+            Tab tab = new Tab();
+            Platform.runLater(() -> {
+                int id = piViewer.getSelectedInterestPoint().getId();
+                piViewer.deleteInterestPointFromDatabaseById(id);
+
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+	}
+
+	
+
 
 }
 

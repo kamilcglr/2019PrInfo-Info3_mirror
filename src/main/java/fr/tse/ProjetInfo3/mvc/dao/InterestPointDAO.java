@@ -195,5 +195,70 @@ public class InterestPointDAO {
         }
         return interestPoint;
     }
+    
+    // i had to name this method like this hahahah
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from Hashtag table
+     */
+    public void deleteInterestPointFromHashtagsToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM hashtag WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from twitteruser table
+     */
+    public void deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM twitteruser WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    /** 
+     * deleting PI from the Database
+     */
+    public void deleteSelectedInterestPointById(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+		deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
+		deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(id);
+
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
 }
