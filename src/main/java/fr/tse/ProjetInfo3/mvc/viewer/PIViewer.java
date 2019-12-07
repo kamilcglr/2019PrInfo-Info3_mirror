@@ -126,11 +126,48 @@ public class PIViewer {
     }
 
 
-    /*Return a list of tweets provided by user and hashtag
-     *TODO Optimize this to do multiple request at the same time
+    /*
+     * New function designed for US53
+     * This function gives a coherent list of tweets from Users and Hashtags
      *  */
     public List<Tweet> getTweets(JFXProgressBar progressBar, Label progressLabel) throws Exception {
+
         List<Tweet> tweetsToReturn = new ArrayList<>();
+        List<User> usersOfIP = selectedInterestPoint.getUsers();
+        List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
+        Date dateOfOldestTweet = null;
+        int totalNumberOfRequest = 0;
+
+        do {
+
+            //Get 100 tweets from each Hashtags. Users not define the number of tweets
+            for (Hashtag hashtag : hashtagsOfIP) {
+                
+            }
+
+            //Find the oldest tweet
+
+
+            //For each hashtag and user, get tweets until oldestTweet
+            //In each request, increase the number of request
+            for (Hashtag hashtag : hashtagsOfIP) {
+                //If result is void do one more time to be sure
+
+                //If nbRequest for this exceed limit/NbObject we stop (not sure)
+
+            }
+
+            //Get the tweets from user
+            for (User user : usersOfIP) {
+                //GetTweets until oldest
+                //If size of tweets > 3194 the user have a lot of tweet frequency (greater than hashtag), dateOfOldest is now this date
+            }
+
+            //Filter tweets that are older than dateOfOldest
+
+
+        } while (totalNumberOfRequest < 100);//approximately 100sec
+
 
         if (selectedInterestPoint.getUsers() != null) {
             tweetsToReturn.addAll(getTweetsFromUsers(selectedInterestPoint.getUsers(), progressBar, progressLabel));
@@ -253,7 +290,7 @@ public class PIViewer {
 
                 .stream()
 
-                .filter(hashtag->!hashtagsToExcludeList.contains(hashtag.getKey()))
+                .filter(hashtag -> !hashtagsToExcludeList.contains(hashtag.getKey()))
 
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
@@ -308,7 +345,7 @@ public class PIViewer {
 
     //Controller of PITabController
     //Called by Sergiy PITabController
-    private void saveInterestPoint(){
+    private void saveInterestPoint() {
         //function to save in DAO
     }
 }
