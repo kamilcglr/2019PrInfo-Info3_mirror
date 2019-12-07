@@ -197,6 +197,14 @@ public class InterestPointDAO {
     }
     
     // i had to name this method like this hahahah
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from Hashtag table
+     */
     public void deleteInterestPointFromHashtagsToAvoidCompilationErrors(int id) {
     	Connection connection = SingletonDBConnection.getInstance();
     	
@@ -211,6 +219,14 @@ public class InterestPointDAO {
 		}
     	
     }
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from twitteruser table
+     */
     public void deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(int id) {
     	Connection connection = SingletonDBConnection.getInstance();
     	
@@ -226,6 +242,9 @@ public class InterestPointDAO {
     	
     }
     
+    /** 
+     * deleting PI from the Database
+     */
     public void deleteSelectedInterestPointById(int id) {
     	Connection connection = SingletonDBConnection.getInstance();
 		deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
