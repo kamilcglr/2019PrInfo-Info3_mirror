@@ -6,7 +6,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 
-import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

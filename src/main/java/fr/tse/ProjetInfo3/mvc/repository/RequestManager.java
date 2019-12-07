@@ -12,7 +12,7 @@ import com.mgiorda.oauth.OAuthSignature;
 import fr.tse.ProjetInfo3.mvc.dto.Statuses;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import javafx.application.Platform;
 
 import java.io.IOException;

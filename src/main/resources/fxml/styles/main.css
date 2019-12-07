@@ -76,14 +76,15 @@ GridPane {
 
 /*Toolbar buttons*/
 .toolbar-button {
-    /* -fx-border-color: transparent;
-     -fx-background-color: derive(-accent, 10%);
-     -fx-background-radius: 0px;
-     -fx-border-radius: 0px;*/
     -fx-border-color: transparent;
-    -fx-background-color: white;
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
     -fx-background-radius: 0px;
     -fx-border-radius: 0px;
+}
+
+.toolbar-button .toolbar-button-icon, .toolbar-button .toolbar-button-icon {
+    -fx-fill: white;
 }
 
 .toolbar-button:hover {

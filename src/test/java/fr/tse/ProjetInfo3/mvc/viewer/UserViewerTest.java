@@ -3,11 +3,11 @@ package fr.tse.ProjetInfo3.mvc.viewer;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
