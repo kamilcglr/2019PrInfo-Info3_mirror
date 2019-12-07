@@ -1,6 +1,8 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
+import com.jfoenix.controls.events.JFXDialogEvent;
+
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
@@ -9,10 +11,19 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,9 +50,12 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     private JFXButton addPI;
-
+    
     @FXML
     private JFXButton editPI;
+    
+    @FXML
+    private JFXSpinner deletionTime;
     
     @FXML
     private JFXButton deletePI;
@@ -69,7 +83,8 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
         //This buttons will be visible when editing will be possible
         editPI.setVisible(false);
-
+        deletePI.setVisible(false);
+        deletionTime.setVisible(false);
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
         editPI.setVisible(false);
@@ -83,7 +98,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
                     piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
                     if (newValue != null) {
                         seeButton.setVisible(true);
-                        //editPI.setVisible(true);
+                        deletePI.setVisible(true);
                     }
                 }
             }
@@ -143,9 +158,14 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         mainController.goToPICreateOrEditPane(false, piViewer);
     }
     
+    /**
+     * This function call the maincontroller who will delete the selected PI
+     * and then refresh the page
+     */
     @FXML
     void deletePIPressed(ActionEvent event) {
     	mainController.goToPIDelete(piViewer);
+    	mainController.goToMyPisPane();
     }
 
     @FXML
@@ -209,5 +229,17 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             threadGetPIs.interrupt();
         }
     }
+    // prepared a spinner for the loading time of the deletion
+    private void deletionIsRunning(boolean deleting) {
+        if (deleting) {
+            deletionTime.setVisible(true);
+            deletePI.setVisible(false);
+        } else {
+        	deletionTime.setVisible(false);
+            deletePI.setVisible(true);
+        }
+
+    }
+    
 
 }
