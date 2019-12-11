@@ -1,6 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -10,11 +14,17 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 public class ListObjects {
+	private final static Paint GREEN = Paint.valueOf("#48AC98FF");
+	private final static Paint RED = Paint.valueOf("#CB7C7AFF");
+	
     /**
      * This class will represent a result of a linked hashtag
      */
@@ -105,10 +115,12 @@ public class ListObjects {
      * Used in topUser inside PITab
      */
     public static class TopUserCell extends ListCell<User> {
-        //GridPane cellGridPane;
-        //ColumnConstraints column1;
-        //ColumnConstraints column2;
-        //ColumnConstraints column3;
+        GridPane cellGridPane;
+        ColumnConstraints column1;
+        ColumnConstraints column2;
+        ColumnConstraints column3;
+        ColumnConstraints column4;
+        
         HBox hBox = new HBox();
 
         ImageView profileImageView;
@@ -116,31 +128,45 @@ public class ListObjects {
         Label followersCountLabel;
 
         Image profilePicture;
+        
+        JFXButton addDeleteUser;
+        FontIcon addDeleteIcon;
 
         public TopUserCell() {
             super();
 
-            //cellGridPane = new GridPane();
-            //cellGridPane.getStyleClass().add("cellGridPane");
-            //cellGridPane.setPrefSize(550, 50);
-            //column1 = new ColumnConstraints();
-            //column1.setPrefWidth(50);
-            //column2 = new ColumnConstraints();
-            //column2.setPrefWidth(150);
-            //column3 = new ColumnConstraints();
-            //column3.setPrefWidth(300);
-            //cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
+            cellGridPane = new GridPane();
+            cellGridPane.getStyleClass().add("userCellGridPane");
+            cellGridPane.setPrefSize(700, 50);
+            column1 = new ColumnConstraints();
+            column1.setPrefWidth(50);
+            column2 = new ColumnConstraints();
+            column2.setPrefWidth(250);
+            column3 = new ColumnConstraints();
+            column3.setPrefWidth(400);
+            column4 = new ColumnConstraints();
+            column4.setPrefWidth(50);
+            
+            cellGridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
 
             profileImageView = new ImageView();
 
             nameLabel = new Label();
             followersCountLabel = new Label();
+            
+            addDeleteUser = new JFXButton();
+            
+            addDeleteIcon = new FontIcon("fas-plus");
+            addDeleteIcon.setIconSize(18);
+            addDeleteIcon.setIconColor(GREEN);
+            addDeleteUser.setGraphic(addDeleteIcon);
 
-            //cellGridPane.add(profileImageView, 0, 0);
-            //cellGridPane.add(screenNameLabel, 1, 0);
-            //cellGridPane.add(followersCountLabel, 2, 0);
+            cellGridPane.add(profileImageView, 0, 0);
+            cellGridPane.add(nameLabel, 1, 0);
+            cellGridPane.add(followersCountLabel, 2, 0);
+            cellGridPane.add(addDeleteUser, 3, 0);
 
-            hBox.getChildren().addAll(profileImageView, nameLabel, followersCountLabel);
+            //hBox.getChildren().addAll(profileImageView, nameLabel, followersCountLabel);
         }
 
         @Override
@@ -175,7 +201,7 @@ public class ListObjects {
                 followersCountLabel.getStyleClass().add("followersCountLabel");
 
                 setText(null);
-                setGraphic(hBox);
+                setGraphic(cellGridPane);
             }
         }
     }
