@@ -1,11 +1,30 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.*;
+import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListCell;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXProgressBar;
+import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.JFXSpinner;
+import com.jfoenix.controls.JFXToggleNode;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
-
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -15,7 +34,9 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -23,15 +44,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
 
 /**
  * @author Sobun UNG
@@ -130,6 +142,16 @@ public class UserTabController {
      * Prints User simple infos (name, id...)
      * Prints top #
      * */
+    
+    public String spaceBetweenNumbers(long value) {
+    	DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+    	DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+    	symbols.setGroupingSeparator(' ');
+    	formatter.setDecimalFormatSymbols(symbols);
+    	return formatter.format(value);
+    }
+    
     public void setUserViewer(UserViewer userViewer) throws InterruptedException {
         this.userViewer = userViewer;
         userToPrint = userViewer.getUser();
@@ -138,9 +160,9 @@ public class UserTabController {
             username.setText("@" + userToPrint.getScreen_name());
             twittername.setText(userToPrint.getName());
             description.setText(userToPrint.getDescription());
-            nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
-            nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
-            nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+            nbTweet.setText(String.valueOf(spaceBetweenNumbers(userToPrint.getStatuses_count())));
+            nbFollowers.setText(String.valueOf(spaceBetweenNumbers(userToPrint.getFollowers_count())));
+            nbFollowing.setText(String.valueOf(spaceBetweenNumbers(userToPrint.getFriends_count())));
             buildPicture();
         });
 
