@@ -171,7 +171,7 @@ public class ListObjects {
                 nameLabel.setText(user.getName());
                 nameLabel.getStyleClass().add("nameLabel");
 
-                followersCountLabel.setText("Followers : " + Long.toString(user.getFollowers_count()));
+                followersCountLabel.setText("Followers : " + NumberParser.spaceBetweenNumbers(user.getFollowers_count()));
                 followersCountLabel.getStyleClass().add("followersCountLabel");
 
                 setText(null);

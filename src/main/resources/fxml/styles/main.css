@@ -353,3 +353,19 @@ GridPane {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 15;
 }
+
+/* TITLES ON TABS */
+
+.tabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.centeredtabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 30 0 0 0;
+}

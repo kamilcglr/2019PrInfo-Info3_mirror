@@ -40,11 +40,23 @@
                                         <RowConstraints vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="hashtagLabel" text="NomHashtag" GridPane.columnSpan="3" GridPane.valignment="TOP" />
-                                        <Label fx:id="nbTweetsLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                        <Label fx:id="nbUsersLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                                        <Label fx:id="tweetsLabel" alignment="CENTER" styleClass="countLabel" text="Tweets" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-                                        <Label fx:id="usersLabel" styleClass="countLabel" text="Personnes ont réagi" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
+                                        <Label fx:id="hashtagLabel" styleClass="tabtitles" text="NomHashtag" GridPane.columnSpan="3" GridPane.valignment="TOP" />
+                                        <Label fx:id="nbTweetsLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets top="60.0" />
+                                 </GridPane.margin></Label>
+                                        <Label fx:id="nbUsersLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets top="60.0" />
+                                 </GridPane.margin></Label>
+                                        <Label fx:id="tweetsLabel" alignment="CENTER" styleClass="countLabel" text="Tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin></Label>
+                                        <Label fx:id="usersLabel" styleClass="countLabel" text="Personnes ont réagi" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin></Label>
                               <VBox fx:id="vbox" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                  <children>
                                                 <TitledPane fx:id="titledHashtag" expanded="false" text="Top 10 des # liés">

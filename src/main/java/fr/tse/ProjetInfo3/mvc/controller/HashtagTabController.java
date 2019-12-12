@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
+import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -211,8 +212,8 @@ public class HashtagTabController {
 
     private Task<Void> setNumberOfUniqueAccountAndNumberOfTweets() {
         Platform.runLater(() -> {
-            nbUsersLabel.setText(hastagViewer.getNumberOfUniqueAccounts().toString());
-            nbTweetsLabel.setText(hastagViewer.getNumberOfTweets().toString());
+            nbUsersLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfUniqueAccounts()));
+            nbTweetsLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfTweets()));
         });
         return null;
     }

@@ -42,10 +42,9 @@
                                         <RowConstraints minHeight="20.0" />
                                         <RowConstraints minHeight="100.0" />
                                         <RowConstraints minHeight="60.0" />
-                                        <RowConstraints minHeight="700.0" />
+                                        <RowConstraints minHeight="1000.0" />
                                         <RowConstraints minHeight="200.0" vgrow="ALWAYS" />
                                         <RowConstraints minHeight="20.0" />
-                                        <RowConstraints minHeight="200.0" />
                                         <RowConstraints minHeight="100.0" vgrow="ALWAYS" />
 
                                     </rowConstraints>
@@ -65,7 +64,7 @@
                                             </GridPane.margin>
                                         </JFXToggleNode>
 
-                                        <Label fx:id="description" alignment="TOP_LEFT" maxWidth="200.0" text="Description" wrapText="true" GridPane.halignment="LEFT">
+                                        <Label fx:id="description" alignment="TOP_LEFT" maxWidth="400.0" text="Description" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="LEFT">
                                             <GridPane.margin>
                                                 <Insets left="5.0" top="75.0" />
                                             </GridPane.margin>
@@ -78,7 +77,7 @@
                                                 <Insets left="5.0" top="40.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="twittername" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+                                        <Label fx:id="twittername" styleClass="tabtitles" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                                             <GridPane.margin>
                                                 <Insets left="5.0" />
                                             </GridPane.margin>

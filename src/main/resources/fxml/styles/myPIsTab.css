@@ -1,9 +1,4 @@
-#titleLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 30;
-    -fx-text-fill: -grey-dark;
-    -fx-padding: 0 0 10 0;
-}
+
 
 .jfx-list-cell:selected {
     -fx-background-color: #3dBc91;

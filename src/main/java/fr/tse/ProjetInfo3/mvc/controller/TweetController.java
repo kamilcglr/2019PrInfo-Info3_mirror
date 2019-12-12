@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXListCell;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
@@ -53,8 +54,8 @@ public class TweetController {
     public void populate(Tweet tweet, boolean printAuthor) {
         int RTCount = (int) tweet.getRetweet_count();
         int FavCount = (int) tweet.getFavorite_count();
-        nbretweet.setText(Integer.toString(RTCount));
-        nbLikes.setText(Integer.toString(FavCount));
+        nbretweet.setText(NumberParser.spaceBetweenNumbers(RTCount));
+        nbLikes.setText(NumberParser.spaceBetweenNumbers(FavCount));
         texttweet.setText(tweet.getFull_text());
         dateLabel.setText(frenchSimpleDateFormat.format(tweet.getCreated_at()));
 
