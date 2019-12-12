@@ -198,7 +198,7 @@ public class PiTabController {
     }
 
     private Task<Void> setTopLinkedHashtags() {
-        hashtags = piViewer.topHashtag(bigTweetList, interestPointToPrint.getHashtags());
+        hashtags = piViewer.getTopTenHashtags(bigTweetList, interestPointToPrint.getHashtags());
 
         int i = 0;
         ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();

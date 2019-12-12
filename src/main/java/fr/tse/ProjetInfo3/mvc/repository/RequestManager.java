@@ -480,7 +480,7 @@ public class RequestManager {
      */
     private HttpRequest buildHashtagTweetRequest(String hashtagName, Integer count, Long max_id, Date untilDate) {
         String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23"
-                + hashtagName + "&count=" + count.toString() + "&tweet_mode=extended";
+                + hashtagName + "&count=" + count.toString() + "&tweet_mode=extended&result_type=recent";
 
         if (max_id != null && max_id > 0) {
             url = url + "&max_id=" + max_id.toString();

@@ -433,8 +433,6 @@ public class PIViewer {
     public List<User> getTopFiveUsers(List<Tweet> tweetList, List<User> usersToExclude) {
         List<User> usersToReturn = new ArrayList<>();
         for (Tweet tweet : tweetList) {
-            //ps : if PO asks us to retrieve the number of tweets we will use a map
-
             //First we get the id of all users involved
             User usertoAdd = tweet.getUser();
             if (!usersToReturn.contains(usertoAdd)) {
@@ -442,8 +440,6 @@ public class PIViewer {
             }
 
         }
-        usersToReturn = usersToReturn.stream().filter((user -> !usersToExclude.contains(user))).collect(Collectors.toList());
-
         //Sort by Followers Count
         usersToReturn.sort(new Comparator<User>() {
             @Override
@@ -459,7 +455,7 @@ public class PIViewer {
      * From a big list of tweets, return the top Hashtags
      * Excludes hashtags that are already in interest Point
      */
-    public Map<String, Integer> topHashtag(List<Tweet> tweetList, List<Hashtag> hashtagsToExclude) {
+    public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList, List<Hashtag> hashtagsToExclude) {
         List<String> hashtagsToExcludeList = hashtagsToExclude.stream().map(Hashtag::getHashtag).collect(Collectors.toList());
         Map<String, Integer> hashtagUsedSorted;
         Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
@@ -491,13 +487,6 @@ public class PIViewer {
         }
 
         hashtagUsedSorted = sortByValue(hashtagUsed);
-        hashtagUsedSorted = hashtagUsedSorted.entrySet()
-
-                .stream()
-
-                .filter(hashtag -> !hashtagsToExcludeList.contains(hashtag.getKey()))
-
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         return hashtagUsedSorted;
     }
