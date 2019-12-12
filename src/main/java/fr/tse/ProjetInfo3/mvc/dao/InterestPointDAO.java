@@ -260,5 +260,21 @@ public class InterestPointDAO {
 			e.printStackTrace();
 		}
     }
+    
+    public InterestPoint updateSelectedInterestPoint(InterestPoint interestPoint) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	try {
+			PreparedStatement ps = connection.prepareStatement("UPDATE interestpoint SET name =?,description=? WHERE id=?");
+			ps.setString(1, interestPoint.getName());
+			ps.setString(2, interestPoint.getDescription());
+			ps.setInt(3,interestPoint.getId());
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return interestPoint;
+    }
 
 }
