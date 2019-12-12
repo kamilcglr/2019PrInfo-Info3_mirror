@@ -56,12 +56,20 @@ public class PIViewer {
     }
 
     /**
-     *
+     * Save interest Point into DB
      */
     public void addInterestPointToDatabase(InterestPoint interestPoint) {
         //listOfInterestPoint.add(interestPoint);
         interestPointDAO.saveInterestPoint(interestPoint);
     }
+    
+    public void updateInterestPointAndSaveToDatabase(InterestPoint interestPoint) {
+    	interestPointDAO.updateSelectedInterestPoint(interestPoint);
+    }
+    
+    /**
+     * Delete interest Point from DB
+     */
     public void deleteInterestPointFromDatabaseById(int id) {
     	interestPointDAO.deleteSelectedInterestPointById(id);
     }
