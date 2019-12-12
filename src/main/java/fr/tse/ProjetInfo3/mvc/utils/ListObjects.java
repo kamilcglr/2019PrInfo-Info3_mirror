@@ -5,7 +5,9 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -26,22 +28,72 @@ import javafx.scene.shape.Circle;
 public class ListObjects {
 	private final static Paint GREEN = Paint.valueOf("#48AC98FF");
 	private final static Paint RED = Paint.valueOf("#CB7C7AFF");
+	
+	private PIViewer piViewer;
 
 	/**
 	 * This class will represent a result of a linked hashtag
 	 */
 	public static class HashtagCell extends ListCell<ResultHashtag> {
-		HBox hBox = new HBox();
-		Label classementLabel = new Label("");
-		Label hashtagLabel = new Label("");
-		Label nbTweetLabel = new Label("");
+		GridPane cellGridPane;
+		ColumnConstraints column1;
+		ColumnConstraints column2;
+		ColumnConstraints column3;
+		ColumnConstraints column4;
+		
+		Label classementLabel;
+		Label hashtagLabel;
+		Label nbTweetLabel;
+		
+		JFXButton addDeleteHashtag;
+		FontIcon addDeleteIcon;
+		
+		InterestPoint interestPoint;
+		
+		PIViewer piViewer;
 
-		public HashtagCell() {
+		public HashtagCell(InterestPoint interestPoint) {
 			super();
+			
+			this.interestPoint = interestPoint;
+			piViewer = new PIViewer();
+			
+			cellGridPane = new GridPane();
+			cellGridPane.getStyleClass().add("userCellGridPane");
+			cellGridPane.setPrefSize(700, 20);
+			column1 = new ColumnConstraints();
+			column1.setPrefWidth(50);
+			column2 = new ColumnConstraints();
+			column2.setPrefWidth(250);
+			column3 = new ColumnConstraints();
+			column3.setPrefWidth(400);
+			column4 = new ColumnConstraints();
+			column4.setPrefWidth(50);
+
+			cellGridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
+			
+			classementLabel = new Label("");
 			classementLabel.getStyleClass().add("indexLabel");
+			
+			hashtagLabel = new Label("");
 			hashtagLabel.getStyleClass().add("hashtagTextLabel");
+			
+			nbTweetLabel = new Label("");
 			nbTweetLabel.getStyleClass().add("nbTweetLabel");
-			hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
+			
+			addDeleteHashtag = new JFXButton();
+
+			addDeleteIcon = new FontIcon("fas-plus");
+			addDeleteIcon.setIconSize(18);
+			addDeleteIcon.setIconColor(GREEN);
+			addDeleteHashtag.setGraphic(addDeleteIcon);
+
+			addDeleteHashtag.setPrefSize(20, 20);
+			
+			cellGridPane.add(classementLabel, 0, 0);
+			cellGridPane.add(hashtagLabel, 1, 0);
+			cellGridPane.add(nbTweetLabel, 2, 0);
+			cellGridPane.add(addDeleteHashtag, 3, 0);
 		}
 
 		public void updateItem(ResultHashtag resultHashtag, boolean empty) {
@@ -51,7 +103,7 @@ public class ListObjects {
 				classementLabel.setText(resultHashtag.getClassementIndex());
 				hashtagLabel.setText(resultHashtag.getHashtagName());
 				nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
-				setGraphic(hBox);
+				setGraphic(cellGridPane);
 			}
 		}
 	}
@@ -122,8 +174,6 @@ public class ListObjects {
 		ColumnConstraints column3;
 		ColumnConstraints column4;
 
-		HBox hBox = new HBox();
-
 		ImageView profileImageView;
 		Label nameLabel;
 		Label followersCountLabel;
@@ -132,9 +182,16 @@ public class ListObjects {
 
 		JFXButton addDeleteUser;
 		FontIcon addDeleteIcon;
-
-		public TopUserCell() {
+		
+		InterestPoint interestPoint;
+		
+		PIViewer piViewer;
+		
+		public TopUserCell(InterestPoint interestPoint) {
 			super();
+			
+			this.interestPoint = interestPoint;
+			piViewer = new PIViewer();
 
 			cellGridPane = new GridPane();
 			cellGridPane.getStyleClass().add("userCellGridPane");
@@ -169,6 +226,10 @@ public class ListObjects {
 				public void handle(ActionEvent event) {
 					User userObject = getItem();
 					System.out.println(userObject.toString());
+					
+					piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
+					interestPoint.addToInterestPoint(userObject);
+					piViewer.addInterestPointToDatabase(interestPoint);
 				}
 			});
 
@@ -176,8 +237,6 @@ public class ListObjects {
 			cellGridPane.add(nameLabel, 1, 0);
 			cellGridPane.add(followersCountLabel, 2, 0);
 			cellGridPane.add(addDeleteUser, 3, 0);
-
-			// hBox.getChildren().addAll(profileImageView, nameLabel, followersCountLabel);
 		}
 
 		@Override
