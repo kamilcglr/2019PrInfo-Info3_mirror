@@ -147,7 +147,7 @@ public class HashtagTabController {
         });
         try {
             //search and get tweets from hashtag first
-            hastagViewer.search(hashtagToPrint.getHashtag(), progressBar, 4500);
+            hastagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 4500, null);
             this.tweetList = hastagViewer.getTweetList();
 
             //Tweet are collected

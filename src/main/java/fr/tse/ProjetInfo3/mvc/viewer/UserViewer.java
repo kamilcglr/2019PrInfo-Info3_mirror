@@ -5,9 +5,7 @@ import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.layout.HBox;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,11 +19,13 @@ import static java.util.stream.Collectors.toMap;
 public class UserViewer {
     private User user;
     private RequestManager requestManager;
+    private List<Tweet> tweets;
 
     private UserTabController userTabController;
 
     public UserViewer() {
         requestManager = new RequestManager();
+        tweets = new ArrayList<>();
     }
 
     /**
@@ -38,24 +38,44 @@ public class UserViewer {
      */
     public void searchScreenName(String screen_name) throws Exception {
         user = requestManager.getUser(screen_name);
+        user.setListoftweets(new ArrayList<>());
     }
+
     public User searchScreenNameU(String screen_name) throws Exception {
         return user = requestManager.getUser(screen_name);
     }
-    //Not used for the moment, we keep it until end, we can use for graph
-    public List<Tweet> getTweetsByDate(String screen_name, Date date) {
-        return requestManager.getTweetsFromUserByDate(screen_name, date);
+
+    public Integer getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot, JFXProgressBar progressBar) {
+        int nbRequestDone;
+        if (tweets.size() < user.getStatuses_count()) {
+            Pair<List<Tweet>, Integer> pair = requestManager.getTweetsFromUserNBRequest(user.getScreen_name(), nbRequestMax, untilDate, maxId, alreadyGot, progressBar);
+            tweets.addAll(pair.getKey());
+            nbRequestDone = pair.getValue();
+        } else {
+            //TODO Handle JUL or not enough tweets
+            //All tweets for the user are collected
+            user.setAllTweetsCollected(true);
+            nbRequestDone = 0;
+        }
+        return nbRequestDone;
     }
 
     public List<Tweet> getTweetsByCount(String screen_name, int count, JFXProgressBar progressBar) {
-        return requestManager.getTweetsFromUser(screen_name, count, progressBar);
+        tweets.addAll(requestManager.getTweetsFromUser(screen_name, count, progressBar));
+        return tweets;
+    }
+
+    public List<Tweet> getListOfTweets() {
+        return tweets;
     }
 
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
-    	this.user=user;
+        this.user = user;
+        this.tweets = user.getListoftweets();
     }
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {

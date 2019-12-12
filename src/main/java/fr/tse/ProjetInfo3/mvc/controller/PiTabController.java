@@ -249,7 +249,6 @@ public class PiTabController {
         for (Tweet tweet : Tweeted.keySet()) {
             tweetsToPrint.add(tweet);
             i++;
-            System.out.println(tweet);
             if (i == 10) {
                 break;
             }

@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
+import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,9 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import javafx.util.Pair;
 
+import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.toMap;
 
 public class HastagViewer {
@@ -32,19 +35,28 @@ public class HastagViewer {
         this.hashtag.setHashtag(hashtag);
     }
 
-    public void search(String hashtag, JFXProgressBar progressBar, int count) throws Exception {
-        tweets = requestManager.searchTweets(hashtag, count, progressBar);
+    public void searchByCount(String hashtag, JFXProgressBar progressBar, int count, Long maxId) throws Exception {
+        tweets.addAll(requestManager.searchTweets(hashtag, count, maxId, progressBar));
+    }
+
+
+    public Integer searchTweetsByDate(String hashtag, int nbRequestMax, Date maxDate, Long maxId, JFXProgressBar progressBar) throws Exception {
+        int nbRequestDone;
+        Pair<List<Tweet>, Integer> pair = requestManager.searchTweetsWithNRequest(hashtag, nbRequestMax, maxDate, maxId, progressBar);
+        tweets.addAll(pair.getKey());
+        nbRequestDone = pair.getValue();
+        return nbRequestDone;
     }
 
     public List<Tweet> getTweets() {
-		return tweets;
-	}
+        return tweets;
+    }
 
-	public void setTweets(List<Tweet> tweets) {
-		this.tweets = tweets;
-	}
+    public void setTweets(List<Tweet> tweets) {
+        this.tweets = tweets;
+    }
 
-	public List<Tweet> getTweetList() {
+    public List<Tweet> getTweetList() {
         return tweets;
     }
 

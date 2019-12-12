@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
 
 /**
  * @author Sobun UNG
