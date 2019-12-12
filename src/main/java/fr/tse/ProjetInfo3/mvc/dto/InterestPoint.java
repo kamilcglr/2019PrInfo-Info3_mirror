@@ -150,6 +150,14 @@ public class InterestPoint implements Serializable {
         }
         return false;
     }
+    
+    public boolean containsUser(User user) {
+		return this.getUsers().contains(user);
+    }
+    
+    public boolean containsHashtag(Hashtag hashtag) {
+		return this.getHashtags().contains(hashtag);
+    }
 
     public String getName() {
         return name;
@@ -259,5 +267,4 @@ public class InterestPoint implements Serializable {
 
         return interestPointMinimal;
     }
-
 }

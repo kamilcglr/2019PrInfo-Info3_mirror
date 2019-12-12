@@ -109,6 +109,9 @@ public class PiTabController {
 		nbTweets.setVisible(false);
 		nbTweetsLabel.setVisible(false);
 		editButton.setVisible(false);
+		
+		topFiveUserList.setFocusTraversable(false);
+		topTenLinkedList.setFocusTraversable(false);
 
 		// topTenLinkedList.setCellFactory(param ->
 		// (ListCell<ListObjects.ResultHashtag>) new Cell());
