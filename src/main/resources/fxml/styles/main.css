@@ -250,52 +250,111 @@ GridPane {
     -fx-background-insets: 2.0, 0.0, 0.0;
     -fx-background-radius: 2.0em;
 }
+/*
+* Common style to all lists
+*/
 
+.list-view {
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+    -fx-background-color: WHITE;
+}
 
-/*Tree Table view*/
-.tree-table-view {
-    -fx-border-color: -accent;
+.list-cell:odd, .list-cell:even {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
-    -fx-font-size: 15;
-    -fx-font-family: 'Roboto Medium', sans-serif;
-    -fx-padding: 10 0 10 0;
+    -fx-background-color: white;
 }
 
-.tree-table-view .column-header-background {
-    visibility: hidden;
-    -fx-padding: -2em;;
-}
-
-/* When a cell is selected*/
-.tree-table-view:focused .tree-table-row-cell:selected {
-    -fx-background-color: -accent;
-}
-
-.tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell {
-    -fx-text-fill: white;
-}
-
-.tree-table-view .tree-table-row-cell:hover {
+.list-cell:hover {
     -fx-background-color: -accent2;
 }
 
-.tree-table-view .tree-table-row-cell:hover .tree-table-cell {
-    -fx-text-fill: white;
+.list-cell:selected {
+    -fx-background-color: -primary;
 }
 
-.tree-table-view .tree-table-cell {
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: WHITE;
+}
+/*
+* Propositions List
+ */
+.nameLabel {
+    -fx-padding: 10 0 10 10;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+}
+
+.screenNameLabel {
+    -fx-padding: 10 0 10 10;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Light', sans-serif;
+}
+
+.hbox {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
-    -fx-cell-size: 20px;
 }
 
-.tree-table-row-cell {
+/*
+* List of user
+*/
+.nameLabel {
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 0 0 0 10;
+}
+
+.followersCountLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 10 0 0 10;
+}
+
+/*
+* List of hashtag
+*/
+.hashtagsList{
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+    -fx-border-style: hidden;
+}
+.indexLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+.hashtagTextLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+.nbTweetLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-style: italic;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+/*
+* List of tweets
+*/
+.tweetsList {
     -fx-background-radius: 10pt;
-    -fx-border-radius: 10pt;
-    -fx-cell-size: 20px;
+    -fx-border-insets: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-padding: 10 10 0 10;
+    -fx-border-style: hidden;
+    -fx-background-color: #F5F5F5;
 }
 
+.tweetsList .jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-color: #F5F5F5 !important;
+}
 
 /*
 * Title pane
@@ -337,6 +396,7 @@ GridPane {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
     -fx-background-color: -accent;
+
 }
 
 #progressBar .secondary-bar {
@@ -350,8 +410,8 @@ GridPane {
 }
 
 #progressLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
 }
 
 /* TITLES ON TABS */

@@ -71,17 +71,38 @@ public class ListObjects {
         }
     }
 
+
     /**
-     * This class is used to print result inside the trreeTable
+     * This class is used to print result inside the treeTable
      */
     public static class ResultObject extends RecursiveTreeObject<ResultObject> {
         private StringProperty name;
         private StringProperty screen_name;
 
+        private ImageView profileImageView;
+        private Image profilePicture;
 
-        public ResultObject(String name, String sreen_name) {
+
+        public ResultObject(String name, String screenName, String link) {
             this.name = new SimpleStringProperty(name);
-            this.screen_name = new SimpleStringProperty("@" + sreen_name);
+            this.screen_name = new SimpleStringProperty("@" + screenName);
+            this.profileImageView = new ImageView();
+
+            profilePicture = new Image(link, 40, 40, false, false);
+            profileImageView.setImage(profilePicture);
+
+            Circle clip = new Circle(20, 20, 20);
+            profileImageView.setClip(clip);
+
+            SnapshotParameters parameters = new SnapshotParameters();
+            parameters.setFill(Color.TRANSPARENT);
+
+            WritableImage image = profileImageView.snapshot(parameters, null);
+
+            profileImageView.setClip(null);
+            profileImageView.setImage(image);
+            profileImageView.getStyleClass().add("profileImageView");
+
         }
 
         public StringProperty getName() {
@@ -96,8 +117,69 @@ public class ListObjects {
             return screen_name;
         }
 
-        public void setScreen_name(StringProperty screen_name) {
-            this.screen_name = screen_name;
+
+        public void setScreen_name(StringProperty screenName) {
+            this.screen_name = screenName;
+        }
+    }
+
+    /*
+     * Used in topUser inside PITab
+     */
+    public static class SearchUser extends ListCell<User> {
+        HBox hBox = new HBox();
+
+        ImageView profileImageView;
+        Label nameLabel;
+        Label screenName;
+
+        Image profilePicture;
+
+        public SearchUser() {
+            super();
+            profileImageView = new ImageView();
+            nameLabel = new Label();
+            screenName = new Label();
+            hBox.getChildren().addAll(profileImageView, nameLabel, screenName);
+        }
+
+        @Override
+        protected void updateItem(User user, boolean empty) {
+            super.updateItem(user, empty);
+
+            if (empty || user == null) {
+                setText(null);
+                setGraphic(null);
+
+            } else {
+                if (profilePicture == null) {
+                    profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+                }
+                profileImageView.setImage(profilePicture);
+
+                Circle clip = new Circle(20, 20, 20);
+                profileImageView.setClip(clip);
+
+                SnapshotParameters parameters = new SnapshotParameters();
+                parameters.setFill(Color.TRANSPARENT);
+
+                WritableImage image = profileImageView.snapshot(parameters, null);
+
+                profileImageView.setClip(null);
+                profileImageView.setImage(image);
+                profileImageView.getStyleClass().add("profileImageView");
+
+
+                hBox.getStyleClass().add("hbox");
+                nameLabel.setText(user.getName());
+                nameLabel.getStyleClass().add("nameLabel");
+
+                screenName.setText(user.getScreen_name());
+                screenName.getStyleClass().add("screenNameLabel");
+
+                setText(null);
+                setGraphic(hBox);
+            }
         }
     }
 

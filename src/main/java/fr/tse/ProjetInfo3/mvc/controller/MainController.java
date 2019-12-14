@@ -5,7 +5,6 @@ import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
-import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -83,7 +82,6 @@ public class MainController {
      * Viewers
      */
     private PIViewer piViewer;
-    private PITabViewer piTabViewer;
 
     private Tab myPisTab;
 
@@ -91,7 +89,6 @@ public class MainController {
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
-        piTabViewer = new PITabViewer();
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -276,7 +273,18 @@ public class MainController {
             //the tab is already initialized, so we just refresh the list of PIs
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
-                myPIsTabController.refreshPIs();
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        myPIsTabController.refreshPIs();
+                        return null;
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
             });
         }
 
@@ -351,22 +359,22 @@ public class MainController {
         }
     }
 
+    //What ???
 	public void goToPIDelete(PIViewer piViewer) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
-        try {
-            AnchorPane piTab = fxmlLoader.load();
-            PiTabController piTabController = fxmlLoader.getController();
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                int id = piViewer.getSelectedInterestPoint().getId();
-                piViewer.deleteInterestPointFromDatabaseById(id);
-
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-		
+		//FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+        //try {
+        //    AnchorPane piTab = fxmlLoader.load();
+        //    PiTabController piTabController = fxmlLoader.getController();
+        //    Tab tab = new Tab();
+        //    Platform.runLater(() -> {
+        //        int id = piViewer.getSelectedInterestPoint().getId();
+        //        piViewer.deleteInterestPointFromDatabaseById(id);
+        //
+        //    });
+        //
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
 	}
 
 	

@@ -150,13 +150,13 @@ public class InterestPointDAO {
         Connection connection = SingletonDBConnection.getInstance();
         List<User> users = new ArrayList<User>();
         User user = null;
+        UserViewer userViewer = new UserViewer();
         try {
             PreparedStatement ps2 = connection.prepareStatement("SELECT USERSCREENNAME FROM TWITTERUSER WHERE interestpoint_id = ?");
             ps2.setInt(1, interestPoint.getId());
 
             ResultSet rs2 = ps2.executeQuery();
             while (rs2.next()) {
-                UserViewer userViewer = new UserViewer();
                 userViewer.searchScreenName(rs2.getString("USERSCREENNAME"));
                 user = userViewer.getUser();
                 users.add(user);

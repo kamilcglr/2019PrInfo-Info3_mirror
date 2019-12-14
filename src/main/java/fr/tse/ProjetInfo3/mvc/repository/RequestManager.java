@@ -133,7 +133,7 @@ public class RequestManager {
      * @param userProposition name of a user, or at least the beginning of a name
      * @return Map of Names and screen_names of user
      */
-    public Map<String, String> getUsersbyName(String userProposition) throws IOException, InterruptedException {
+    public List<User> getUsersbyName(String userProposition) throws IOException, InterruptedException {
         String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false&result_type=popular";
 
         //if the proposition contains spaces we will remove them
@@ -144,9 +144,8 @@ public class RequestManager {
                 .setHeader("Authorization", oAuthManager.getheader(url)).build();
 
         List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-        Map<String, String> userNamesANDScreenName = new HashMap<>();
-        users.forEach(user -> userNamesANDScreenName.put(user.getName(), user.getScreen_name()));
-        return userNamesANDScreenName;
+
+        return users;
     }
 
     /**

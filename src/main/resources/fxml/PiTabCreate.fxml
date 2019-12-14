@@ -5,12 +5,10 @@
 <?import com.jfoenix.controls.JFXProgressBar?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -135,10 +133,7 @@
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                        </GridPane.margin>
                                        <children>
-                                          <JFXTreeTableView fx:id="treeView" onMouseClicked="#treeViewClicked">
-                                             <columnResizePolicy>
-                                                <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                             </columnResizePolicy></JFXTreeTableView>
+                                          <JFXListView fx:id="propositionList" onMouseClicked="#propositionListClicked" />
                                        </children>
                                           </VBox>
                                             </children>

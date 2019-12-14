@@ -62,7 +62,6 @@
                         <Insets left="50.0" />
                      </padding></Label>
                   <JFXButton fx:id="deletePI" onAction="#deletePIPressed" styleClass="actionButton" text="Supprimer" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <JFXSpinner fx:id="deletionTime" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
             </children>

@@ -154,9 +154,9 @@ public class PiTabCreateController {
     private VBox propositionVBox;
 
     @FXML
-    private JFXTreeTableView<ListObjects.ResultObject> treeView;
+    private JFXListView<User> propositionList;
 
-    private Map<String, String> usersNamesAndScreenNames;
+    private List<User> resultUsers;
 
     @FXML
     private JFXProgressBar propositionProgressBar;
@@ -169,6 +169,8 @@ public class PiTabCreateController {
         JFXScrollPane.smoothScrolling(scrollPane);
         propositionProgressBar.setVisible(false);
         propositionProgressBar.setProgress(-1);
+
+        propositionList.setCellFactory(param -> new ListObjects.SearchUser());
 
         userSelected = false;
         suppressionDone = true;
@@ -196,11 +198,11 @@ public class PiTabCreateController {
         });
 
         propositionVBox.setVisible(false);
-        initTreeView();
+
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         userField.textProperty().addListener((observable, old_value, new_value) -> {
-            treeView.setRoot(null);
-            treeView.setVisible(false);
+            propositionList.setVisible(false);
+            propositionList.getItems().clear();
 
             //Not userSelected because we don't do search when user has chosen a user
             if (new_value.length() > 2 && !userSelected) {
@@ -230,40 +232,13 @@ public class PiTabCreateController {
      * @param event
      */
     @FXML
-    private void treeViewClicked(MouseEvent event) {
-        TreeItem<ListObjects.ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
+    private void propositionListClicked(MouseEvent event) {
+        User selectedResult = propositionList.getSelectionModel().getSelectedItem();
         userSelected = true; //keep userSelected before userField.setText
-        userField.setText(selectedResult.getValue().getScreen_name().get());
-        treeView.setVisible(false);
-        propositionVBox.setVisible(false);
-        propositionProgressBar.setVisible(false);
+        userField.setText(selectedResult.getScreen_name());
+        propositionList.setVisible(false);
     }
 
-    /**
-     * Sets the column of treeView*
-     */
-    private void initTreeView() {
-        JFXTreeTableColumn<ListObjects.ResultObject, String> name = new JFXTreeTableColumn<>("");
-        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
-            }
-        });
-
-        JFXTreeTableColumn<ListObjects.ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
-        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
-            }
-        });
-        treeView.setShowRoot(false);
-        treeView.getColumns().setAll(name, screen_name);
-        treeView.getColumns().get(1).getStyleClass().add("idInList");
-        treeView.getColumns().get(0).getStyleClass().add("nameINList");
-        treeView.setFixedCellSize(25);
-    }
 
     /**
      * Events
@@ -312,7 +287,7 @@ public class PiTabCreateController {
                         observableListUser.add(userViewer.getUser());
                         userList.add(userViewer.getUser());
 
-                        treeView.setVisible(false);
+                        propositionList.setVisible(false);
                         propositionVBox.setVisible(false);
                         userSelected = false;
                     }
@@ -410,22 +385,20 @@ public class PiTabCreateController {
             @Override
             protected Void call() {
                 SearchViewer searchViewer = new SearchViewer();
-                usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
+                resultUsers = searchViewer.getListPropositions(newValue);
 
-                ObservableList<ListObjects.ResultObject> resultObjects = FXCollections.observableArrayList();
-                for (Map.Entry<String, String> entry : usersNamesAndScreenNames.entrySet()) {
-                    resultObjects.add(new ListObjects.ResultObject(entry.getKey(), entry.getValue()));
-                }
+                ObservableList<User> usersToPrint = FXCollections.observableArrayList();
+                usersToPrint.addAll(resultUsers);
+
                 Platform.runLater(() -> {
-                    final TreeItem<ListObjects.ResultObject> root = new RecursiveTreeItem<ListObjects.ResultObject>(resultObjects, RecursiveTreeObject::getChildren);
-                    treeView.setRoot(root);
-
-                    if (resultObjects.size() > 0) {
-                        treeView.setVisible(true);
-                        propositionVBox.setVisible(true);
+                    propositionList.getItems().clear();
+                    propositionList.getItems().addAll(usersToPrint);
+                    if (usersToPrint.size() > 0) {
+                        propositionList.setVisible(true);
                     }
                     propositionProgressBar.setVisible(false);
                 });
+
                 return null;
             }
         };

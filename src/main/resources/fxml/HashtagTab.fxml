@@ -61,12 +61,12 @@
                                  <children>
                                                 <TitledPane fx:id="titledHashtag" expanded="false" text="Top 10 des # liés">
                                                     <content>
-                                                        <JFXListView fx:id="topTenLinkedList" />
+                                                        <JFXListView fx:id="topTenLinkedList" styleClass="hashtagsList" />
                                                     </content>
                                                 </TitledPane>
                                                 <TitledPane fx:id="titledTweet" expanded="false" text="Top 5 des tweets">
                                                     <content>
-                                                        <JFXListView fx:id="listTweets" />
+                                                        <JFXListView fx:id="listTweets" styleClass="tweetsList" />
                                                     </content>
                                                 </TitledPane>
                                  </children>

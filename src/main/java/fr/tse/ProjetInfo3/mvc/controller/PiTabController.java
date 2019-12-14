@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXProgressBar;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
@@ -16,18 +17,14 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -49,9 +46,9 @@ public class PiTabController {
     /* LISTS
      */
     @FXML
-    private JFXListView<User> topFiveUserList;
-    @FXML
     private VBox vBox;
+    @FXML
+    private JFXListView<User> topFiveUserList;
     @FXML
     private JFXListView<ListObjects.ResultHashtag> topTenLinkedList;
     @FXML
@@ -63,10 +60,28 @@ public class PiTabController {
     private Label piNameLabel;
 
     @FXML
+    private Label infosNbTweetsLabel;
+
+    @FXML
     private Label nbTweetsLabel;
 
     @FXML
-    private Label nbTweets;
+    private Label lastDateLabel;
+
+    @FXML
+    private Label infoLastDateLabel;
+
+    @FXML
+    private Label nbTrackedLabel;
+
+    @FXML
+    private Label infoNbTrackedLabel;
+
+    @FXML
+    private JFXListView<User> trackedUsersList;
+
+    @FXML
+    private JFXListView<String> trackedHashtagsList;
 
     /*
      * THREADS
@@ -96,16 +111,32 @@ public class PiTabController {
     @FXML
     private void initialize() {
         //hide unused elements
-        nbTweets.setVisible(false);
-        nbTweetsLabel.setVisible(false);
         editButton.setVisible(false);
 
         //topTenLinkedList.setCellFactory(param -> (ListCell<ListObjects.ResultHashtag>) new Cell());
 
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell());
         topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell());
+        trackedUsersList.setCellFactory(param -> new ListObjects.TopUserCell());
 
         userViewer = new UserViewer();
+    }
+
+    private void initLists() {
+        List<User> users = interestPointToPrint.getUsers();
+
+        ObservableList<User> usersOfPI = FXCollections.observableArrayList();
+        usersOfPI.addAll(users);
+
+
+        List<Hashtag> hashtags = interestPointToPrint.getHashtags();
+        ObservableList<String> hashtagsOfPI = FXCollections.observableArrayList();
+        hashtagsOfPI.addAll(hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.toList()));
+
+        Platform.runLater(() -> {
+            trackedUsersList.getItems().addAll(usersOfPI);
+            trackedHashtagsList.getItems().addAll(hashtagsOfPI);
+        });
     }
 
     public void setDatas(PIViewer piViewer) {
@@ -115,6 +146,7 @@ public class PiTabController {
             piNameLabel.setText(interestPointToPrint.getName());
             showElements(false);
         });
+        initLists();
 
         threadGetTweets = new Thread(getTweets());
         threadGetTweets.setDaemon(true);
@@ -143,14 +175,18 @@ public class PiTabController {
             threadTopTweets.start();
 
             //Wait for the two other tasks
-            while (threadTopFiveUsers.isAlive()) {
+            while (threadTopFiveUsers.isAlive() || threadTopLinkedHashtags.isAlive()) {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {
-                // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                // String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
-                // lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
-                //         date);
+                //Ffind Min Date
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
+                String Sdate = simpleDateFormat.format(date);
+                lastDateLabel.setText(Sdate);
+
+                nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
+                nbTrackedLabel.setText(String.valueOf(interestPointToPrint.getUsers().size() + interestPointToPrint.getHashtags().size()));
 
                 showElements(true);
 
@@ -254,13 +290,24 @@ public class PiTabController {
             progressBar.setProgress(-1);
             progressBar.setVisible(true);
             progressLabel.setVisible(true);
+            infoLastDateLabel.setVisible(false);
+            infoNbTrackedLabel.setVisible(false);
+            infosNbTweetsLabel.setVisible(false);
+            nbTweetsLabel.setVisible(false);
+            nbTrackedLabel.setVisible(false);
+            lastDateLabel.setVisible(false);
         } else {
             progressBar.setVisible(false);
             progressLabel.setVisible(false);
+            infoLastDateLabel.setVisible(true);
+            infoNbTrackedLabel.setVisible(true);
+            infosNbTweetsLabel.setVisible(true);
+            nbTweetsLabel.setVisible(true);
+            nbTrackedLabel.setVisible(true);
+            lastDateLabel.setVisible(true);
         }
 
         vBox.setVisible(show);
-        nbTweetsLabel.setVisible(show);
         //nbUsersLabel.setVisible(hide);
         //tweetsLabel.setVisible(hide);
         //usersLabel.setVisible(hide);

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -48,7 +47,7 @@ public class PIViewer {
 
     public void setSelectedInterestPoint(int index) {
         this.selectedInterestPoint = listOfInterestPoint.get(index);
-        System.out.println("Affichage : "+selectedInterestPoint.getId());
+        System.out.println("Affichage : " + selectedInterestPoint.getId());
     }
 
     /**
@@ -66,9 +65,11 @@ public class PIViewer {
         //listOfInterestPoint.add(interestPoint);
         interestPointDAO.saveInterestPoint(interestPoint);
     }
+
     public void deleteInterestPointFromDatabaseById(int id) {
-    	interestPointDAO.deleteSelectedInterestPointById(id);
+        interestPointDAO.deleteSelectedInterestPointById(id);
     }
+
     /**
      * In the futur, this function will return the created Interest Point into the database
      */
@@ -88,11 +89,10 @@ public class PIViewer {
         List<User> usersOfIP = selectedInterestPoint.getUsers();
         List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
 
-        List<UserViewer> userViewers = new ArrayList<>();
-        for (User user : usersOfIP) {
-            UserViewer userViewer = new UserViewer();
-            userViewer.setUser(user);
-        }
+        //for (User user : usersOfIP) {
+        //    UserViewer userViewer = new UserViewer();
+        //    userViewer.setUser(user);
+        //}
 
         int maxRequestPerTour = 10;
 
@@ -357,7 +357,7 @@ public class PIViewer {
             }
             NbRequestDone++;
         } else {
-            if (!hashtag.isAllTweetsCollected()){
+            if (!hashtag.isAllTweetsCollected()) {
                 LocalDate now = LocalDate.now();
                 LocalDate dateOfLast = new java.sql.Date(hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().getTime()).toLocalDate();
 
@@ -379,7 +379,7 @@ public class PIViewer {
                     System.out.println("skip search for " + hashtag.getHashtag() + " : GLOBAL 7 DAYS LIMIT");
                     hashtag.setGlobalTweetsLimit(true);
                 }
-            }else{
+            } else {
                 System.out.println("skip search for " + hashtag.getHashtag() + " : ALL TWEETS COLLECTED");
             }
         }

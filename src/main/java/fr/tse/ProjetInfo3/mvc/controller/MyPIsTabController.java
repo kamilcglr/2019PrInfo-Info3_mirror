@@ -1,29 +1,18 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
-import com.jfoenix.controls.events.JFXDialogEvent;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.effect.BoxBlur;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,16 +39,13 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     private JFXButton addPI;
-    
+
     @FXML
     private JFXButton editPI;
-    
-    @FXML
-    private JFXSpinner deletionTime;
-    
+
     @FXML
     private JFXButton deletePI;
-    
+
     @FXML
     private JFXButton seeButton;
 
@@ -84,7 +70,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         //This buttons will be visible when editing will be possible
         editPI.setVisible(false);
         deletePI.setVisible(false);
-        deletionTime.setVisible(false);
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
         editPI.setVisible(false);
@@ -122,17 +107,20 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      * Task where we get the Pis from database and print them on the listView
      * */
     private Task<Void> getListOfPIs() {
-        Platform.runLater(() -> isLoading(true));
+        Platform.runLater(() -> {
+            isLoading(true);
+            PIListView.getItems().clear();
+        });
 
         //Get the PI and set them on the listView
         List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
-        PIListView.getItems().clear();
 
-        for (InterestPoint interestPoint : interestPoints) {
-            PIListView.getItems().add(interestPoint.toStringMinimal());
-        }
-
-        Platform.runLater(() -> isLoading(false));
+        Platform.runLater(() -> {
+            for (InterestPoint interestPoint : interestPoints) {
+                PIListView.getItems().add(interestPoint.toStringMinimal());
+            }
+            isLoading(false);
+        });
         return null;
     }
 
@@ -157,15 +145,32 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         //Not new, then we add true in the parameters
         mainController.goToPICreateOrEditPane(false, piViewer);
     }
-    
+
     /**
      * This function call the maincontroller who will delete the selected PI
      * and then refresh the page
      */
     @FXML
     void deletePIPressed(ActionEvent event) {
-    	mainController.goToPIDelete(piViewer);
-    	mainController.goToMyPisPane();
+        Platform.runLater(() -> {
+            deletionIsRunning(true);
+        });
+
+        //Heavy task
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                piViewer.deleteInterestPointFromDatabaseById(piViewer.getSelectedInterestPoint().getId());
+                Platform.runLater(() -> {
+                    deletionIsRunning(false);
+                });
+                refreshPIs();
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
@@ -198,12 +203,18 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      *
      */
     private void isLoading(boolean isLoading) {
-        if (isLoading){
+        if (isLoading) {
+            PIListView.setVisible(false);
+            seeButton.setVisible(false);
+            addPI.setVisible(false);
+            deletePI.setVisible(false);
             progressIndicatorLabel.setText("Récupération des sauvegardes, veuillez patienter...");
             progressIndicator.setVisible(true);
             progressIndicatorLabel.setVisible(true);
-        }
-        else{
+
+        } else {
+            PIListView.setVisible(true);
+            addPI.setVisible(true);
             progressIndicator.setVisible(false);
             progressIndicatorLabel.setVisible(false);
         }
@@ -229,17 +240,20 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             threadGetPIs.interrupt();
         }
     }
+
     // prepared a spinner for the loading time of the deletion
     private void deletionIsRunning(boolean deleting) {
         if (deleting) {
-            deletionTime.setVisible(true);
-            deletePI.setVisible(false);
+            progressIndicator.setVisible(true);
+            progressIndicatorLabel.setVisible(true);
+            progressIndicatorLabel.setText("Suppression du point d'intérêt");
         } else {
-        	deletionTime.setVisible(false);
+            progressIndicator.setVisible(false);
+            progressIndicatorLabel.setVisible(false);
             deletePI.setVisible(true);
         }
 
     }
-    
+
 
 }

@@ -168,7 +168,7 @@ public class HashtagTabController {
             threadTopTweets.start();
 
             //Wait for the two other tasks
-            while (threadGetTopLinkedHashtag.isAlive() && threadDetNumbers.isAlive() && threadTopTweets.isAlive()) {
+            while (threadGetTopLinkedHashtag.isAlive() || threadDetNumbers.isAlive() || threadTopTweets.isAlive()) {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {

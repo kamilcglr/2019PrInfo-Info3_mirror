@@ -252,7 +252,7 @@ public class UserTabController {
         threadSetTopTweets.start();
 
         //Wait for the two other tasks
-        while (threadSetTopHashtags.isAlive() && threadSetTopTweets.isAlive()) {
+        while (threadSetTopHashtags.isAlive() || threadSetTopTweets.isAlive()) {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
