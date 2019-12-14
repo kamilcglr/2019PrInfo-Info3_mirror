@@ -26,7 +26,6 @@
                         <ColumnConstraints hgrow="SOMETIMES" />
                         <ColumnConstraints hgrow="SOMETIMES" />
                         <ColumnConstraints hgrow="SOMETIMES" />
-                        <ColumnConstraints hgrow="SOMETIMES" />
                         <ColumnConstraints minWidth="200.0" />
                     </columnConstraints>
                     <rowConstraints>
@@ -37,19 +36,22 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <JFXListView fx:id="PIListView" prefHeight="347.0" prefWidth="646.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2" />
-                        <Label fx:id="titleLabel" alignment="CENTER" text="Mes points d'intérêts" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
-                        <JFXButton fx:id="addPI" onAction="#addPIPressed" styleClass="actionButton" text="Ajouter" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                        <JFXListView fx:id="PIListView" prefHeight="347.0" prefWidth="646.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                        <Label fx:id="titleLabel" alignment="CENTER" styleClass="centeredtabtitles" text="Mes points d'intérêts" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin></Label>
+                        <JFXButton fx:id="addPI" onAction="#addPIPressed" styleClass="actionButton" text="Ajouter" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                             <graphic>
                                 <FontIcon iconLiteral="fas-plus" styleClass="icon" />
                             </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="editPI" alignment="TOP_RIGHT" onAction="#editPIPressed" styleClass="actionButton" text="Editer" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                        <JFXButton fx:id="editPI" alignment="TOP_RIGHT" onAction="#editPIPressed" styleClass="actionButton" text="Editer" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                             <graphic>
                                 <FontIcon iconLiteral="fas-edit" styleClass="icon" text="" />
                             </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="seeButton" onAction="#seeButtonPressed" styleClass="actionButton" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                        <JFXButton fx:id="seeButton" onAction="#seeButtonPressed" styleClass="actionButton" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <graphic>
                                 <FontIcon iconLiteral="fas-arrow-right" styleClass="icon" />
                             </graphic>
@@ -60,7 +62,7 @@
                         <Insets left="50.0" />
                      </padding></Label>
                   <JFXButton fx:id="deletePI" onAction="#deletePIPressed" styleClass="actionButton" text="Supprimer" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <JFXSpinner fx:id="deletionTime" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <JFXSpinner fx:id="deletionTime" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
             </children>

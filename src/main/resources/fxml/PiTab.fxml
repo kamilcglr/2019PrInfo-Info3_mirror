@@ -37,12 +37,12 @@
                                         <RowConstraints minHeight="50.0" />
                                         <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />5
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="piNameLabel" text="Nom du point d'intérêt" GridPane.columnSpan="2" GridPane.valignment="TOP" />
+                                        <Label fx:id="piNameLabel" text="Nom du point d'intérêt" GridPane.columnSpan="2" GridPane.valignment="TOP" styleClass="tabtitles"/>
                                         <Label fx:id="nbTweetsLabel" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
                                         <Label fx:id="nbTweets" text="XXX" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
                               <VBox fx:id="vBox" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2">

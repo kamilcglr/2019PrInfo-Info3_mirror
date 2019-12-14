@@ -12,6 +12,10 @@
 }
 
 @font-face {
+    src: url('../../fonts/Raleway/Raleway-SemiBold.ttf');
+}
+
+@font-face {
     src: url('../../fonts/Roboto/Roboto-Medium.ttf');
 }
 
@@ -303,13 +307,13 @@ GridPane {
 .titled-pane > .title {
     -fx-background-radius: 10pt;
     -fx-background-color: -white;
-    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-family: 'Raleway SemiBold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
 
 .titled-pane > .title > .text {
-    -fx-fill: -primary;
+    -fx-fill: -gray;
 }
 
 .titled-pane > *.content {
@@ -332,7 +336,7 @@ GridPane {
 #progressBar .bar {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
-    -fx-background-color: -primary;
+    -fx-background-color: -accent;
 }
 
 #progressBar .secondary-bar {
@@ -348,4 +352,20 @@ GridPane {
 #progressLabel {
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 15;
+}
+
+/* TITLES ON TABS */
+
+.tabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.centeredtabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 30 0 0 0;
 }

@@ -6,6 +6,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 
+import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -135,9 +136,9 @@ public class UserTabController {
             username.setText("@" + userToPrint.getScreen_name());
             twittername.setText(userToPrint.getName());
             description.setText(userToPrint.getDescription());
-            nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
-            nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
-            nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+            nbTweet.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getStatuses_count())));
+            nbFollowers.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFollowers_count())));
+            nbFollowing.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFriends_count())));
             buildPicture();
         });
 

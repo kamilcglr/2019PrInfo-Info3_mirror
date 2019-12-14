@@ -1,12 +1,12 @@
 /*
 * Labels
 */
-#twittername {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 35;
-    -fx-text-fill: -grey-dark;
-    -fx-padding: 0 0 10 0;
-}
+/*#twittername {*/
+/*    -fx-font-family: 'Raleway Black', sans-serif;*/
+/*    -fx-font-size: 35;*/
+/*    -fx-text-fill: -grey-dark;*/
+/*    -fx-padding: 0 0 10 0;*/
+/*}*/
 
 #username {
     -fx-font-family: 'Raleway ', sans-serif;
@@ -25,14 +25,14 @@
 }
 
 .countLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-family: 'Raleway', sans-serif;
     -fx-font-size: 20;
-    -fx-text-fill: -primary;
+    -fx-text-fill: -gray;
 }
 
 .tweetnumberLabels {
     -fx-font-family: 'Roboto Bold', sans-serif;
-    -fx-font-size: 20;
+    -fx-font-size: 25;
     -fx-text-fill: -grey-dark;
 }
 
