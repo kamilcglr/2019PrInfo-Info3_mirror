@@ -1,11 +1,5 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
@@ -22,18 +16,28 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ALAMI IDRISSI Taha
  * Controller of the Edit PI window, all user interactions whith the Edit PI windows (not the tabs) are handled here
  */
 public class PiTabController {
-    private List<Tweet> bigTweetList;
 
     private MainController mainController;
+
+    private List<Tweet> bigTweetList;
 
     private PIViewer piViewer;
 
@@ -42,23 +46,21 @@ public class PiTabController {
     @FXML
     private JFXButton editButton;
 
+    /* LISTS
+     */
     @FXML
     private JFXListView<User> topFiveUserList;
-
     @FXML
-    private AnchorPane PIPane;
-
+    private VBox vBox;
     @FXML
-    private StackPane dialogStackPane;
-
+    private JFXListView<ListObjects.ResultHashtag> topTenLinkedList;
     @FXML
-    private AnchorPane anchorPane;
+    private JFXListView<JFXListCell> listTweets;
+    @FXML
+    private TitledPane titledTweet;
 
     @FXML
     private Label piNameLabel;
-
-    @FXML
-    private Accordion accordion;
 
     @FXML
     private Label nbTweetsLabel;
@@ -78,27 +80,15 @@ public class PiTabController {
 
     private Thread threadTopTweets;
 
-    @FXML
-    private JFXListView<ListObjects.ResultHashtag> topTenLinkedList;
-    @FXML
-    private JFXListView listTweets;
-    @FXML
-    private TitledPane titledTweet;
-
     private UserViewer userViewer;
-    Map<String, Integer> hashtags;
-    List<String> myHashtags = new ArrayList<>();
-    List<Tweet> tweetlist = new ArrayList<>();
-    Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
-    List<String> ListOfUsers = new ArrayList<>();
 
-    //Progress indicator
+    //Progress indicators
     @FXML
     private JFXProgressBar progressBar;
     @FXML
     private Label progressLabel;
 
-    /*Controller can acces to this Tab */
+    /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
     }
@@ -115,6 +105,7 @@ public class PiTabController {
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell());
         topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell());
 
+        userViewer = new UserViewer();
     }
 
     public void setDatas(PIViewer piViewer) {
@@ -122,6 +113,7 @@ public class PiTabController {
         this.interestPointToPrint = piViewer.getSelectedInterestPoint();
         Platform.runLater(() -> {
             piNameLabel.setText(interestPointToPrint.getName());
+            showElements(false);
         });
 
         threadGetTweets = new Thread(getTweets());
@@ -130,15 +122,12 @@ public class PiTabController {
     }
 
     private Task<Void> getTweets() {
-        Platform.runLater(() -> {
-            initProgress(false);
-        });
         try {
-            bigTweetList = piViewer.getTweets(progressBar, progressLabel);
+            bigTweetList = piViewer.getTweets(progressLabel);
 
             //Tweet are collected
             Platform.runLater(() -> {
-                initProgress(true);
+                progressLabel.setText("Analyse des résultats");
             });
 
             threadTopFiveUsers = new Thread(setTopFiveUsers());
@@ -163,9 +152,8 @@ public class PiTabController {
                 // lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
                 //         date);
 
-                // showHashtagElements(true);
-                progressBar.setVisible(false);
-                progressLabel.setVisible(false);
+                showElements(true);
+
             });
 
         } catch (Exception e) {
@@ -196,7 +184,7 @@ public class PiTabController {
     }
 
     private Task<Void> setTopLinkedHashtags() {
-        hashtags = piViewer.topHashtag(bigTweetList, interestPointToPrint.getHashtags());
+        Map<String, Integer> hashtags = userViewer.getTopTenHashtags(bigTweetList);
 
         int i = 0;
         ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
@@ -242,12 +230,13 @@ public class PiTabController {
 
     private Task<Void> setTopTweets() {
         ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
-        Tweeted = piViewer.topTweets(bigTweetList, progressBar);
+        Map<Tweet, Integer> topTweets = new HashMap<Tweet, Integer>();
+        topTweets = piViewer.topTweets(bigTweetList, progressBar);
+
         int i = 0;
-        for (Tweet tweet : Tweeted.keySet()) {
+        for (Tweet tweet : topTweets.keySet()) {
             tweetsToPrint.add(tweet);
             i++;
-            System.out.println(tweet);
             if (i == 10) {
                 break;
             }
@@ -259,16 +248,23 @@ public class PiTabController {
         return null;
     }
 
-
-    private void initProgress(boolean isIndeterminate) {
-        if (!isIndeterminate) {
+    private void showElements(boolean show) {
+        //searching or analysing tweets
+        if (!show) {
+            progressBar.setProgress(-1);
             progressBar.setVisible(true);
-            progressBar.setProgress(0);
             progressLabel.setVisible(true);
         } else {
-            progressBar.setProgress(-1);
-            progressLabel.setText("Analyse des tweets");
+            progressBar.setVisible(false);
+            progressLabel.setVisible(false);
         }
+
+        vBox.setVisible(show);
+        nbTweetsLabel.setVisible(show);
+        //nbUsersLabel.setVisible(hide);
+        //tweetsLabel.setVisible(hide);
+        //usersLabel.setVisible(hide);
+        //lastAnalysedLabel.setVisible(hide);
     }
 
     /**
@@ -283,6 +279,9 @@ public class PiTabController {
         }
         if (threadTopTweets != null) {
             threadTopTweets.interrupt();
+        }
+        if (threadTopLinkedHashtags != null) {
+            threadTopLinkedHashtags.interrupt();
         }
     }
 

@@ -45,7 +45,7 @@
                                         <Label fx:id="piNameLabel" text="Nom du point d'intérêt" GridPane.columnSpan="2" GridPane.valignment="TOP" />
                                         <Label fx:id="nbTweetsLabel" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
                                         <Label fx:id="nbTweets" text="XXX" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <VBox GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2">
+                              <VBox fx:id="vBox" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2">
                                  <children>
                                                 <TitledPane fx:id="topFiveUserTitled" expanded="false" text="Top 5 des utilisateurs liés à ce point d'intérêt">
                                        <content>

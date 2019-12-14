@@ -4,9 +4,8 @@ import com.jfoenix.controls.JFXListCell;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.text.Text;
 
-import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
 
 public class TweetController {
     private HashtagTabController hashtagTabController;

@@ -104,15 +104,12 @@ public class InterestPointDAO {
     public List<InterestPoint> getAllInterestPoints() {
         Connection connection = SingletonDBConnection.getInstance();
         List<InterestPoint> interestPoints = new ArrayList<>();
-        List<Hashtag> hashtags = null;
         InterestPoint interestPoint = null;
-        Hashtag hashtag = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 interestPoint = new InterestPoint();
-                hashtags = new ArrayList<Hashtag>();
                 interestPoint.setId(rs.getInt("interestpoint_id"));
                 interestPoint.setName(rs.getString("NAME"));
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));

@@ -46,16 +46,16 @@ class UserViewerTest {
         //Map<String, Integer> hashtagUsed = userViewer.topHashtag(tweets);
 
 
-        List<Tweet> tweetsByDate = new ArrayList<>();
-        try {
-            tweetsByDate = requestManager.getTweetsFromUserByDate("MayleenTheOne",
-                    TwitterDateParser.parseTwitterUTC("Fri Nov 11 20:00:00 CET 2019"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Map<String, Integer> hashtagUsedByDate = userViewer.topHashtag(tweetsByDate);
+        //List<Tweet> tweetsByDate = new ArrayList<>();
+        //try {
+        //    tweetsByDate = requestManager.getTweetsFromUserByDate("MayleenTheOne",
+        //            TwitterDateParser.parseTwitterUTC("Fri Nov 11 20:00:00 CET 2019"));
+        //} catch (ParseException e) {
+        //    e.printStackTrace();
+        //}
+        //Map<String, Integer> hashtagUsedByDate = userViewer.topHashtag(tweetsByDate);
 
-        System.out.println(hashtagUsedByDate);
+        //System.out.println(hashtagUsedByDate);
     }
 
 

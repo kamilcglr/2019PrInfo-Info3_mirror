@@ -13,7 +13,12 @@ import fr.tse.ProjetInfo3.mvc.dto.Statuses;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -25,6 +30,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.twitterRequestFormat;
 
 /**
  * @author Sergiy
@@ -142,61 +149,6 @@ public class RequestManager {
         return userNamesANDScreenName;
     }
 
-    public List<Tweet> getTweetsFromUserByDate(String screen_name, Date date) throws RequestManagerException {
-        //sometimes twitter api sends a response with a body "[]", we test 10 times, because user can have no tweets
-        int tentatives = 0;
-        List<Tweet> tweets = new ArrayList<Tweet>();
-        HttpResponse<String> response = null;
-        HttpRequest request;
-        long max_id = 0L;
-        try {
-            while (tweets.size() < 3200 && (tentatives < 10)) {
-                if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(date))) {
-                    break;
-                }
-                request = buildUserTweetsRequest(screen_name, "200", max_id);
-                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                //Sometimes twitter API gives bad result then we increment tentatives
-                if (response.body().equals("[]")) {
-                    tentatives++;
-                    continue;
-                }
-
-                if (response.body().contains("code\":50")) {
-                    throw new RequestManagerException("Unknown user");
-                }
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        .setDateFormat(TwitterDateParser.twitterFormat)
-                        .create();
-
-                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
-                }.getType();
-                //gson will complete the attributes of object if it finds elements that have the same name
-                List<Tweet> tempList = gson.fromJson(response.body(), tweetListType);
-                System.out.println(tempList);
-                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
-                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
-                 */
-                max_id = tempList.get(tempList.size() - 1).getId() - 1;
-
-                tweets.addAll(tempList);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(response.body());
-            System.out.println(tweets);
-            if (response.body().contains("code\":50")) {
-                throw new RequestManagerException("Unknown user");
-            }
-        }
-
-        //Filtering
-        tweets = tweets.stream().filter(tweet -> tweet.getCreated_at().after(date)).collect(Collectors.toList());
-        return tweets;
-    }
-
     /**
      * Return a list of user already parsed with Gson
      *
@@ -242,7 +194,7 @@ public class RequestManager {
     public List<Tweet> getTweetsFromUser(String screen_name, int count, JFXProgressBar progressBar) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
-        //Manouche methods TODO
+        //TODO find a better solution if possible
         boolean oldFailed = false;
         int successiveFails = 0;
 
@@ -290,7 +242,11 @@ public class RequestManager {
                 max_id = tempList.get(tempList.size() - 1).getId() - 1;
 
                 tweets.addAll(tempList);
-                sendProgress(progressBar, tweets.size(), count);
+
+                //progressBar is not always used
+                if (progressBar != null) {
+                    sendProgress(progressBar, tweets.size(), count);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -301,30 +257,98 @@ public class RequestManager {
         return tweets;
     }
 
+    public Pair<List<Tweet>, Integer> getTweetsFromUserNBRequest(String screen_name, int nRequestMax, Date untilDate, Long maxId, int alreadyGot) throws RequestManagerException {
+        //sometimes twitter api sends a response with a body "[]", we test 100 times
+        int tentatives = 0;
+        //TODO find a better solution if possible
+        boolean oldFailed = false;
+        int successiveFails = 0;
+
+        int nbRequest = 0;
+        List<Tweet> tweets = new ArrayList<Tweet>();
+        HttpResponse<String> response = null;
+        HttpRequest request;
+        try {
+            while ((tweets.size() + alreadyGot) < 3194 && tentatives < 100 && successiveFails < 5 && nbRequest < nRequestMax) {
+                request = buildUserTweetsRequest(screen_name, "200", maxId);
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.body().contains("code\":50")) {
+                    throw new RequestManagerException("Unknown user");
+                }
+
+                //Sometimes twitter API gives bad result then we increment tentatives and wait 1 second
+                if (response.body().equals("[]")) {
+                    tentatives++;
+                    if (oldFailed) {
+                        successiveFails++;
+                    }
+                    oldFailed = true;
+                    Thread.sleep(1000);
+                    System.out.println("successive fails :" + successiveFails);
+                    System.out.println("tentatives :" + tentatives);
+                    continue;
+                } else {
+                    oldFailed = false;
+                    successiveFails = 0;
+                }
+
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .setDateFormat(TwitterDateParser.twitterFormat)
+                        .create();
+
+                Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
+                }.getType();
+                //gson will complete the attributes of object if it finds elements that have the same name
+                List<Tweet> tempList = gson.fromJson(response.body(), tweetListType);
+
+                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
+                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+                 */
+                maxId = tempList.get(tempList.size() - 1).getId() - 1;
+
+                tweets.addAll(tempList);
+                nbRequest++;
+                //If true, then stop the request, we have reached untilDate
+                if (tweets.size() > 0 && (tweets.get(tweets.size() - 1).getCreated_at().before(untilDate))) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(response.body());
+            System.out.println(tweets);
+            if (response.body().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+        }
+
+        return new Pair<>(tweets, nbRequest);
+    }
+
+
     /*  ****************************************************************************************************************
      *  Functions with Hashtags
      *  ***************************************************************************************************************/
 
     /**
-     * @param hashtagName the hashtag that we search
+     * @param hashtagName the hashtag that we search, without "#" at the beginning
      * @return list of tweets that contain this hashtag
      * @author Laïla
      * Method to get tweets that contains #. Uses the bearer token method.
      * We limit the number of request to 45 for the moment, 45*100 = 4500 tweets
      * We also stop making requests when we have 0 result 5 times TODO : change to test with date
      */
-    public List<Tweet> searchTweets(String hashtagName, int count, JFXProgressBar progressBar) {
+    public List<Tweet> searchTweets(String hashtagName, int count, Long maxId, JFXProgressBar progressBar) {
         sizeOfList = 0;
         int tentatives = 0;
         List<Tweet> tweets = new ArrayList<Tweet>();
         HttpResponse<String> response = null;
         HttpRequest request;
-        long max_id = 0L;
-
         try {
             while (tweets.size() < count && tentatives < 5) {
                 //100 is the max for this type f research !
-                request = buildHashtagTweetRequest(hashtagName, "100", max_id);
+                request = buildHashtagTweetRequest(hashtagName, count, maxId, null);
 
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -348,13 +372,16 @@ public class RequestManager {
                  *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
                  */
                 if (tempList.size() > 1) {
-                    max_id = tempList.get(tempList.size() - 1).getId() - 1;
+                    maxId = tempList.get(tempList.size() - 1).getId() - 1;
                     tweets.addAll(tempList);
                 } else {
                     tentatives++; //it is possible that we reach the end of avaible tweets
                 }
 
-                sendProgress(progressBar, tweets.size(), count);
+                //progressBar is not always used
+                if (progressBar != null) {
+                    sendProgress(progressBar, tweets.size(), count);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -366,10 +393,71 @@ public class RequestManager {
     }
 
     /**
-     * 
-     * 
+     * Gets all the tweets until a maxdate
+     * However, if the number of request exceed the max, it stops
+     *
+     * @param hashtagName the name of the hashtag without #
+     * @param nRequestMax the maxNumber of request even if we don't reach the date
+     * @param untilDate   limit of tweets
+     * @param maxId       the id of the last tweet a request has already be done
      */
-    
+    public Pair<List<Tweet>, Integer> searchTweetsWithNRequest(String hashtagName, int nRequestMax, Date untilDate, Long maxId) {
+        sizeOfList = 0;
+        int nbRequest = 0;
+        int tentatives = 0;
+        List<Tweet> tweets = new ArrayList<>();
+        HttpResponse<String> response = null;
+        HttpRequest request;
+
+        try {
+            while (nbRequest < nRequestMax && tentatives < 5) {
+                //100 is the max for this type of research
+                request = buildHashtagTweetRequest(hashtagName, 100, maxId, null);
+
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting() //human-readable json
+                        .setDateFormat(TwitterDateParser.twitterFormat)
+                        .create();
+
+                //gson will complete the attributes of object if it finds elements that have the same name
+                //we use statuses because twitter sends statuses in this search {statuses : [...
+                Statuses tempStatuses = gson.fromJson(response.body(), Statuses.class);
+                List<Tweet> tempList = tempStatuses.getTweets();
+
+                /* ! -1 gets the id f the tweet just before the oldest tweet of this query
+                 *https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines
+                 */
+                if (tempList.size() > 1) {
+                    maxId = tempList.get(tempList.size() - 1).getId() - 1;
+                    tweets.addAll(tempList);
+                } else {
+                    tentatives++; //it is possible that we reach the end of available tweets Or there is an empty result
+                }
+
+                nbRequest++;
+                if (untilDate != null) {
+                    if (tweets.get(tweets.size() - 1).getCreated_at().before(untilDate)) {
+                        break;
+                    }
+                }
+            }
+            //No more tweets inside hashtag in this date
+            if (tentatives > 5) {
+                nbRequest = -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            assert response != null;
+            if (response.body().contains("code\":50")) {
+                throw new RequestManagerException("Unknown user");
+            }
+        }
+        return new Pair<>(tweets, nbRequest);
+    }
+
+
     /**
      * @author kamil CAGLAR
      * Porvides a request for getting the tweets from user timeline
@@ -378,7 +466,7 @@ public class RequestManager {
     private HttpRequest buildUserTweetsRequest(String screen_name, String count, Long max_id) {
         String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + screen_name + "&count=" + count + "&tweet_mode=extended";
 
-        if (max_id > 0) {
+        if (max_id != null && max_id > 0) {
             url = url + "&max_id=" + max_id.toString();
         }
 
@@ -399,13 +487,16 @@ public class RequestManager {
      * https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets
      * @apiNote It is very important to have FULL TWEET. We add the tweet_mode=extended header
      */
-    private HttpRequest buildHashtagTweetRequest(String hashtagName, String count, Long max_id) {
-        String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23" + hashtagName + "&count=" + count + "&tweet_mode=extended";
+    private HttpRequest buildHashtagTweetRequest(String hashtagName, Integer count, Long max_id, Date untilDate) {
+        String url = "https://api.twitter.com/1.1/search/tweets.json?q=%23"
+                + hashtagName + "&count=" + count.toString() + "&tweet_mode=extended&result_type=recent";
 
-        if (max_id > 0) {
+        if (max_id != null && max_id > 0) {
             url = url + "&max_id=" + max_id.toString();
         }
-
+        if (untilDate != null) {
+            url = url + "&until=" + twitterRequestFormat.format(untilDate);
+        }
         //Building of the request, we use the header Authorization", "Bearer <bearer_code>"
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -422,7 +513,13 @@ public class RequestManager {
 
     public void sendProgress(JFXProgressBar progressBar, int progress, int count) {
         Platform.runLater(() -> {
-            progressBar.setProgress((double) progress / (double) count);
+            Timeline timeline = new Timeline();
+            KeyValue keyValue = new KeyValue(progressBar.progressProperty(), (double) progress / (double) count);
+            KeyFrame keyFrame = new KeyFrame(new Duration(1000), keyValue);
+            timeline.getKeyFrames().add(keyFrame);
+
+            timeline.play();
+            //progressBar.setProgress((double) progress / (double) count);
         });
     }
 

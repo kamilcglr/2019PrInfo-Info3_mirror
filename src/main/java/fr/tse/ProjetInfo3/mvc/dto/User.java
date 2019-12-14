@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -31,37 +32,69 @@ public class User {
     private String profile_banner_url;
     private String profile_image_url_https;
 
-
     /**
      * Our own attributes, they are not alimented by the API
      */
-    
-    
+
+
     private List<Tweet> listoftweets;
 
+    private boolean allTweetsCollected; //true when user have no more tweets (less than 3200)
+    private boolean globalTweetsLimit; //true when we have already 3200 tweets API LIMIT
+    private boolean dateTweetsLimit; //true when there is no more tweets for the until date
+
+
+    public boolean isAllTweetsCollected() {
+        return allTweetsCollected;
+    }
+
+    public void setAllTweetsCollected(boolean allTweetsCollected) {
+        this.allTweetsCollected = allTweetsCollected;
+    }
+
+    public boolean isGlobalTweetsLimit() {
+        return globalTweetsLimit;
+    }
+
+    public void setGlobalTweetsLimit(boolean globalTweetsLimit) {
+        this.globalTweetsLimit = globalTweetsLimit;
+    }
+
+    public boolean isDateTweetsLimit() {
+        return dateTweetsLimit;
+    }
+
+    public void setDateTweetsLimit(boolean dateTweetsLimit) {
+        this.dateTweetsLimit = dateTweetsLimit;
+    }
+
+
     public User(long id, String name, String screen_name, String location, String description, String url,
-			Boolean verified, long followers_count, long friends_count, long listed_count, long favourites_count,
-			long statuses_count, String created_at, String profile_banner_url, String profile_image_url_https,
-			List<Tweet> listoftweets) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.screen_name = screen_name;
-		this.location = location;
-		this.description = description;
-		this.url = url;
-		this.verified = verified;
-		this.followers_count = followers_count;
-		this.friends_count = friends_count;
-		this.listed_count = listed_count;
-		this.favourites_count = favourites_count;
-		this.statuses_count = statuses_count;
-		this.created_at = created_at;
-		this.profile_banner_url = profile_banner_url;
-		this.profile_image_url_https = profile_image_url_https;
-		this.listoftweets = listoftweets;
-	}
-	public List<Tweet> getListoftweets() {
+                Boolean verified, long followers_count, long friends_count, long listed_count, long favourites_count,
+                long statuses_count, String created_at, String profile_banner_url, String profile_image_url_https,
+                List<Tweet> listoftweets) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.screen_name = screen_name;
+        this.location = location;
+        this.description = description;
+        this.url = url;
+        this.verified = verified;
+        this.followers_count = followers_count;
+        this.friends_count = friends_count;
+        this.listed_count = listed_count;
+        this.favourites_count = favourites_count;
+        this.statuses_count = statuses_count;
+        this.created_at = created_at;
+        this.profile_banner_url = profile_banner_url;
+        this.profile_image_url_https = profile_image_url_https;
+        this.listoftweets = new ArrayList<>();
+        this.dateTweetsLimit = false;
+        this.globalTweetsLimit = false;
+    }
+
+    public List<Tweet> getListoftweets() {
         return listoftweets;
     }
     /* ************************************************** */
@@ -102,6 +135,14 @@ public class User {
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    public Long getMaxId() {
+        if (listoftweets.size() > 0) {
+            return listoftweets.get(listoftweets.size() - 1).getId() - 1;
+        } else {
+            return null;
+        }
     }
 
     public long getId() {
@@ -195,18 +236,19 @@ public class User {
     public long getStatuses_count() {
         return statuses_count;
     }
-    
-    public  Date parseTwitterUTC() 
-    		throws ParseException {
-    	
-    	 	String twitterFormat="EEE MMM dd HH:mm:ss ZZZZZ yyyy";
 
-    	 	// Important note. Only ENGLISH Locale works.
-    		SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-    		sf.setLenient(true);
+    public Date parseTwitterUTC()
+            throws ParseException {
 
-    	  	return sf.parse(this.getCreated_at());
-    	}
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+
+        // Important note. Only ENGLISH Locale works.
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        return sf.parse(this.getCreated_at());
+    }
+
     public void setStatuses_count(long statuses_count) {
         this.statuses_count = statuses_count;
     }
@@ -239,4 +281,6 @@ public class User {
     public void setListoftweets(List<Tweet> listoftweets) {
         this.listoftweets = listoftweets;
     }
+
+
 }
