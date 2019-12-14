@@ -45,11 +45,12 @@ public class UserViewer {
         return user = requestManager.getUser(screen_name);
     }
 
-    public Integer getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot, JFXProgressBar progressBar) {
+    public Pair<List<Tweet>, Integer> getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot) {
         int nbRequestDone;
-        if (tweets.size() < user.getStatuses_count()) {
-            Pair<List<Tweet>, Integer> pair = requestManager.getTweetsFromUserNBRequest(user.getScreen_name(), nbRequestMax, untilDate, maxId, alreadyGot, progressBar);
-            tweets.addAll(pair.getKey());
+        List<Tweet> tweetList = new ArrayList<>();
+        if (user.getListoftweets().size() < user.getStatuses_count()) {
+            Pair<List<Tweet>, Integer> pair = requestManager.getTweetsFromUserNBRequest(user.getScreen_name(), nbRequestMax, untilDate, maxId, alreadyGot);
+            tweetList = pair.getKey();
             nbRequestDone = pair.getValue();
         } else {
             //TODO Handle JUL or not enough tweets
@@ -57,12 +58,11 @@ public class UserViewer {
             user.setAllTweetsCollected(true);
             nbRequestDone = 0;
         }
-        return nbRequestDone;
+        return new Pair<>(tweetList, nbRequestDone);
     }
 
     public List<Tweet> getTweetsByCount(String screen_name, int count, JFXProgressBar progressBar) {
-        tweets.addAll(requestManager.getTweetsFromUser(screen_name, count, progressBar));
-        return tweets;
+        return requestManager.getTweetsFromUser(screen_name, count, progressBar);
     }
 
     public List<Tweet> getListOfTweets() {
@@ -101,7 +101,13 @@ public class UserViewer {
     }
 
 
-    public Map<String, Integer> topHashtag(List<Tweet> tweetList) {
+    /**
+     * From a big list of tweets, return the top Hashtags, including this hashtag
+     *
+     * @param tweetList
+     * @return
+     */
+    public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList) {
         Map<String, Integer> hashtagUsedSorted;
         Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
 
@@ -127,8 +133,8 @@ public class UserViewer {
         }
 
         for (String theme : hashtags) {
-            Integer occurence = hashtagUsed.get(theme);
-            hashtagUsed.put(theme, (occurence == null) ? 1 : occurence + 1);
+            Integer occurrence = hashtagUsed.get(theme);
+            hashtagUsed.put(theme, (occurrence == null) ? 1 : occurrence + 1);
         }
 
         hashtagUsedSorted = sortByValue(hashtagUsed);

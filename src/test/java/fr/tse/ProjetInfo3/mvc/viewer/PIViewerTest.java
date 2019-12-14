@@ -44,7 +44,7 @@ class PIViewerTest {
 
         piViewer.getlistOfInterestPoint();
         piViewer.setSelectedInterestPoint(0);
-        List<Tweet> tweets = piViewer.getTweets(null, null);
+        List<Tweet> tweets = piViewer.getTweets(null);
 
 
     }

@@ -13,7 +13,11 @@ import fr.tse.ProjetInfo3.mvc.dto.Statuses;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -238,7 +242,11 @@ public class RequestManager {
                 max_id = tempList.get(tempList.size() - 1).getId() - 1;
 
                 tweets.addAll(tempList);
-                sendProgress(progressBar, tweets.size(), count);
+
+                //progressBar is not always used
+                if (progressBar != null) {
+                    sendProgress(progressBar, tweets.size(), count);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -249,7 +257,7 @@ public class RequestManager {
         return tweets;
     }
 
-    public Pair<List<Tweet>, Integer> getTweetsFromUserNBRequest(String screen_name, int nRequestMax, Date untilDate, Long maxId, int alreadyGot, JFXProgressBar progressBar) throws RequestManagerException {
+    public Pair<List<Tweet>, Integer> getTweetsFromUserNBRequest(String screen_name, int nRequestMax, Date untilDate, Long maxId, int alreadyGot) throws RequestManagerException {
         //sometimes twitter api sends a response with a body "[]", we test 100 times
         int tentatives = 0;
         //TODO find a better solution if possible
@@ -370,7 +378,10 @@ public class RequestManager {
                     tentatives++; //it is possible that we reach the end of avaible tweets
                 }
 
-                sendProgress(progressBar, tweets.size(), count);
+                //progressBar is not always used
+                if (progressBar != null) {
+                    sendProgress(progressBar, tweets.size(), count);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -389,9 +400,8 @@ public class RequestManager {
      * @param nRequestMax the maxNumber of request even if we don't reach the date
      * @param untilDate   limit of tweets
      * @param maxId       the id of the last tweet a request has already be done
-     * @param progressBar
      */
-    public Pair<List<Tweet>, Integer> searchTweetsWithNRequest(String hashtagName, int nRequestMax, Date untilDate, Long maxId, JFXProgressBar progressBar) {
+    public Pair<List<Tweet>, Integer> searchTweetsWithNRequest(String hashtagName, int nRequestMax, Date untilDate, Long maxId) {
         sizeOfList = 0;
         int nbRequest = 0;
         int tentatives = 0;
@@ -432,7 +442,6 @@ public class RequestManager {
                         break;
                     }
                 }
-                //sendProgress(progressBar, tweets.size(), count);
             }
             //No more tweets inside hashtag in this date
             if (tentatives > 5) {
@@ -504,7 +513,13 @@ public class RequestManager {
 
     public void sendProgress(JFXProgressBar progressBar, int progress, int count) {
         Platform.runLater(() -> {
-            progressBar.setProgress((double) progress / (double) count);
+            Timeline timeline = new Timeline();
+            KeyValue keyValue = new KeyValue(progressBar.progressProperty(), (double) progress / (double) count);
+            KeyFrame keyFrame = new KeyFrame(new Duration(1000), keyValue);
+            timeline.getKeyFrames().add(keyFrame);
+
+            timeline.play();
+            //progressBar.setProgress((double) progress / (double) count);
         });
     }
 

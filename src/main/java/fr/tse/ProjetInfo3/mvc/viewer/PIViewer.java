@@ -8,13 +8,15 @@ import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
-import javafx.scene.Parent;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.util.Pair;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,13 +30,12 @@ public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
     private static InterestPointDAO interestPointDAO = new InterestPointDAO();
     private InterestPoint selectedInterestPoint;
+    private UserViewer userViewer;
+    private HastagViewer hashtagViewer;
 
     public PIViewer() {
-        //try {
-        //    generatePIsDemo();
-        //} catch (IOException | InterruptedException e) {
-        //    e.printStackTrace();
-        //}
+        userViewer = new UserViewer();
+        hashtagViewer = new HastagViewer();
     }
 
     /**
@@ -74,68 +75,13 @@ public class PIViewer {
         return interestPointDAO.getAllInterestPoints();
     }
 
-    /**
-     * This function generate a list of PIs for the tests
-     */
-    public void generatePIsDemo() throws IOException, InterruptedException {
-        //First IP
-        List<Hashtag> hashtags = new ArrayList<>();
-        Hashtag h1 = new Hashtag("#blackfriday");
-        Hashtag h2 = new Hashtag("#amazon");
-        Hashtag h3 = new Hashtag("#darty");
-
-        hashtags.add(h1);
-        //hashtags.add(h2);
-        //hashtags.add(h3);
-
-        List<User> users = new ArrayList<>();
-        RequestManager requestManager = new RequestManager();
-        User u1 = requestManager.getUser("twandroid");
-        User u2 = requestManager.getUser("Dealabs");
-
-        users.add(u1);
-        //users.add(u2);
-
-
-        Date date = new Date();
-        InterestPoint ip1 = new InterestPoint("Black friday", "Suivi des promotions", date);
-        ip1.setHashtags(hashtags);
-        ip1.setUsers(users);
-
-        //Second IP
-        List<Hashtag> hashtags1 = new ArrayList<>();
-        Hashtag example = new Hashtag("#Telecom");
-        Hashtag city = new Hashtag("#Saint-Etienne");
-        Hashtag dep = new Hashtag("#42");
-
-        hashtags1.add(example);
-        hashtags1.add(city);
-        hashtags1.add(dep);
-
-        List<User> users2 = new ArrayList<>();
-        User sobun = requestManager.getUser("sobunung");
-        User kamil = requestManager.getUser("kamilcglr");
-
-        users2.add(sobun);
-        users2.add(kamil);
-
-        Date date2 = new Date();
-        InterestPoint ip2 = new InterestPoint("Mes amis", "Suivi des amis", date2);
-        ip2.setHashtags(hashtags1);
-        ip2.setUsers(users2);
-
-        listOfInterestPoint.add(ip1);
-        listOfInterestPoint.add(ip2);
-    }
-
 
     /*
      * New function designed for US53
      * This function gives a coherent list of tweets from Users and Hashtags
      *  */
-    public List<Tweet> getTweets(JFXProgressBar progressBar, Label progressLabel) throws Exception {
-        List<Tweet> tempTweets = new ArrayList<>();
-        List<Tweet> tweetsToReturn = new ArrayList<>();
+    public List<Tweet> getTweets(Label progressLabel) throws Exception {
+        List<Tweet> tweetsToReturn;
 
         List<User> usersOfIP = selectedInterestPoint.getUsers();
         List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
@@ -155,52 +101,49 @@ public class PIViewer {
             //For each hashtag and user, get tweets until oldestTweet
             //In each request, increase the number of request
             for (Hashtag hashtag : hashtagsOfIP) {
-                List<Tweet> tweets;
+                Platform.runLater(() -> {
+                    progressLabel.setText("Récupération des tweets de " + hashtag.getHashtag());
+                });
                 int nbRequestDone;
-                Pair<List<Tweet>, Integer> pair = getTweetsFromHashtag(hashtag, maxRequestPerTour, dateToSearch, progressBar, progressLabel);
-                tweets = pair.getKey();
-                nbRequestDone = pair.getValue();
+                nbRequestDone = getTweetsFromHashtag(hashtag, maxRequestPerTour, dateToSearch, progressLabel);
                 totalNumberOfRequest += nbRequestDone;
-                tempTweets.addAll(tweets);
             }
 
             //Get the tweets from user
             for (User user : usersOfIP) {
-                List<Tweet> tweets;
+                Platform.runLater(() -> {
+                    progressLabel.setText("Récupération des tweets de " + user.getScreen_name());
+                });
                 int nbRequestDone;
-                Pair<List<Tweet>, Integer> pair = getTweetsFromUser(user, maxRequestPerTour, dateToSearch, progressBar, progressLabel);
-                tweets = pair.getKey();
-                nbRequestDone = pair.getValue();
+                nbRequestDone = getTweetsFromUser(user, maxRequestPerTour, dateToSearch, progressLabel);
                 totalNumberOfRequest += nbRequestDone;
-                tempTweets.addAll(tweets);
             }
 
             dateToSearch = findSecondMostRecentDate(hashtagsOfIP, usersOfIP);
 
-            System.out.println("");
-            System.out.printf("Nb request : "+ totalNumberOfRequest);
-            for (Hashtag hashtag : hashtagsOfIP) {
-                System.out.println("#" + hashtag.getHashtag() + " Nb tweets=" + hashtag.getTweets().size()
-                        + " Date last " + hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at());
-            }
-            for (User user : usersOfIP) {
-                if (user.getListoftweets().size() > 0) {
-                    System.out.println("@" + user.getScreen_name() + " Nb tweets=" + user.getListoftweets().size()
-                            + " Date last " + user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
-                } else {
-                    System.out.println("@" + user.getScreen_name() + " Nb tweets=0");
-                }
-            }
+            logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP);
 
         }
+        Platform.runLater(() -> {
+            progressLabel.setText("Filtrage des résultats");
+        });
         tweetsToReturn = filterResult(hashtagsOfIP, usersOfIP);
 
-        System.out.println("");
-        System.out.println("");
-        System.out.printf("Nb request : "+ totalNumberOfRequest);
+        logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP);
+
+        return tweetsToReturn;
+    }
+
+    private void logProgress(int totalNumberOfRequest, List<Hashtag> hashtagsOfIP, List<User> usersOfIP) {
+        System.out.println("Nb request : " + totalNumberOfRequest);
         for (Hashtag hashtag : hashtagsOfIP) {
-            System.out.println("#" + hashtag.getHashtag() + " Nb tweets=" + hashtag.getTweets().size()
-                    + " Date last " + hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at());
+            if (hashtag.getTweets().size() > 0) {
+                System.out.println("#" + hashtag.getHashtag() + " Nb tweets=" + hashtag.getTweets().size()
+                        + " Date last " + hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at());
+
+            } else {
+                System.out.println("#" + hashtag.getHashtag() + " Nb tweets=0");
+            }
         }
         for (User user : usersOfIP) {
             if (user.getListoftweets().size() > 0) {
@@ -210,7 +153,6 @@ public class PIViewer {
                 System.out.println("@" + user.getScreen_name() + " Nb tweets=0");
             }
         }
-        return tweetsToReturn;
     }
 
     /**
@@ -239,7 +181,6 @@ public class PIViewer {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -285,7 +226,14 @@ public class PIViewer {
         Collections.reverse(datesOfLast);
 
         if (datesOfLast.size() < 2) {
-            return datesOfLast.get(0); //If only one item in PI
+            //only one item has tweets, then we can push the date +1 day
+            LocalDateTime localDateTime = datesOfLast.get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            localDateTime = localDateTime.minusDays(1);
+            Date newDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+            return newDate;
+
+
+            //return datesOfLast.get(0); //If only one item in PI
         } else {
             return datesOfLast.get(1);
         }
@@ -352,15 +300,15 @@ public class PIViewer {
     }
 
 
-    private Pair<List<Tweet>, Integer> getTweetsFromUser(User user, int nbRequestMax, Date untilDate, JFXProgressBar progressBar, Label progressLabel) throws Exception {
+    private Integer getTweetsFromUser(User user, int nbRequestMax, Date untilDate, Label progressLabel) throws Exception {
         int NbRequestDone = 0;
-        UserViewer userViewer = new UserViewer();
+        List<Tweet> tweetList = new ArrayList<>();
         //Get the user timeline only if it is possible
         if (user.getStatuses_count() > 0) {
             //search without date
             if (untilDate == null) {
                 System.out.println("search Tweets by count for " + user.getScreen_name());
-                userViewer.getTweetsByCount(user.getScreen_name(), 5, progressBar);
+                tweetList = userViewer.getTweetsByCount(user.getScreen_name(), 5, null);
                 NbRequestDone++;
             }
             //else SEARCH ONLY IF DATE IS OK
@@ -369,61 +317,73 @@ public class PIViewer {
                     if (user.getListoftweets().size() < 3194) {
                         if (user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at().after(untilDate)) {
                             System.out.println("search Tweets by date for " + user.getScreen_name());
-                            NbRequestDone = userViewer.getTweetsByDate(user, nbRequestMax, untilDate, user.getMaxId(), user.getListoftweets().size(), progressBar);
+                            Pair<List<Tweet>, Integer> pair = userViewer.getTweetsByDate(user, nbRequestMax, untilDate, user.getMaxId(), user.getListoftweets().size());
+                            NbRequestDone = pair.getValue();
+                            tweetList = pair.getKey();
                         } else {
-                            System.out.println("skip search for " + user.getScreen_name());
+                            System.out.println("skip search for " + user.getScreen_name() + " : NO TWEETS FOR THIS DATE");
                             user.setDateTweetsLimit(true);
                         }
                     } else {
                         user.setGlobalTweetsLimit(true); //More than 3200 tweets have been collected
+                        System.out.println("skip search for " + user.getScreen_name() + " : GLOBAL 3200 days LIMIT");
                         NbRequestDone = 0;
                     }
 
                 }
             }
             //Add tweets to list of tweets inside USer
-            user.getListoftweets().addAll(userViewer.getListOfTweets());
+            user.getListoftweets().addAll(tweetList);
         } else {
             user.setAllTweetsCollected(true); //user have no tweets
+            System.out.println("skip search for " + user.getScreen_name() + " : ALL TWEETS COLLECTED");
         }
-        return new Pair<>(user.getListoftweets(), NbRequestDone);
+        return NbRequestDone;
     }
 
     //Gets tweets for hashtag and sets them inside the object.
-    private Pair<List<Tweet>, Integer> getTweetsFromHashtag(Hashtag hashtag, int nbRequestMax, Date maxDate, JFXProgressBar
-            progressBar, Label progressLabel) throws Exception {
+    private Integer getTweetsFromHashtag(Hashtag hashtag, int nbRequestMax, Date maxDate, Label progressLabel) throws Exception {
         int NbRequestDone = 0;
-        HastagViewer hashtagViewer = new HastagViewer();
+        List<Tweet> tweetList = new ArrayList<>();
 
         //EXPLORATION only 5
         if (maxDate == null) {
             System.out.println("search Tweets by count for " + hashtag.getHashtag());
-            hashtagViewer.searchByCount(hashtag.getHashtag(), progressBar, 5, hashtag.getMaxId());
+            tweetList = hashtagViewer.searchByCount(hashtag.getHashtag(), null, 5, hashtag.getMaxId());
+            if (tweetList.size() == 0) {//this hashtag will not have any tweets
+                hashtag.setAllTweetsCollected(true);
+            }
             NbRequestDone++;
-        }else{
-            LocalDate now = LocalDate.now();
-            LocalDate dateOfLast = new java.sql.Date(hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().getTime()).toLocalDate();
+        } else {
+            if (!hashtag.isAllTweetsCollected()){
+                LocalDate now = LocalDate.now();
+                LocalDate dateOfLast = new java.sql.Date(hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().getTime()).toLocalDate();
 
-            Period period = Period.between(now, dateOfLast);
-            int diff = period.getDays();
+                Period period = Period.between(now, dateOfLast);
+                int diff = period.getDays();
 
-            if (diff < 9) { //TODO Handle this in the request
-                //else SEARCH ONLY IF DATE IS OK
-
-                if (hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().after(maxDate)) {
-                    System.out.println("search Tweets by date for " + hashtag.getHashtag());
-                    NbRequestDone = hashtagViewer.searchTweetsByDate(hashtag.getHashtag(), 30, maxDate, hashtag.getMaxId(), progressBar);
+                if (diff < 9) { //TODO Handle this in the request
+                    //else SEARCH ONLY IF DATE IS OK
+                    if (hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().after(maxDate)) {
+                        System.out.println("search Tweets by date for " + hashtag.getHashtag());
+                        Pair<List<Tweet>, Integer> pair = hashtagViewer.searchTweetsByDate(hashtag.getHashtag(), 30, maxDate, hashtag.getMaxId());
+                        tweetList = pair.getKey();
+                        NbRequestDone = pair.getValue();
+                    } else {
+                        System.out.println("skip search for " + hashtag.getHashtag() + " : NO TWEETS FOR THIS DATE");
+                        hashtag.setDateTweetsLimit(true);
+                    }
                 } else {
-                    System.out.println("skip search Tweets for " + hashtag.getHashtag());
-                    hashtag.setDateTweetsLimit(true);
+                    System.out.println("skip search for " + hashtag.getHashtag() + " : GLOBAL 7 DAYS LIMIT");
+                    hashtag.setGlobalTweetsLimit(true);
                 }
-            } else {
-                hashtag.setGlobalTweetsLimit(true);
+            }else{
+                System.out.println("skip search for " + hashtag.getHashtag() + " : ALL TWEETS COLLECTED");
             }
         }
         //Add tweets to list of tweets inside Hashtag
-        hashtag.getTweets().addAll(hashtagViewer.getTweetList());
-        return new Pair<>(hashtagViewer.getTweetList(), NbRequestDone);
+        hashtag.getTweets().addAll(tweetList);
+        return NbRequestDone;
     }
 
     /**
@@ -452,44 +412,45 @@ public class PIViewer {
     }
 
     /**
+     * TO DELETE
      * From a big list of tweets, return the top Hashtags
      * Excludes hashtags that are already in interest Point
+     * <p>
+     * public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList) {
+     * Map<String, Integer> hashtagUsedSorted;
+     * Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
+     * <p>
+     * List<String> hashtags = new ArrayList<>();
+     * //Method to get hashtag from retweets
+     * for (Tweet tweet : tweetList) {
+     * <p>
+     * //if the tweet is retweeted, then we get the #'s of retweeted tweet
+     * if (tweet.getRetweeted_status() != null) {
+     * hashtags.addAll(tweet
+     * .getRetweeted_status().getEntities().getHashtags()
+     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+     * } else
+     * //else, if the tweet is quoted, then we get the #'s of quoted tweet
+     * if (tweet.getQuoted_status() != null) {
+     * hashtags.addAll(tweet
+     * .getQuoted_status().getEntities().getHashtags()
+     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+     * }
+     * hashtags.addAll(tweet.getEntities().getHashtags()
+     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
+     * <p>
+     * }
+     * <p>
+     * for (String theme : hashtags) {
+     * Integer occurrence = hashtagUsed.get(theme);
+     * hashtagUsed.put(theme, (occurrence == null) ? 1 : occurrence + 1);
+     * }
+     * <p>
+     * hashtagUsedSorted = sortByValue(hashtagUsed);
+     * <p>
+     * return hashtagUsedSorted;
+     * }
      */
-    public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList, List<Hashtag> hashtagsToExclude) {
-        List<String> hashtagsToExcludeList = hashtagsToExclude.stream().map(Hashtag::getHashtag).collect(Collectors.toList());
-        Map<String, Integer> hashtagUsedSorted;
-        Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
-
-        List<String> hashtags = new ArrayList<>();
-        //Method to get hashtag from retweets
-        for (Tweet tweet : tweetList) {
-
-            //if the tweet is retweeted, then we get the #'s of retweeted tweet
-            if (tweet.getRetweeted_status() != null) {
-                hashtags.addAll(tweet
-                        .getRetweeted_status().getEntities().getHashtags()
-                        .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-            } else
-                //else, if the tweet is quoted, then we get the #'s of quoted tweet
-                if (tweet.getQuoted_status() != null) {
-                    hashtags.addAll(tweet
-                            .getQuoted_status().getEntities().getHashtags()
-                            .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-                }
-            hashtags.addAll(tweet.getEntities().getHashtags()
-                    .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-
-        }
-
-        for (String theme : hashtags) {
-            Integer occurence = hashtagUsed.get(theme);
-            hashtagUsed.put(theme, (occurence == null) ? 1 : occurence + 1);
-        }
-
-        hashtagUsedSorted = sortByValue(hashtagUsed);
-
-        return hashtagUsedSorted;
-    }
 
     public Map<String, Integer> sortByValue(final Map<String, Integer> hashtagCounts) {
 
@@ -500,7 +461,6 @@ public class PIViewer {
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
 
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     }
 
@@ -541,5 +501,59 @@ public class PIViewer {
     //Called by Sergiy PITabController
     private void saveInterestPoint() {
         //function to save in DAO
+    }
+
+    /**
+     * This function generate a list of PIs for the tests
+     */
+    public void generatePIsDemo() throws IOException, InterruptedException {
+        //First IP
+        List<Hashtag> hashtags = new ArrayList<>();
+        Hashtag h1 = new Hashtag("#blackfriday");
+        Hashtag h2 = new Hashtag("#amazon");
+        Hashtag h3 = new Hashtag("#darty");
+
+        hashtags.add(h1);
+        //hashtags.add(h2);
+        //hashtags.add(h3);
+
+        List<User> users = new ArrayList<>();
+        RequestManager requestManager = new RequestManager();
+        User u1 = requestManager.getUser("twandroid");
+        User u2 = requestManager.getUser("Dealabs");
+
+        users.add(u1);
+        //users.add(u2);
+
+
+        Date date = new Date();
+        InterestPoint ip1 = new InterestPoint("Black friday", "Suivi des promotions", date);
+        ip1.setHashtags(hashtags);
+        ip1.setUsers(users);
+
+        //Second IP
+        List<Hashtag> hashtags1 = new ArrayList<>();
+        Hashtag example = new Hashtag("#Telecom");
+        Hashtag city = new Hashtag("#Saint-Etienne");
+        Hashtag dep = new Hashtag("#42");
+
+        hashtags1.add(example);
+        hashtags1.add(city);
+        hashtags1.add(dep);
+
+        List<User> users2 = new ArrayList<>();
+        User sobun = requestManager.getUser("sobunung");
+        User kamil = requestManager.getUser("kamilcglr");
+
+        users2.add(sobun);
+        users2.add(kamil);
+
+        Date date2 = new Date();
+        InterestPoint ip2 = new InterestPoint("Mes amis", "Suivi des amis", date2);
+        ip2.setHashtags(hashtags1);
+        ip2.setUsers(users2);
+
+        listOfInterestPoint.add(ip1);
+        listOfInterestPoint.add(ip2);
     }
 }

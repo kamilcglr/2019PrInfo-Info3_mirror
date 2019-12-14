@@ -35,17 +35,21 @@ public class HastagViewer {
         this.hashtag.setHashtag(hashtag);
     }
 
-    public void searchByCount(String hashtag, JFXProgressBar progressBar, int count, Long maxId) throws Exception {
-        tweets.addAll(requestManager.searchTweets(hashtag, count, maxId, progressBar));
+    public List<Tweet> searchByCount(String hashtag, JFXProgressBar progressBar, int count, Long maxId) throws Exception {
+        List<Tweet> tempList;
+        tempList = requestManager.searchTweets(hashtag, count, maxId, progressBar);
+        this.tweets = tempList;
+        return tempList;
     }
 
 
-    public Integer searchTweetsByDate(String hashtag, int nbRequestMax, Date maxDate, Long maxId, JFXProgressBar progressBar) throws Exception {
+    public Pair<List<Tweet>, Integer> searchTweetsByDate(String hashtag, int nbRequestMax, Date maxDate, Long maxId) throws Exception {
         int nbRequestDone;
-        Pair<List<Tweet>, Integer> pair = requestManager.searchTweetsWithNRequest(hashtag, nbRequestMax, maxDate, maxId, progressBar);
-        tweets.addAll(pair.getKey());
+        List<Tweet> tweetList = new ArrayList<>();
+        Pair<List<Tweet>, Integer> pair = requestManager.searchTweetsWithNRequest(hashtag, nbRequestMax, maxDate, maxId);
+        tweetList = pair.getKey();
         nbRequestDone = pair.getValue();
-        return nbRequestDone;
+        return new Pair<>(tweetList, nbRequestDone);
     }
 
     public List<Tweet> getTweets() {
