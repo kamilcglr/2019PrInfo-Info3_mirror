@@ -28,36 +28,65 @@ import javafx.scene.shape.Circle;
 public class ListObjects {
 	private final static Paint GREEN = Paint.valueOf("#48AC98FF");
 	private final static Paint RED = Paint.valueOf("#CB7C7AFF");
-	
+
 	private PIViewer piViewer;
+	
+	/**
+     * This class will represent a result of a linked hashtag
+     */
+    public static class HashtagCell extends ListCell<ResultHashtag> {
+        HBox hBox = new HBox();
+        Label classementLabel = new Label("");
+        Label hashtagLabel = new Label("");
+        Label nbTweetLabel = new Label("");
+
+        public HashtagCell() {
+            super();
+            classementLabel.getStyleClass().add("indexLabel");
+            hashtagLabel.getStyleClass().add("hashtagTextLabel");
+            nbTweetLabel.getStyleClass().add("nbTweetLabel");
+            hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
+        }
+
+        public void updateItem(ResultHashtag resultHashtag, boolean empty) {
+            super.updateItem(resultHashtag, empty);
+
+            if (resultHashtag != null && !empty) {
+                classementLabel.setText(resultHashtag.getClassementIndex());
+                hashtagLabel.setText(resultHashtag.getHashtagName());
+                nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
+                setGraphic(hBox);
+            }
+        }
+    }
 
 	/**
 	 * This class will represent a result of a linked hashtag
 	 */
-	public static class HashtagCell extends ListCell<ResultHashtag> {
+	public static class HashtagCellPI extends ListCell<ResultHashtag> {
 		GridPane cellGridPane;
 		ColumnConstraints column1;
 		ColumnConstraints column2;
 		ColumnConstraints column3;
 		ColumnConstraints column4;
-		
+
 		Label classementLabel;
 		Label hashtagLabel;
 		Label nbTweetLabel;
-		
+
 		JFXButton addDeleteHashtag;
 		FontIcon addDeleteIcon;
-		
+
 		InterestPoint interestPoint;
-		
+
 		PIViewer piViewer;
 
-		public HashtagCell(InterestPoint interestPoint) {
+		public HashtagCellPI(InterestPoint interestPoint) {
 			super();
-			
+
 			this.interestPoint = interestPoint;
 			piViewer = new PIViewer();
-			
+
 			cellGridPane = new GridPane();
 			cellGridPane.getStyleClass().add("userCellGridPane");
 			cellGridPane.setPrefSize(700, 20);
@@ -71,16 +100,16 @@ public class ListObjects {
 			column4.setPrefWidth(50);
 
 			cellGridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
-			
+
 			classementLabel = new Label("");
 			classementLabel.getStyleClass().add("indexLabel");
-			
+
 			hashtagLabel = new Label("");
 			hashtagLabel.getStyleClass().add("hashtagTextLabel");
-			
+
 			nbTweetLabel = new Label("");
 			nbTweetLabel.getStyleClass().add("nbTweetLabel");
-			
+
 			addDeleteHashtag = new JFXButton();
 
 			addDeleteIcon = new FontIcon("fas-plus");
@@ -89,7 +118,7 @@ public class ListObjects {
 			addDeleteHashtag.setGraphic(addDeleteIcon);
 
 			addDeleteHashtag.setPrefSize(20, 20);
-			
+
 			cellGridPane.add(classementLabel, 0, 0);
 			cellGridPane.add(hashtagLabel, 1, 0);
 			cellGridPane.add(nbTweetLabel, 2, 0);
@@ -182,15 +211,15 @@ public class ListObjects {
 
 		JFXButton addDeleteUser;
 		FontIcon addDeleteIcon;
-		
+
 		InterestPoint interestPoint;
-		
+
 		PIViewer piViewer;
-		
-		public TopUserCell(InterestPoint interestPoint) {
+
+		public TopUserCell(InterestPoint interestPointParam) {
 			super();
-			
-			this.interestPoint = interestPoint;
+
+			interestPoint = interestPointParam;
 			piViewer = new PIViewer();
 
 			cellGridPane = new GridPane();
@@ -226,7 +255,7 @@ public class ListObjects {
 				public void handle(ActionEvent event) {
 					User userObject = getItem();
 					System.out.println(userObject.toString());
-					
+
 					piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
 					interestPoint.addToInterestPoint(userObject);
 					piViewer.addInterestPointToDatabase(interestPoint);

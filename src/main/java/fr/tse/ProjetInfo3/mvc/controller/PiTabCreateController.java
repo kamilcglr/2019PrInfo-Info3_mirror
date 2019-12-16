@@ -53,6 +53,7 @@ import javafx.util.Duration;
 
 /**
  * @author Sergiy
+ *         {@code This class acts as a Controller for the Tab which is used to create or edit Interest Points}
  */
 public class PiTabCreateController {
 	private MainController mainController;

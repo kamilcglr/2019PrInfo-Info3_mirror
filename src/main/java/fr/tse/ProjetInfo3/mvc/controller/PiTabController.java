@@ -117,7 +117,7 @@ public class PiTabController {
 		// (ListCell<ListObjects.ResultHashtag>) new Cell());
 
 		topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell(interestPointToPrint));
-		topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell(interestPointToPrint));
+		topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCellPI(interestPointToPrint));
 	}
 
 	public void setDatas(PIViewer piViewer) {
