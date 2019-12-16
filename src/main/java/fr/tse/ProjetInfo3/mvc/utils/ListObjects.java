@@ -30,7 +30,7 @@ public class ListObjects {
 	private static final Paint GREEN = Paint.valueOf("#48AC98FF");
 	private static final Paint RED = Paint.valueOf("#CB7C7AFF");
 	
-	private static long currentPiId;
+	private static int currentPiId;
 
 	/**
 	 * This class will represent a result of a linked hashtag
@@ -267,7 +267,7 @@ public class ListObjects {
 					if (interestPoint.containsUser(getItem())) {
 						User currentUser = getItem();
 
-						piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
+						piViewer.deleteInterestPointFromDatabaseById((int)currentPiId);
 						interestPoint.getUsers().remove(currentUser);
 						piViewer.addInterestPointToDatabase(interestPoint);
 
@@ -277,12 +277,12 @@ public class ListObjects {
 					} else {
 						User currentUser = getItem();
 						
-						System.out.println("ID of PI on suppression " + (int)currentPiId);
-						piViewer.deleteInterestPointFromDatabaseById((int)currentPiId);
+						System.out.println("ID of PI on suppression " + currentPiId);
+						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 						
 						interestPoint = new InterestPoint(interestPoint);
 						interestPoint.addToInterestPoint(currentUser);
-						currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
+						currentPiId = (int)piViewer.addInterestPointToDatabase(interestPoint);
 						System.out.println(currentPiId);
 						
 						addDeleteIcon = new FontIcon("fas-minus");
