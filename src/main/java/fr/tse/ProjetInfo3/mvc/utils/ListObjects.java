@@ -26,39 +26,39 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 public class ListObjects {
-	private final static Paint GREEN = Paint.valueOf("#48AC98FF");
-	private final static Paint RED = Paint.valueOf("#CB7C7AFF");
+	private static final Paint GREEN = Paint.valueOf("#48AC98FF");
+	private static final Paint RED = Paint.valueOf("#CB7C7AFF");
 
 	private PIViewer piViewer;
-	
+
 	/**
-     * This class will represent a result of a linked hashtag
-     */
-    public static class HashtagCell extends ListCell<ResultHashtag> {
-        HBox hBox = new HBox();
-        Label classementLabel = new Label("");
-        Label hashtagLabel = new Label("");
-        Label nbTweetLabel = new Label("");
+	 * This class will represent a result of a linked hashtag
+	 */
+	public static class HashtagCell extends ListCell<ResultHashtag> {
+		HBox hBox = new HBox();
+		Label classementLabel = new Label("");
+		Label hashtagLabel = new Label("");
+		Label nbTweetLabel = new Label("");
 
-        public HashtagCell() {
-            super();
-            classementLabel.getStyleClass().add("indexLabel");
-            hashtagLabel.getStyleClass().add("hashtagTextLabel");
-            nbTweetLabel.getStyleClass().add("nbTweetLabel");
-            hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
-        }
+		public HashtagCell() {
+			super();
+			classementLabel.getStyleClass().add("indexLabel");
+			hashtagLabel.getStyleClass().add("hashtagTextLabel");
+			nbTweetLabel.getStyleClass().add("nbTweetLabel");
+			hBox.getChildren().addAll(classementLabel, hashtagLabel, nbTweetLabel);
+		}
 
-        public void updateItem(ResultHashtag resultHashtag, boolean empty) {
-            super.updateItem(resultHashtag, empty);
+		public void updateItem(ResultHashtag resultHashtag, boolean empty) {
+			super.updateItem(resultHashtag, empty);
 
-            if (resultHashtag != null && !empty) {
-                classementLabel.setText(resultHashtag.getClassementIndex());
-                hashtagLabel.setText(resultHashtag.getHashtagName());
-                nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
-                setGraphic(hBox);
-            }
-        }
-    }
+			if (resultHashtag != null && !empty) {
+				classementLabel.setText(resultHashtag.getClassementIndex());
+				hashtagLabel.setText(resultHashtag.getHashtagName());
+				nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
+				setGraphic(hBox);
+			}
+		}
+	}
 
 	/**
 	 * This class will represent a result of a linked hashtag
@@ -213,14 +213,15 @@ public class ListObjects {
 		FontIcon addDeleteIcon;
 
 		InterestPoint interestPoint;
-
 		PIViewer piViewer;
+		User userObject;
 
 		public TopUserCell(InterestPoint interestPointParam) {
 			super();
 
 			interestPoint = interestPointParam;
 			piViewer = new PIViewer();
+			userObject = getItem();
 
 			cellGridPane = new GridPane();
 			cellGridPane.getStyleClass().add("userCellGridPane");
@@ -243,9 +244,15 @@ public class ListObjects {
 
 			addDeleteUser = new JFXButton();
 
-			addDeleteIcon = new FontIcon("fas-plus");
+			if (interestPoint.containsUser(getItem())) {
+				addDeleteIcon = new FontIcon("fas-minus");
+				addDeleteIcon.setIconColor(RED);
+			} else {
+				addDeleteIcon = new FontIcon("fas-plus");
+				addDeleteIcon.setIconColor(GREEN);
+			}
+
 			addDeleteIcon.setIconSize(18);
-			addDeleteIcon.setIconColor(GREEN);
 			addDeleteUser.setGraphic(addDeleteIcon);
 
 			addDeleteUser.setPrefSize(50, 50);
@@ -253,12 +260,27 @@ public class ListObjects {
 			addDeleteUser.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					User userObject = getItem();
-					System.out.println(userObject.toString());
+					if (interestPoint.containsUser(getItem())) {
+						User currentUser = getItem();
 
-					piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
-					interestPoint.addToInterestPoint(userObject);
-					piViewer.addInterestPointToDatabase(interestPoint);
+						piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
+						interestPoint.getUsers().remove(currentUser);
+						piViewer.addInterestPointToDatabase(interestPoint);
+
+						addDeleteIcon = new FontIcon("fas-plus");
+						addDeleteIcon.setIconColor(GREEN);
+						addDeleteUser.setGraphic(addDeleteIcon);
+					} else {
+						User currentUser = getItem();
+
+						piViewer.deleteInterestPointFromDatabaseById(interestPoint.getId());
+						interestPoint.addToInterestPoint(currentUser);
+						piViewer.addInterestPointToDatabase(interestPoint);
+
+						addDeleteIcon = new FontIcon("fas-minus");
+						addDeleteIcon.setIconColor(RED);
+						addDeleteUser.setGraphic(addDeleteIcon);
+					}
 				}
 			});
 

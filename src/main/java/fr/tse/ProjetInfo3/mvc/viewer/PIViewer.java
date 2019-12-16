@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toMap;
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
     private static InterestPointDAO interestPointDAO = new InterestPointDAO();
-    private InterestPoint selectedInterestPoint;
+	private InterestPoint selectedInterestPoint;
 
     public PIViewer() {
         //try {
