@@ -219,7 +219,26 @@ public class MainController {
     }
 
     public void goToLoginPane() {
-        tabPane.getSelectionModel().select(loginTabFromMain);
+        //tabPane.getSelectionModel().select(loginTabFromMain);
+    	  FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+          try {
+              AnchorPane loginTab = fxmlLoader.load();
+              LoginController loginController = fxmlLoader.getController();
+              loginController.injectMainController(this);
+              Tab tab = new Tab();
+              Platform.runLater(() -> {
+                  tab.setContent(loginTab);
+                  tab.setText("Login");
+                  tabPane.getTabs().add(tab);
+                  tabPane.getSelectionModel().select(tab);
+              });
+
+              
+              
+
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
     }
 
 

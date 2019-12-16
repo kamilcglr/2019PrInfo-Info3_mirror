@@ -99,7 +99,7 @@ public class SearchTabController {
     @FXML
     private void initialize() {
         //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
-        loginButton.setVisible(false);
+        loginButton.setVisible(true);
         signinButton.setVisible(false);
 
 
