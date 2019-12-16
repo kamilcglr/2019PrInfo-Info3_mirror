@@ -42,7 +42,6 @@ public class InterestPointDAO {
                 if (generatedKeys.next()) {
                     long idOfIP = generatedKeys.getLong(1);
                     piID = idOfIP;
-                    System.out.println("ID of PI on creation " + piID);
                     // this method will help us save all the # of a single PI
                     saveHashtag(interestPoint, idOfIP);
                     saveUsers(interestPoint, idOfIP);

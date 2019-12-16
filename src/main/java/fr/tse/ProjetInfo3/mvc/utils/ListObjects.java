@@ -268,8 +268,9 @@ public class ListObjects {
 						User currentUser = getItem();
 
 						piViewer.deleteInterestPointFromDatabaseById((int)currentPiId);
+						
 						interestPoint.getUsers().remove(currentUser);
-						piViewer.addInterestPointToDatabase(interestPoint);
+						currentPiId = (int)piViewer.addInterestPointToDatabase(interestPoint);
 
 						addDeleteIcon = new FontIcon("fas-plus");
 						addDeleteIcon.setIconColor(GREEN);
@@ -277,13 +278,10 @@ public class ListObjects {
 					} else {
 						User currentUser = getItem();
 						
-						System.out.println("ID of PI on suppression " + currentPiId);
 						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 						
-						interestPoint = new InterestPoint(interestPoint);
 						interestPoint.addToInterestPoint(currentUser);
 						currentPiId = (int)piViewer.addInterestPointToDatabase(interestPoint);
-						System.out.println(currentPiId);
 						
 						addDeleteIcon = new FontIcon("fas-minus");
 						addDeleteIcon.setIconColor(RED);
