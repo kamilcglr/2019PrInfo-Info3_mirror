@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -118,8 +119,17 @@ public class PiTabController {
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell());
         topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell());
         trackedUsersList.setCellFactory(param -> new ListObjects.TopUserCell());
-
         userViewer = new UserViewer();
+
+    }
+    @FXML
+    public void userClick(MouseEvent arg0) throws Exception {
+        String research = topFiveUserList.getSelectionModel().getSelectedItem().getScreen_name();
+        if (topFiveUserList.getSelectionModel().getSelectedIndex() != -1) {
+            //UserViewer userViewer = new UserViewer();
+            userViewer.searchScreenName(research);
+            mainController.goToUserPane(userViewer);
+        }
     }
 
     private void initLists() {
@@ -332,6 +342,13 @@ public class PiTabController {
         }
     }
 
+//    public void GoToUserPage() {
+//        ObservableList selectedUser = trackedUsersList.getSelectionModel().getSelectedIndices();
+//        trackedUsersList.getSelectionModel().selectedItemProperty().addListener((u) -> {
+//            trackedUsersList.getSelectionModel().getSelectedItem().getScreen_name();
+//        });
+//        }
+//    }
 
 }
 
