@@ -34,8 +34,20 @@ public class InterestPoint implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
+    
     public InterestPoint() {
+    }
+
+    public InterestPoint(InterestPoint interestPoint) {
+    	super();
+    	this.id = interestPoint.getId();
+    	this.name = interestPoint.getName();
+        this.description = interestPoint.getDescription();
+        this.dateOfCreation = interestPoint.getDateOfCreation();
+        this.hashtags = interestPoint.getHashtags();
+        this.users = interestPoint.getUsers();
+        this.interestPoints = interestPoint.getInterestPoints();
+        this.tweets = interestPoint.getTweets();
     }
 
     public InterestPoint(int id, String name, String description, Date dateOfCreation) {
