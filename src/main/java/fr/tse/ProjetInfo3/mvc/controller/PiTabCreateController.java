@@ -276,16 +276,21 @@ public class PiTabCreateController {
 	 **/
 	@FXML
 	public void discardJFXButtonPressed(ActionEvent event) {
-		launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
+		launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false, true);
 	}
 
 	@FXML
 	public void saveJFXButtonPressed(ActionEvent event) {
-		interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
-				hashtagList, userList);
+		if (!observableListHashtag.isEmpty() || !observableListUser.isEmpty()) {
+			interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
+					hashtagList, userList);
 
-		piViewer.addInterestPointToDatabase(interestPoint);
-		launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
+			piViewer.addInterestPointToDatabase(interestPoint);
+			launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true, true);
+		} else {
+			launchInfoDialog("Point d'Interêt incomplet",
+					"Votre Point d'Interêt doit contenir au moins un Hashtag ou Utilisateur", "D'accord", false, false);
+		}
 	}
 
 	@FXML
@@ -354,12 +359,14 @@ public class PiTabCreateController {
 	 * @param text        content printed inside
 	 * @param labelButton label inside of button
 	 */
-	private void launchInfoDialog(String header, String text, String labelButton, boolean success) {
+	private void launchInfoDialog(String header, String text, String labelButton, boolean success,
+			boolean exitOnClose) {
 		Label headerLabel = new Label(header);
 		Text bodyText = new Text(text);
 		JFXButton button = new JFXButton(labelButton);
 
 		BoxBlur blur = new BoxBlur(3, 3, 3);
+		anchorPane.setEffect(blur);
 
 		button.getStyleClass().add("dialog-button");
 		if (success) {
@@ -380,16 +387,15 @@ public class PiTabCreateController {
 		dialogLayout.setBody(bodyText);
 		dialogLayout.setActions(button);
 		dialog.show();
-		dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
-			anchorPane.setEffect(null);
-		});
-		anchorPane.setEffect(blur);
-
 		dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
 			@Override
 			public void handle(JFXDialogEvent event) {
-				tabPane.getTabs().remove(tab);
-				mainController.goToMyPisPane();
+				anchorPane.setEffect(null);
+				
+				if (exitOnClose) {
+					tabPane.getTabs().remove(tab);
+					mainController.goToMyPisPane();
+				}
 			}
 		});
 	}
