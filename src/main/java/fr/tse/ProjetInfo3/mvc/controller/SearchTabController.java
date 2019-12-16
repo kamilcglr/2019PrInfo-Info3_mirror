@@ -94,13 +94,23 @@ public class SearchTabController {
     private JFXListView<User> propositionList;
 
     private List<User> resultUsers;
+    
+    //private LoginController LoginController;
 
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
         //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
-        loginButton.setVisible(true);
+    	
+    	LoginController loginController=new LoginController();
+    	if(loginController.connected==1) {
+        loginButton.setVisible(false);
         signinButton.setVisible(false);
+    	}
+    	else {
+            loginButton.setVisible(true);
+            signinButton.setVisible(true);
+    	}
 
 
         //Disable the text field, we wait for the at least one toggle to be pressed
@@ -190,7 +200,10 @@ public class SearchTabController {
     public void loginButtonPressed(ActionEvent event) {
         mainController.goToLoginPane();
     }
-
+    @FXML
+	public void signinButtonpressed(ActionEvent event) {
+	mainController.goToSigninTab();
+}
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search

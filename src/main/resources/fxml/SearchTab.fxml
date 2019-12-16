@@ -67,7 +67,7 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>

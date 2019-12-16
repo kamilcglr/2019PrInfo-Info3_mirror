@@ -177,6 +177,8 @@ public class MainController {
             e.printStackTrace();
         }
     }
+    
+    
 
     public void goToHashtagPane(HastagViewer hastagViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
@@ -219,18 +221,19 @@ public class MainController {
     }
 
     public void goToLoginPane() {
-        //tabPane.getSelectionModel().select(loginTabFromMain);
-    	  FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+    	tabPane.getTabs().clear();
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
           try {
               AnchorPane loginTab = fxmlLoader.load();
               LoginController loginController = fxmlLoader.getController();
               loginController.injectMainController(this);
               Tab tab = new Tab();
               Platform.runLater(() -> {
+            	  if(loginController.connected==0) {
                   tab.setContent(loginTab);
                   tab.setText("Login");
                   tabPane.getTabs().add(tab);
-                  tabPane.getSelectionModel().select(tab);
+                  tabPane.getSelectionModel().select(tab);}
               });
 
               
@@ -338,7 +341,54 @@ public class MainController {
         tabPane.getSelectionModel().select(searchTabFromMain);
         drawer.close();
     }
+    
+    
+    public void goToHomeRefresh() {
+    	tabPane.getTabs().clear();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SearchTab.fxml"));
+        try {
+        	
+            AnchorPane searchTab = fxmlLoader.load();
+            SearchTabController searchController = fxmlLoader.getController();
+            Tab tab = new Tab();
+            tab.setContent(searchTab);
+            tab.setText("Rechercher");
+            tab.closableProperty().set(false);
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+            
+          
+        }
+            catch (Exception e) {
+				// TODO: handle exception
+			}
+        
+            
+    }
+    
+    public void goToSigninTab() {
+    	//tabPane.getTabs().clear();
+    	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
+          try {
+              AnchorPane loginTab = fxmlLoader.load();
+              SignInController loginController = fxmlLoader.getController();
+              loginController.injectMainController(this);
+              Tab tab = new Tab();
+              Platform.runLater(() -> {
+            	 // if(loginController.connected==0) {
+                  tab.setContent(loginTab);
+                  tab.setText("Login");
+                  tabPane.getTabs().add(tab);
+                  tabPane.getSelectionModel().select(tab);//}
+              });
 
+              
+              
+
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+    }
     public void goToSelectedPi(PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
         try {
