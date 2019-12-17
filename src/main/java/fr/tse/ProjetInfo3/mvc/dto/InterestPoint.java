@@ -34,8 +34,20 @@ public class InterestPoint implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
+    
     public InterestPoint() {
+    }
+
+    public InterestPoint(InterestPoint interestPoint) {
+    	super();
+    	this.id = interestPoint.getId();
+    	this.name = interestPoint.getName();
+        this.description = interestPoint.getDescription();
+        this.dateOfCreation = interestPoint.getDateOfCreation();
+        this.hashtags = interestPoint.getHashtags();
+        this.users = interestPoint.getUsers();
+        this.interestPoints = interestPoint.getInterestPoints();
+        this.tweets = interestPoint.getTweets();
     }
 
     public InterestPoint(int id, String name, String description, Date dateOfCreation) {
@@ -150,6 +162,41 @@ public class InterestPoint implements Serializable {
         }
         return false;
     }
+    
+    public boolean containsUser(User user) {
+		return this.getUsers().contains(user);
+    }
+    
+    public boolean containsHashtag(String hashtag) {
+    	List<Hashtag> hashtags = this.getHashtags();
+    	boolean found = false;
+    	
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		if (hashtags.get(i).getHashtag() == hashtag) {
+    			found = true;
+    			return found;
+    		}
+    	}
+    	
+		return found;
+    }
+    
+    public Hashtag getHashtagFromName(String hashtag) {
+    	List<Hashtag> hashtags = this.getHashtags();
+    	Hashtag found = null;
+    	
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		System.out.println(hashtags.get(i).getHashtag());
+    		Hashtag candidate = hashtags.get(i);
+    		if (candidate.getHashtag() == hashtag) {
+    			found = candidate;
+    			System.out.println("Found " + found.getHashtag());
+    			return found;
+    		}
+    	}
+    	
+		return found;
+    }
 
     public String getName() {
         return name;
@@ -177,6 +224,15 @@ public class InterestPoint implements Serializable {
 
     public List<Hashtag> getHashtags() {
         return hashtags;
+    }
+    
+    public List<String> getHashtagNames() {
+    	List<String> hashtagNames = new ArrayList<String>();
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		hashtagNames.add(hashtags.get(i).getHashtag());
+    	}
+    	
+        return hashtagNames;
     }
 
     public void setHashtags(List<Hashtag> hashtags) {
@@ -259,6 +315,6 @@ public class InterestPoint implements Serializable {
         }
 
         return interestPointMinimal;
-    }*/
 
+    }*/
 }

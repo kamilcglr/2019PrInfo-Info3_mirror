@@ -23,9 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Kamil CAGLAR
- * Controller of the main window, all user interactions whith the main windows (not the tabs) are handled here
- * Subcontrollers (searchTabController, userTabController, userTabFromMain) are called here
+ * @author Kamil CAGLAR Controller of the main window, all user interactions
+ *         whith the main windows (not the tabs) are handled here Subcontrollers
+ *         (searchTabController, userTabController, userTabFromMain) are called
+ *         here
  */
 public class MainController {
     /*
@@ -293,26 +294,34 @@ public class MainController {
     }
 
     public void goToPICreateOrEditPane(boolean isNew, PIViewer piViewer) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
-        try {
-            AnchorPane newUserTab = fxmlLoader.load();
-            PiTabCreateController piTabCreateController = fxmlLoader.getController();
-            piTabCreateController.injectMainController(this);
-            piTabCreateController.setPiViewer(piViewer);
-            Platform.runLater(() -> {
-                Tab tab = new Tab();
-                tab.setContent(newUserTab);
-                tab.setText("Création d'un Point d'Intérêt");
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-                piTabCreateController.setIsNew(isNew);
-                piTabCreateController.injectTabContainer(tabPane);
-                piTabCreateController.injectTab(tab);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
+		try {
+			AnchorPane newUserTab = fxmlLoader.load();
+			PiTabCreateController piTabCreateController = fxmlLoader.getController();
+			piTabCreateController.injectMainController(this);
+			piTabCreateController.setPiViewer(piViewer);
+			Platform.runLater(() -> {
+				Tab tab = new Tab();
+				tab.setContent(newUserTab);
+				tab.setText("Création d'un Point d'Intérêt");
+				tabPane.getTabs().add(tab);
+				tabPane.getSelectionModel().select(tab);
+				
+
+				if (!isNew) {
+					System.out.println(piViewer.getSelectedInterestPoint().getHashtags());
+					piTabCreateController.setPiToEdit(piViewer.getSelectedInterestPoint());
+					System.out.println("Is not new");
+				}
+				
+				piTabCreateController.setIsNew(isNew);
+				piTabCreateController.injectTabContainer(tabPane);
+				piTabCreateController.injectTab(tab);
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
     public void goToHome() {
         tabPane.getSelectionModel().select(searchTabFromMain);
@@ -377,8 +386,22 @@ public class MainController {
         //}
 	}
 
-	
+	public void goToPIDelete(PIViewer piViewer) {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+		try {
+			AnchorPane piTab = fxmlLoader.load();
+			PiTabController piTabController = fxmlLoader.getController();
+			Tab tab = new Tab();
+			Platform.runLater(() -> {
+				int id = piViewer.getSelectedInterestPoint().getId();
+				piViewer.deleteInterestPointFromDatabaseById(id);
 
+			});
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 }
-

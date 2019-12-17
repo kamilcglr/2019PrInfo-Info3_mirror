@@ -22,8 +22,9 @@ public class InterestPointDAO {
      * in this method we're saving an interestpoint into the DB using singleton pattern to have one instance
      * accessing the DB
      */
-    public InterestPoint saveInterestPoint(InterestPoint interestPoint) {
+    public long saveInterestPoint(InterestPoint interestPoint) {
         Connection connection = SingletonDBConnection.getInstance();
+        long piID = 0;
         try {
             String Query = "INSERT INTO interestpoint(NAME,DESCRIPTION,CREATED_AT) "
                     + "VALUES (?,?,?)";
@@ -40,6 +41,7 @@ public class InterestPointDAO {
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     long idOfIP = generatedKeys.getLong(1);
+                    piID = idOfIP;
                     // this method will help us save all the # of a single PI
                     saveHashtag(interestPoint, idOfIP);
                     saveUsers(interestPoint, idOfIP);
@@ -51,7 +53,7 @@ public class InterestPointDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return interestPoint;
+        return piID;
     }
 
     /**

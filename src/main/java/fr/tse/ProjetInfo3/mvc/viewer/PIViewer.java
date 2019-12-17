@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.toMap;
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
     private static InterestPointDAO interestPointDAO = new InterestPointDAO();
+
     private InterestPoint selectedInterestPoint;
     private UserViewer userViewer;
     private HastagViewer hashtagViewer;
@@ -61,9 +62,9 @@ public class PIViewer {
     /**
      *
      */
-    public void addInterestPointToDatabase(InterestPoint interestPoint) {
+    public long addInterestPointToDatabase(InterestPoint interestPoint) {
         //listOfInterestPoint.add(interestPoint);
-        interestPointDAO.saveInterestPoint(interestPoint);
+        return interestPointDAO.saveInterestPoint(interestPoint);
     }
 
     public void deleteInterestPointFromDatabaseById(int id) {
