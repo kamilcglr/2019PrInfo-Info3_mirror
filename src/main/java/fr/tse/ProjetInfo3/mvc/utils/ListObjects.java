@@ -5,7 +5,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
-import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
@@ -29,7 +29,7 @@ import javafx.scene.shape.Circle;
 public class ListObjects {
 	private static final Paint GREEN = Paint.valueOf("#48AC98FF");
 	private static final Paint RED = Paint.valueOf("#CB7C7AFF");
-	
+
 	private static int currentPiId;
 
 	/**
@@ -82,11 +82,13 @@ public class ListObjects {
 
 		PIViewer piViewer;
 
-		public HashtagCellPI(InterestPoint interestPoint) {
+		public HashtagCellPI(InterestPoint interestPointParam) {
 			super();
 
-			this.interestPoint = interestPoint;
+			interestPoint = interestPointParam;
 			piViewer = new PIViewer();
+
+			currentPiId = interestPoint.getId();
 
 			cellGridPane = new GridPane();
 			cellGridPane.getStyleClass().add("userCellGridPane");
@@ -114,11 +116,44 @@ public class ListObjects {
 			addDeleteHashtag = new JFXButton();
 
 			addDeleteIcon = new FontIcon("fas-plus");
-			addDeleteIcon.setIconSize(18);
 			addDeleteIcon.setIconColor(GREEN);
+
+			addDeleteIcon.setIconSize(14);
 			addDeleteHashtag.setGraphic(addDeleteIcon);
 
 			addDeleteHashtag.setPrefSize(20, 20);
+
+			addDeleteHashtag.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (interestPoint.containsHashtag(getItem().getHashtagName())) {
+						ResultHashtag currentHashtag = getItem();
+
+						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
+
+						Hashtag hashtagToRemove = interestPoint.getHashtagFromName(currentHashtag.getHashtagName());
+						interestPoint.getHashtags().remove(hashtagToRemove);
+						currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
+						addDeleteIcon = new FontIcon("fas-plus");
+						addDeleteIcon.setIconColor(GREEN);
+						addDeleteHashtag.setGraphic(addDeleteIcon);
+					} else {
+						ResultHashtag currentHashtag = getItem();
+
+						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
+
+						Hashtag hashtagToAdd = new Hashtag(currentHashtag.getHashtagName());
+						interestPoint.addToInterestPoint(hashtagToAdd);
+						currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
+						addDeleteIcon = new FontIcon("fas-minus");
+						addDeleteIcon.setIconColor(RED);
+						addDeleteHashtag.setGraphic(addDeleteIcon);
+
+					}
+				}
+			});
 
 			cellGridPane.add(classementLabel, 0, 0);
 			cellGridPane.add(hashtagLabel, 1, 0);
@@ -216,7 +251,6 @@ public class ListObjects {
 		InterestPoint interestPoint;
 		PIViewer piViewer;
 		User userObject;
-		
 
 		public TopUserCell(InterestPoint interestPointParam) {
 			super();
@@ -224,7 +258,7 @@ public class ListObjects {
 			interestPoint = interestPointParam;
 			piViewer = new PIViewer();
 			userObject = getItem();
-			
+
 			currentPiId = interestPoint.getId();
 
 			cellGridPane = new GridPane();
@@ -267,26 +301,26 @@ public class ListObjects {
 					if (interestPoint.containsUser(getItem())) {
 						User currentUser = getItem();
 
-						piViewer.deleteInterestPointFromDatabaseById((int)currentPiId);
-						
+						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
+
 						interestPoint.getUsers().remove(currentUser);
-						currentPiId = (int)piViewer.addInterestPointToDatabase(interestPoint);
+						currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
 
 						addDeleteIcon = new FontIcon("fas-plus");
 						addDeleteIcon.setIconColor(GREEN);
 						addDeleteUser.setGraphic(addDeleteIcon);
 					} else {
 						User currentUser = getItem();
-						
+
 						piViewer.deleteInterestPointFromDatabaseById(currentPiId);
-						
+
 						interestPoint.addToInterestPoint(currentUser);
-						currentPiId = (int)piViewer.addInterestPointToDatabase(interestPoint);
-						
+						currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
 						addDeleteIcon = new FontIcon("fas-minus");
 						addDeleteIcon.setIconColor(RED);
 						addDeleteUser.setGraphic(addDeleteIcon);
-						
+
 					}
 				}
 			});

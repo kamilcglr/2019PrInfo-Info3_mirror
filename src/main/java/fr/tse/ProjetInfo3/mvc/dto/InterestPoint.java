@@ -167,8 +167,35 @@ public class InterestPoint implements Serializable {
 		return this.getUsers().contains(user);
     }
     
-    public boolean containsHashtag(Hashtag hashtag) {
-		return this.getHashtags().contains(hashtag);
+    public boolean containsHashtag(String hashtag) {
+    	List<Hashtag> hashtags = this.getHashtags();
+    	boolean found = false;
+    	
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		if (hashtags.get(i).getHashtag() == hashtag) {
+    			found = true;
+    			return found;
+    		}
+    	}
+    	
+		return found;
+    }
+    
+    public Hashtag getHashtagFromName(String hashtag) {
+    	List<Hashtag> hashtags = this.getHashtags();
+    	Hashtag found = null;
+    	
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		System.out.println(hashtags.get(i).getHashtag());
+    		Hashtag candidate = hashtags.get(i);
+    		if (candidate.getHashtag() == hashtag) {
+    			found = candidate;
+    			System.out.println("Found " + found.getHashtag());
+    			return found;
+    		}
+    	}
+    	
+		return found;
     }
 
     public String getName() {
