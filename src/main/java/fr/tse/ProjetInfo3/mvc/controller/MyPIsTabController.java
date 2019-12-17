@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -32,7 +33,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     private Thread threadGetPIs;
 
     @FXML
-    private JFXListView<String> PIListView;
+    private JFXListView<InterestPoint> PIListView;
 
     @FXML
     private JFXPopup popup;
@@ -74,20 +75,20 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         seeButton.setVisible(false);
         editPI.setVisible(false);
 
+        PIListView.setCellFactory(param -> new ListObjects.ResultInterestPoint());
+    }
+
+    @FXML
+    private void PIListViewClicked() {
         //When user select an item, we change the selected Interest Point inside PIVIerwer
         //Then, when editing or showing it, we only pass PIViewer as Argument
-        PIListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (PIListView.getSelectionModel().getSelectedIndex() != -1) {
-                    piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
-                    if (newValue != null) {
-                        seeButton.setVisible(true);
-                        deletePI.setVisible(true);
-                    }
-                }
-            }
-        });
+        if (PIListView.getSelectionModel().getSelectedIndex() != -1) {
+            piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
+            seeButton.setVisible(true);
+            deletePI.setVisible(true);
+
+        }
+
     }
 
     /*
@@ -117,22 +118,11 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
         Platform.runLater(() -> {
             for (InterestPoint interestPoint : interestPoints) {
-                PIListView.getItems().add(interestPoint.toStringMinimal());
+                PIListView.getItems().add(interestPoint);
             }
             isLoading(false);
         });
         return null;
-    }
-
-    @FXML
-    private void load(ActionEvent event) {
-        if (!PIListView.isExpanded()) {
-            PIListView.setExpanded(true);
-            PIListView.depthProperty().set(1);
-        } else {
-            PIListView.setExpanded(false);
-            PIListView.depthProperty().set(0);
-        }
     }
 
     @FXML
@@ -252,8 +242,5 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             progressIndicatorLabel.setVisible(false);
             deletePI.setVisible(true);
         }
-
     }
-
-
 }

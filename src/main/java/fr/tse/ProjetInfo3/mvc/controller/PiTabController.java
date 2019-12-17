@@ -81,7 +81,7 @@ public class PiTabController {
     private JFXListView<User> trackedUsersList;
 
     @FXML
-    private JFXListView<String> trackedHashtagsList;
+    private JFXListView<Hashtag> trackedHashtagsList;
 
     /*
      * THREADS
@@ -118,20 +118,20 @@ public class PiTabController {
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCell());
         topTenLinkedList.setCellFactory(param -> new ListObjects.HashtagCell());
         trackedUsersList.setCellFactory(param -> new ListObjects.TopUserCell());
+        trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
 
         userViewer = new UserViewer();
     }
 
     private void initLists() {
         List<User> users = interestPointToPrint.getUsers();
-
         ObservableList<User> usersOfPI = FXCollections.observableArrayList();
         usersOfPI.addAll(users);
 
 
         List<Hashtag> hashtags = interestPointToPrint.getHashtags();
-        ObservableList<String> hashtagsOfPI = FXCollections.observableArrayList();
-        hashtagsOfPI.addAll(hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.toList()));
+        ObservableList<Hashtag> hashtagsOfPI = FXCollections.observableArrayList();
+        hashtagsOfPI.addAll(hashtags);
 
         Platform.runLater(() -> {
             trackedUsersList.getItems().addAll(usersOfPI);

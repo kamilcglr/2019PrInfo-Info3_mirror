@@ -9,20 +9,13 @@
     -fx-text-fill: -gray;
 }
 
-.trackedList {
-    -fx-background-radius: 10pt;
-    -fx-font-size: 15;
-    -fx-border-style: hidden;
-    -fx-background-color: WHITE;
-}
-
 .descriptionLabels {
     -fx-font-family: 'Raleway', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -gray;
 }
 
-.countLabel{
+.countLabel {
     -fx-font-family: 'Roboto Bold', sans-serif;
     -fx-font-size: 25;
     -fx-text-fill: -grey-dark;
@@ -42,14 +35,4 @@
 
 #editIcon {
     -fx-icon-color: -accent;
-}
-
-/*
-* PI LIST !
-*/
-#listHashtags {
-    -fx-background-radius: 10pt;
-    -fx-border-insets: 10 0 0 0;
-    -fx-background-insets: 10 0 0 0;
-    -fx-padding: 10 10 0 10;
 }

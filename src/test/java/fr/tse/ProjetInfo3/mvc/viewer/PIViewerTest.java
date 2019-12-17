@@ -10,15 +10,21 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(ApplicationExtension.class)
 class PIViewerTest {
+    PIViewer piViewer = new PIViewer();
 
     @Test
     void getTweets() throws Exception {
@@ -40,12 +46,30 @@ class PIViewerTest {
         ip1.setHashtags(hashtags);
         ip1.setUsers(users);
 
-        PIViewer piViewer = new PIViewer();
 
         piViewer.getlistOfInterestPoint();
         piViewer.setSelectedInterestPoint(0);
-        List<Tweet> tweets = piViewer.getTweets(null);
 
+        Label label = new Label();
+        //List<Tweet> tweets = piViewer.getTweets(label);
+    }
 
+    @Test
+    void getTweetsFromHashtagTest() throws Exception {
+        Hashtag h1 = new Hashtag("#nato");
+        List<Hashtag> hashtags = new ArrayList<>();
+        hashtags.add(h1);
+        Date date = new Date();
+        InterestPoint ip1 = new InterestPoint("test", "", date);
+        ip1.setHashtags(hashtags);
+
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        localDateTime = localDateTime.minusDays(9);
+        Date maxDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        //Verify date Limit
+
+        Integer list = piViewer.getTweetsFromHashtag(hashtags.get(0), 1000, maxDate, new Label());
+
+        assertEquals(hashtags.get(0).isGlobalTweetsLimit(), true);
     }
 }
