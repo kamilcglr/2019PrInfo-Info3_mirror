@@ -70,7 +70,7 @@
                                         <Label fx:id="infosNbTweetsLabel" styleClass="descriptionLabels" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
                                         <Label fx:id="nbTweetsLabel" styleClass="countLabel" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                               <Label styleClass="trackedTitles" text="Hashtags Suivis" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lastDateLabel" styleClass="countLabel" text="00/00/000" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                              <Label fx:id="lastDateLabel" styleClass="countLabel" text="dd MM YYYY HH:mm:ss" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                               <Label fx:id="infoLastDateLabel" styleClass="descriptionLabels" text="Depuis le" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
                               <Label fx:id="nbTrackedLabel" styleClass="countLabel" text="XXX" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                               <Label fx:id="infoNbTrackedLabel" styleClass="descriptionLabels" text="Objets suivis" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
@@ -78,7 +78,7 @@
                                  <children>
                                                 <TitledPane fx:id="topFiveUserTitled" expanded="false" text="Top 5 des utilisateurs liés à ce point d'intérêt">
                                        <content>
-                                          <JFXListView fx:id="topFiveUserList" onMouseClicked="#userClick"/>
+                                          <JFXListView fx:id="topFiveUserList" onMouseClicked="#userClick" />
                                        </content>
                                     </TitledPane>
                                                 <TitledPane fx:id="titledTweet" expanded="false" text="Top 10 des tweets">

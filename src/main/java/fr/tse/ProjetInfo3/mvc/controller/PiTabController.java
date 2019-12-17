@@ -8,6 +8,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -123,11 +124,11 @@ public class PiTabController {
         userViewer = new UserViewer();
 
     }
+
     @FXML
     public void userClick(MouseEvent arg0) throws Exception {
         String research = topFiveUserList.getSelectionModel().getSelectedItem().getScreen_name();
         if (topFiveUserList.getSelectionModel().getSelectedIndex() != -1) {
-            //UserViewer userViewer = new UserViewer();
             userViewer.searchScreenName(research);
             mainController.goToUserPane(userViewer);
         }
@@ -189,11 +190,10 @@ public class PiTabController {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {
-                //Ffind Min Date
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                //Find Min Date
                 Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
-                String Sdate = simpleDateFormat.format(date);
-                lastDateLabel.setText(Sdate);
+                String dateFormatted = DateFormats.hoursAndDateFormat.format(date);
+                lastDateLabel.setText(dateFormatted);
 
                 nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
                 nbTrackedLabel.setText(String.valueOf(interestPointToPrint.getUsers().size() + interestPointToPrint.getHashtags().size()));
@@ -210,7 +210,7 @@ public class PiTabController {
 
     private Task<Void> setTopFiveUsers() throws Exception {
         //user in parameters to find what to exclude
-        List<User> users = piViewer.getTopFiveUsers(bigTweetList, interestPointToPrint.getUsers());
+        List<User> users = piViewer.getTopFiveUsers(bigTweetList);
 
         ObservableList<User> usersToPrint = FXCollections.observableArrayList();
         int i = 0;
