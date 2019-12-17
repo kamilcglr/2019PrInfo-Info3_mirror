@@ -74,7 +74,6 @@ public class PIViewer {
      * In the futur, this function will return the created Interest Point into the database
      */
     public List<InterestPoint> getListOfInterestPointFromDataBase() {
-        //return listOfInterestPoint;
         return interestPointDAO.getAllInterestPoints();
     }
 
@@ -88,11 +87,6 @@ public class PIViewer {
 
         List<User> usersOfIP = selectedInterestPoint.getUsers();
         List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
-
-        //for (User user : usersOfIP) {
-        //    UserViewer userViewer = new UserViewer();
-        //    userViewer.setUser(user);
-        //}
 
         int maxRequestPerTour = 10;
 
@@ -392,7 +386,7 @@ public class PIViewer {
      * From a big list of tweets, return the top users by number of followers
      * Excludes users that are already in interest Point
      */
-    public List<User> getTopFiveUsers(List<Tweet> tweetList, List<User> usersToExclude) {
+    public List<User> getTopFiveUsers(List<Tweet> tweetList) {
         List<User> usersToReturn = new ArrayList<>();
         for (Tweet tweet : tweetList) {
             //First we get the id of all users involved
@@ -412,47 +406,6 @@ public class PIViewer {
         Collections.reverse(usersToReturn);
         return usersToReturn;
     }
-
-    /**
-     * TO DELETE
-     * From a big list of tweets, return the top Hashtags
-     * Excludes hashtags that are already in interest Point
-     * <p>
-     * public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList) {
-     * Map<String, Integer> hashtagUsedSorted;
-     * Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
-     * <p>
-     * List<String> hashtags = new ArrayList<>();
-     * //Method to get hashtag from retweets
-     * for (Tweet tweet : tweetList) {
-     * <p>
-     * //if the tweet is retweeted, then we get the #'s of retweeted tweet
-     * if (tweet.getRetweeted_status() != null) {
-     * hashtags.addAll(tweet
-     * .getRetweeted_status().getEntities().getHashtags()
-     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-     * } else
-     * //else, if the tweet is quoted, then we get the #'s of quoted tweet
-     * if (tweet.getQuoted_status() != null) {
-     * hashtags.addAll(tweet
-     * .getQuoted_status().getEntities().getHashtags()
-     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-     * }
-     * hashtags.addAll(tweet.getEntities().getHashtags()
-     * .stream().map(Tweet.hashtags::getText).collect(Collectors.toList()));
-     * <p>
-     * }
-     * <p>
-     * for (String theme : hashtags) {
-     * Integer occurrence = hashtagUsed.get(theme);
-     * hashtagUsed.put(theme, (occurrence == null) ? 1 : occurrence + 1);
-     * }
-     * <p>
-     * hashtagUsedSorted = sortByValue(hashtagUsed);
-     * <p>
-     * return hashtagUsedSorted;
-     * }
-     */
 
     public Map<String, Integer> sortByValue(final Map<String, Integer> hashtagCounts) {
 
