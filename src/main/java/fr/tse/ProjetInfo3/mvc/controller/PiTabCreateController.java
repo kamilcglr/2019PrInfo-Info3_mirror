@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;

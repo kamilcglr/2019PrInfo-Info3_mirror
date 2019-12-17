@@ -2,6 +2,7 @@ package fr.tse.ProjetInfo3.mvc.repository;
 
 import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -40,9 +41,9 @@ class RequestManagerTest {
     @org.junit.jupiter.api.Test
     void searchUsersTest() throws IOException, InterruptedException {
         RequestManager requestManager = new RequestManager();
-        Map<String, String> users = requestManager.getUsersbyName("donald trump");
-        for (Map.Entry<String, String> entry : users.entrySet()) {
-            System.out.println(entry.getKey() + "\t\t\t" + entry.getValue());
+        List<User> users = requestManager.getUsersbyName("donald trump");
+        for (User user: users) {
+            System.out.println(user.getName() + "\t\t\t" + user.getScreen_name());
         }
     }
 

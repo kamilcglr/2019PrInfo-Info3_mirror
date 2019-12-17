@@ -10,6 +10,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
+import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,11 +55,11 @@ public class HashtagTabController {
      * THREADS
      * every thread should be declared here to kill them when exiting
      */
-    private Thread threadgetTweetFromHashtag;
+    private Thread threadGetTweetFromHashtag;
 
-    private Thread threadsetTopLinkedHashtag;
+    private Thread threadGetTopLinkedHashtag;
 
-    private Thread threadsetNumbers;
+    private Thread threadDetNumbers;
 
     private Thread threadTopTweets;
 
@@ -132,9 +133,9 @@ public class HashtagTabController {
             hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
         });
 
-        threadgetTweetFromHashtag = new Thread(getTweetFromHashtag());
-        threadgetTweetFromHashtag.setDaemon(true);
-        threadgetTweetFromHashtag.start();
+        threadGetTweetFromHashtag = new Thread(getTweetFromHashtag());
+        threadGetTweetFromHashtag.setDaemon(true);
+        threadGetTweetFromHashtag.start();
     }
 
     /**
@@ -149,28 +150,27 @@ public class HashtagTabController {
         });
         try {
             //search and get tweets from hashtag first
-            hastagViewer.search(hashtagToPrint.getHashtag(), progressBar, 4500);
-            this.tweetList = hastagViewer.getTweetList();
+            this.tweetList = hastagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 4500, null);
 
             //Tweet are collected
             Platform.runLater(() -> {
                 initProgress(true);
             });
 
-            threadsetTopLinkedHashtag = new Thread(setTopLinkedHashtag());
-            threadsetTopLinkedHashtag.setDaemon(true);
-            threadsetTopLinkedHashtag.start();
+            threadGetTopLinkedHashtag = new Thread(setTopLinkedHashtag());
+            threadGetTopLinkedHashtag.setDaemon(true);
+            threadGetTopLinkedHashtag.start();
 
-            threadsetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
-            threadsetNumbers.setDaemon(true);
-            threadsetNumbers.start();
+            threadDetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
+            threadDetNumbers.setDaemon(true);
+            threadDetNumbers.start();
 
             threadTopTweets = new Thread(setTopTweets());
             threadTopTweets.setDaemon(true);
             threadTopTweets.start();
 
             //Wait for the two other tasks
-            while (threadsetTopLinkedHashtag.isAlive() && threadsetNumbers.isAlive() && threadTopTweets.isAlive()) {
+            while (threadGetTopLinkedHashtag.isAlive() || threadDetNumbers.isAlive() || threadTopTweets.isAlive()) {
                 Thread.sleep(1000);
             }
             Platform.runLater(() -> {
@@ -213,8 +213,8 @@ public class HashtagTabController {
 
     private Task<Void> setNumberOfUniqueAccountAndNumberOfTweets() {
         Platform.runLater(() -> {
-            nbUsersLabel.setText(hastagViewer.getNumberOfUniqueAccounts().toString());
-            nbTweetsLabel.setText(hastagViewer.getNumberOfTweets().toString());
+            nbUsersLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfUniqueAccounts()));
+            nbTweetsLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfTweets()));
         });
         return null;
     }
@@ -225,7 +225,6 @@ public class HashtagTabController {
         int i = 0;
         for (Tweet tweet : Tweeted.keySet()) {
             tweetsToPrint.add(tweet);
-            System.out.println(tweet);
             i++;
             if (i == 5) {
                 break;
@@ -281,15 +280,15 @@ public class HashtagTabController {
      * Called when tab is closed
      */
     public void killThreads() {
-        if (threadgetTweetFromHashtag != null) {
-            threadgetTweetFromHashtag.interrupt();
+        if (threadGetTweetFromHashtag != null) {
+            threadGetTweetFromHashtag.interrupt();
         }
-        if (threadsetNumbers != null) {
-            threadsetNumbers.interrupt();
+        if (threadDetNumbers != null) {
+            threadDetNumbers.interrupt();
 
         }
-        if (threadsetTopLinkedHashtag != null) {
-            threadsetTopLinkedHashtag.interrupt();
+        if (threadGetTopLinkedHashtag != null) {
+            threadGetTopLinkedHashtag.interrupt();
         }
         if (threadTopTweets != null) {
             threadTopTweets.interrupt();

@@ -5,9 +5,7 @@ import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.layout.HBox;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,11 +19,13 @@ import static java.util.stream.Collectors.toMap;
 public class UserViewer {
     private User user;
     private RequestManager requestManager;
+    private List<Tweet> tweets;
 
     private UserTabController userTabController;
 
     public UserViewer() {
         requestManager = new RequestManager();
+        tweets = new ArrayList<>();
     }
 
     /**
@@ -38,24 +38,44 @@ public class UserViewer {
      */
     public void searchScreenName(String screen_name) throws Exception {
         user = requestManager.getUser(screen_name);
+        user.setListoftweets(new ArrayList<>());
     }
+
     public User searchScreenNameU(String screen_name) throws Exception {
         return user = requestManager.getUser(screen_name);
     }
-    //Not used for the moment, we keep it until end, we can use for graph
-    public List<Tweet> getTweetsByDate(String screen_name, Date date) {
-        return requestManager.getTweetsFromUserByDate(screen_name, date);
+
+    public Pair<List<Tweet>, Integer> getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot) {
+        int nbRequestDone;
+        List<Tweet> tweetList = new ArrayList<>();
+        if (user.getListoftweets().size() < user.getStatuses_count()) {
+            Pair<List<Tweet>, Integer> pair = requestManager.getTweetsFromUserNBRequest(user.getScreen_name(), nbRequestMax, untilDate, maxId, alreadyGot);
+            tweetList = pair.getKey();
+            nbRequestDone = pair.getValue();
+        } else {
+            //TODO Handle JUL or not enough tweets
+            //All tweets for the user are collected
+            user.setAllTweetsCollected(true);
+            nbRequestDone = 0;
+        }
+        return new Pair<>(tweetList, nbRequestDone);
     }
 
     public List<Tweet> getTweetsByCount(String screen_name, int count, JFXProgressBar progressBar) {
         return requestManager.getTweetsFromUser(screen_name, count, progressBar);
     }
 
+    public List<Tweet> getListOfTweets() {
+        return tweets;
+    }
+
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
-    	this.user=user;
+        this.user = user;
+        this.tweets = user.getListoftweets();
     }
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
@@ -81,7 +101,13 @@ public class UserViewer {
     }
 
 
-    public Map<String, Integer> topHashtag(List<Tweet> tweetList) {
+    /**
+     * From a big list of tweets, return the top Hashtags, including this hashtag
+     *
+     * @param tweetList
+     * @return
+     */
+    public Map<String, Integer> getTopTenHashtags(List<Tweet> tweetList) {
         Map<String, Integer> hashtagUsedSorted;
         Map<String, Integer> hashtagUsed = new HashMap<String, Integer>();
 
@@ -107,8 +133,8 @@ public class UserViewer {
         }
 
         for (String theme : hashtags) {
-            Integer occurence = hashtagUsed.get(theme);
-            hashtagUsed.put(theme, (occurence == null) ? 1 : occurence + 1);
+            Integer occurrence = hashtagUsed.get(theme);
+            hashtagUsed.put(theme, (occurrence == null) ? 1 : occurrence + 1);
         }
 
         hashtagUsedSorted = sortByValue(hashtagUsed);

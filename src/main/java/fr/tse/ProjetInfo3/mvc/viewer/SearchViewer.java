@@ -31,14 +31,14 @@ public class SearchViewer {
      * @param userProposition name
      * @return usersNamesAndScreenNames : Map of names and screen_names of user
      */
-    public Map<String, String> getListPropositions(String userProposition) {
-        Map<String,String> usersNamesAndScreenNames = null;
+    public List<User> getListPropositions(String userProposition) {
+        List<User> users = null;
         try {
-            usersNamesAndScreenNames = requestManager.getUsersbyName(userProposition);
+            users = requestManager.getUsersbyName(userProposition);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return usersNamesAndScreenNames;
+        return users;
     }
 
     public User getUser() {
