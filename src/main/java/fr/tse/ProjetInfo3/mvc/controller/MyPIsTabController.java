@@ -87,7 +87,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         deletionTime.setVisible(false);
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
-        editPI.setVisible(false);
+        
 
         //When user select an item, we change the selected Interest Point inside PIVIerwer
         //Then, when editing or showing it, we only pass PIViewer as Argument
@@ -99,6 +99,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
                     if (newValue != null) {
                         seeButton.setVisible(true);
                         deletePI.setVisible(true);
+                        editPI.setVisible(true);
                     }
                 }
             }

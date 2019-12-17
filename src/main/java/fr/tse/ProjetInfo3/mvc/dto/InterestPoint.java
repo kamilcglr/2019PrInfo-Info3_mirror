@@ -225,6 +225,15 @@ public class InterestPoint implements Serializable {
     public List<Hashtag> getHashtags() {
         return hashtags;
     }
+    
+    public List<String> getHashtagNames() {
+    	List<String> hashtagNames = new ArrayList<String>();
+    	for(int i = 0; i < hashtags.size(); i++) {
+    		hashtagNames.add(hashtags.get(i).getHashtag());
+    	}
+    	
+        return hashtagNames;
+    }
 
     public void setHashtags(List<Hashtag> hashtags) {
         this.hashtags = hashtags;

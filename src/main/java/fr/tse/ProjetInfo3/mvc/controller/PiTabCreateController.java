@@ -57,8 +57,8 @@ import javafx.util.Duration;
  */
 public class PiTabCreateController {
 	private MainController mainController;
-
 	private PIViewer piViewer;
+	private InterestPoint interestPointToEdit;
 
 	/* Controller can acces to this Tab */
 	public void injectMainController(MainController mainController) {
@@ -75,6 +75,10 @@ public class PiTabCreateController {
 
 	public void setPiViewer(PIViewer piViewer) {
 		this.piViewer = piViewer;
+	}
+
+	public void setPiToEdit(InterestPoint interestPoint) {
+		this.interestPointToEdit = interestPoint;
 	}
 
 	/**
@@ -282,6 +286,10 @@ public class PiTabCreateController {
 	@FXML
 	public void saveJFXButtonPressed(ActionEvent event) {
 		if (!observableListHashtag.isEmpty() || !observableListUser.isEmpty()) {
+			if (!isNew) {
+				piViewer.deleteInterestPointFromDatabaseById(interestPointToEdit.getId());
+			}
+
 			interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
 					hashtagList, userList);
 
@@ -391,7 +399,7 @@ public class PiTabCreateController {
 			@Override
 			public void handle(JFXDialogEvent event) {
 				anchorPane.setEffect(null);
-				
+
 				if (exitOnClose) {
 					tabPane.getTabs().remove(tab);
 					mainController.goToMyPisPane();
@@ -405,9 +413,30 @@ public class PiTabCreateController {
 	 */
 	public void setIsNew(boolean isNew) {
 		this.isNew = isNew;
-		// if the PI already exists, we show it
-		if (isNew) {
-			// TODO fill the entries with the Interest Point attributes
+
+		if (!isNew) {
+			nameJFXTextField.setText(interestPointToEdit.getName());
+			descriptionJFXTextArea.setText(interestPointToEdit.getDescription());
+			creationDateLabel.setText("Créé le " + interestPointToEdit.getDateOfCreation());
+
+			List<String> hashtagNames = interestPointToEdit.getHashtagNames();
+
+			observableListHashtag = FXCollections.observableArrayList(hashtagNames);
+			observableListUser = FXCollections.observableArrayList(interestPointToEdit.getUsers());
+
+			hashtagListView.setItems(observableListHashtag);
+			hashtagListView.setCellFactory(hastagListView -> new HashtagCell());
+
+			userListView.setItems(observableListUser);
+			userListView.setCellFactory(userListView -> new UserCell());
+			
+			observableListHashtag.forEach((hashtag) -> {
+				hashtagList.add(new Hashtag(hashtag));
+			});
+			
+			observableListUser.forEach((user) -> {
+				userList.add(user);
+			});
 		}
 	}
 
