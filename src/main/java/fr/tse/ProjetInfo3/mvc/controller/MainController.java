@@ -350,6 +350,7 @@ public class MainController {
         	
             AnchorPane searchTab = fxmlLoader.load();
             SearchTabController searchController = fxmlLoader.getController();
+            searchController.injectMainController(this);
             Tab tab = new Tab();
             tab.setContent(searchTab);
             tab.setText("Rechercher");
@@ -361,9 +362,7 @@ public class MainController {
         }
             catch (Exception e) {
 				// TODO: handle exception
-			}
-        
-            
+			}     
     }
     
     public void goToSigninTab() {
@@ -377,7 +376,7 @@ public class MainController {
               Platform.runLater(() -> {
             	 // if(loginController.connected==0) {
                   tab.setContent(loginTab);
-                  tab.setText("Login");
+                  tab.setText("SignIn");
                   tabPane.getTabs().add(tab);
                   tabPane.getSelectionModel().select(tab);//}
               });

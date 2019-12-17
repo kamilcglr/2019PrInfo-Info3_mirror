@@ -42,6 +42,11 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
+                                 <JFXButton fx:id="loginButton" contentDisplay="RIGHT" onAction="#loginButtonPressed" styleClass="logginSigninButtons" text="Login" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                    <graphic>
+                                        <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
+                                    </graphic>
+                                </JFXButton>
                         <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                         <JFXTextField fx:id="password" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                         <JFXTextField fx:id="twitterName" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.valignment="TOP" />

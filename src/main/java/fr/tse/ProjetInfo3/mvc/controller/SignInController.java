@@ -69,7 +69,10 @@ public class SignInController {
  private void initialize() {
  	
  }
- 
+ @FXML
+ private void loginButtonPressed(ActionEvent event) {
+	 mainController.goToLoginPane();
+ }
  @FXML
  private void signinButtonpressed(ActionEvent event) {
  	//Identifiant de connexion
@@ -121,6 +124,7 @@ public class SignInController {
 	        	//System.out.println("ok"+identifiant+" "+ password+"\n"+rs);
 	        	
 	         }
+	        
 	        else {
 	        	Label headerLabel = new Label("Erreur");
 	             Text bodyText = new Text("Identifiant ou mot de passe incorrect");

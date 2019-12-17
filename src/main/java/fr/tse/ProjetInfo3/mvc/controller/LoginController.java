@@ -17,6 +17,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,13 +38,15 @@ import javafx.stage.Stage;
  */
 public class LoginController {
 
-	   @FXML
+	@FXML
 	    private StackPane dialogStackPane;
 
 	 	@FXML
 	    private AnchorPane anchorPane;
 	 	 @FXML
 	     private JFXButton loginButton;
+	 	 @FXML
+	 	 private JFXButton signinButton;
 	 	 @FXML
 	 	 private JFXTextField identifiantField;
 	 	// @FXML
@@ -72,14 +75,15 @@ public class LoginController {
 	    private void initialize() {
 	    	
 	    }
-	    
+	    @FXML
+	    private void signinButtonpressed(ActionEvent event) {
+	    	mainController.goToSigninTab();
+	    }
 	    @FXML
 	    private void loginButtonPressed(ActionEvent event) {
+
 	    	//Identifiant de connexion
 	    	String identifiant= identifiantField.getText();
-	    	//Password 
-	    	/*TO DO: make it invisible
-	    	 * */
 	    	
 	    	String password= passwordField.getText();
 	    	  Connection conn = null; 
@@ -185,6 +189,19 @@ public class LoginController {
 		      } // end try 
 		      System.out.println("Goodbye!"); 
 		   }
+
+		public JFXTextField getIdentifiantField() {
+				return identifiantField;
+			}
+			public void setIdentifiantField(JFXTextField identifiantField) {
+				this.identifiantField = identifiantField;
+			}
+			public JFXPasswordField getPasswordField() {
+				return passwordField;
+			}
+			public void setPasswordField(JFXPasswordField passwordField) {
+				this.passwordField = passwordField;
+			}
 	    }
 
 	    

@@ -80,13 +80,14 @@ public class SearchTabController {
 
     @FXML
     private Label progressLabel;
-
+ 
     @FXML
     private JFXButton loginButton;
 
     @FXML
     private JFXButton signinButton;
-
+    @FXML
+    private JFXButton signoutButton;
     @FXML
     private JFXProgressBar propositionProgressBar;
 
@@ -98,18 +99,21 @@ public class SearchTabController {
     //private LoginController LoginController;
 
     /*This function is launched when this tab is launched */
+
     @FXML
     private void initialize() {
         //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
-    	
     	LoginController loginController=new LoginController();
     	if(loginController.connected==1) {
         loginButton.setVisible(false);
         signinButton.setVisible(false);
+        signoutButton.setVisible(true);
+
     	}
     	else {
             loginButton.setVisible(true);
             signinButton.setVisible(true);
+            signoutButton.setVisible(false);
     	}
 
 
@@ -204,6 +208,12 @@ public class SearchTabController {
 	public void signinButtonpressed(ActionEvent event) {
 	mainController.goToSigninTab();
 }
+    @FXML
+    public void signoutButtonPressed(ActionEvent event) {
+    	LoginController.connected=0;
+    	mainController.goToHomeRefresh();
+    	
+    }
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
