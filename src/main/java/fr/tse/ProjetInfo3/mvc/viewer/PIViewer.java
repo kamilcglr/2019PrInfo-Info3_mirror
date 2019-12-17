@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -94,7 +95,8 @@ public class PIViewer {
         Date dateToSearch = null;
         int totalNumberOfRequest = 0;
 
-        while (totalNumberOfRequest < 40 && !limitsReached(hashtagsOfIP, usersOfIP)) {
+        //Default 40, 10 for tests
+        while (totalNumberOfRequest < 10 && !limitsReached(hashtagsOfIP, usersOfIP)) {
             //For each hashtag and user, get tweets until oldestTweet
             //In each request, increase the number of request
             for (Hashtag hashtag : hashtagsOfIP) {
@@ -232,6 +234,8 @@ public class PIViewer {
 
             //return datesOfLast.get(0); //If only one item in PI
         } else {
+            //Fix when same dates on high frequency tweets
+            datesOfLast = datesOfLast.stream().distinct().collect(Collectors.toList());
             return datesOfLast.get(1);
         }
     }
