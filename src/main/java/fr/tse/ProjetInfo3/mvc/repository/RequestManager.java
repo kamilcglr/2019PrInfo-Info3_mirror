@@ -514,7 +514,7 @@ public class RequestManager {
         Platform.runLater(() -> {
             Timeline timeline = new Timeline();
             KeyValue keyValue = new KeyValue(progressBar.progressProperty(), (double) progress / (double) count);
-            KeyFrame keyFrame = new KeyFrame(new Duration(1000), keyValue);
+            KeyFrame keyFrame = new KeyFrame(new Duration(2000), keyValue);
             timeline.getKeyFrames().add(keyFrame);
 
             timeline.play();

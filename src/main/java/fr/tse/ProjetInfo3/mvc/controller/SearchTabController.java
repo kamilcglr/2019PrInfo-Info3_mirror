@@ -1,12 +1,10 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultObject;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -19,8 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -31,7 +27,6 @@ import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.Icon;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**

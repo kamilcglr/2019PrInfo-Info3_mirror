@@ -250,10 +250,10 @@ GridPane {
     -fx-background-insets: 2.0, 0.0, 0.0;
     -fx-background-radius: 2.0em;
 }
+
 /*
 * Common style to all lists
 */
-
 .list-view {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
@@ -263,10 +263,11 @@ GridPane {
 .list-cell:odd, .list-cell:even {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
-    -fx-background-color: white;
+    -fx-background-color: WHITE;
+
 }
 
-.list-cell:hover {
+.list-cell:hover:filled {
     -fx-background-color: -accent2;
 }
 
@@ -275,21 +276,15 @@ GridPane {
 }
 
 .jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-padding: 10;
     -fx-background-color: WHITE;
 }
+
 /*
 * Propositions List
  */
-.nameLabel {
-    -fx-padding: 10 0 10 10;
-    -fx-font-size: 15;
-    -fx-font-family: 'Roboto Medium', sans-serif;
-}
-
-.screenNameLabel {
-    -fx-padding: 10 0 10 10;
-    -fx-font-size: 15;
-    -fx-font-family: 'Roboto Light', sans-serif;
+#propositionList {
+    -fx-padding: 10 10 0 10;
 }
 
 .hbox {
@@ -298,29 +293,33 @@ GridPane {
 }
 
 /*
-* List of user
+* Top List of user and search
 */
 .nameLabel {
     -fx-font-family: 'Roboto Bold', sans-serif;
     -fx-font-size: 15;
-    -fx-label-padding: 0 0 0 10;
+    -fx-label-padding: 10 0 0 10;
 }
-
 .followersCountLabel {
     -fx-font-family: 'Roboto Medium', sans-serif;
     -fx-font-size: 15;
     -fx-label-padding: 10 0 0 10;
 }
 
+.screenNameLabel {
+    -fx-padding: 10 0 0 10;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Light', sans-serif;
+}
+
 /*
-* List of hashtag
+* Top List of hashtag
 */
-.hashtagsList{
-    -fx-border-insets: 10 0 0 0;
-    -fx-background-insets: 10 0 0 0;
+.hashtagsList {
     -fx-padding: 10 10 0 10;
     -fx-border-style: hidden;
 }
+
 .indexLabel {
     -fx-font-family: 'Roboto Light', sans-serif;
     -fx-font-size: 15;
@@ -339,20 +338,26 @@ GridPane {
     -fx-font-size: 15;
     -fx-padding: 0 0 0 10;
 }
+/*
+ * Simple Hashtag
+ */
+.hashtagNameLabel{
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 0 0 0 10;
+}
 
 /*
 * List of tweets
 */
 .tweetsList {
-    -fx-background-radius: 10pt;
-    -fx-border-insets: 10 0 0 0;
-    -fx-background-insets: 10 0 0 0;
-    -fx-padding: 10 10 0 10;
     -fx-border-style: hidden;
     -fx-background-color: #F5F5F5;
 }
 
 .tweetsList .jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-insets: 5 5 5 5;
+    -fx-padding: 20;
     -fx-background-color: #F5F5F5 !important;
 }
 
@@ -379,6 +384,7 @@ GridPane {
     -fx-background-color: transparent;
     -fx-text-fill: -primary;
     -fx-border-style: hidden;
+    -fx-padding: 10 0 0 0;
 }
 
 .titled-pane > .title > .arrow-button .arrow {
@@ -420,12 +426,12 @@ GridPane {
     -fx-font-family: 'Raleway Black', sans-serif;
     -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
-    -fx-padding: 0 0 10 0;
+    -fx-padding: 10 0 0 10;
 }
 
 .centeredtabtitles {
     -fx-font-family: 'Raleway Black', sans-serif;
     -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
-    -fx-padding: 30 0 0 0;
+    -fx-padding: 10 0 0 0;
 }

@@ -1,6 +1,8 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,6 +15,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+
+import java.util.stream.Collectors;
 
 public class ListObjects {
     /**
@@ -37,7 +41,7 @@ public class ListObjects {
 
             if (resultHashtag != null && !empty) {
                 classementLabel.setText(resultHashtag.getClassementIndex());
-                hashtagLabel.setText(resultHashtag.getHashtagName());
+                hashtagLabel.setText("#" + resultHashtag.getHashtagName());
                 nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
                 setGraphic(hBox);
             }
@@ -68,58 +72,6 @@ public class ListObjects {
 
         String getNbTweets() {
             return nbTweets;
-        }
-    }
-
-
-    /**
-     * This class is used to print result inside the treeTable
-     */
-    public static class ResultObject extends RecursiveTreeObject<ResultObject> {
-        private StringProperty name;
-        private StringProperty screen_name;
-
-        private ImageView profileImageView;
-        private Image profilePicture;
-
-
-        public ResultObject(String name, String screenName, String link) {
-            this.name = new SimpleStringProperty(name);
-            this.screen_name = new SimpleStringProperty("@" + screenName);
-            this.profileImageView = new ImageView();
-
-            profilePicture = new Image(link, 40, 40, false, false);
-            profileImageView.setImage(profilePicture);
-
-            Circle clip = new Circle(20, 20, 20);
-            profileImageView.setClip(clip);
-
-            SnapshotParameters parameters = new SnapshotParameters();
-            parameters.setFill(Color.TRANSPARENT);
-
-            WritableImage image = profileImageView.snapshot(parameters, null);
-
-            profileImageView.setClip(null);
-            profileImageView.setImage(image);
-            profileImageView.getStyleClass().add("profileImageView");
-
-        }
-
-        public StringProperty getName() {
-            return name;
-        }
-
-        public void setName(StringProperty name) {
-            this.name = name;
-        }
-
-        public StringProperty getScreen_name() {
-            return screen_name;
-        }
-
-
-        public void setScreen_name(StringProperty screenName) {
-            this.screen_name = screenName;
         }
     }
 
@@ -174,7 +126,7 @@ public class ListObjects {
                 nameLabel.setText(user.getName());
                 nameLabel.getStyleClass().add("nameLabel");
 
-                screenName.setText(user.getScreen_name());
+                screenName.setText("@" + user.getScreen_name());
                 screenName.getStyleClass().add("screenNameLabel");
 
                 setText(null);
@@ -261,4 +213,93 @@ public class ListObjects {
             }
         }
     }
+
+    /*
+     * Used in myPisList
+     */
+    public static class ResultInterestPoint extends ListCell<InterestPoint> {
+        HBox hBox = new HBox();
+
+        Label name;
+        Label users;
+        Label hashtags;
+
+
+        public ResultInterestPoint() {
+            super();
+
+            name = new Label();
+            users = new Label();
+            hashtags = new Label();
+            hBox.getChildren().addAll(name, users, hashtags);
+        }
+
+        @Override
+        protected void updateItem(InterestPoint interestPoint, boolean empty) {
+            super.updateItem(interestPoint, empty);
+
+            if (empty || interestPoint == null) {
+                setText(null);
+                setGraphic(null);
+
+            } else {
+                hBox.getStyleClass().add("hbox");
+
+                String userNamesInPI = interestPoint.getUsers().stream()
+                        .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
+                String hashtagNamesInPI = interestPoint.getHashtags().stream()
+                        .map(hashtag -> "#" + hashtag.getHashtag()).collect(Collectors.joining(" "));
+
+
+                name.setText(interestPoint.getName());
+                name.getStyleClass().add("nameOfPI");
+
+                users.setText(userNamesInPI);
+                hashtags.setText(hashtagNamesInPI);
+
+                users.getStyleClass().add("usersAndHashtagsLabel");
+                hashtags.getStyleClass().add("usersAndHashtagsLabel");
+
+                setText(null);
+                setGraphic(hBox);
+            }
+        }
+    }
+
+    /*
+     * Simple hashtag with title only
+     * */
+    public static class SimpleHashtag extends ListCell<Hashtag> {
+        HBox hBox = new HBox();
+
+        Label name;
+
+        public SimpleHashtag() {
+            super();
+
+            name = new Label();
+            hBox.getChildren().addAll(name);
+        }
+
+        @Override
+        protected void updateItem(Hashtag hashtag, boolean empty) {
+            super.updateItem(hashtag, empty);
+
+            if (empty || hashtag == null) {
+                setText(null);
+                setGraphic(null);
+
+            } else {
+                hBox.getStyleClass().add("hbox");
+
+                name.setText("#" + hashtag.getHashtag());
+                name.getStyleClass().add("hashtagNameLabel");
+
+                setText(null);
+                setGraphic(hBox);
+            }
+        }
+    }
+
+
 }

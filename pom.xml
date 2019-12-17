@@ -47,14 +47,7 @@
             <version>${javafx.version}</version>
             <classifier>linux</classifier>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>mac</classifier>
-        </dependency>
-        -->
+
 
         <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
         <!--  Permits to use material design (custom javafx elements)-->
@@ -106,6 +99,19 @@
             <groupId>com.github.giordamauro</groupId>
             <artifactId>oauth1-signature-builder</artifactId>
             <version>-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.16-alpha</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
