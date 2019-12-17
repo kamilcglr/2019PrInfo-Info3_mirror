@@ -426,7 +426,7 @@ GridPane {
     -fx-font-family: 'Raleway Black', sans-serif;
     -fx-font-size: 35;
     -fx-text-fill: -grey-dark;
-    -fx-padding: 10 0 0 10;
+    -fx-padding: 5 0 0 10;
 }
 
 .centeredtabtitles {

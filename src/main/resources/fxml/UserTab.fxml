@@ -74,12 +74,12 @@
                                         </Label>
                                         <Label fx:id="username" focusTraversable="false" text="\@user" wrapText="true" GridPane.columnSpan="3" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets left="5.0" top="40.0" />
+                                                <Insets top="40.0" />
                                             </GridPane.margin>
                                         </Label>
                                         <Label fx:id="twittername" styleClass="tabtitles" text="TwitterName" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                                             <GridPane.margin>
-                                                <Insets left="5.0" />
+                                                <Insets />
                                             </GridPane.margin>
                                         </Label>
                                         <Label fx:id="nbTweet" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">

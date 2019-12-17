@@ -1,6 +1,7 @@
 #username {
     -fx-font-family: 'Raleway ', sans-serif;
     -fx-font-size: 25;
+    -fx-padding: 5 0 0 10;
     -fx-text-fill: -gray;
 }
 
