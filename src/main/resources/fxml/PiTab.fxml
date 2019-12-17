@@ -78,7 +78,7 @@
                                  <children>
                                                 <TitledPane fx:id="topFiveUserTitled" expanded="false" text="Top 5 des utilisateurs liés à ce point d'intérêt">
                                        <content>
-                                          <JFXListView fx:id="topFiveUserList" />
+                                          <JFXListView fx:id="topFiveUserList" onMouseClicked="#userClick"/>
                                        </content>
                                     </TitledPane>
                                                 <TitledPane fx:id="titledTweet" expanded="false" text="Top 10 des tweets">

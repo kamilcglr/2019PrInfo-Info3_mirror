@@ -95,7 +95,6 @@ public class MainController {
         /*the controller can be used in other Tabs*/
         searchTabController.injectMainController(this);
         //userTabController.injectMainController(this);
-        //piTabController.injectMainController(this);
         //hashtagTabController.injectMainController(this);
 
         //goToPICreatePane();
@@ -325,6 +324,7 @@ public class MainController {
         try {
             AnchorPane piTab = fxmlLoader.load();
             PiTabController piTabController = fxmlLoader.getController();
+            piTabController.injectMainController(this);
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(piTab);
