@@ -344,7 +344,7 @@ public class PIViewer {
     }
 
     //Gets tweets for hashtag and sets them inside the object.
-    private Integer getTweetsFromHashtag(Hashtag hashtag, int nbRequestMax, Date maxDate, Label progressLabel) throws Exception {
+    Integer getTweetsFromHashtag(Hashtag hashtag, int nbRequestMax, Date maxDate, Label progressLabel) throws Exception {
         int NbRequestDone = 0;
         List<Tweet> tweetList = new ArrayList<>();
 

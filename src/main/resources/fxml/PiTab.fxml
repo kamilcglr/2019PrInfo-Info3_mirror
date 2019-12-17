@@ -54,14 +54,17 @@
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin></Label>
-                              <JFXListView fx:id="trackedUsersList" styleClass="trackedList" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                              <JFXListView fx:id="trackedUsersList" GridPane.columnSpan="2" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin></JFXListView>
-                              <JFXListView fx:id="trackedHashtagsList" styleClass="trackedList" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                              <JFXListView fx:id="trackedHashtagsList" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets right="10.0" />
-                                 </GridPane.margin></JFXListView>
+                                 </GridPane.margin>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets></JFXListView>
                               <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="25.0" progress="0.04" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                               <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                                         <Label fx:id="infosNbTweetsLabel" styleClass="descriptionLabels" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />

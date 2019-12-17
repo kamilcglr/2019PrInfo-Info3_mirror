@@ -240,10 +240,11 @@ public class InterestPoint implements Serializable {
     }
 
     /**
+     * TODO delete this after Sprint 4
      * Return a string that resume the Interest Point
      * @return string interestPointName + date + users + hashtags
      */
-    public String toStringMinimal() {
+   /* public String toStringMinimal() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String spacing = "\t\t\t\t\t\t\t\t";
 
@@ -258,6 +259,6 @@ public class InterestPoint implements Serializable {
         }
 
         return interestPointMinimal;
-    }
+    }*/
 
 }

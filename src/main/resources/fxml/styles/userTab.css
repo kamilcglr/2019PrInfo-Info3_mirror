@@ -9,9 +9,6 @@
     -fx-font-size: 15;
     -fx-text-fill: -grey-dark;
     -fx-padding: 0 0 10 0;
-
-    /*-fx-border-width: 1px;*/
-    /*-fx-border-color: -grey-dark;*/
 }
 
 .countLabel {
