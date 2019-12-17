@@ -1,16 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import com.jfoenix.controls.JFXListView;
-
 import fr.tse.ProjetInfo3.mvc.controller.SearchTabController;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
-import javafx.collections.ObservableList;
 
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Laïla

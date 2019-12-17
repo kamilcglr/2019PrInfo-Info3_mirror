@@ -2,11 +2,10 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
 
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
@@ -22,7 +21,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -156,7 +154,7 @@ public class UserTabController {
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
 
-        listHashtags.setCellFactory(param -> new HashtagCell());
+        listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
 
         Platform.runLater(() -> hideLists(true));
 

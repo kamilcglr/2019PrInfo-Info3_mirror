@@ -9,17 +9,6 @@
 /*
 * Labels
 */
-#piNameLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 30;
-    -fx-text-fill: -grey-dark;
-    -fx-padding: 0 0 10 0;
-}
-
-#nbTweetsLabel {
-    -fx-font-family: 'Raleway Regular', sans-serif;
-}
-
 .trackedTitles {
     -fx-font-family: 'Raleway SemiBold', sans-serif;
     -fx-font-size: 20;
