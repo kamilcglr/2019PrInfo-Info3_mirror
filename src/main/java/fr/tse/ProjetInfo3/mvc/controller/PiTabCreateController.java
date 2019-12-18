@@ -501,9 +501,15 @@ public class PiTabCreateController {
                 public void handle(ActionEvent event) {
                     System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-                    hashtagList = hashtagList.stream()
+                    //hashtagList = hashtagList.stream()
+                    //        .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
+                    //        .collect(Collectors.toList());
+                    //test
+                    List<Hashtag> toRemove = hashtagList.stream()
                             .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
                             .collect(Collectors.toList());
+                    hashtagList.removeAll(toRemove);
+
                     observableListHashtag.remove(hashtagStringObject);
                 }
             });
