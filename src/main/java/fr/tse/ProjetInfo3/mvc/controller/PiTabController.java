@@ -118,17 +118,16 @@ public class PiTabController {
         editButton.setVisible(false);
         nbTweetsLabel.setVisible(false);
 
-        topFiveUserList.setFocusTraversable(false);
-        topTenLinkedList.setFocusTraversable(false);
 
-
-        topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint));
-        topTenLinkedList.setCellFactory(param -> new ListObjects.TopHashtagCellWithPlus(interestPointToPrint));
+        //this part has bto be here to use the same piviewer ========= to verify
+        topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint, piViewer));
+        topTenLinkedList.setCellFactory(param -> new ListObjects.TopHashtagCellWithPlus(interestPointToPrint, piViewer));
 
         //List of objects tracked by user
         trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
         trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
         userViewer = new UserViewer();
+        // ====================
 
     }
 
@@ -171,6 +170,7 @@ public class PiTabController {
     public void setDatas(PIViewer piViewer) {
         this.piViewer = piViewer;
         this.interestPointToPrint = piViewer.getSelectedInterestPoint();
+
         Platform.runLater(() -> {
             piNameLabel.setText(interestPointToPrint.getName());
             showElements(false);

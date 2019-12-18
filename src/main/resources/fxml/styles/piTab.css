@@ -2,10 +2,6 @@
     -fx-background-color: -main-bg-color;
 }
 
-.userCellGridPane{
-    -fx-background-color: white;
-}
-
 /*
 * Labels
 */

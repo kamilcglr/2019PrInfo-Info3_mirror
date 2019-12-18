@@ -59,6 +59,33 @@ public class ListObjects {
     }
 
     /**
+     * This class will represent a result of a linked hashtag
+     */
+    public static class ResultHashtag {
+        private final String classementIndex;
+        private final String hashtagName;
+        private final String nbTweets;
+
+        public ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
+            this.classementIndex = classementIndex;
+            this.hashtagName = hashtagName;
+            this.nbTweets = nbTweets;
+        }
+
+        String getClassementIndex() {
+            return classementIndex;
+        }
+
+        String getHashtagName() {
+            return hashtagName;
+        }
+
+        String getNbTweets() {
+            return nbTweets;
+        }
+    }
+
+    /**
      * This class is used in Linked Hashtag of PI,
      * Contains Plus Button to add the hashtag to PI
      */
@@ -78,13 +105,10 @@ public class ListObjects {
 
         InterestPoint interestPoint;
 
-        PIViewer piViewer;
-
-        public TopHashtagCellWithPlus(InterestPoint interestPointParam) {
+        public TopHashtagCellWithPlus(InterestPoint interestPointParam, PIViewer piViewer) {
             super();
 
             interestPoint = interestPointParam;
-            piViewer = new PIViewer();
 
             currentPiId = interestPoint.getId();
 
@@ -112,14 +136,6 @@ public class ListObjects {
             nbTweetLabel.getStyleClass().add("nbTweetLabel");
 
             addDeleteHashtag = new JFXButton();
-
-            addDeleteIcon = new FontIcon("fas-plus");
-            addDeleteIcon.setIconColor(GREEN);
-
-            addDeleteIcon.setIconSize(14);
-            addDeleteHashtag.setGraphic(addDeleteIcon);
-
-            addDeleteHashtag.setPrefSize(20, 20);
 
             addDeleteHashtag.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -163,6 +179,21 @@ public class ListObjects {
             super.updateItem(resultHashtag, empty);
 
             if (resultHashtag != null && !empty) {
+
+                if (interestPoint.containsHashtag(getItem().getHashtagName())) {
+                    addDeleteIcon = new FontIcon("fas-minus");
+                    addDeleteIcon.setIconColor(RED);
+                } else {
+                    addDeleteIcon = new FontIcon("fas-plus");
+                    addDeleteIcon.setIconColor(GREEN);
+                }
+                addDeleteIcon.setIconSize(14);
+
+                addDeleteHashtag.setGraphic(addDeleteIcon);
+                addDeleteHashtag.setPrefSize(50, 50);
+
+                addDeleteHashtag.setGraphic(addDeleteIcon);
+
                 classementLabel.setText(resultHashtag.getClassementIndex());
                 hashtagLabel.setText("#" + resultHashtag.getHashtagName());
                 nbTweetLabel.setText(resultHashtag.getNbTweets() + " tweets");
@@ -170,34 +201,6 @@ public class ListObjects {
             }
         }
     }
-
-    /**
-     * This class will represent a result of a linked hashtag
-     */
-    public static class ResultHashtag {
-        private final String classementIndex;
-        private final String hashtagName;
-        private final String nbTweets;
-
-        public ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
-            this.classementIndex = classementIndex;
-            this.hashtagName = hashtagName;
-            this.nbTweets = nbTweets;
-        }
-
-        String getClassementIndex() {
-            return classementIndex;
-        }
-
-        String getHashtagName() {
-            return hashtagName;
-        }
-
-        String getNbTweets() {
-            return nbTweets;
-        }
-    }
-
 
     /*
      * Used in topUser inside PITab
@@ -219,15 +222,11 @@ public class ListObjects {
         FontIcon addDeleteIcon;
 
         InterestPoint interestPoint;
-        PIViewer piViewer;
         User userObject;
 
-        public TopUserCellWithPlus(InterestPoint interestPointParam) {
+        public TopUserCellWithPlus(InterestPoint interestPointParam, PIViewer piViewer) {
             super();
-
             interestPoint = interestPointParam;
-            piViewer = new PIViewer();
-            userObject = getItem();
 
             currentPiId = interestPoint.getId();
 
@@ -251,19 +250,6 @@ public class ListObjects {
             followersCountLabel = new Label();
 
             addDeleteUser = new JFXButton();
-
-            if (interestPoint.containsUser(getItem())) {
-                addDeleteIcon = new FontIcon("fas-minus");
-                addDeleteIcon.setIconColor(RED);
-            } else {
-                addDeleteIcon = new FontIcon("fas-plus");
-                addDeleteIcon.setIconColor(GREEN);
-            }
-
-            addDeleteIcon.setIconSize(18);
-            addDeleteUser.setGraphic(addDeleteIcon);
-
-            addDeleteUser.setPrefSize(50, 50);
 
             addDeleteUser.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -304,7 +290,7 @@ public class ListObjects {
         @Override
         protected void updateItem(User user, boolean empty) {
             super.updateItem(user, empty);
-
+            userObject = getItem();
             if (empty || user == null) {
                 setText(null);
                 setGraphic(null);
@@ -312,6 +298,18 @@ public class ListObjects {
             } else {
                 profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
                 profileImageView.setImage(profilePicture);
+
+                if (interestPoint.containsUser(getItem())) {
+                    addDeleteIcon = new FontIcon("fas-minus");
+                    addDeleteIcon.setIconColor(RED);
+                } else {
+                    addDeleteIcon = new FontIcon("fas-plus");
+                    addDeleteIcon.setIconColor(GREEN);
+                }
+
+                addDeleteIcon.setIconSize(18);
+                addDeleteUser.setGraphic(addDeleteIcon);
+                addDeleteUser.setPrefSize(50, 50);
 
                 Circle clip = new Circle(20, 20, 20);
                 profileImageView.setClip(clip);
@@ -332,11 +330,10 @@ public class ListObjects {
                 followersCountLabel.getStyleClass().add("followersCountLabel");
 
                 setText(null);
-                //setGraphic(hBox);
+                setGraphic(cellGridPane);
             }
         }
     }
-
 
     /*
      * Used in topUser inside PITab
@@ -408,7 +405,6 @@ public class ListObjects {
         Label users;
         Label hashtags;
 
-
         public ResultInterestPoint() {
             super();
 
@@ -427,7 +423,9 @@ public class ListObjects {
                 setGraphic(null);
 
             } else {
+
                 hBox.getStyleClass().add("hbox");
+                hBox.setPrefWidth(100);
 
                 String userNamesInPI = interestPoint.getUsers().stream()
                         .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
@@ -436,10 +434,17 @@ public class ListObjects {
 
 
                 name.setText(interestPoint.getName());
+                name.setMinWidth(100);
+                name.setMaxWidth(100);
+                name.setWrapText(true);
                 name.getStyleClass().add("nameOfPI");
 
                 users.setText(userNamesInPI);
+                users.setMaxWidth(300);
+                users.setWrapText(true);
                 hashtags.setText(hashtagNamesInPI);
+                hashtags.setMaxWidth(300);
+                hashtags.setWrapText(true);
 
                 users.getStyleClass().add("usersAndHashtagsLabel");
                 hashtags.getStyleClass().add("usersAndHashtagsLabel");

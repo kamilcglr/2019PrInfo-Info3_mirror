@@ -434,6 +434,20 @@ public class PiTabCreateController {
     }
 
     /**
+     * If user choose an entry in the table, we launch the search by firing an event.
+     * But we have to take the screen_name fisrt from the list
+     *
+     * @param event
+     */
+    @FXML
+    private void propositionListClicked(MouseEvent event) {
+        User selectedResult = propositionList.getSelectionModel().getSelectedItem();
+        userSelected = true; //keep userSelected before userField.setText
+        userField.setText(selectedResult.getScreen_name());
+        propositionVBox.setVisible(false);
+    }
+
+    /**
      * @author Sergiy A Cell element used as an entity shown in the Hashtag
      * JFXListView
      */
