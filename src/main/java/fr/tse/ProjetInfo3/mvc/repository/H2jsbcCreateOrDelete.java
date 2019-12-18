@@ -13,8 +13,9 @@ import java.sql.Statement;
  * */
 public class H2jsbcCreateOrDelete {
     public static void main(String[] args) {
-        //deleteAllTables();
-        createTables();
+     //  deleteAllTables();
+        //createTables();
+        oldCreateUser();
     }
 
     public static void deleteAllTables() {
@@ -29,6 +30,8 @@ public class H2jsbcCreateOrDelete {
             stmt.executeUpdate("drop table interestpoint");
             stmt.executeUpdate("drop table hashtag");
             stmt.executeUpdate("drop table twitteruser");
+            stmt.executeUpdate("drop table userApp");
+
 
             System.out.println("Delete all tables tables in given database...");
 
@@ -124,12 +127,11 @@ public class H2jsbcCreateOrDelete {
             //STEP 3: Execute a query
             System.out.println("Creating table in given database...");
             stmt = conn.createStatement();
-            String userapp = "CREATE TABLE   userApp " +
-                    "(id INTEGER not NULL, " +
+            String userapp = "CREATE TABLE   user" +
+                    "(username VARCHAR(255) , " +
                     " mail VARCHAR(255), " +
                     " twitter VARCHAR(255), " +
-                    " password VARCHAR(20), " +
-                    " PRIMARY KEY ( id ))";
+                    " password VARCHAR(20))";
             stmt.executeUpdate(userapp);
             System.out.println("Created tables in given database...");
         } catch (Exception e) {

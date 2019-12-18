@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.SearchTabController">
@@ -67,9 +68,11 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="signoutButton" contentDisplay="RIGHT" onAction="#signoutButtonPressed" styleClass="logginSigninButtons" text="Déconnexion" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                                </JFXButton>
+                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="S'inscrire" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
+                                        <FontIcon fx:id="logginIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
                                 <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
@@ -91,6 +94,10 @@
                                     </GridPane.margin>
                                 </VBox>
                                 <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                           <font>
+                              <Font size="21.0" />
+                           </font>
+                        </Label>
                             </children>
                         </GridPane>
                     </children>

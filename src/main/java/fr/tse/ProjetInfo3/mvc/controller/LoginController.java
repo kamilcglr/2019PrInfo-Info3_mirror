@@ -17,6 +17,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,13 +38,15 @@ import javafx.stage.Stage;
  */
 public class LoginController {
 
-	   @FXML
+	@FXML
 	    private StackPane dialogStackPane;
 
 	 	@FXML
 	    private AnchorPane anchorPane;
 	 	 @FXML
 	     private JFXButton loginButton;
+	 	 @FXML
+	 	 private JFXButton signinButton;
 	 	 @FXML
 	 	 private JFXTextField identifiantField;
 	 	// @FXML
@@ -61,7 +64,7 @@ public class LoginController {
 		   static final String PASS = ""; 
 		   
 		   
-	
+		   public static int connected=0;
 		   private MainController mainController;
 
 	    /*Controller can acces to this Tab */
@@ -70,16 +73,17 @@ public class LoginController {
 	    }
 	    @FXML
 	    private void initialize() {
-
+	    	
 	    }
-	    
+	    @FXML
+	    private void signinButtonpressed(ActionEvent event) {
+	    	mainController.goToSigninTab();
+	    }
 	    @FXML
 	    private void loginButtonPressed(ActionEvent event) {
+
 	    	//Identifiant de connexion
 	    	String identifiant= identifiantField.getText();
-	    	//Password 
-	    	/*TO DO: make it invisible
-	    	 * */
 	    	
 	    	String password= passwordField.getText();
 	    	  Connection conn = null; 
@@ -95,11 +99,12 @@ public class LoginController {
 		         // STEP 3: Execute a query 
 		         System.out.println("Connected database successfully..."); 
 		         stmt = conn.createStatement(); 
-		         String sql = "SELECT mail, password FROM userApp where mail='"+identifiant+"'"+" and password= '"+password+"'"; 
+		         String sql = "SELECT mail, password FROM user where mail='"+identifiant+"'"+" and password= '"+password+"'"; 
 		         ResultSet rs = stmt.executeQuery(sql); 
 		         
 		         // STEP 4: Extract data from result set 
 		        if(rs.next()) { 
+	                 connected=1;
 		        	 Label headerLabel = new Label("loggedin");
 		             Text bodyText = new Text("login successful");
 		             JFXButton button = new JFXButton("close");
@@ -115,6 +120,8 @@ public class LoginController {
 		             JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
 		             button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
 		                 dialog.close();
+		                 mainController.goToHomeRefresh();
+		                 
 		                 
 		             });
 
@@ -128,6 +135,7 @@ public class LoginController {
 		             anchorPane.setEffect(blur);
 		             //verification sur console
 		        	System.out.println("ok"+identifiant+" "+ password+"\n"+rs);
+		        	
 		         }
 		        else {
 		        	Label headerLabel = new Label("Erreur");
@@ -181,6 +189,19 @@ public class LoginController {
 		      } // end try 
 		      System.out.println("Goodbye!"); 
 		   }
+
+		public JFXTextField getIdentifiantField() {
+				return identifiantField;
+			}
+			public void setIdentifiantField(JFXTextField identifiantField) {
+				this.identifiantField = identifiantField;
+			}
+			public JFXPasswordField getPasswordField() {
+				return passwordField;
+			}
+			public void setPasswordField(JFXPasswordField passwordField) {
+				this.passwordField = passwordField;
+			}
 	    }
 
 	    

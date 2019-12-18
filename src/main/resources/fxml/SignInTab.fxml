@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
@@ -10,9 +9,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.LoginController">
+<AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.SignInController">
     <children>
         <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -35,20 +35,36 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <JFXTextField fx:id="identifiantField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                        <JFXPasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                                <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="416.0" text="LOGIN" textAlignment="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                                <JFXButton fx:id="loginButton" contentDisplay="RIGHT" onAction="#loginButtonPressed" styleClass="logginSigninButtons" text="Login" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                <JFXTextField fx:id="mail" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                                <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="416.0" text="Inscription" textAlignment="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="S'inscrire" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
                                     <graphic>
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                 <JFXButton fx:id="loginButton" contentDisplay="RIGHT" onAction="#loginButtonPressed" styleClass="logginSigninButtons" text="Login" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <graphic>
-                                        <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
+                                        <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
                         <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                        <JFXTextField fx:id="password" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                        <JFXTextField fx:id="twitterName" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+                        <Label text="Mail" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Label>
+                        <Label text="Mot de passe" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Label>
+                        <Label text="Twitter " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Label>
 
                             </children>
                         </GridPane>
