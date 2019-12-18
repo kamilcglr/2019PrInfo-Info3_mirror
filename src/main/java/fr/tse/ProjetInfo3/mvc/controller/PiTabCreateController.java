@@ -144,10 +144,10 @@ public class PiTabCreateController {
     @FXML
     private GridPane suivisGrid2;
 
-	@FXML
-	private JFXListView<User> propositionList;
+    @FXML
+    private JFXListView<User> propositionList;
 
-	private List<User> resultUsers;
+    private List<User> resultUsers;
 
     // We separate ListViews from Lsit of object, because we will need them when
     // savign
@@ -179,10 +179,10 @@ public class PiTabCreateController {
         propositionProgressBar.setVisible(false);
         propositionProgressBar.setProgress(-1);
 
-		propositionList.setCellFactory(param -> new ListObjects.SearchUser());
+        propositionList.setCellFactory(param -> new ListObjects.SearchUser());
 
 
-		userSelected = false;
+        userSelected = false;
         suppressionDone = true;
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -207,16 +207,14 @@ public class PiTabCreateController {
             }
         });
 
-        propositionVBox.setVisible(false);
+        propositionList.setVisible(false);
 
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         userField.textProperty().addListener((observable, old_value, new_value) -> {
             propositionList.setVisible(false);
-            propositionList.getItems().clear();
 
             // Not userSelected because we don't do search when user has chosen a user
             if (new_value.length() > 2 && !userSelected) {
-                propositionVBox.setVisible(false);
                 pause.setOnFinished(event -> {
                     propositionProgressBar.setVisible(true);
                     showPropositionList(new_value);
@@ -291,7 +289,6 @@ public class PiTabCreateController {
                         observableListUser.add(userViewer.getUser());
                         userList.add(userViewer.getUser());
 
-                        propositionList.setVisible(false);
                         propositionVBox.setVisible(false);
                         userSelected = false;
                     }
@@ -420,6 +417,7 @@ public class PiTabCreateController {
                     propositionList.getItems().clear();
                     propositionList.getItems().addAll(usersToPrint);
                     if (usersToPrint.size() > 0) {
+                        propositionVBox.setVisible(true);
                         propositionList.setVisible(true);
                     }
                     propositionProgressBar.setVisible(false);
@@ -445,6 +443,7 @@ public class PiTabCreateController {
         userSelected = true; //keep userSelected before userField.setText
         userField.setText(selectedResult.getScreen_name());
         propositionVBox.setVisible(false);
+
     }
 
     /**

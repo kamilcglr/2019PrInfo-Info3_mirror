@@ -450,3 +450,68 @@ GridPane {
     -fx-text-fill: -grey-dark;
     -fx-padding: 10 0 0 0;
 }
+
+/*Login and signin*/
+
+.jfx-text-field .input-line, .jfx-password-field .input-line {
+    -fx-background-color: -primary;
+}
+
+.jfx-text-field, .jfx-password-field {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 25;
+}
+
+#validateButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+.filledIcons {
+    -fx-fill: white;
+}
+
+.logginSigninIcons {
+    -fx-fill: white;
+}
+
+.logginSigninButtons {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+#logoutButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -gray;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+/* OLD
+.logginSigninIcons {
+    -fx-icon-color: -accent;
+}
+
+.logginSigninButtons {
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -accent;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+    -fx-border-color: -accent;
+}*/
+

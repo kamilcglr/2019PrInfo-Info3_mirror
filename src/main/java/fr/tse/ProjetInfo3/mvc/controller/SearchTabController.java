@@ -36,13 +36,9 @@ import java.util.List;
 public class SearchTabController {
     private MainController mainController;
 
-    /*Controller can acces to this Tab */
-    public void injectMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
-
     boolean userSelected;
 
+    JFXHamburger hamburger;
     /*
      * We re-declare fxml variable here (fx:id="hashtagToggle"), with the SAME name ot use them
      * */
@@ -75,14 +71,14 @@ public class SearchTabController {
 
     @FXML
     private Label progressLabel;
- 
+
     @FXML
     private JFXButton loginButton;
 
     @FXML
     private JFXButton signinButton;
     @FXML
-    private JFXButton signoutButton;
+    private JFXButton logoutButton;
     @FXML
     private JFXProgressBar propositionProgressBar;
 
@@ -90,27 +86,31 @@ public class SearchTabController {
     private JFXListView<User> propositionList;
 
     private List<User> resultUsers;
-    
-    //private LoginController LoginController;
 
-    /*This function is launched when this tab is launched */
+    /*Controller can acces to this Tab */
+    public void injectMainController(MainController mainController, JFXHamburger hamburger) {
+        this.mainController = mainController;
+        this.hamburger = hamburger;
 
-    @FXML
-    private void initialize() {
-        //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
-    	LoginController loginController=new LoginController();
-    	if(loginController.connected==1) {
-        loginButton.setVisible(false);
-        signinButton.setVisible(false);
-        signoutButton.setVisible(true);
+        LoginController loginController = new LoginController();
 
-    	}
-    	else {
+        if (loginController.connected == 1) {
+            loginButton.setVisible(false);
+            signinButton.setVisible(false);
+            logoutButton.setVisible(true);
+            hamburger.setVisible(true);
+
+        } else {
             loginButton.setVisible(true);
             signinButton.setVisible(true);
-            signoutButton.setVisible(false);
-    	}
+            logoutButton.setVisible(false);
+            hamburger.setVisible(false);
+        }
+    }
 
+    /*This function is launched when this tab is launched */
+    @FXML
+    private void initialize() {
 
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
@@ -199,16 +199,19 @@ public class SearchTabController {
     public void loginButtonPressed(ActionEvent event) {
         mainController.goToLoginPane();
     }
+
     @FXML
-	public void signinButtonpressed(ActionEvent event) {
-	mainController.goToSigninTab();
-}
+    public void signinButtonpressed(ActionEvent event) {
+        mainController.goToSigninTab();
+    }
+
     @FXML
     public void signoutButtonPressed(ActionEvent event) {
-    	LoginController.connected=0;
-    	mainController.goToHomeRefresh();
-    	
+        LoginController.connected = 0;
+        mainController.goToHomeRefresh();
+
     }
+
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
@@ -285,7 +288,7 @@ public class SearchTabController {
      */
     @FXML
     private void propositionListClicked(MouseEvent event) {
-        if (propositionList.getSelectionModel().getSelectedIndex() != -1){
+        if (propositionList.getSelectionModel().getSelectedIndex() != -1) {
             User selectedResult = propositionList.getSelectionModel().getSelectedItem();
             userSelected = true; //keep userSelected before userField.setText
             searchField.setText(selectedResult.getScreen_name());

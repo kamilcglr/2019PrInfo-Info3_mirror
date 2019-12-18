@@ -16,19 +16,6 @@
     -jfx-toggle-color: -accent;
 }
 
-.logginSigninIcons {
-    -fx-icon-color: -accent;
-}
-
-.logginSigninButtons {
-    -fx-font-family: 'Raleway Regular', sans-serif;
-    -fx-font-size: 20;
-    -fx-text-fill: -accent;
-    -fx-border-radius: 15pt;
-    -fx-background-radius: 15pt;
-    -fx-border-color: -accent;
-}
-
 #progressIndicator .arc {
     -fx-stroke: -accent;
 }
@@ -95,4 +82,10 @@
     -fx-font-family: 'Raleway Bold', sans-serif;
     -fx-font-size: 30;
     -fx-text-fill: -red;
+}
+
+.dialog-header-success {
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 30;
+    -fx-text-fill: -primary;
 }
