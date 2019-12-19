@@ -89,6 +89,11 @@ public class SearchTabController {
     private JFXListView<User> propositionList;
 
     private List<User> resultUsers;
+<<<<<<< Updated upstream
+=======
+
+    //private LoginController LoginController;
+>>>>>>> Stashed changes
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -185,7 +190,20 @@ public class SearchTabController {
     public void loginButtonPressed(ActionEvent event) {
         mainController.goToLoginPane();
     }
+<<<<<<< Updated upstream
 
+=======
+    @FXML
+	public void signinButtonpressed(ActionEvent event) {
+	mainController.goToSigninTab();
+}
+    @FXML
+    public void signoutButtonPressed(ActionEvent event) {
+    	LoginController.connected=0;
+    	mainController.goToHomeRefresh();
+
+    }
+>>>>>>> Stashed changes
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
