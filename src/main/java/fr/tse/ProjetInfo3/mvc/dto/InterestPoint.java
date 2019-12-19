@@ -38,6 +38,18 @@ public class InterestPoint implements Serializable {
     public InterestPoint() {
     }
 
+    public InterestPoint(InterestPoint interestPoint) {
+        super();
+        this.id = interestPoint.getId();
+        this.name = interestPoint.getName();
+        this.description = interestPoint.getDescription();
+        this.dateOfCreation = interestPoint.getDateOfCreation();
+        this.hashtags = interestPoint.getHashtags();
+        this.users = interestPoint.getUsers();
+        this.interestPoints = interestPoint.getInterestPoints();
+        this.tweets = interestPoint.getTweets();
+    }
+
     public InterestPoint(int id, String name, String description, Date dateOfCreation) {
         super();
         this.id = id;
@@ -56,7 +68,7 @@ public class InterestPoint implements Serializable {
         this.tweets = new ArrayList<Tweet>();
     }
 
-    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users){
+    public InterestPoint(String name, String description, Date dateOfCreation, List<Hashtag> hashtags, List<User> users) {
         this.name = name;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
@@ -151,6 +163,43 @@ public class InterestPoint implements Serializable {
         return false;
     }
 
+    public boolean containsUser(User user) {
+        return this.getUsers().contains(user);
+        //System.out.println(user);
+        //System.out.println(user.getName());
+        //List<String> screenNames = this.getUsers().stream().map(User::getName).collect(Collectors.toList());
+        //System.out.println(screenNames);
+        //return this.getUsers().stream().map(User::getName).collect(Collectors.toList()).contains(user.getName());
+    }
+
+    public boolean containsHashtag(String hashtagName) {
+        System.out.println(this.getHashtags().stream()
+                .map(Hashtag::getHashtag)
+                .collect(Collectors.toList())
+                .contains(hashtagName));
+        return this.getHashtags().stream()
+                .map(Hashtag::getHashtag)
+                .collect(Collectors.toList())
+                .contains(hashtagName);
+    }
+
+    public Hashtag getHashtagFromName(String hashtag) {
+        List<Hashtag> hashtags = this.getHashtags();
+        Hashtag found = null;
+
+        for (int i = 0; i < hashtags.size(); i++) {
+            System.out.println(hashtags.get(i).getHashtag());
+            Hashtag candidate = hashtags.get(i);
+            if (candidate.getHashtag() == hashtag) {
+                found = candidate;
+                System.out.println("Found " + found.getHashtag());
+                return found;
+            }
+        }
+
+        return found;
+    }
+
     public String getName() {
         return name;
     }
@@ -177,6 +226,15 @@ public class InterestPoint implements Serializable {
 
     public List<Hashtag> getHashtags() {
         return hashtags;
+    }
+
+    public List<String> getHashtagNames() {
+        List<String> hashtagNames = new ArrayList<String>();
+        for (int i = 0; i < hashtags.size(); i++) {
+            hashtagNames.add(hashtags.get(i).getHashtag());
+        }
+
+        return hashtagNames;
     }
 
     public void setHashtags(List<Hashtag> hashtags) {
@@ -240,10 +298,11 @@ public class InterestPoint implements Serializable {
     }
 
     /**
+     * TODO delete this after Sprint 4
      * Return a string that resume the Interest Point
      * @return string interestPointName + date + users + hashtags
      */
-    public String toStringMinimal() {
+   /* public String toStringMinimal() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String spacing = "\t\t\t\t\t\t\t\t";
 
@@ -258,6 +317,6 @@ public class InterestPoint implements Serializable {
         }
 
         return interestPointMinimal;
-    }
 
+    }*/
 }

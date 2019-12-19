@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
@@ -53,11 +54,12 @@ import javafx.util.Duration;
 
 /**
  * @author Sergiy
+ * {@code This class acts as a Controller for the Tab which is used to create or edit Interest Points}
  */
 public class PiTabCreateController {
     private MainController mainController;
-
     private PIViewer piViewer;
+    private InterestPoint interestPointToEdit;
 
     /* Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
@@ -74,6 +76,10 @@ public class PiTabCreateController {
 
     public void setPiViewer(PIViewer piViewer) {
         this.piViewer = piViewer;
+    }
+
+    public void setPiToEdit(InterestPoint interestPoint) {
+        this.interestPointToEdit = interestPoint;
     }
 
     /**
@@ -138,7 +144,13 @@ public class PiTabCreateController {
     @FXML
     private GridPane suivisGrid2;
 
-    //We separate ListViews from Lsit of object, because we will need them when savign
+    @FXML
+    private JFXListView<User> propositionList;
+
+    private List<User> resultUsers;
+
+    // We separate ListViews from Lsit of object, because we will need them when
+    // savign
     @FXML
     private JFXListView<String> hashtagListView;
     private List<Hashtag> hashtagList = new ArrayList<>();
@@ -153,9 +165,6 @@ public class PiTabCreateController {
     @FXML
     private VBox propositionVBox;
 
-    @FXML
-    private JFXTreeTableView<ListObjects.ResultObject> treeView;
-
     private Map<String, String> usersNamesAndScreenNames;
 
     @FXML
@@ -169,6 +178,9 @@ public class PiTabCreateController {
         JFXScrollPane.smoothScrolling(scrollPane);
         propositionProgressBar.setVisible(false);
         propositionProgressBar.setProgress(-1);
+
+        propositionList.setCellFactory(param -> new ListObjects.SearchUser());
+
 
         userSelected = false;
         suppressionDone = true;
@@ -195,16 +207,14 @@ public class PiTabCreateController {
             }
         });
 
-        propositionVBox.setVisible(false);
-        initTreeView();
+        propositionList.setVisible(false);
+
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         userField.textProperty().addListener((observable, old_value, new_value) -> {
-            treeView.setRoot(null);
-            treeView.setVisible(false);
+            propositionList.setVisible(false);
 
-            //Not userSelected because we don't do search when user has chosen a user
+            // Not userSelected because we don't do search when user has chosen a user
             if (new_value.length() > 2 && !userSelected) {
-                propositionVBox.setVisible(false);
                 pause.setOnFinished(event -> {
                     propositionProgressBar.setVisible(true);
                     showPropositionList(new_value);
@@ -224,62 +234,29 @@ public class PiTabCreateController {
     }
 
     /**
-     * If user choose an entry in the table, we launch the search by firing an event.
-     * But we have to take the screen_name fisrt from the list
-     *
-     * @param event
-     */
-    @FXML
-    private void treeViewClicked(MouseEvent event) {
-        TreeItem<ListObjects.ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
-        userSelected = true; //keep userSelected before userField.setText
-        userField.setText(selectedResult.getValue().getScreen_name().get());
-        treeView.setVisible(false);
-        propositionVBox.setVisible(false);
-        propositionProgressBar.setVisible(false);
-    }
-
-    /**
-     * Sets the column of treeView*
-     */
-    private void initTreeView() {
-        JFXTreeTableColumn<ListObjects.ResultObject, String> name = new JFXTreeTableColumn<>("");
-        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
-            }
-        });
-
-        JFXTreeTableColumn<ListObjects.ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
-        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ListObjects.ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
-            }
-        });
-        treeView.setShowRoot(false);
-        treeView.getColumns().setAll(name, screen_name);
-        treeView.getColumns().get(1).getStyleClass().add("idInList");
-        treeView.getColumns().get(0).getStyleClass().add("nameINList");
-        treeView.setFixedCellSize(25);
-    }
-
-    /**
      * Events
      **/
     @FXML
     public void discardJFXButtonPressed(ActionEvent event) {
-        launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false);
+        launchInfoDialog("Annulation", "La création du point d'intérêt a été annulée", "D'accord", false, true);
     }
-
 
     @FXML
     public void saveJFXButtonPressed(ActionEvent event) {
-        interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date, hashtagList, userList);
+        if (!observableListHashtag.isEmpty() || !observableListUser.isEmpty()) {
+            if (!isNew) {
+                piViewer.deleteInterestPointFromDatabaseById(interestPointToEdit.getId());
+            }
 
-        piViewer.addInterestPointToDatabase(interestPoint);
-        launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true);
+            interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
+                    hashtagList, userList);
+
+            piViewer.addInterestPointToDatabase(interestPoint);
+            launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true, true);
+        } else {
+            launchInfoDialog("Point d'Interêt incomplet",
+                    "Votre Point d'Interêt doit contenir au moins un Hashtag ou Utilisateur", "D'accord", false, false);
+        }
     }
 
     @FXML
@@ -287,7 +264,7 @@ public class PiTabCreateController {
         String hashtagInput = hashtagField.getText();
         hashtagInput = hashtagInput.replaceAll("\\s", "");
 
-        //Remove thee # on the beginning before adding
+        // Remove thee # on the beginning before adding
         if (hashtagInput.charAt(0) == '#') {
             hashtagInput = hashtagInput.substring(1);
         }
@@ -312,7 +289,6 @@ public class PiTabCreateController {
                         observableListUser.add(userViewer.getUser());
                         userList.add(userViewer.getUser());
 
-                        treeView.setVisible(false);
                         propositionVBox.setVisible(false);
                         userSelected = false;
                     }
@@ -348,12 +324,14 @@ public class PiTabCreateController {
      * @param text        content printed inside
      * @param labelButton label inside of button
      */
-    private void launchInfoDialog(String header, String text, String labelButton, boolean success) {
+    private void launchInfoDialog(String header, String text, String labelButton, boolean success,
+                                  boolean exitOnClose) {
         Label headerLabel = new Label(header);
         Text bodyText = new Text(text);
         JFXButton button = new JFXButton(labelButton);
 
         BoxBlur blur = new BoxBlur(3, 3, 3);
+        anchorPane.setEffect(blur);
 
         button.getStyleClass().add("dialog-button");
         if (success) {
@@ -374,16 +352,15 @@ public class PiTabCreateController {
         dialogLayout.setBody(bodyText);
         dialogLayout.setActions(button);
         dialog.show();
-        dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
-            anchorPane.setEffect(null);
-        });
-        anchorPane.setEffect(blur);
-
         dialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
             @Override
             public void handle(JFXDialogEvent event) {
-                tabPane.getTabs().remove(tab);
-                mainController.goToMyPisPane();
+                anchorPane.setEffect(null);
+
+                if (exitOnClose) {
+                    tabPane.getTabs().remove(tab);
+                    mainController.goToMyPisPane();
+                }
             }
         });
     }
@@ -393,9 +370,30 @@ public class PiTabCreateController {
      */
     public void setIsNew(boolean isNew) {
         this.isNew = isNew;
-        // if the PI already exists, we show it
-        if (isNew) {
-            // TODO fill the entries with the Interest Point attributes
+
+        if (!isNew) {
+            nameJFXTextField.setText(interestPointToEdit.getName());
+            descriptionJFXTextArea.setText(interestPointToEdit.getDescription());
+            creationDateLabel.setText("Créé le " + interestPointToEdit.getDateOfCreation());
+
+            List<String> hashtagNames = interestPointToEdit.getHashtagNames();
+
+            observableListHashtag = FXCollections.observableArrayList(hashtagNames);
+            observableListUser = FXCollections.observableArrayList(interestPointToEdit.getUsers());
+
+            hashtagListView.setItems(observableListHashtag);
+            hashtagListView.setCellFactory(hastagListView -> new HashtagCell());
+
+            userListView.setItems(observableListUser);
+            userListView.setCellFactory(userListView -> new UserCell());
+
+            observableListHashtag.forEach((hashtag) -> {
+                hashtagList.add(new Hashtag(hashtag));
+            });
+
+            observableListUser.forEach((user) -> {
+                userList.add(user);
+            });
         }
     }
 
@@ -410,22 +408,21 @@ public class PiTabCreateController {
             @Override
             protected Void call() {
                 SearchViewer searchViewer = new SearchViewer();
-                usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
+                resultUsers = searchViewer.getListPropositions(newValue);
 
-                ObservableList<ListObjects.ResultObject> resultObjects = FXCollections.observableArrayList();
-                for (Map.Entry<String, String> entry : usersNamesAndScreenNames.entrySet()) {
-                    resultObjects.add(new ListObjects.ResultObject(entry.getKey(), entry.getValue()));
-                }
+                ObservableList<User> usersToPrint = FXCollections.observableArrayList();
+                usersToPrint.addAll(resultUsers);
+
                 Platform.runLater(() -> {
-                    final TreeItem<ListObjects.ResultObject> root = new RecursiveTreeItem<ListObjects.ResultObject>(resultObjects, RecursiveTreeObject::getChildren);
-                    treeView.setRoot(root);
-
-                    if (resultObjects.size() > 0) {
-                        treeView.setVisible(true);
+                    propositionList.getItems().clear();
+                    propositionList.getItems().addAll(usersToPrint);
+                    if (usersToPrint.size() > 0) {
                         propositionVBox.setVisible(true);
+                        propositionList.setVisible(true);
                     }
                     propositionProgressBar.setVisible(false);
                 });
+
                 return null;
             }
         };
@@ -435,8 +432,23 @@ public class PiTabCreateController {
     }
 
     /**
-     * @author Sergiy
-     * A Cell element used as an entity shown in the Hashtag JFXListView
+     * If user choose an entry in the table, we launch the search by firing an event.
+     * But we have to take the screen_name fisrt from the list
+     *
+     * @param event
+     */
+    @FXML
+    private void propositionListClicked(MouseEvent event) {
+        User selectedResult = propositionList.getSelectionModel().getSelectedItem();
+        userSelected = true; //keep userSelected before userField.setText
+        userField.setText(selectedResult.getScreen_name());
+        propositionVBox.setVisible(false);
+
+    }
+
+    /**
+     * @author Sergiy A Cell element used as an entity shown in the Hashtag
+     * JFXListView
      */
     public final class HashtagCell extends ListCell<String> {
         GridPane cellGridPane;
@@ -489,7 +501,15 @@ public class PiTabCreateController {
                 public void handle(ActionEvent event) {
                     System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-                    hashtagList = hashtagList.stream().filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject)).collect(Collectors.toList());
+                    //hashtagList = hashtagList.stream()
+                    //        .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
+                    //        .collect(Collectors.toList());
+                    //test
+                    List<Hashtag> toRemove = hashtagList.stream()
+                            .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
+                            .collect(Collectors.toList());
+                    hashtagList.removeAll(toRemove);
+
                     observableListHashtag.remove(hashtagStringObject);
                 }
             });

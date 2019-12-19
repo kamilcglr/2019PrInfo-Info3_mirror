@@ -1,11 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTabPane;
-import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
-import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
-import fr.tse.ProjetInfo3.mvc.viewer.PITabViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -24,9 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Kamil CAGLAR
- * Controller of the main window, all user interactions whith the main windows (not the tabs) are handled here
- * Subcontrollers (searchTabController, userTabController, userTabFromMain) are called here
+ * @author Kamil CAGLAR Controller of the main window, all user interactions
+ * whith the main windows (not the tabs) are handled here Subcontrollers
+ * (searchTabController, userTabController, userTabFromMain) are called
+ * here
  */
 public class MainController {
     /*
@@ -83,7 +84,6 @@ public class MainController {
      * Viewers
      */
     private PIViewer piViewer;
-    private PITabViewer piTabViewer;
 
     private Tab myPisTab;
 
@@ -91,17 +91,11 @@ public class MainController {
     @FXML
     private void initialize() {
         piViewer = new PIViewer();
-        piTabViewer = new PITabViewer();
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
         /*the controller can be used in other Tabs*/
-        searchTabController.injectMainController(this);
-        //userTabController.injectMainController(this);
-        //piTabController.injectMainController(this);
-        //hashtagTabController.injectMainController(this);
-
-        //goToPICreatePane();
+        searchTabController.injectMainController(this, hamburger);
 
         initDrawer();
     }
@@ -181,6 +175,7 @@ public class MainController {
         }
     }
 
+
     public void goToHashtagPane(HastagViewer hastagViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
         try {
@@ -222,7 +217,23 @@ public class MainController {
     }
 
     public void goToLoginPane() {
-        tabPane.getSelectionModel().select(loginTabFromMain);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+        try {
+            AnchorPane loginTab = fxmlLoader.load();
+            LoginController loginController = fxmlLoader.getController();
+            loginController.injectMainController(this);
+            Tab tab = new Tab();
+            Platform.runLater(() -> {
+                if (loginController.connected == 0) {
+                    tab.setContent(loginTab);
+                    tab.setText("Login");
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -276,10 +287,20 @@ public class MainController {
             //the tab is already initialized, so we just refresh the list of PIs
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
-                myPIsTabController.refreshPIs();
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        myPIsTabController.refreshPIs();
+                        return null;
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
             });
         }
-
         if (!drawer.isClosed()) {
             drawer.close();
         }
@@ -298,6 +319,13 @@ public class MainController {
                 tab.setText("Création d'un Point d'Intérêt");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
+
+                if (!isNew) {
+                    System.out.println(piViewer.getSelectedInterestPoint().getHashtags());
+                    piTabCreateController.setPiToEdit(piViewer.getSelectedInterestPoint());
+                    System.out.println("Is not new");
+                }
+
                 piTabCreateController.setIsNew(isNew);
                 piTabCreateController.injectTabContainer(tabPane);
                 piTabCreateController.injectTab(tab);
@@ -312,11 +340,59 @@ public class MainController {
         drawer.close();
     }
 
+
+    public void goToHomeRefresh() {
+        tabPane.getTabs().clear();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SearchTab.fxml"));
+        try {
+
+            AnchorPane searchTab = fxmlLoader.load();
+            SearchTabController searchController = fxmlLoader.getController();
+            searchController.injectMainController(this, hamburger);
+            Tab tab = new Tab();
+            tab.setContent(searchTab);
+            tab.setText("Rechercher");
+            tab.closableProperty().set(false);
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    public void goToSigninTab() {
+        //tabPane.getTabs().clear();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
+        try {
+            AnchorPane loginTab = fxmlLoader.load();
+            SignInController loginController = fxmlLoader.getController();
+            loginController.injectMainController(this);
+            Tab tab = new Tab();
+            Platform.runLater(() -> {
+                // if(loginController.connected==0) {
+                tab.setContent(loginTab);
+                tab.setText("SignIn");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+
+                loginController.injectTabContainer(tabPane);
+                loginController.injectTab(tab);
+            });
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void goToSelectedPi(PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
         try {
             AnchorPane piTab = fxmlLoader.load();
             PiTabController piTabController = fxmlLoader.getController();
+            piTabController.injectMainController(this);
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(piTab);
@@ -351,6 +427,22 @@ public class MainController {
         }
     }
 
+    public void goToPIDelete(PIViewer piViewer) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+        try {
+            AnchorPane piTab = fxmlLoader.load();
+            PiTabController piTabController = fxmlLoader.getController();
+            Tab tab = new Tab();
+            Platform.runLater(() -> {
+                int id = piViewer.getSelectedInterestPoint().getId();
+                piViewer.deleteInterestPointFromDatabaseById(id);
+
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
-

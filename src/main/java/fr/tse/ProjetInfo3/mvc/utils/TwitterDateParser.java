@@ -1,4 +1,4 @@
-package fr.tse.ProjetInfo3.mvc.viewer;
+package fr.tse.ProjetInfo3.mvc.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

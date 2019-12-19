@@ -22,8 +22,9 @@ public class InterestPointDAO {
      * in this method we're saving an interestpoint into the DB using singleton pattern to have one instance
      * accessing the DB
      */
-    public InterestPoint saveInterestPoint(InterestPoint interestPoint) {
+    public long saveInterestPoint(InterestPoint interestPoint) {
         Connection connection = SingletonDBConnection.getInstance();
+        long piID = 0;
         try {
             String Query = "INSERT INTO interestpoint(NAME,DESCRIPTION,CREATED_AT) "
                     + "VALUES (?,?,?)";
@@ -40,6 +41,7 @@ public class InterestPointDAO {
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     long idOfIP = generatedKeys.getLong(1);
+                    piID = idOfIP;
                     // this method will help us save all the # of a single PI
                     saveHashtag(interestPoint, idOfIP);
                     saveUsers(interestPoint, idOfIP);
@@ -51,7 +53,7 @@ public class InterestPointDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return interestPoint;
+        return piID;
     }
 
     /**
@@ -104,15 +106,12 @@ public class InterestPointDAO {
     public List<InterestPoint> getAllInterestPoints() {
         Connection connection = SingletonDBConnection.getInstance();
         List<InterestPoint> interestPoints = new ArrayList<>();
-        List<Hashtag> hashtags = null;
         InterestPoint interestPoint = null;
-        Hashtag hashtag = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 interestPoint = new InterestPoint();
-                hashtags = new ArrayList<Hashtag>();
                 interestPoint.setId(rs.getInt("interestpoint_id"));
                 interestPoint.setName(rs.getString("NAME"));
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));
@@ -153,13 +152,13 @@ public class InterestPointDAO {
         Connection connection = SingletonDBConnection.getInstance();
         List<User> users = new ArrayList<User>();
         User user = null;
+        UserViewer userViewer = new UserViewer();
         try {
             PreparedStatement ps2 = connection.prepareStatement("SELECT USERSCREENNAME FROM TWITTERUSER WHERE interestpoint_id = ?");
             ps2.setInt(1, interestPoint.getId());
 
             ResultSet rs2 = ps2.executeQuery();
             while (rs2.next()) {
-                UserViewer userViewer = new UserViewer();
                 userViewer.searchScreenName(rs2.getString("USERSCREENNAME"));
                 user = userViewer.getUser();
                 users.add(user);
@@ -194,6 +193,71 @@ public class InterestPointDAO {
             e.printStackTrace();
         }
         return interestPoint;
+    }
+    
+    // i had to name this method like this hahahah
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from Hashtag table
+     */
+    public void deleteInterestPointFromHashtagsToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM hashtag WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    /**
+     * the interestpoint_id is a foreign key in both this table and the twitteruser table
+     * so when we delete a PI we should be sure that we already had deleted all its occurence
+     * in this tables
+     * 
+     * 
+     * deleting PI reference from twitteruser table
+     */
+    public void deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM twitteruser WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    /** 
+     * deleting PI from the Database
+     */
+    public void deleteSelectedInterestPointById(int id) {
+    	Connection connection = SingletonDBConnection.getInstance();
+		deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
+		deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(id);
+
+    	try {
+			PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }

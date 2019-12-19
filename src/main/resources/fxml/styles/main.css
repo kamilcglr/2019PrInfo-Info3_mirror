@@ -12,6 +12,10 @@
 }
 
 @font-face {
+    src: url('../../fonts/Raleway/Raleway-SemiBold.ttf');
+}
+
+@font-face {
     src: url('../../fonts/Roboto/Roboto-Medium.ttf');
 }
 
@@ -76,14 +80,15 @@ GridPane {
 
 /*Toolbar buttons*/
 .toolbar-button {
-    /* -fx-border-color: transparent;
-     -fx-background-color: derive(-accent, 10%);
-     -fx-background-radius: 0px;
-     -fx-border-radius: 0px;*/
     -fx-border-color: transparent;
-    -fx-background-color: white;
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
     -fx-background-radius: 0px;
     -fx-border-radius: 0px;
+}
+
+.toolbar-button .toolbar-button-icon, .toolbar-button .toolbar-button-icon {
+    -fx-fill: white;
 }
 
 .toolbar-button:hover {
@@ -246,51 +251,130 @@ GridPane {
     -fx-background-radius: 2.0em;
 }
 
+/*
+* Common style to all lists
+*/
+.list-view {
+    -fx-border-radius: 10pt;
+    -fx-background-radius: 10pt;
+    -fx-background-color: WHITE;
+}
 
-/*Tree Table view*/
-.tree-table-view {
-    -fx-border-color: -accent;
+.list-cell:odd, .list-cell:even {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
-    -fx-font-size: 15;
-    -fx-font-family: 'Roboto Medium', sans-serif;
-    -fx-padding: 10 0 10 0;
+    -fx-background-color: WHITE;
+
 }
 
-.tree-table-view .column-header-background {
-    visibility: hidden;
-    -fx-padding: -2em;;
-}
-
-/* When a cell is selected*/
-.tree-table-view:focused .tree-table-row-cell:selected {
-    -fx-background-color: -accent;
-}
-
-.tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell {
-    -fx-text-fill: white;
-}
-
-.tree-table-view .tree-table-row-cell:hover {
+.list-cell:hover:filled {
     -fx-background-color: -accent2;
 }
 
-.tree-table-view .tree-table-row-cell:hover .tree-table-cell {
-    -fx-text-fill: white;
+.list-cell:selected {
+    -fx-background-color: -primary;
 }
 
-.tree-table-view .tree-table-cell {
+.jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-padding: 10;
+    -fx-background-color: WHITE;
+}
+
+/*
+* Propositions List
+ */
+#propositionList {
+    -fx-padding: 10 10 0 10;
+}
+
+.hbox {
     -fx-background-radius: 10pt;
     -fx-border-radius: 10pt;
-    -fx-cell-size: 20px;
 }
 
-.tree-table-row-cell {
-    -fx-background-radius: 10pt;
-    -fx-border-radius: 10pt;
-    -fx-cell-size: 20px;
+/*
+* Top List of user and search
+*/
+.nameLabel {
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 10 0 0 10;
 }
 
+.followersCountLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 10 0 0 10;
+}
+
+.screenNameLabel {
+    -fx-padding: 10 0 0 10;
+    -fx-font-size: 15;
+    -fx-font-family: 'Roboto Light', sans-serif;
+}
+
+/*
+* Top List of hashtag
+*/
+.hashtagsList {
+    -fx-padding: 10 10 0 10;
+    -fx-border-style: hidden;
+}
+
+.indexLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+.hashtagTextLabel {
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+.nbTweetLabel {
+    -fx-font-family: 'Roboto Light', sans-serif;
+    -fx-font-style: italic;
+    -fx-font-size: 15;
+    -fx-padding: 0 0 0 10;
+}
+
+/*
+ * Simple Hashtag
+ */
+.hashtagNameLabel {
+    -fx-font-family: 'Roboto Bold', sans-serif;
+    -fx-font-size: 15;
+    -fx-label-padding: 0 0 0 10;
+}
+
+/*
+* List of tweets
+*/
+.tweetsList {
+    -fx-border-style: hidden;
+    -fx-background-color: #F5F5F5;
+}
+
+.tweetsList .jfx-list-cell:odd, .jfx-list-cell:even {
+    -fx-background-insets: 5 5 5 5;
+    -fx-padding: 20;
+    -fx-background-color: #F5F5F5 !important;
+}
+
+/*
+* Top Cells with plus
+*/
+.userCellGridPane {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.userCellGridPane:hover {
+    -fx-background-color: -accent2;
+}
 
 /*
 * Title pane
@@ -302,19 +386,20 @@ GridPane {
 .titled-pane > .title {
     -fx-background-radius: 10pt;
     -fx-background-color: -white;
-    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-family: 'Raleway SemiBold', sans-serif;
     -fx-font-size: 20;
     -fx-text-fill: -primary;
 }
 
 .titled-pane > .title > .text {
-    -fx-fill: -primary;
+    -fx-fill: -gray;
 }
 
 .titled-pane > *.content {
     -fx-background-color: transparent;
     -fx-text-fill: -primary;
     -fx-border-style: hidden;
+    -fx-padding: 10 0 0 0;
 }
 
 .titled-pane > .title > .arrow-button .arrow {
@@ -331,7 +416,8 @@ GridPane {
 #progressBar .bar {
     -fx-border-radius: 10pt;
     -fx-background-radius: 10pt;
-    -fx-background-color: -primary;
+    -fx-background-color: -accent;
+
 }
 
 #progressBar .secondary-bar {
@@ -345,6 +431,87 @@ GridPane {
 }
 
 #progressLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 15;
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
 }
+
+/* TITLES ON TABS */
+
+.tabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 5 0 0 10;
+}
+
+.centeredtabtitles {
+    -fx-font-family: 'Raleway Black', sans-serif;
+    -fx-font-size: 35;
+    -fx-text-fill: -grey-dark;
+    -fx-padding: 10 0 0 0;
+}
+
+/*Login and signin*/
+
+.jfx-text-field .input-line, .jfx-password-field .input-line {
+    -fx-background-color: -primary;
+}
+
+.jfx-text-field, .jfx-password-field {
+    -jfx-focus-color: -accent;
+    -fx-font-family: 'Roboto Medium', sans-serif;
+    -fx-font-size: 25;
+}
+
+#validateButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+.filledIcons {
+    -fx-fill: white;
+}
+
+.logginSigninIcons {
+    -fx-fill: white;
+}
+
+.logginSigninButtons {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+#logoutButton {
+    -jfx-button-type: FLAT;
+    -fx-background-color: -gray;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Bold', sans-serif;
+    -fx-font-size: 20;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+}
+
+/* OLD
+.logginSigninIcons {
+    -fx-icon-color: -accent;
+}
+
+.logginSigninButtons {
+    -fx-font-family: 'Raleway Regular', sans-serif;
+    -fx-font-size: 20;
+    -fx-text-fill: -accent;
+    -fx-border-radius: 15pt;
+    -fx-background-radius: 15pt;
+    -fx-border-color: -accent;
+}*/
+

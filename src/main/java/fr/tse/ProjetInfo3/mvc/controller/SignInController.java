@@ -1,42 +1,61 @@
+/**
+ *
+ */
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.swing.JTextField;
+
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
+
+import fr.tse.ProjetInfo3.mvc.dao.LoginAppDAO;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-
-import java.sql.*;
+import javafx.scene.text.TextAlignment;
 
 /**
  * @author Laïla
+ *
  */
-public class LoginController {
-    private MainController mainController;
+public class SignInController {
 
+    private MainController mainController;
+    private TabPane tabPane;
+    private Tab tab;
+
+    @FXML
+    private JFXTextField mail;
+    @FXML
+    private JFXTextField password;
+    @FXML
+    private JFXTextField twitterName;
     @FXML
     private StackPane dialogStackPane;
 
     @FXML
     private AnchorPane anchorPane;
-
-    @FXML
-    private JFXButton validateButton;
     @FXML
     private JFXButton signinButton;
 
-    @FXML
-    private JFXTextField identifiantField;
-    @FXML
-    private JFXPasswordField passwordField;
-
-    ////////
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "org.h2.Driver";
     static final String DB_URL = "jdbc:h2:~/user";
@@ -48,6 +67,7 @@ public class LoginController {
 
     public static int connected = 0;
 
+
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
@@ -58,39 +78,42 @@ public class LoginController {
 
     }
 
-    @FXML
-    private void signinButtonpressed(ActionEvent event) {
-        mainController.goToSigninTab();
+    public void injectTabContainer(TabPane tabPane) {
+        this.tabPane = tabPane;
+    }
+
+    public void injectTab(Tab tab) {
+        this.tab = tab;
     }
 
     @FXML
-    private void validateButtonPressed(ActionEvent event) {
+    private void loginButtonPressed(ActionEvent event) {
+        mainController.goToLoginPane();
+    }
 
+    @FXML
+    private void signinButtonpressed(ActionEvent event) {
         //Identifiant de connexion
-        String identifiant = identifiantField.getText();
-        String password = passwordField.getText();
+        String mailField = mail.getText();
+        String twitterField = twitterName.getText();
+        //Password
+        /*TO DO: make it invisible
+         * */
 
+        String passwordField = password.getText();
         Connection conn = null;
         Statement stmt = null;
         try {
-            // STEP 1: Register JDBC driver
-            Class.forName(JDBC_DRIVER);
-
-            // STEP 2: Open a connection
-            System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // STEP 3: Execute a query
-            System.out.println("Connected database successfully...");
-            stmt = conn.createStatement();
-            String sql = "SELECT mail, password FROM user where mail='" + identifiant + "'" + " and password= '" + password + "'";
-            ResultSet rs = stmt.executeQuery(sql);
-
+            LoginAppDAO loginAppDAO = new LoginAppDAO();
+            UserApp userApp = new UserApp(null, passwordField, twitterField, mailField);
+            loginAppDAO.saveUser(userApp);
             // STEP 4: Extract data from result set
-            if (rs.next()) {
+            if (loginAppDAO.saveUser(userApp) != null) {
                 connected = 1;
-                Label headerLabel = new Label("Connection réussie");
-                Text bodyText = new Text("Vous êtes connecté. Vous avez accès aux fonctionnalités avancées dans le menu principal.");
+                Label headerLabel = new Label("Création de compte réussi");
+                Text bodyText = new Text("Votre compte a été crée."
+                        + "\nVous pouvez dès à présent vous connecter et commencer à utiliser des fonctionnalités avancées de Twiter Analytics."
+                        + "\n Votre login est : " + twitterField);
                 JFXButton button = new JFXButton("D'accord");
 
                 BoxBlur blur = new BoxBlur(3, 3, 3);
@@ -98,15 +121,15 @@ public class LoginController {
                 button.getStyleClass().add("dialog-button");
                 headerLabel.getStyleClass().add("dialog-header-success");
                 bodyText.getStyleClass().add("dialog-text");
+                bodyText.setWrappingWidth(500);
 
                 JFXDialogLayout dialogLayout = new JFXDialogLayout();
                 dialogLayout.setPadding(new Insets(10));
                 JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
                 button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
                     dialog.close();
-                    mainController.goToHomeRefresh();
-
-
+					tabPane.getTabs().remove(tab);
+					mainController.goToLoginPane();
                 });
 
                 dialogLayout.setHeading(headerLabel);
@@ -117,13 +140,11 @@ public class LoginController {
                     anchorPane.setEffect(null);
                 });
                 anchorPane.setEffect(blur);
-                //verification sur console
-                System.out.println("ok" + identifiant + " " + password + "\n" + rs);
 
             } else {
                 Label headerLabel = new Label("Erreur");
                 Text bodyText = new Text("Identifiant ou mot de passe incorrect");
-                JFXButton button = new JFXButton("D'accord");
+                JFXButton button = new JFXButton("Fermer");
 
                 BoxBlur blur = new BoxBlur(3, 3, 3);
 
@@ -147,14 +168,11 @@ public class LoginController {
                 });
                 anchorPane.setEffect(blur);
                 // verification sur console
-                System.out.println("ok" + identifiant + " " + password + "\n" + rs);
+                //System.out.println("ok"+identifiant+" "+ password+"\n"+rs);
             }
 
             // STEP 5: Clean-up environment
-            rs.close();
-        } catch (SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
+            //  rs.close();
         } catch (Exception e) {
             // Handle errors for Class.forName
             e.printStackTrace();
@@ -172,24 +190,5 @@ public class LoginController {
         } // end try
         System.out.println("Goodbye!");
     }
-
-    public JFXTextField getIdentifiantField() {
-        return identifiantField;
-    }
-
-    public void setIdentifiantField(JFXTextField identifiantField) {
-        this.identifiantField = identifiantField;
-    }
-
-    public JFXPasswordField getPasswordField() {
-        return passwordField;
-    }
-
-    public void setPasswordField(JFXPasswordField passwordField) {
-        this.passwordField = passwordField;
-    }
 }
-
-	    
-
 

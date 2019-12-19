@@ -1,21 +1,15 @@
 /*
 * Labels
 */
-#hashtagLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 35;
-    -fx-text-fill: -grey-dark;
-}
-
 .countLabel {
-    -fx-font-family: 'Raleway Bold', sans-serif;
-    -fx-font-size: 20;
-    -fx-text-fill: -primary;
+    -fx-font-family: 'Raleway', sans-serif;
+    -fx-font-size: 25;
+    -fx-text-fill: -gray;
 }
 
 .tweetnumberLabels {
     -fx-font-family: 'Roboto Bold', sans-serif;
-    -fx-font-size: 20;
+    -fx-font-size: 25;
     -fx-text-fill: -grey-dark;
 }
 
@@ -24,55 +18,4 @@
     -fx-font-size: 15;
     -fx-font-family: 'Roboto Light', sans-serif;
     -fx-font-style: italic;
-}
-
-/*
-* List of hastags
-*/
-#topTenLinkedList {
-    -fx-background-radius: 10pt;
-    -fx-border-insets: 10 0 0 0;
-    -fx-background-insets: 10 0 0 0;
-    -fx-padding: 10 10 0 10;
-    -fx-font-size: 15;
-    -fx-border-style: hidden;
-    -fx-background-color: WHITE;
-}
-
-.jfx-list-cell:odd, .jfx-list-cell:even {
-    -fx-background-color: WHITE;
-}
-
-.indexLabel {
-    -fx-font-family: 'Roboto Light', sans-serif;
-    -fx-padding: 0 0 0 10;
-}
-
-.hashtagTextLabel {
-    -fx-font-family: 'Roboto Medium', sans-serif;
-    -fx-padding: 0 0 0 10;
-}
-
-.nbTweetLabel {
-    -fx-font-family: 'Roboto Light', sans-serif;
-    -fx-font-style: italic;
-    -fx-padding: 0 0 0 10;
-}
-
-/*
-* List of tweets
-*/
-
-#listTweets {
-    -fx-background-radius: 10pt;
-    -fx-border-insets: 10 0 0 0;
-    -fx-background-insets: 10 0 0 0;
-    -fx-padding: 10 10 0 10;
-    -fx-font-size: 15;
-    -fx-border-style: hidden;
-    -fx-background-color: #F5F5F5;
-}
-
-#listTweets .jfx-list-cell:odd, .jfx-list-cell:even {
-    -fx-background-color: #F5F5F5 !important;
 }

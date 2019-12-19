@@ -1,12 +1,14 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.HashtagCell;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 
-import fr.tse.ProjetInfo3.mvc.viewer.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,7 +21,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -31,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tse.ProjetInfo3.mvc.utils.FrenchSimpleDateFormat.frenchSimpleDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
 
 /**
  * @author Sobun UNG
@@ -53,12 +54,21 @@ public class UserTabController {
 
     private Thread threadSetTopTweets;
 
-
+    /* LISTS
+     */
     private List<Tweet> tweetList;
 
-    Map<String, Integer> hashtagUsed;
+    @FXML
+    private JFXListView<JFXListCell> listTweets;
 
-    Map<Tweet, Integer> Tweeted;
+    @FXML
+    private Label lastAnalysedLabel;
+
+    @FXML
+    private TitledPane titledHashtag;
+
+    @FXML
+    private TitledPane titledTweet;
 
     @FXML
     private VBox vBox;
@@ -66,11 +76,6 @@ public class UserTabController {
     @FXML
     private ScrollPane scrollPane;
 
-    @FXML
-    private GridPane gridPane;
-
-    @FXML
-    private JFXListView<JFXListCell> listTweets;
 
     @FXML
     private JFXButton compareButton;
@@ -87,14 +92,7 @@ public class UserTabController {
     @FXML
     private Label progressLabel;
 
-    @FXML
-    private Label lastAnalysedLabel;
 
-    @FXML
-    private TitledPane titledHashtag;
-
-    @FXML
-    private TitledPane titledTweet;
     /*
      * We will populate this fields/labels by the result of search
      */
@@ -138,9 +136,9 @@ public class UserTabController {
             username.setText("@" + userToPrint.getScreen_name());
             twittername.setText(userToPrint.getName());
             description.setText(userToPrint.getDescription());
-            nbTweet.setText(String.valueOf(userToPrint.getStatuses_count()));
-            nbFollowers.setText(String.valueOf(userToPrint.getFollowers_count()));
-            nbFollowing.setText(String.valueOf(userToPrint.getFriends_count()));
+            nbTweet.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getStatuses_count())));
+            nbFollowers.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFollowers_count())));
+            nbFollowing.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFriends_count())));
             buildPicture();
         });
 
@@ -156,7 +154,7 @@ public class UserTabController {
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
 
-        listHashtags.setCellFactory(param -> new HashtagCell());
+        listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
 
         Platform.runLater(() -> hideLists(true));
 
@@ -199,7 +197,7 @@ public class UserTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectUserTabController(this);
-                    tweetController.populate(tweet,false);
+                    tweetController.populate(tweet, false);
                     listTweets.getItems().add(jfxListCell);
                 }
             }
@@ -254,7 +252,7 @@ public class UserTabController {
         threadSetTopTweets.start();
 
         //Wait for the two other tasks
-        while (threadSetTopHashtags.isAlive() && threadSetTopTweets.isAlive()) {
+        while (threadSetTopHashtags.isAlive() || threadSetTopTweets.isAlive()) {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
@@ -271,7 +269,7 @@ public class UserTabController {
     }
 
     private Task<Void> setTopHashtags() {
-        hashtagUsed = userViewer.topHashtag(tweetList);
+        Map<String, Integer> hashtagUsed = userViewer.getTopTenHashtags(tweetList);
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
@@ -290,12 +288,11 @@ public class UserTabController {
     }
 
     private Task<Void> setTopTweets() {
-        Tweeted = userViewer.topTweets(tweetList);
+        Map<Tweet, Integer> topTweets = userViewer.topTweets(tweetList);
         ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (Tweet tweet : Tweeted.keySet()) {
+        for (Tweet tweet : topTweets.keySet()) {
             tweetsToPrint.add(tweet);
-            System.out.println(tweet);
             i++;
             if (i == 5) {
                 break;

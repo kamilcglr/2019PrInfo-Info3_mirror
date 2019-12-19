@@ -1,19 +1,15 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.controls.events.JFXDialogEvent;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultObject;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -21,19 +17,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.Icon;
 
-import java.util.Map;
+import java.util.List;
 
 
 /**
@@ -43,13 +36,9 @@ import java.util.Map;
 public class SearchTabController {
     private MainController mainController;
 
-    /*Controller can acces to this Tab */
-    public void injectMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
-
     boolean userSelected;
 
+    JFXHamburger hamburger;
     /*
      * We re-declare fxml variable here (fx:id="hashtagToggle"), with the SAME name ot use them
      * */
@@ -88,32 +77,51 @@ public class SearchTabController {
 
     @FXML
     private JFXButton signinButton;
-
+    @FXML
+    private JFXButton logoutButton;
     @FXML
     private JFXProgressBar propositionProgressBar;
 
     @FXML
-    private JFXTreeTableView<ResultObject> treeView;
+    private JFXListView<User> propositionList;
 
+    private List<User> resultUsers;
 
-    private Map<String, String> usersNamesAndScreenNames;
+    /*Controller can acces to this Tab */
+    public void injectMainController(MainController mainController, JFXHamburger hamburger) {
+        this.mainController = mainController;
+        this.hamburger = hamburger;
+
+        LoginController loginController = new LoginController();
+
+        if (loginController.connected == 1) {
+            loginButton.setVisible(false);
+            signinButton.setVisible(false);
+            logoutButton.setVisible(true);
+            hamburger.setVisible(true);
+
+        } else {
+            loginButton.setVisible(true);
+            signinButton.setVisible(true);
+            logoutButton.setVisible(false);
+            hamburger.setVisible(false);
+        }
+    }
 
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
-        //!!!!!!!!!!!!!!!!Hide unused objects !!!!!!!!!!!!!!!!
-        loginButton.setVisible(false);
-        signinButton.setVisible(false);
-
 
         //Disable the text field, we wait for the at least one toggle to be pressed
         activateField(false, true);
-        treeView.setVisible(false);
+        propositionList.setVisible(false);
         propositionProgressBar.setVisible(false);
         progressIndicator.setVisible(false);
         userSelected = false;
 
-        initTreeView();
+        propositionList.setCellFactory(param -> new ListObjects.SearchUser());
+
+
         /*
          * When the text in the input field is changed,
          * we constantly remove spaces (forhashtag) and add the # or @ at the begining
@@ -121,8 +129,7 @@ public class SearchTabController {
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         searchField.textProperty().addListener(
                 (observable, old_value, new_value) -> {
-                    treeView.setRoot(null);
-                    treeView.setVisible(false);
+                    propositionList.setVisible(false);
                     if (hashtagToggle.isSelected()) {
                         if (searchField.getText().isEmpty() || !searchField.getText(0, 1).equals("#")) {
                             searchField.setText("#" + new_value);
@@ -193,6 +200,18 @@ public class SearchTabController {
         mainController.goToLoginPane();
     }
 
+    @FXML
+    public void signinButtonpressed(ActionEvent event) {
+        mainController.goToSigninTab();
+    }
+
+    @FXML
+    public void signoutButtonPressed(ActionEvent event) {
+        LoginController.connected = 0;
+        mainController.goToHomeRefresh();
+
+    }
+
     /*
      * 1. Verify that there is something in search bar
      * 2. Call search
@@ -231,21 +250,20 @@ public class SearchTabController {
             @Override
             protected Void call() {
                 SearchViewer searchViewer = new SearchViewer();
-                usersNamesAndScreenNames = searchViewer.getListPropositions(newValue);
+                resultUsers = searchViewer.getListPropositions(newValue);
 
-                ObservableList<ResultObject> resultObjects = FXCollections.observableArrayList();
-                for (Map.Entry<String, String> entry : usersNamesAndScreenNames.entrySet()) {
-                    resultObjects.add(new ResultObject(entry.getKey(), entry.getValue()));
-                }
+                ObservableList<User> usersToPrint = FXCollections.observableArrayList();
+                usersToPrint.addAll(resultUsers);
+
                 Platform.runLater(() -> {
-                    final TreeItem<ResultObject> root = new RecursiveTreeItem<ResultObject>(resultObjects, RecursiveTreeObject::getChildren);
-                    treeView.setRoot(root);
-
-                    if (resultObjects.size() > 0) {
-                        treeView.setVisible(true);
+                    propositionList.getItems().clear();
+                    propositionList.getItems().addAll(usersToPrint);
+                    if (usersToPrint.size() > 0) {
+                        propositionList.setVisible(true);
                     }
                     propositionProgressBar.setVisible(false);
                 });
+
                 return null;
             }
         };
@@ -269,13 +287,16 @@ public class SearchTabController {
      * @param event
      */
     @FXML
-    private void treeViewClicked(MouseEvent event) {
-        TreeItem<ResultObject> selectedResult = treeView.getSelectionModel().getSelectedItem();
-        userSelected = true; //keep userSelected before userField.setText
-        searchField.setText(selectedResult.getValue().getScreen_name().get());
-        treeView.setVisible(false);
-        progressLabel.setVisible(false);
-        searchButton.fire();
+    private void propositionListClicked(MouseEvent event) {
+        if (propositionList.getSelectionModel().getSelectedIndex() != -1) {
+            User selectedResult = propositionList.getSelectionModel().getSelectedItem();
+            userSelected = true; //keep userSelected before userField.setText
+            searchField.setText(selectedResult.getScreen_name());
+            propositionList.setVisible(false);
+            progressLabel.setVisible(false);
+            searchButton.fire();
+        }
+
     }
 
     /**
@@ -404,7 +425,7 @@ public class SearchTabController {
      */
     private void activateField(boolean activate, boolean delete) {
         propositionProgressBar.setVisible(false);
-        treeView.setVisible(false);
+        propositionList.setVisible(false);
         if (activate) {
             searchField.setDisable(false);
             searchButton.setDisable(false);
@@ -417,33 +438,38 @@ public class SearchTabController {
         }
     }
 
-    /**
-     * Sets the column of treeView*
-     */
-    private void initTreeView() {
-        JFXTreeTableColumn<ResultObject, String> name = new JFXTreeTableColumn<>("");
-        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
-            }
-        });
-
-        JFXTreeTableColumn<ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
-        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
-                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
-            }
-        });
-        treeView.setShowRoot(false);
-        treeView.getColumns().setAll(name, screen_name);
-        treeView.getColumns().get(1).getStyleClass().add("idInList");
-        treeView.getColumns().get(0).getStyleClass().add("nameINList");
-        treeView.setFixedCellSize(25);
-    }
-
-
-
-
+//    TO DELETE TODO
+//    /**
+//     * Sets the column of treeView*
+//     */
+//    private void initTreeView() {
+//        JFXTreeTableColumn<ResultObject, String> picture = new JFXTreeTableColumn<>("");
+//        picture.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
+//            @Override
+//            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
+//                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
+//            }
+//        });
+//
+//        JFXTreeTableColumn<ResultObject, String> name = new JFXTreeTableColumn<>("");
+//        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
+//            @Override
+//            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
+//                return resultObjectStringCellDataFeatures.getValue().getValue().getName();
+//            }
+//        });
+//
+//        JFXTreeTableColumn<ResultObject, String> screen_name = new JFXTreeTableColumn<>("");
+//        screen_name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ResultObject, String>, ObservableValue<String>>() {
+//            @Override
+//            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ResultObject, String> resultObjectStringCellDataFeatures) {
+//                return resultObjectStringCellDataFeatures.getValue().getValue().getScreen_name();
+//            }
+//        });
+//        treeView.setShowRoot(false);
+//        treeView.getColumns().setAll(name, screen_name);
+//        treeView.getColumns().get(1).getStyleClass().add("idInList");
+//        treeView.getColumns().get(0).getStyleClass().add("nameINList");
+//        treeView.setFixedCellSize(25);
+//    }
 }
