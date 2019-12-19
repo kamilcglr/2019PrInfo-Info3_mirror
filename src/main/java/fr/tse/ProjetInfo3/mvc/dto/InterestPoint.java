@@ -173,6 +173,10 @@ public class InterestPoint implements Serializable {
     }
 
     public boolean containsHashtag(String hashtagName) {
+        System.out.println(this.getHashtags().stream()
+                .map(Hashtag::getHashtag)
+                .collect(Collectors.toList())
+                .contains(hashtagName));
         return this.getHashtags().stream()
                 .map(Hashtag::getHashtag)
                 .collect(Collectors.toList())

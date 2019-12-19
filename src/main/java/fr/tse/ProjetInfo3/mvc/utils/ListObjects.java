@@ -21,6 +21,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListObjects {
@@ -145,9 +146,18 @@ public class ListObjects {
 
                         piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
-                        Hashtag hashtagToRemove = interestPoint.getHashtagFromName(currentHashtag.getHashtagName());
-                        interestPoint.getHashtags().remove(hashtagToRemove);
+                        //Hashtag hashtagToRemove = interestPoint.getHashtagFromName(currentHashtag.getHashtagName());
+                        //
+                        //interestPoint.getHashtags().remove(hashtagToRemove);
+                        List<Hashtag> newListOfHashtags = interestPoint.getHashtags()
+                                .stream().filter(hashtag -> !hashtag.getHashtag()
+                                        .equals(currentHashtag.getHashtagName()))
+                                        .collect(Collectors.toList());
+                        interestPoint.setHashtags(newListOfHashtags);
+
+                        System.out.println(interestPoint.getHashtags());
                         currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
 
                         addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
