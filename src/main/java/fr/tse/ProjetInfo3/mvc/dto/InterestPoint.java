@@ -296,27 +296,5 @@ public class InterestPoint implements Serializable {
         return "InterestPoint [name=" + name + ", description=" + description + ", dateOfCreation=" + dateOfCreation
                 + "]";
     }
-
-    /**
-     * TODO delete this after Sprint 4
-     * Return a string that resume the Interest Point
-     * @return string interestPointName + date + users + hashtags
-     */
-   /* public String toStringMinimal() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        String spacing = "\t\t\t\t\t\t\t\t";
-
-        String interestPointMinimal = name + " " + simpleDateFormat.format(dateOfCreation);
-        if (users != null) {
-            String listUsers = users.stream().map(User::getName).collect(Collectors.joining(" "));
-            interestPointMinimal+= " " + listUsers;
-        }
-        if (hashtags != null) {
-            String listHashtags = hashtags.stream().map(Hashtag::getHashtag).collect(Collectors.joining(" "));
-            interestPointMinimal+= " " + listHashtags;
-        }
-
-        return interestPointMinimal;
-
-    }*/
+    
 }
