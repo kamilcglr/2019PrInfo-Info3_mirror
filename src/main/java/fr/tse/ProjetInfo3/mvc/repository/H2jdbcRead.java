@@ -51,9 +51,10 @@ public class H2jdbcRead {
 	         
 	         InterestPointDAO dao = new InterestPointDAO();
 	         User user = dao.getUserFromDatabase("realDonaldTrump");
+
 	         System.out.println(user.getId()+"\n"+user.getName());
 	         System.out.println(user.getDescription());
-	         
+			  System.out.println(user.getListoftweets().toString());
 	         
 	         
 	         System.out.println("deleted successfully");

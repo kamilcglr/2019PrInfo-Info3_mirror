@@ -1,9 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.dao;
 
+import com.google.gson.GsonBuilder;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 import java.sql.*;
@@ -298,8 +300,10 @@ public class InterestPointDAO {
     	
     	Connection connection = SingletonDBConnection.getInstance();
     	User user = null;
-    	Gson gson = new Gson();
-    	
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting() //human-readable json
+                .setDateFormat(TwitterDateParser.twitterFormat)
+                .create();
     	try {
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE userScreenName = ? ");
 			ps.setString(1, screen_name);

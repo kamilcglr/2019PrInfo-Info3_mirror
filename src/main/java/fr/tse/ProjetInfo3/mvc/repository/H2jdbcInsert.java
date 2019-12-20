@@ -12,12 +12,15 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import com.google.gson.GsonBuilder;
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
 import fr.tse.ProjetInfo3.mvc.dao.LoginAppDAO;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 /**
  * @author Laïla
@@ -97,9 +100,15 @@ public class H2jdbcInsert {
              InterestPointDAO dao = new InterestPointDAO();
              // testing the storing process we have made
              RequestManager manager = new RequestManager();
-             
+
              User user = manager.getUser("realdonaldtrump");
-             Gson gson = new Gson();
+             user.setListoftweets(manager.getTweetsFromUser(user.getScreen_name(), 3194,  null));
+             // ! user this type of builder
+             Gson gson = new GsonBuilder()
+                     .setPrettyPrinting() //human-readable json
+                     .setDateFormat(TwitterDateParser.twitterFormat)
+                     .create();
+
              String userJson = gson.toJson(user);
              
              dao.saveUser(user, userJson);
