@@ -18,14 +18,13 @@ public class InterestPoint implements Serializable {
     private int id;
     private String name;
     private String description;
+
     private Date dateOfCreation;
 
     private List<Hashtag> hashtags;
     private List<User> users;
     private List<Tweet> tweets;
     private List<InterestPoint> interestPoints;
-
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public int getId() {
         return id;
@@ -296,5 +295,5 @@ public class InterestPoint implements Serializable {
         return "InterestPoint [name=" + name + ", description=" + description + ", dateOfCreation=" + dateOfCreation
                 + "]";
     }
-    
+
 }
