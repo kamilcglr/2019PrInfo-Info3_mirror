@@ -10,8 +10,8 @@ import java.sql.Statement;
 public class H2jsbcCreateOrDelete {
     public static void main(String[] args) {
         //  deleteAllTables();
-        //createTables();
-        oldCreateUser();
+       createTables();
+        //oldCreateUser();
     }
 
     public static void deleteAllTables() {
@@ -85,11 +85,19 @@ public class H2jsbcCreateOrDelete {
                     + "PRIMARY KEY (user_id),"
                     + "interestpoint_id INTEGER,"
                     + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
+            
+            String newUser = "CREATE TABLE   usercached " +
+                    "( user_id INTEGER AUTO_INCREMENT,"
+                    + "userScreenName VARCHAR(255),"
+                    + "PRIMARY KEY (user_id),"
+                    + "data CLOB)";
+            
+            //stmt.executeUpdate(interestpoint);
+            //stmt.executeUpdate(hashtag);
+            //stmt.executeUpdate(user);
 
-            stmt.executeUpdate(interestpoint);
-            stmt.executeUpdate(hashtag);
-            stmt.executeUpdate(user);
-
+            stmt.executeUpdate(newUser);
+            
             System.out.println("Created tables in given database...");
 
             // STEP 4: Clean-up environment
