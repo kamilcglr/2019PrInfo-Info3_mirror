@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
 import fr.tse.ProjetInfo3.mvc.dao.LoginAppDAO;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
@@ -38,37 +40,7 @@ public class H2jdbcInsert {
             conn = SingletonDBConnection.getInstance();
             System.out.println("Connected database successfully...");
 
-            // STEP 3: Execute a query
-            stmt = conn.createStatement();
-
-
-            // testing the storing process we have made
-
-            InterestPointDAO dao = new InterestPointDAO();
-            InterestPoint ip = new InterestPoint("Santé", "description sur la santé", new Date(10000));
-            List<Hashtag> hashtags = new ArrayList<>();
-
-            Hashtag president = new Hashtag("#president");
-            Hashtag congres = new Hashtag("#congrés");
-            Hashtag meetup = new Hashtag("#meetup");
-
-            hashtags.add(president);
-            hashtags.add(congres);
-            hashtags.add(meetup);
-
-            List<User> users = new ArrayList<>();
-            RequestManager requestManager = new RequestManager();
-            User u1 = requestManager.getUser("twandroid");
-            User u2 = requestManager.getUser("Dealabs");
-
-            users.add(u1);
-            users.add(u2);
-
-            ip.setHashtags(hashtags);
-            ip.setUsers(users);
-
-            dao.saveInterestPoint(ip);
-
+            
             //stmt.executeUpdate(sql2);
             System.out.println("Inserted records into the table...");
 
@@ -104,7 +76,7 @@ public class H2jdbcInsert {
              conn = SingletonDBConnection.getInstance();
              System.out.println("Connected database successfully...");
 
-             // STEP 3: Execute a query
+             /*// STEP 3: Execute a query
              stmt = conn.createStatement();
              // testing the storing process we have made
 
@@ -115,7 +87,22 @@ public class H2jdbcInsert {
 
              //stmt.executeUpdate(sql2);
              System.out.println("Inserted records into the table...");
+*/
+             
+             
 
+             // STEP 3: Execute a query
+             stmt = conn.createStatement();
+
+             InterestPointDAO dao = new InterestPointDAO();
+             // testing the storing process we have made
+             RequestManager manager = new RequestManager();
+             
+             User user = manager.getUser("realdonaldtrump");
+             Gson gson = new Gson();
+             String userJson = gson.toJson(user);
+             
+             dao.saveUser(user, userJson);
              // STEP 4: Clean-up environment
              stmt.close();
              conn.close();
