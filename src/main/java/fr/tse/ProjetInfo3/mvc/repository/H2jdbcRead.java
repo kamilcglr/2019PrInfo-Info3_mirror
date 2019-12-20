@@ -2,19 +2,15 @@
  * 
  */
 package fr.tse.ProjetInfo3.mvc.repository;
-import java.sql.Connection; 
-import java.sql.DriverManager; 
-import java.sql.ResultSet; 
-import java.sql.SQLException; 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.jfoenix.controls.JFXButton;
 
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
 import javafx.fxml.FXML; 
 /**
  * @author Laïla
@@ -41,15 +37,23 @@ public class H2jdbcRead {
 	         // STEP 3: Execute a query 
 	         System.out.println("Connected database successfully..."); 
 	         stmt = conn.createStatement(); 
-	         String sql = "select * from twitteruser where interestpoint_id = 1";
+			/*
+			 * String sql = "select * from usercached";
+			 * 
+			 * ResultSet rs = stmt.executeQuery(sql);
+			 * 
+			 * while(rs.next()) { System.out.println("id: "+rs.getLong("user_id"));
+			 * System.out.println("screenname: "+rs.getString("userScreenName"));
+			 * System.out.println("data : "+rs.getString("data")); }
+			 */
 	         
-	         ResultSet rs = stmt.executeQuery(sql);
+	         // if we run this class we're going to get the data of a user who has been cached
 	         
-	         while(rs.next()) {
-	        	 System.out.println("id: "+rs.getInt("interestpoint_id"));
-	        	 System.out.println("name : "+rs.getString("name"));
-	        	 System.out.println("description : "+rs.getString("description"));
-	         }
+	         InterestPointDAO dao = new InterestPointDAO();
+	         User user = dao.getUserFromDatabase("realDonaldTrump");
+	         System.out.println(user.getId()+"\n"+user.getName());
+	         System.out.println(user.getDescription());
+	         
 	         
 	         
 	         System.out.println("deleted successfully");
