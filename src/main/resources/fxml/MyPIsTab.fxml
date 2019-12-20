@@ -65,6 +65,12 @@
                           <FontIcon iconLiteral="fas-trash-alt" styleClass="icon" />
                       </graphic>
                   </JFXButton>
+                  
+                  <JFXButton fx:id="statisticsButton" alignment="TOP_RIGHT" onAction="#statisticsButtonPressed" styleClass="actionButton" text="Statistiques" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                     <graphic>
+                        <FontIcon iconLiteral="fas-chart-area" styleClass="icon" />
+                     </graphic>
+                  </JFXButton>
                     </children>
                 </GridPane>
             </children>

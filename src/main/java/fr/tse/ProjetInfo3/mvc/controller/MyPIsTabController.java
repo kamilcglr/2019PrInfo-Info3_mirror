@@ -54,6 +54,9 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     private JFXButton seeButton;
+    
+    @FXML
+    private JFXButton statisticsButton;
 
     private PIViewer piViewer;
 
@@ -141,6 +144,11 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     void editPIPressed(ActionEvent event) {
         //Not new, then we add true in the parameters
         mainController.goToPICreateOrEditPane(false, piViewer);
+    }
+    
+    @FXML
+    void statisticsButtonPressed(ActionEvent event) {
+        
     }
 
     /**
