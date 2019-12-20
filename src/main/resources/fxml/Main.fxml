@@ -36,9 +36,9 @@
                                 </content>
                             </Tab>-->
                         </JFXTabPane>
-                        <JFXHamburger fx:id="hamburger" alignment="TOP_RIGHT" AnchorPane.rightAnchor="0.0">
+                        <JFXHamburger fx:id="hamburger" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1118.0">
                             <padding>
-                                <Insets right="20.0" top="30.0" />
+                                <Insets left="30.0" top="25.0" />
                             </padding>
                         </JFXHamburger>
                     </children>

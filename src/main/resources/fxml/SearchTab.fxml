@@ -67,7 +67,7 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="logoutButton" contentDisplay="RIGHT" onAction="#signoutButtonPressed" styleClass="logginSigninButtons" text="Déconnexion" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="logoutButton" contentDisplay="RIGHT" onAction="#signoutButtonPressed" styleClass="logginSigninButtons" text="Déconnexion" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon fx:id="logoutIcon" iconLiteral="fas-sign-out-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
