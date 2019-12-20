@@ -69,7 +69,12 @@ public class User {
     }
 
 
-    public User(long id, String name, String screen_name, String location, String description, String url,
+    public User() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public User(long id, String name, String screen_name, String location, String description, String url,
                 Boolean verified, long followers_count, long friends_count, long listed_count, long favourites_count,
                 long statuses_count, String created_at, String profile_banner_url, String profile_image_url_https,
                 List<Tweet> listoftweets) {
