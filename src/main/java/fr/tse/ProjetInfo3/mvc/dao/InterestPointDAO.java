@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 /**
  * @author ALAMI IDRISSI Taha
  * in this class we will perform all the actions for the PIs that have a direct relations with the DB
@@ -258,6 +260,61 @@ public class InterestPointDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    
+    /**
+     * We save a User in the DB in the new table created
+     * so we could accelerate the research 
+     * 
+     
+     */
+    
+    public User saveUser(User user,String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO usercached (user_id,userScreenName,data) "
+                    + "VALUES (?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setLong(1, user.getId());
+            preparedStatement.setString(2, user.getScreen_name());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(3, parsedData);
+
+            preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    /**
+     * we're getting a user from the DB if the user exist already we're returning the user
+     * else we're returning null
+     */
+    public User getUserFromDatabase(String screen_name) {
+    	
+    	Connection connection = SingletonDBConnection.getInstance();
+    	User user = null;
+    	Gson gson = new Gson();
+    	
+    	try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE userScreenName = ? ");
+			ps.setString(1, screen_name);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				user = new User();
+				user = gson.fromJson(rs.getString("data"), User.class);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return user;
     }
 
 }
