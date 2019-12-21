@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -219,43 +220,47 @@ public class StatisticsTabController {
 			topFiveActiveUsers.add(e.getKey());
 			iter++;
 		}
-		
+
 		// Get the tweets we will be working with
 		Predicate<Tweet> byAppartenance = tweet -> topFiveActiveUsers.contains(tweet.getUser());
-		
-		reducedTweetList = bigTweetList.stream().filter(byAppartenance)
-		        .collect(Collectors.toList());
-		
+
+		// Filter the tweew list so that the remaining tweets are posted by one of
+		// the 5 most active users.
+		reducedTweetList = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
+
 		System.out.println("Sizes before and after");
 		System.out.println(bigTweetList.size());
 		System.out.println(reducedTweetList.size());
-		
+
 		/** Timestamps **/
+		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = hoursDifference(currentDate, oldestTweet);
 		int interval = hoursDifference / 20;
-		
-		
-		
-		
-		
-		// Let's now map the Date and the number of tweets
-		
-		
+
+		// Create 20 dates that will serve as intervals
+		List<Date> dateIntervals = new LinkedList<Date>();
+		for (int i = 1; i < 21; i++) {
+			dateIntervals.add(addHoursToDate(oldestTweet, i * interval));
+			System.out.println(dateIntervals.get(i - 1));
+		}
+
+		// Let's now map each Date interval and the number of tweets
+
 	}
-	
+
 	/** Animations **/
 	public Date addHoursToDate(Date date, int hours) {
-	    Calendar calendar = Calendar.getInstance();
-	    calendar.setTime(date);
-	    calendar.add(Calendar.HOUR_OF_DAY, hours);
-	    
-	    return calendar.getTime();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.HOUR_OF_DAY, hours);
+
+		return calendar.getTime();
 	}
-	
+
 	private int hoursDifference(Date start, Date end) {
-	    final int MILLIS_TO_HOUR = 1000 * 60 * 60;
-	    return (int) (start.getTime() - end.getTime()) / MILLIS_TO_HOUR;
+		final int MILLIS_TO_HOUR = 1000 * 60 * 60;
+		return (int) (start.getTime() - end.getTime()) / MILLIS_TO_HOUR;
 	}
 
 	/** Animations **/
