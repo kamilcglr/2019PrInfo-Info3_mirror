@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
@@ -29,6 +30,8 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
@@ -47,8 +50,9 @@ import javafx.util.Duration;
 public class StatisticsTabController {
 	/** Data **/
 	Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap;
-	
-	
+	Map<Hashtag, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
+	Map<Date, Integer> tweetsPerInterval;
+
 	/** Time **/
 	Date oldestTweet;
 
@@ -131,8 +135,11 @@ public class StatisticsTabController {
 				oldestTweet = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
 						.getCreated_at();
 
-				tweetsPerIntervalForEachUserMap = acquireDataFromTweets();
-				generateChart();
+				tweetsPerIntervalForEachUserMap = acquireDataOfFiveMostActiveUsers();
+				tweetsPerInterval = acquireDataOfTweetsPerTimeInterval();
+				
+				generateFiveMostActiveUserChart();
+				generateTweetsPerIntervalChart();
 				
 				anchorPane.setEffect(null);
 				dialogStackPane.getChildren().remove(progressIndicatorBox);
@@ -145,7 +152,11 @@ public class StatisticsTabController {
 		return null;
 	}
 
-	public Map<User, Map<Date, Integer>> acquireDataFromTweets() {
+	// Tweets per time of 5 most active users
+	// Tweets per time of 5 most popular hashtags
+	// Tweets per time
+	/** Data **/
+	public Map<User, Map<Date, Integer>> acquireDataOfFiveMostActiveUsers() {
 		Map<User, Integer> tweetsPerUserMap = new HashMap<>();
 
 		for (Tweet tweet : bigTweetList) {
@@ -190,16 +201,16 @@ public class StatisticsTabController {
 		/** Timestamps **/
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
-		int hoursDifference = hoursDifference(currentDate, oldestTweet);
-		int interval = hoursDifference / 10;
+		int hoursDifference = minutesDifference(currentDate, oldestTweet);
+		double interval = hoursDifference / 10;
 
 		System.out.println(hoursDifference);
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 13; i++) {
-			dateIntervals.add(roundDateToHour(addHoursToDate(oldestTweet, i * interval)));
+		for (int i = 1; i < 11; i++) {
+			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
 			System.out.println(dateIntervals.get(i - 1));
 		}
 
@@ -227,25 +238,61 @@ public class StatisticsTabController {
 				}
 
 			} else {
-				tweetsPerIntervalForEachUserMap.put(user, new HashMap<Date, Integer>());
+				tweetsPerIntervalForEachUserMap.put(user, new LinkedHashMap<Date, Integer>());
 				tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 1);
 			}
 		}
-		
+
 		return tweetsPerIntervalForEachUserMap;
 	}
 
+	public Map<Date, Integer> acquireDataOfTweetsPerTimeInterval() {
+		Map<Date, Integer> tweetsTimeInterval = new HashMap<>();
+
+		/** Timestamps **/
+		// Get current date
+		Date currentDate = new Date(System.currentTimeMillis());
+		int hoursDifference = minutesDifference(currentDate, oldestTweet);
+		double interval = hoursDifference / 10;
+
+		System.out.println(hoursDifference);
+
+		// Create 20 dates that will serve as intervals
+		System.out.println("Intervals");
+		List<Date> dateIntervals = new LinkedList<Date>();
+		for (int i = 1; i < 11; i++) {
+			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+			System.out.println(dateIntervals.get(i - 1));
+		}
+
+		for (Tweet tweet : bigTweetList) {
+			Date dateTweet = tweet.getCreated_at();
+			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
+
+			System.out.println("Created at " + dateTweet);
+			System.out.println("Closest to " + intervalDate);
+
+			if (tweetsTimeInterval.containsKey(intervalDate)) {
+				tweetsTimeInterval.put(intervalDate, tweetsTimeInterval.get(intervalDate) + 1);
+			} else {
+				tweetsTimeInterval.put(intervalDate, 0);
+			}
+		}
+
+		return tweetsTimeInterval;
+	}
+
 	/** Time **/
-	public Date addHoursToDate(Date date, int hours) {
+	public Date addMinutesToDate(Date date, int minutes) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(Calendar.HOUR_OF_DAY, hours);
+		calendar.add(Calendar.MINUTE, minutes);
 
 		return calendar.getTime();
 	}
 
-	private int hoursDifference(Date start, Date end) {
-		final int MILLIS_TO_HOUR = 1000 * 60 * 60;
+	private int minutesDifference(Date start, Date end) {
+		final int MILLIS_TO_HOUR = 1000 * 60;
 		return (int) (start.getTime() - end.getTime()) / MILLIS_TO_HOUR;
 	}
 
@@ -354,50 +401,85 @@ public class StatisticsTabController {
 	}
 
 	/** Processing **/
-	void generateChart() {
+	void generateFiveMostActiveUserChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-		
+
 		final CategoryAxis xAxis = new CategoryAxis();
-		final NumberAxis yAxis = new NumberAxis(1, 175, 1);
-		
+		final NumberAxis yAxis = new NumberAxis();
+
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
-		ac.setTitle("Number of Tweets for the most active users");
+		ac.setTitle("Number of Tweets of the most active users");
 
 		ac.setPrefSize(500, 600);
 		ac.setMinSize(500, 600);
 		ac.setMaxSize(500, 600);
-		
+
 		xAxis.setLabel("Time");
-	    yAxis.setLabel("Number of Tweets");
-		
+		yAxis.setLabel("Number of Tweets");
+
 		Set<Entry<User, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachUserMap.entrySet();
 		Iterator<Entry<User, Map<Date, Integer>>> iterator1 = setEntry1.iterator();
 
 		while (iterator1.hasNext()) {
 			Entry<User, Map<Date, Integer>> entry1 = iterator1.next();
-			
-			XYChart.Series<String,Number> series = new XYChart.Series<String,Number>();
+
+			XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
 			series.setName(entry1.getKey().getScreen_name());
-			
+
 			Map<Date, Integer> tweetsOverTime = entry1.getValue();
-			
+
 			Set<Entry<Date, Integer>> setEntry2 = tweetsOverTime.entrySet();
 			Iterator<Entry<Date, Integer>> iterator2 = setEntry2.iterator();
-			
+
 			while (iterator2.hasNext()) {
 				Entry<Date, Integer> entry2 = iterator2.next();
-				
-				series.getData().add(new XYChart.Data<String,Number>(simpleDateFormat.format(entry2.getKey()), entry2.getValue()));
+
+				series.getData().add(
+						new XYChart.Data<String, Number>(simpleDateFormat.format(entry2.getKey()), entry2.getValue()));
 			}
-			
+
 			ac.getData().add(series);
 		}
 		
 		makeChartAppear(pane1, ac);
 	}
-	
+
+	void generateTweetsPerIntervalChart() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis yAxis = new NumberAxis();
+
+		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
+		ac.setTitle("Number of Tweets per Time Interval");
+
+		ac.setPrefSize(500, 600);
+		ac.setMinSize(500, 600);
+		ac.setMaxSize(500, 600);
+
+		xAxis.setLabel("Time");
+		yAxis.setLabel("Number of Tweets");
+
+		Set<Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
+		Iterator<Entry<Date, Integer>> iterator1 = setEntry1.iterator();
+
+		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+		series.setName("Nombre de Tweets");
+		
+		while (iterator1.hasNext()) {
+			Entry<Date, Integer> entry1 = iterator1.next();
+
+			
+			series.getData().add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
+			
+			
+		}
+		ac.getData().add(series);
+		
+		makeChartAppear(pane2, ac);
+	}
+
 	void dynamicallyCompleteCharts() {
 
 	}
-
 }
