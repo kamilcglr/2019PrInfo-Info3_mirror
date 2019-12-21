@@ -1,6 +1,5 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -46,6 +46,7 @@ public class StatisticsTabController {
 	Date oldestTweet;
 
 	private List<Tweet> bigTweetList;
+	private List<Tweet> reducedTweetList;
 
 	private PIViewer piViewer;
 
@@ -218,12 +219,29 @@ public class StatisticsTabController {
 			topFiveActiveUsers.add(e.getKey());
 			iter++;
 		}
-
+		
+		// Get the tweets we will be working with
+		Predicate<Tweet> byAppartenance = tweet -> topFiveActiveUsers.contains(tweet.getUser());
+		
+		reducedTweetList = bigTweetList.stream().filter(byAppartenance)
+		        .collect(Collectors.toList());
+		
+		System.out.println("Sizes before and after");
+		System.out.println(bigTweetList.size());
+		System.out.println(reducedTweetList.size());
+		
 		/** Timestamps **/
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = hoursDifference(currentDate, oldestTweet);
+		int interval = hoursDifference / 20;
 		
-		System.out.println(hoursDifference);
+		
+		
+		
+		
+		// Let's now map the Date and the number of tweets
+		
+		
 	}
 	
 	/** Animations **/
