@@ -1,13 +1,19 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import javafx.animation.RotateTransition;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 /**
  * @author Sergiy
@@ -77,7 +83,37 @@ public class StatisticsTabController {
 
 		gridPane.add(pane, 0, 0);
 
-		// pane1.getChildren().add(ac);
+		pane.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				rotateChart(pane);
+			}
+		});
 	}
 
+	void rotateChart(Node node) {
+		RotateTransition rotate = new RotateTransition();
+
+		// Setting Axis of rotation
+		rotate.setAxis(Rotate.Y_AXIS);
+
+		// setting the angle of rotation
+		rotate.setByAngle(90);
+
+		// setting cycle count of the rotation
+		// rotate.setCycleCount(500);
+
+		// Setting duration of the transition
+		rotate.setDuration(Duration.millis(100));
+
+		// the transition will be auto reversed by setting this to true
+		// rotate.setAutoReverse(true);
+
+		// setting Rectangle as the node onto which the
+		// transition will be applied
+		rotate.setNode(node);
+
+		// playing the transition
+		rotate.play();
+	}
 }
