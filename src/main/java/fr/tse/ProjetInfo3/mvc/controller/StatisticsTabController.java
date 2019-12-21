@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
@@ -78,20 +79,14 @@ public class StatisticsTabController {
 
 		ac.getData().addAll(seriesApril, seriesMay);
 
-		Pane pane = new Pane();
-		pane.getChildren().add(ac);
+		Pane pane1 = new Pane();
 
-		gridPane.add(pane, 0, 0);
-
-		pane.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				rotateChart(pane);
-			}
-		});
+		gridPane.add(pane1, 0, 0);
+		
+		makeChartAppear(pane1, ac);
 	}
 
-	void rotateChart(Node node) {
+	void rotateNode(Node node) {
 		RotateTransition rotate = new RotateTransition();
 
 		// Setting Axis of rotation
@@ -104,7 +99,7 @@ public class StatisticsTabController {
 		// rotate.setCycleCount(500);
 
 		// Setting duration of the transition
-		rotate.setDuration(Duration.millis(100));
+		rotate.setDuration(Duration.millis(1000));
 
 		// the transition will be auto reversed by setting this to true
 		// rotate.setAutoReverse(true);
@@ -116,4 +111,44 @@ public class StatisticsTabController {
 		// playing the transition
 		rotate.play();
 	}
+
+	void makeChartAppear(Pane pane, AreaChart<Number, Number> ac) {
+		RotateTransition rotate2 = new RotateTransition();
+		rotate2.setAxis(Rotate.Y_AXIS);
+		rotate2.setByAngle(90);
+		rotate2.setDuration(Duration.millis(1000));
+		rotate2.setAutoReverse(true);  
+		rotate2.setNode(pane);
+
+		RotateTransition rotate1 = new RotateTransition();
+		rotate1.setAxis(Rotate.Y_AXIS);
+		rotate1.setByAngle(90);
+		rotate1.setDuration(Duration.millis(1000));
+		rotate1.setAutoReverse(false);  
+		rotate1.setNode(pane);
+		
+		rotate1.setOnFinished(e -> {
+			rotate2.play();
+			pane.getChildren().add(ac);
+		});
+		
+		RotateTransition rotateInitial = new RotateTransition();
+
+		rotateInitial.setAxis(Rotate.Y_AXIS);
+		rotateInitial.setByAngle(180);
+		rotateInitial.setDuration(Duration.millis(1));
+		rotateInitial.setAutoReverse(false);  
+		rotateInitial.setNode(pane);
+		
+		rotateInitial.setOnFinished(e -> {
+			rotate1.play();
+		});
+		
+		rotateInitial.play();
+	}
+
+	void dynamicallyCompleteCharts() {
+		
+	}
+
 }
