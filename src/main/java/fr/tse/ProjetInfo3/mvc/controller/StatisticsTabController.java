@@ -1,6 +1,8 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -200,19 +202,42 @@ public class StatisticsTabController {
 		}
 
 		Map<User, Integer> sortedTweetsPerUserMap = tweetsPerUserMap.entrySet().stream()
-				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors
-						.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-		
-		
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
+						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+		List<User> topFiveActiveUsers = new ArrayList<User>();
+
 		Set<Entry<User, Integer>> setLhm = sortedTweetsPerUserMap.entrySet();
-	      Iterator<Entry<User, Integer>> it2 = setLhm.iterator();
-	      
-	      int i = 0;
-	      while(i < 5){
-	         Entry<User, Integer> e = it2.next();
-	         System.out.println(e.getKey() + " : " + e.getValue());
-	         i++;
-	      }
+		Iterator<Entry<User, Integer>> it2 = setLhm.iterator();
+
+		int iter = 0;
+		while (iter < 5) {
+			Entry<User, Integer> e = it2.next();
+			// System.out.println(e.getKey() + " : " + e.getValue());
+
+			topFiveActiveUsers.add(e.getKey());
+			iter++;
+		}
+
+		/** Timestamps **/
+		Date currentDate = new Date(System.currentTimeMillis());
+		int hoursDifference = hoursDifference(currentDate, oldestTweet);
+		
+		System.out.println(hoursDifference);
+	}
+	
+	/** Animations **/
+	public Date addHoursToDate(Date date, int hours) {
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(date);
+	    calendar.add(Calendar.HOUR_OF_DAY, hours);
+	    
+	    return calendar.getTime();
+	}
+	
+	private int hoursDifference(Date start, Date end) {
+	    final int MILLIS_TO_HOUR = 1000 * 60 * 60;
+	    return (int) (start.getTime() - end.getTime()) / MILLIS_TO_HOUR;
 	}
 
 	/** Animations **/
