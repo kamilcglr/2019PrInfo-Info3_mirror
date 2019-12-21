@@ -81,6 +81,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         deletePI.setVisible(false);
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
+        statisticsButton.setVisible(false);
 
 
         PIListView.setCellFactory(param -> new ListObjects.ResultInterestPoint());
@@ -97,6 +98,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             deletePI.setVisible(true);
             editPI.setVisible(true);
             editPI.setVisible(true);
+            statisticsButton.setVisible(true);
         }
 
     }
@@ -148,7 +150,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     
     @FXML
     void statisticsButtonPressed(ActionEvent event) {
-        mainController.goToStatistics();
+        mainController.goToStatistics(piViewer);
     }
 
     /**

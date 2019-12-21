@@ -445,7 +445,7 @@ public class MainController {
 
     }
     
-    public void goToStatistics() {
+    public void goToStatistics(PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
         
         try {
@@ -460,6 +460,18 @@ public class MainController {
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
             });
+            
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                	statisticsTabController.setDatas(piViewer);
+                    return null;
+                }
+            };
+
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
 
         } catch (IOException e) {
             e.printStackTrace();
