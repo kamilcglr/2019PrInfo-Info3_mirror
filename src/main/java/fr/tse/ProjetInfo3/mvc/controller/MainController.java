@@ -444,5 +444,26 @@ public class MainController {
         }
 
     }
+    
+    public void goToStatistics() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
+        
+        try {
+            AnchorPane statisticsPane = fxmlLoader.load();
+            System.out.println(statisticsPane);
+            StatisticsTabController statisticsTabController = fxmlLoader.getController();
+            
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(statisticsPane);
+                tab.setText("Statistiques");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

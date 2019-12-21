@@ -148,7 +148,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     
     @FXML
     void statisticsButtonPressed(ActionEvent event) {
-        
+        mainController.goToStatistics();
     }
 
     /**
