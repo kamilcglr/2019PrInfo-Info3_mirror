@@ -1,5 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
@@ -43,6 +45,10 @@ import javafx.util.Duration;
  *         {@code This class acts as a Controller for the Tab which is used to display Interest Point statistics}
  */
 public class StatisticsTabController {
+	/** Data **/
+	Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap;
+	
+	
 	/** Time **/
 	Date oldestTweet;
 
@@ -90,57 +96,8 @@ public class StatisticsTabController {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void initialize() {
-		final NumberAxis xAxis = new NumberAxis(1, 31, 1);
-		final NumberAxis yAxis = new NumberAxis();
-		final AreaChart<Number, Number> ac = new AreaChart<Number, Number>(xAxis, yAxis);
-		ac.setTitle("Temperature Monitoring (in Degrees C)");
-
-		ac.setPrefSize(500, 250);
-		ac.setMinSize(500, 250);
-		ac.setMaxSize(500, 250);
-
-		XYChart.Series seriesApril = new XYChart.Series();
-		seriesApril.setName("April");
-		seriesApril.getData().add(new XYChart.Data(1, 4));
-		seriesApril.getData().add(new XYChart.Data(3, 10));
-		seriesApril.getData().add(new XYChart.Data(6, 15));
-		seriesApril.getData().add(new XYChart.Data(9, 8));
-		seriesApril.getData().add(new XYChart.Data(12, 5));
-		seriesApril.getData().add(new XYChart.Data(15, 18));
-		seriesApril.getData().add(new XYChart.Data(18, 15));
-		seriesApril.getData().add(new XYChart.Data(21, 13));
-		seriesApril.getData().add(new XYChart.Data(24, 19));
-		seriesApril.getData().add(new XYChart.Data(27, 21));
-		seriesApril.getData().add(new XYChart.Data(30, 21));
-
-		XYChart.Series seriesMay = new XYChart.Series();
-		seriesMay.setName("May");
-		seriesMay.getData().add(new XYChart.Data(1, 20));
-		seriesMay.getData().add(new XYChart.Data(3, 15));
-		seriesMay.getData().add(new XYChart.Data(6, 13));
-		seriesMay.getData().add(new XYChart.Data(9, 12));
-		seriesMay.getData().add(new XYChart.Data(12, 14));
-		seriesMay.getData().add(new XYChart.Data(15, 18));
-		seriesMay.getData().add(new XYChart.Data(18, 25));
-		seriesMay.getData().add(new XYChart.Data(21, 25));
-		seriesMay.getData().add(new XYChart.Data(24, 23));
-		seriesMay.getData().add(new XYChart.Data(27, 26));
-		seriesMay.getData().add(new XYChart.Data(31, 26));
-
-		ac.getData().addAll(seriesApril, seriesMay);
-
-		final AreaChart<Number, Number> ac2 = new AreaChart<Number, Number>(xAxis, yAxis);
-		ac2.setTitle("Temperature Monitoring (in Degrees C)");
-
-		ac2.setPrefSize(500, 250);
-		ac2.setMinSize(500, 250);
-		ac2.setMaxSize(500, 250);
-
-		ac2.getData().addAll(seriesApril, seriesMay);
-
 		List<Pane> chartContainers = new ArrayList<>();
 		chartContainers.add(pane1);
 		chartContainers.add(pane2);
@@ -148,9 +105,6 @@ public class StatisticsTabController {
 		chartContainers.add(pane4);
 		chartContainers.add(pane5);
 		chartContainers.add(pane6);
-
-		makeChartAppear(pane1, ac);
-		makeChartAppear(pane2, ac2);
 	}
 
 	public void setDatas(PIViewer piViewer) {
@@ -177,8 +131,9 @@ public class StatisticsTabController {
 				oldestTweet = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
 						.getCreated_at();
 
-				acquireDataFromTweets();
-
+				tweetsPerIntervalForEachUserMap = acquireDataFromTweets();
+				generateChart();
+				
 				anchorPane.setEffect(null);
 				dialogStackPane.getChildren().remove(progressIndicatorBox);
 			});
@@ -190,7 +145,7 @@ public class StatisticsTabController {
 		return null;
 	}
 
-	void acquireDataFromTweets() {
+	public Map<User, Map<Date, Integer>> acquireDataFromTweets() {
 		Map<User, Integer> tweetsPerUserMap = new HashMap<>();
 
 		for (Tweet tweet : bigTweetList) {
@@ -215,7 +170,7 @@ public class StatisticsTabController {
 		int iter = 0;
 		while (iter < 5) {
 			Entry<User, Integer> e = it2.next();
-			// System.out.println(e.getKey() + " : " + e.getValue());
+			System.out.println(e.getKey() + " : " + e.getValue());
 
 			topFiveActiveUsers.add(e.getKey());
 			iter++;
@@ -236,20 +191,51 @@ public class StatisticsTabController {
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = hoursDifference(currentDate, oldestTweet);
-		int interval = hoursDifference / 20;
+		int interval = hoursDifference / 10;
+
+		System.out.println(hoursDifference);
 
 		// Create 20 dates that will serve as intervals
+		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 21; i++) {
-			dateIntervals.add(addHoursToDate(oldestTweet, i * interval));
+		for (int i = 1; i < 13; i++) {
+			dateIntervals.add(roundDateToHour(addHoursToDate(oldestTweet, i * interval)));
 			System.out.println(dateIntervals.get(i - 1));
 		}
 
-		// Let's now map each Date interval and the number of tweets
+		// Let's now map each Date interval and the number of tweets with the
+		// corresponding user
+		Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap = new HashMap<>();
 
+		for (Tweet tweet : reducedTweetList) {
+			User user = tweet.getUser();
+			System.out.println(user.getName());
+
+			Date dateTweet = tweet.getCreated_at();
+			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
+
+			System.out.println("Created at " + dateTweet);
+			System.out.println("Closest to " + intervalDate);
+
+			// Check if a User entry exists
+			if (tweetsPerIntervalForEachUserMap.containsKey(user)) {
+				if (tweetsPerIntervalForEachUserMap.get(user).containsKey(intervalDate)) {
+					tweetsPerIntervalForEachUserMap.get(user).put(intervalDate,
+							tweetsPerIntervalForEachUserMap.get(user).get(intervalDate) + 1);
+				} else {
+					tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 0);
+				}
+
+			} else {
+				tweetsPerIntervalForEachUserMap.put(user, new HashMap<Date, Integer>());
+				tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 1);
+			}
+		}
+		
+		return tweetsPerIntervalForEachUserMap;
 	}
 
-	/** Animations **/
+	/** Time **/
 	public Date addHoursToDate(Date date, int hours) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -261,6 +247,34 @@ public class StatisticsTabController {
 	private int hoursDifference(Date start, Date end) {
 		final int MILLIS_TO_HOUR = 1000 * 60 * 60;
 		return (int) (start.getTime() - end.getTime()) / MILLIS_TO_HOUR;
+	}
+
+	// Get the Date within the interval list that is the closest to the parameter
+	// Date
+	private Date approximateInterval(List<Date> dateIntervals, Date tweetDate) {
+		long minDifference = Long.MAX_VALUE;
+		Date closestDate = null;
+
+		for (Date date : dateIntervals) {
+			long differenceInMillis = Math.abs(date.getTime() - tweetDate.getTime());
+
+			if (differenceInMillis < minDifference) {
+				minDifference = differenceInMillis;
+				closestDate = date;
+			}
+		}
+
+		return closestDate;
+	}
+
+	public Date roundDateToHour(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return calendar.getTime();
 	}
 
 	/** Animations **/
@@ -290,18 +304,18 @@ public class StatisticsTabController {
 		rotate.play();
 	}
 
-	void makeChartAppear(Pane pane, AreaChart<Number, Number> ac) {
+	void makeChartAppear(Pane pane, AreaChart<?, ?> ac) {
 		RotateTransition rotate2 = new RotateTransition();
 		rotate2.setAxis(Rotate.Y_AXIS);
 		rotate2.setByAngle(90);
-		rotate2.setDuration(Duration.millis(250));
+		rotate2.setDuration(Duration.millis(500));
 		rotate2.setAutoReverse(true);
 		rotate2.setNode(pane);
 
 		RotateTransition rotate1 = new RotateTransition();
 		rotate1.setAxis(Rotate.Y_AXIS);
 		rotate1.setByAngle(90);
-		rotate1.setDuration(Duration.millis(250));
+		rotate1.setDuration(Duration.millis(500));
 		rotate1.setAutoReverse(false);
 		rotate1.setNode(pane);
 
@@ -339,6 +353,49 @@ public class StatisticsTabController {
 
 	}
 
+	/** Processing **/
+	void generateChart() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+		
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis yAxis = new NumberAxis(1, 175, 1);
+		
+		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
+		ac.setTitle("Number of Tweets for the most active users");
+
+		ac.setPrefSize(500, 600);
+		ac.setMinSize(500, 600);
+		ac.setMaxSize(500, 600);
+		
+		xAxis.setLabel("Time");
+	    yAxis.setLabel("Number of Tweets");
+		
+		Set<Entry<User, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachUserMap.entrySet();
+		Iterator<Entry<User, Map<Date, Integer>>> iterator1 = setEntry1.iterator();
+
+		while (iterator1.hasNext()) {
+			Entry<User, Map<Date, Integer>> entry1 = iterator1.next();
+			
+			XYChart.Series<String,Number> series = new XYChart.Series<String,Number>();
+			series.setName(entry1.getKey().getScreen_name());
+			
+			Map<Date, Integer> tweetsOverTime = entry1.getValue();
+			
+			Set<Entry<Date, Integer>> setEntry2 = tweetsOverTime.entrySet();
+			Iterator<Entry<Date, Integer>> iterator2 = setEntry2.iterator();
+			
+			while (iterator2.hasNext()) {
+				Entry<Date, Integer> entry2 = iterator2.next();
+				
+				series.getData().add(new XYChart.Data<String,Number>(simpleDateFormat.format(entry2.getKey()), entry2.getValue()));
+			}
+			
+			ac.getData().add(series);
+		}
+		
+		makeChartAppear(pane1, ac);
+	}
+	
 	void dynamicallyCompleteCharts() {
 
 	}
