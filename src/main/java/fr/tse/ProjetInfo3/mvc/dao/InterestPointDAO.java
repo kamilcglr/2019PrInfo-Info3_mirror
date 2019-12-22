@@ -1,18 +1,23 @@
 package fr.tse.ProjetInfo3.mvc.dao;
 
-import com.google.gson.GsonBuilder;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
-import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
-import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -267,10 +272,7 @@ public class InterestPointDAO {
     /**
      * We save a User in the DB in the new table created
      * so we could accelerate the research 
-     * 
-     
      */
-    
     public User saveUser(User user,String parsedData) {
     	Connection connection = SingletonDBConnection.getInstance();
         try {
@@ -296,14 +298,10 @@ public class InterestPointDAO {
      * we're getting a user from the DB if the user exist already we're returning the user
      * else we're returning null
      */
-    public User getUserFromDatabase(String screen_name) {
+    public User getUserFromDatabase(String screen_name,Gson gson) {
     	
     	Connection connection = SingletonDBConnection.getInstance();
     	User user = null;
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting() //human-readable json
-                .setDateFormat(TwitterDateParser.twitterFormat)
-                .create();
     	try {
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE userScreenName = ? ");
 			ps.setString(1, screen_name);

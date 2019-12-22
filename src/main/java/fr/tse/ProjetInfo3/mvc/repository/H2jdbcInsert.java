@@ -4,23 +4,15 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.Gson;
-
 import com.google.gson.GsonBuilder;
+
 import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dao.LoginAppDAO;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
-import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 /**
  * @author Laïla
@@ -97,21 +89,16 @@ public class H2jdbcInsert {
              // STEP 3: Execute a query
              stmt = conn.createStatement();
 
-             InterestPointDAO dao = new InterestPointDAO();
              // testing the storing process we have made
              RequestManager manager = new RequestManager();
 
-             User user = manager.getUser("realdonaldtrump");
-             user.setListoftweets(manager.getTweetsFromUser(user.getScreen_name(), 3194,  null));
-             // ! user this type of builder
-             Gson gson = new GsonBuilder()
-                     .setPrettyPrinting() //human-readable json
-                     .setDateFormat(TwitterDateParser.twitterFormat)
-                     .create();
-
-             String userJson = gson.toJson(user);
+             User user = manager.getUser("TahaAlamIdrissi");
              
-             dao.saveUser(user, userJson);
+             //user.setListoftweets(manager.getTweetsFromUser(user.getScreen_name(), 3194,  null));
+             // ! user this type of builder
+             DatabaseManager databaseManager = new DatabaseManager();
+             databaseManager.cachingUserData(user, databaseManager.getGsonInstance(), databaseManager.getInterestPointDao());
+             
              // STEP 4: Clean-up environment
              stmt.close();
              conn.close();

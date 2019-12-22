@@ -23,10 +23,10 @@ public class H2jsbcCreateOrDelete {
             conn = SingletonDBConnection.getInstance();
             stmt = conn.createStatement();
 
-            stmt.executeUpdate("drop table interestpoint");
-            stmt.executeUpdate("drop table hashtag");
-            stmt.executeUpdate("drop table twitteruser");
-            stmt.executeUpdate("drop table userApp");
+            //stmt.executeUpdate("drop table interestpoint");
+            //stmt.executeUpdate("drop table hashtag");
+            //stmt.executeUpdate("drop table twitteruser");
+            stmt.executeUpdate("drop table usercached");
 
 
             System.out.println("Delete all tables tables in given database...");
@@ -87,17 +87,21 @@ public class H2jsbcCreateOrDelete {
                     + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
 
             String newUser = "CREATE TABLE   usercached " +
-                    "( user_id INTEGER AUTO_INCREMENT,"
+                    "( user_id INTEGER ,"
                     + "userScreenName VARCHAR(255),"
                     + "PRIMARY KEY (user_id),"
+                    + "data CLOB)";
+            
+            String newTweet = "CREATE TABLE   tweetcached " +
+                    "( tweet_id INTEGER ,"
                     + "data CLOB)";
 
             //stmt.executeUpdate(interestpoint);
             //stmt.executeUpdate(hashtag);
             //stmt.executeUpdate(user);
 
-            //stmt.executeUpdate(newUser);
-
+            stmt.executeUpdate(newUser);
+            stmt.executeUpdate(newTweet);
             System.out.println("Created tables in given database...");
 
             // STEP 4: Clean-up environment
