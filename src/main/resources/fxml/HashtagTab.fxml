@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXProgressBar?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
@@ -35,7 +36,7 @@
                                         <RowConstraints minHeight="150.0" />
                                         <RowConstraints minHeight="100.0" />
                                         <RowConstraints minHeight="700.0" />
-                                        <RowConstraints minHeight="50.0" prefHeight="50.0" />
+                                        <RowConstraints minHeight="50.0" prefHeight="400.0" />
                                         <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
                                         <RowConstraints vgrow="SOMETIMES" />
                                     </rowConstraints>
@@ -74,6 +75,7 @@
                               <Label fx:id="lastAnalysedLabel" text="XXX tweets ont été analysés depuis le Date" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
                               <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" progress="0.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                               <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <PieChart fx:id="hashtagPie" GridPane.columnSpan="5" GridPane.rowIndex="3" GridPane.rowSpan="2" />
                                     </children>
                                 </GridPane>
                             </content>

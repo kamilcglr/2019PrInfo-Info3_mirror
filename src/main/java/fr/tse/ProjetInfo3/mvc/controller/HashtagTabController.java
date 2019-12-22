@@ -17,6 +17,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Side;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
@@ -97,6 +99,9 @@ public class HashtagTabController {
     @FXML
     private Label progressLabel;
 
+    @FXML
+    private PieChart hashtagPie;
+
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
@@ -115,6 +120,7 @@ public class HashtagTabController {
         tweetsLabel.setVisible(hide);
         usersLabel.setVisible(hide);
         lastAnalysedLabel.setVisible(hide);
+
     }
 
     /*Controller can acces to this Tab */
@@ -149,7 +155,7 @@ public class HashtagTabController {
         });
         try {
             //search and get tweets from hashtag first
-            this.tweetList = hastagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 4500, null);
+            this.tweetList = hastagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 300, null);
 
             //Tweet are collected
             Platform.runLater(() -> {
@@ -181,6 +187,7 @@ public class HashtagTabController {
                 showHashtagElements(true);
                 progressBar.setVisible(false);
                 progressLabel.setVisible(false);
+                setPieChart();
             });
 
         } catch (Exception e) {
@@ -292,5 +299,15 @@ public class HashtagTabController {
         if (threadTopTweets != null) {
             threadTopTweets.interrupt();
         }
+    }
+
+    public void setPieChart() {
+        List<String> hashtags = hastagViewer.getHashtagsLinked();
+        hashtagUsed = hastagViewer.topHashtag(hashtags);
+        //ObservableList<PieChart.Data> hashtagPieData = FXCollections.observableArrayList();
+        hashtagUsed.forEach((String,Integer) -> {
+            hashtagPie.getData().add(new PieChart.Data(String,Integer));
+        });
+        hashtagPie.setLegendSide(Side.LEFT);
     }
 }
