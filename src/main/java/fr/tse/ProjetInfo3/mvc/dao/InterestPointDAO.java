@@ -318,5 +318,41 @@ public class InterestPointDAO {
     	
     	return user;
     }
+    
+    public Tweet saveTweetInCache(Tweet tweet, String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO tweetcached (tweet_id,data) "
+                    + "VALUES (?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setLong(1, tweet.getId());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(2, parsedData);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tweet;
+    }
+    
+    public Hashtag saveHashtagInCache(Hashtag hashtag,String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO hashtagcached (hashtag_id,data) "
+                    + "VALUES (?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setLong(1, hashtag.getId());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(2, parsedData);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hashtag;
+    }
 
 }
