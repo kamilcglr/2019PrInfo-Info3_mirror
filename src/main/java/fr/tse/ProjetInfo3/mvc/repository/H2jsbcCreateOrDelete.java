@@ -95,13 +95,15 @@ public class H2jsbcCreateOrDelete {
             String newTweet = "CREATE TABLE   tweetcached " +
                     "( tweet_id INTEGER ,"
                     + "data CLOB)";
+            
+            String newHashtag = "CREATE TABLE   hashtagcached " +
+                    "( hashtag_id INTEGER ,"
+                    + "data CLOB)";
 
             //stmt.executeUpdate(interestpoint);
             //stmt.executeUpdate(hashtag);
             //stmt.executeUpdate(user);
-
-            stmt.executeUpdate(newUser);
-            stmt.executeUpdate(newTweet);
+            stmt.executeUpdate(newHashtag);
             System.out.println("Created tables in given database...");
 
             // STEP 4: Clean-up environment
