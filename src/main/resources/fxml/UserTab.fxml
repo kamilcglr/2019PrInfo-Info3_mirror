@@ -55,7 +55,7 @@
                                                 <Insets top="3.0" />
                                             </GridPane.margin>
                                         </JFXButton>
-                                        <JFXToggleNode fx:id="favoriteToggle" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                                        <JFXToggleNode fx:id="favoriteToggle" onAction="#favouriteTogglePressed" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                                             <graphic>
                                                 <FontIcon fx:id="favoriteIcon" iconLiteral="far-heart" iconSize="40" />
                                             </graphic>

@@ -10,6 +10,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -37,6 +38,7 @@ public class HashtagTabController {
 
     private Hashtag hashtagToPrint;
 
+    private FavsViewer favsViewer;
     //Used to know how many tweets we have during search
     private int numberOfTweetReceived;
 
@@ -136,6 +138,11 @@ public class HashtagTabController {
         threadGetTweetFromHashtag.setDaemon(true);
         threadGetTweetFromHashtag.start();
     }
+    @FXML
+    private void favouriteTogglePressed() {
+    	favsViewer=new FavsViewer();
+    	favsViewer.addHashtagToFavourites(hashtagToPrint);
+    }
 
     /**
      * Called by setHashtag, it gets the tweets of a hashtag,
@@ -174,6 +181,7 @@ public class HashtagTabController {
             }
             Platform.runLater(() -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                if(tweetList.size()>0) {
                 String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
                 lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
                         date);
@@ -181,6 +189,13 @@ public class HashtagTabController {
                 showHashtagElements(true);
                 progressBar.setVisible(false);
                 progressLabel.setVisible(false);
+                }
+                else {
+                	 lastAnalysedLabel.setText("Aucun tweet n'est relié à ce hashtag");
+                     showHashtagElements(true);
+                     progressBar.setVisible(false);
+                     progressLabel.setVisible(false);
+                }
             });
 
         } catch (Exception e) {

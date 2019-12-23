@@ -41,14 +41,13 @@ public class H2jdbcRead {
 	         // STEP 3: Execute a query 
 	         System.out.println("Connected database successfully..."); 
 	         stmt = conn.createStatement(); 
-	         String sql = "select * from twitteruser where interestpoint_id = 1";
+	         String sql = "select * from hashtag";
 	         
 	         ResultSet rs = stmt.executeQuery(sql);
 	         
 	         while(rs.next()) {
-	        	 System.out.println("id: "+rs.getInt("interestpoint_id"));
-	        	 System.out.println("name : "+rs.getString("name"));
-	        	 System.out.println("description : "+rs.getString("description"));
+	        	 System.out.println("name: "+rs.getString("hashtag"));
+
 	         }
 	         
 	         

@@ -83,7 +83,7 @@ public class LoginController {
             // STEP 3: Execute a query
             System.out.println("Connected database successfully...");
             stmt = conn.createStatement();
-            String sql = "SELECT mail, password FROM user where mail='" + identifiant + "'" + " and password= '" + password + "'";
+            String sql = "SELECT mail, password FROM userApp where mail='" + identifiant + "'" + " and password= '" + password + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
             // STEP 4: Extract data from result set

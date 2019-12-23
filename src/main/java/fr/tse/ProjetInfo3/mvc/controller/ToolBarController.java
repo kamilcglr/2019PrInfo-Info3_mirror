@@ -17,7 +17,7 @@ public class ToolBarController {
     @FXML
     private void initialize() {
         //hide unusued elements
-        favoriteButton.setVisible(false);
+        favoriteButton.setVisible(true);
     }
 
     @FXML
@@ -28,5 +28,10 @@ public class ToolBarController {
     @FXML
     private void piButtonPressed(ActionEvent event){
         mainController.goToMyPisPane();
+    }
+    
+    @FXML 
+    private void favouriteButtonPressed(ActionEvent event) {
+    	mainController.goToMyFavsPane();
     }
 }

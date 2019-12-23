@@ -9,6 +9,8 @@ import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -43,6 +45,7 @@ public class UserTabController {
 
     private UserViewer userViewer;
 
+    private FavsViewer favsViewer;
     private User userToPrint;
 
     /* THREADS
@@ -151,7 +154,7 @@ public class UserTabController {
     private void initialize() {
         //hide elements
         compareButton.setVisible(false);
-        favoriteToggle.setVisible(false);
+        favoriteToggle.setVisible(true);
         JFXScrollPane.smoothScrolling(scrollPane);
 
         listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
@@ -210,6 +213,15 @@ public class UserTabController {
         return 'c';
         //TODO getType by user
     }
+    @FXML
+    private void favouriteTogglePressed() {
+                
+                        favsViewer=new FavsViewer();
+                        favsViewer.addUserToFavourites(userToPrint);
+                     }
+
+
+    
 
     private Date getDate() {
         Date twitterDate = null;
@@ -256,6 +268,7 @@ public class UserTabController {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
+        	if(tweetList.size()>0) {
             String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
             lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
                     date);
@@ -263,6 +276,15 @@ public class UserTabController {
             progressBar.setVisible(false);
             progressLabel.setVisible(false);
             hideLists(false);
+        	}
+        	else {
+        		 lastAnalysedLabel.setText("Cet utilisateur n'a aucun tweet"
+                         );
+                 progressBar.setVisible(false);
+                 progressLabel.setVisible(false);
+                 hideLists(false);
+        		
+        	}
         });
 
         return null;
