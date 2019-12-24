@@ -36,9 +36,11 @@
                                         <RowConstraints minHeight="150.0" />
                                         <RowConstraints minHeight="100.0" />
                                         <RowConstraints minHeight="700.0" />
-                                        <RowConstraints minHeight="50.0" prefHeight="400.0" />
+                                        <RowConstraints minHeight="150.0" prefHeight="400.0" />
                                         <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
-                                        <RowConstraints vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
                                         <Label fx:id="hashtagLabel" styleClass="tabtitles" text="NomHashtag" GridPane.columnSpan="3" GridPane.valignment="TOP" />
@@ -75,7 +77,11 @@
                               <Label fx:id="lastAnalysedLabel" text="XXX tweets ont été analysés depuis le Date" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
                               <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" progress="0.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                               <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                              <PieChart fx:id="hashtagPie" GridPane.columnSpan="5" GridPane.rowIndex="3" GridPane.rowSpan="2" />
+                              <VBox minHeight="400.0" prefHeight="400.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                                 <children>
+                                    <PieChart fx:id="hashtagPie" />
+                                 </children>
+                              </VBox>
                                     </children>
                                 </GridPane>
                             </content>

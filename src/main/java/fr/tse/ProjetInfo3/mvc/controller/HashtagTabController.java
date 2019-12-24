@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HashtagTabController {
     /**
@@ -305,9 +306,20 @@ public class HashtagTabController {
         List<String> hashtags = hastagViewer.getHashtagsLinked();
         hashtagUsed = hastagViewer.topHashtag(hashtags);
         //ObservableList<PieChart.Data> hashtagPieData = FXCollections.observableArrayList();
-        hashtagUsed.forEach((String,Integer) -> {
-            hashtagPie.getData().add(new PieChart.Data(String,Integer));
-        });
+//        hashtagUsed.forEach((String,Integer) -> {
+//            hashtagPie.getData().add(new PieChart.Data(String,Integer));
+//        });
+        int i = 0;
+        for (Map.Entry<String, Integer> entry : hashtagUsed.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            hashtagPie.getData().add(new PieChart.Data(key,value));
+            i++;
+            if (i == 10) {
+                break;
+            }
+        }
         hashtagPie.setLegendSide(Side.LEFT);
+        hashtagPie.setTitle("Top 10 Linked Hashtags");
     }
 }
