@@ -90,12 +90,6 @@ public class StatisticsTabController {
 	@FXML
 	private Pane pane4;
 
-	@FXML
-	private Pane pane5;
-
-	@FXML
-	private Pane pane6;
-
 	public StatisticsTabController() {
 
 	}
@@ -103,12 +97,11 @@ public class StatisticsTabController {
 	@FXML
 	private void initialize() {
 		List<Pane> chartContainers = new ArrayList<>();
+		
 		chartContainers.add(pane1);
 		chartContainers.add(pane2);
 		chartContainers.add(pane3);
 		chartContainers.add(pane4);
-		chartContainers.add(pane5);
-		chartContainers.add(pane6);
 	}
 
 	public void setDatas(PIViewer piViewer) {
@@ -158,7 +151,8 @@ public class StatisticsTabController {
 	/** Data **/
 	public Map<User, Map<Date, Integer>> acquireDataOfFiveMostActiveUsers() {
 		Map<User, Integer> tweetsPerUserMap = new HashMap<>();
-
+		
+		/** Fill the Map with a user as key and it's number of tweets **/
 		for (Tweet tweet : bigTweetList) {
 			User user = tweet.getUser();
 
@@ -168,26 +162,29 @@ public class StatisticsTabController {
 				tweetsPerUserMap.put(user, 0);
 			}
 		}
-
+		
+		/** Sort the map **/
 		Map<User, Integer> sortedTweetsPerUserMap = tweetsPerUserMap.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
 						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
 		List<User> topFiveActiveUsers = new ArrayList<User>();
 
-		Set<Entry<User, Integer>> setLhm = sortedTweetsPerUserMap.entrySet();
-		Iterator<Entry<User, Integer>> it2 = setLhm.iterator();
-
+		Set<Entry<User, Integer>> setEntry1 = sortedTweetsPerUserMap.entrySet();
+		Iterator<Entry<User, Integer>> iterator1 = setEntry1.iterator();
+		
+		/** Get top five active users **/
 		int iter = 0;
 		while (iter < 5) {
-			Entry<User, Integer> e = it2.next();
+			Entry<User, Integer> e = iterator1.next();
 			System.out.println(e.getKey() + " : " + e.getValue());
 
 			topFiveActiveUsers.add(e.getKey());
 			iter++;
 		}
 
-		// Get the tweets we will be working with
+		/** Get the tweets we will be working with **/
+		// A Predicate that predicates that a user is part of the five most active users
 		Predicate<Tweet> byAppartenance = tweet -> topFiveActiveUsers.contains(tweet.getUser());
 
 		// Filter the tweew list so that the remaining tweets are posted by one of
@@ -202,14 +199,14 @@ public class StatisticsTabController {
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = minutesDifference(currentDate, oldestTweet);
-		double interval = hoursDifference / 10;
+		double interval = hoursDifference / 20;
 
 		System.out.println(hoursDifference);
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 11; i++) {
+		for (int i = 1; i < 21; i++) {
 			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
 			System.out.println(dateIntervals.get(i - 1));
 		}
@@ -242,6 +239,21 @@ public class StatisticsTabController {
 				tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 1);
 			}
 		}
+		
+		Set<Entry<User, Map<Date, Integer>>> setEntry2 = tweetsPerIntervalForEachUserMap.entrySet();
+		Iterator<Entry<User, Map<Date, Integer>>> iterator2 = setEntry2.iterator();
+		
+		while (iterator2.hasNext()) {
+			Entry<User, Map<Date, Integer>> entry2 = iterator2.next();
+			Map<Date, Integer> tweetsNumberPerDate = entry2.getValue();
+			
+			/** Sort the map **/
+			Map<Date, Integer> sortedTweetsNumberPerDate = tweetsNumberPerDate.entrySet().stream()
+					.sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).collect(Collectors.toMap(
+							Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+			
+			tweetsPerIntervalForEachUserMap.put(entry2.getKey(), sortedTweetsNumberPerDate);
+		}
 
 		return tweetsPerIntervalForEachUserMap;
 	}
@@ -253,14 +265,14 @@ public class StatisticsTabController {
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = minutesDifference(currentDate, oldestTweet);
-		double interval = hoursDifference / 10;
+		double interval = hoursDifference / 20;
 
 		System.out.println(hoursDifference);
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 11; i++) {
+		for (int i = 1; i < 21; i++) {
 			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
 			System.out.println(dateIntervals.get(i - 1));
 		}
@@ -278,8 +290,12 @@ public class StatisticsTabController {
 				tweetsTimeInterval.put(intervalDate, 0);
 			}
 		}
+		
+		Map<Date, Integer> sortedTweetsTimeInterval = tweetsTimeInterval.entrySet().stream()
+				.sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).collect(Collectors.toMap(
+						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-		return tweetsTimeInterval;
+		return sortedTweetsTimeInterval;
 	}
 
 	/** Time **/
