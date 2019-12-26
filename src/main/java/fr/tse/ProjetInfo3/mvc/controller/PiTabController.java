@@ -1,9 +1,18 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXProgressBar;
+
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -22,9 +31,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author ALAMI IDRISSI Taha Controller of the Edit PI window, all user
@@ -210,8 +216,10 @@ public class PiTabController {
             Platform.runLater(() -> {
                 //Find Min Date
                 Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
-                String dateFormatted = DateFormats.hoursAndDateFormat.format(date);
-                lastDateLabel.setText(dateFormatted);
+                
+                System.out.println(getDateDiff(date,new Date(),TimeUnit.DAYS));
+                
+                lastDateLabel.setText(DateFormats.hoursAndDateFormat.format(date));
 
                 nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
                 nbTrackedLabel.setText(String.valueOf(interestPointToPrint.getUsers().size() + interestPointToPrint.getHashtags().size()));
@@ -225,7 +233,20 @@ public class PiTabController {
         }
         return null;
     }
-
+    
+    
+    /**
+     * Get a diff between two dates
+     * @param date1 the oldest date
+     * @param date2 the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.SECONDS);
+    }
+    
     private Task<Void> setTopFiveUsers() throws Exception {
         //user in parameters to find what to exclude
         List<User> users = piViewer.getTopFiveUsers(bigTweetList);
