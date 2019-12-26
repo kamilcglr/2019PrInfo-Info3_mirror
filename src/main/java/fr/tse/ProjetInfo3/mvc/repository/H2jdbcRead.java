@@ -4,13 +4,12 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.jfoenix.controls.JFXButton;
 
-import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.User;
 import javafx.fxml.FXML;
 
 /**
@@ -38,26 +37,28 @@ public class H2jdbcRead {
 			System.out.println("Connected database successfully...");
 			stmt = conn.createStatement();
 
-			/*
-			 * String sql = "select * from usercached";
-			 * 
-			 * ResultSet rs = stmt.executeQuery(sql);
-			 * 
-			 * while(rs.next()) { System.out.println("id: "+rs.getLong("user_id"));
-			 * System.out.println("screenname: "+rs.getString("userScreenName"));
-			 * System.out.println("data : "+rs.getString("data")); }
-			 */
+			String sql = "select * from user";
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				System.out.println("username: " + rs.getString("username"));
+				System.out.println("password: " + rs.getString("password"));
+				System.out.println("mail: " + rs.getString("mail"));
+			}
 
 			// if we run this class we're going to get the data of a user who has been
 			// cached
 
-			DatabaseManager data = new DatabaseManager();
-			User user = data.getCachedUser("TahaAlamIdrissi", data.getInterestPointDao(), data.getGsonInstance());
-
-			System.out.println(user.getId() + "\n" + user.getName());
-			System.out.println(user.getDescription());
-			//System.out.println(user.getListoftweets().toString());
-
+			/*
+			 * DatabaseManager data = new DatabaseManager(); User user =
+			 * data.getCachedUser("TahaAlamIdrissi", data.getInterestPointDao(),
+			 * data.getGsonInstance());
+			 * 
+			 * System.out.println(user.getId() + "\n" + user.getName());
+			 * System.out.println(user.getDescription());
+			 * System.out.println(user.getListoftweets().toString());
+			 */
 			System.out.println("deleted successfully");
 
 		} catch (Exception e) {
