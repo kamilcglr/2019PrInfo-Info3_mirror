@@ -10,8 +10,8 @@ import java.sql.Statement;
 public class H2jsbcCreateOrDelete {
     public static void main(String[] args) {
         //  deleteAllTables();
-        createTables();
-        //oldCreateUser();
+        //createTables();
+        oldCreateUser();
     }
 
     public static void deleteAllTables() {
@@ -26,7 +26,7 @@ public class H2jsbcCreateOrDelete {
             //stmt.executeUpdate("drop table interestpoint");
             //stmt.executeUpdate("drop table hashtag");
             //stmt.executeUpdate("drop table twitteruser");
-            stmt.executeUpdate("drop table usercached");
+            stmt.executeUpdate("drop table user");
 
 
             System.out.println("Delete all tables tables in given database...");
