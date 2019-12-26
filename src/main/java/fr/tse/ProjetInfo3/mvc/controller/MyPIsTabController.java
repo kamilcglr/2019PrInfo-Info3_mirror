@@ -93,7 +93,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             seeButton.setVisible(true);
             deletePI.setVisible(true);
             editPI.setVisible(true);
-            editPI.setVisible(true);
         }
 
     }
