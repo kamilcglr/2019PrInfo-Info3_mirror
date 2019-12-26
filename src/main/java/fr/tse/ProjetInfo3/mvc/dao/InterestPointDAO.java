@@ -354,5 +354,5 @@ public class InterestPointDAO {
         }
         return hashtag;
     }
-
+    
 }
