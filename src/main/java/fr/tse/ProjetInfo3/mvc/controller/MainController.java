@@ -57,6 +57,9 @@ public class MainController {
     private HashtagTabController hashtagTabController;
     @FXML
     private MyPIsTabController myPIsTabController;
+    
+    @FXML
+    private StatisticsTabController statisticsTabController;
 
     @FXML
     private ToolBarController toolBarController;
@@ -451,7 +454,7 @@ public class MainController {
         try {
             AnchorPane statisticsPane = fxmlLoader.load();
             System.out.println(statisticsPane);
-            StatisticsTabController statisticsTabController = fxmlLoader.getController();
+            statisticsTabController = fxmlLoader.getController();
             
             Platform.runLater(() -> {
                 Tab tab = new Tab();
@@ -459,6 +462,13 @@ public class MainController {
                 tab.setText("Statistiques");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
+                
+                tab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                    	statisticsTabController.shutdownAllThreads();
+                    }
+                });
             });
             
             Task<Void> task = new Task<Void>() {
@@ -477,5 +487,4 @@ public class MainController {
             e.printStackTrace();
         }
     }
-
 }
