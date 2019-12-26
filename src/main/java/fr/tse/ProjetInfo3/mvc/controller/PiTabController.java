@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -46,6 +47,9 @@ public class PiTabController {
 
     @FXML
     private JFXButton editButton;
+    
+    @FXML
+    private JFXButton statisticsButton;
 
     /* LISTS
      */
@@ -117,6 +121,7 @@ public class PiTabController {
         //hide unused elements
         editButton.setVisible(false);
         nbTweetsLabel.setVisible(false);
+        statisticsButton.setVisible(false);
 
 
         //this part has bto be here to use the same piviewer ========= to verify
@@ -139,7 +144,12 @@ public class PiTabController {
             mainController.goToUserPane(userViewer);
         }
     }
-
+    
+    @FXML
+    void statisticsButtonPressed(ActionEvent event) {
+        mainController.goToStatistics(piViewer);
+    }
+    
     private void initLists() {
         List<User> users = interestPointToPrint.getUsers();
         ObservableList<User> usersOfPI = FXCollections.observableArrayList();
@@ -298,6 +308,7 @@ public class PiTabController {
             nbTweetsLabel.setVisible(false);
             nbTrackedLabel.setVisible(false);
             lastDateLabel.setVisible(false);
+            statisticsButton.setVisible(false);
         } else {
             progressBar.setVisible(false);
             progressLabel.setVisible(false);
@@ -307,6 +318,7 @@ public class PiTabController {
             nbTweetsLabel.setVisible(true);
             nbTrackedLabel.setVisible(true);
             lastDateLabel.setVisible(true);
+            statisticsButton.setVisible(true);
         }
 
         vBox.setVisible(show);

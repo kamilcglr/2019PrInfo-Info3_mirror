@@ -616,14 +616,14 @@ public class StatisticsTabController {
 		RotateTransition rotate2 = new RotateTransition();
 		rotate2.setAxis(Rotate.Y_AXIS);
 		rotate2.setByAngle(90);
-		rotate2.setDuration(Duration.millis(500));
+		rotate2.setDuration(Duration.millis(750));
 		rotate2.setAutoReverse(true);
 		rotate2.setNode(pane);
 
 		RotateTransition rotate1 = new RotateTransition();
 		rotate1.setAxis(Rotate.Y_AXIS);
 		rotate1.setByAngle(90);
-		rotate1.setDuration(Duration.millis(500));
+		rotate1.setDuration(Duration.millis(750));
 		rotate1.setAutoReverse(false);
 		rotate1.setNode(pane);
 
@@ -785,12 +785,19 @@ public class StatisticsTabController {
 	}
 
 	void generateTopLinkedHashtagChart() {
-		PieChart pc = new PieChart();
+		final PieChart pc = new PieChart();
+		pc.setTitle("Répartition du top des hashtags liés");
+		
+		pc.setPrefSize(600, 350);
+		pc.setMinSize(600, 350);
+		pc.setMaxSize(600, 350);
+
 		
         topTenLinkedHashtags.forEach((String,Integer) -> {
         	pc.getData().add(new PieChart.Data(String,Integer));
         });
 
+        pc.setLegendSide(Side.RIGHT);
         makeChartAppear(pane4, pc);
 	}
 	

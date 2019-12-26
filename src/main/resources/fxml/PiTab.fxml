@@ -93,6 +93,14 @@
                                     </TitledPane>
                                  </children>
                               </VBox>
+                              <JFXButton fx:id="statisticsButton" alignment="CENTER" onAction="#statisticsButtonPressed" prefHeight="42.0" prefWidth="180.0" styleClass="actionButton" text="Statistiques" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fas-chart-area" styleClass="icon" />
+                                 </graphic>
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </JFXButton>
                                     </children>
                                 </GridPane>
                             </content>
