@@ -7,12 +7,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
-import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.dao.LoginAppDAO;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 
 /**
  * @author Laïla
@@ -71,7 +67,7 @@ public class H2jdbcInsert {
              conn = SingletonDBConnection.getInstance();
              System.out.println("Connected database successfully...");
 
-             /*// STEP 3: Execute a query
+             // STEP 3: Execute a query
              stmt = conn.createStatement();
              // testing the storing process we have made
 
@@ -82,23 +78,23 @@ public class H2jdbcInsert {
 
              //stmt.executeUpdate(sql2);
              System.out.println("Inserted records into the table...");
-*/
+
              
              
 
-             // STEP 3: Execute a query
-             stmt = conn.createStatement();
-
-             // testing the storing process we have made
-             RequestManager manager = new RequestManager();
-
-             User user = manager.getUser("TahaAlamIdrissi");
-             
-             //user.setListoftweets(manager.getTweetsFromUser(user.getScreen_name(), 3194,  null));
-             // ! user this type of builder
-             DatabaseManager databaseManager = new DatabaseManager();
-             databaseManager.cachingUserData(user, databaseManager.getGsonInstance(), databaseManager.getInterestPointDao());
-             
+			/*
+			 * // STEP 3: Execute a query stmt = conn.createStatement();
+			 * 
+			 * // testing the storing process we have made RequestManager manager = new
+			 * RequestManager();
+			 * 
+			 * User user = manager.getUser("TahaAlamIdrissi");
+			 * 
+			 * //user.setListoftweets(manager.getTweetsFromUser(user.getScreen_name(), 3194,
+			 * null)); // ! user this type of builder DatabaseManager databaseManager = new
+			 * DatabaseManager(); databaseManager.cachingUserData(user,
+			 * databaseManager.getGsonInstance(), databaseManager.getInterestPointDao());
+			 */
              // STEP 4: Clean-up environment
              stmt.close();
              conn.close();
