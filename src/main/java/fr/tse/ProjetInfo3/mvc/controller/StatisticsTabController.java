@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,9 +21,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXListView;
+
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
@@ -53,17 +57,18 @@ import javafx.util.Duration;
  */
 public class StatisticsTabController {
 	ScheduledExecutorService scheduledExecutorService;
-	
+
 	/** Data **/
 	Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap;
-	Map<Hashtag, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
+	Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
 	Map<Date, Integer> tweetsPerInterval;
 
 	/** Time **/
 	Date oldestTweet;
 
 	private List<Tweet> bigTweetList;
-	private List<Tweet> reducedTweetList;
+	private List<Tweet> reducedTweetListUsers;
+	private List<Tweet> reducedTweetListHashtags;
 
 	private PIViewer piViewer;
 
@@ -119,9 +124,11 @@ public class StatisticsTabController {
 	}
 
 	private Task<Void> getTweets() {
+		// Set a Blur effect
 		BoxBlur blur = new BoxBlur(3, 3, 3);
 		anchorPane.setEffect(blur);
 
+		// Add a Progress Indicator
 		ProgressIndicator progressIndicator = new ProgressIndicator();
 		VBox progressIndicatorBox = new VBox(progressIndicator);
 		progressIndicatorBox.setAlignment(Pos.CENTER);
@@ -131,15 +138,21 @@ public class StatisticsTabController {
 			bigTweetList = piViewer.getTweets(new Label());
 
 			Platform.runLater(() -> {
+				// Get the date of the oldest tweet
 				oldestTweet = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
 						.getCreated_at();
 
+				// Acquire Data
 				tweetsPerIntervalForEachUserMap = acquireDataOfFiveMostActiveUsers();
+				tweetsPerIntervalForEachHashtagMap = acquireDataOfFiveTopHashtags();
 				tweetsPerInterval = acquireDataOfTweetsPerTimeInterval();
 
+				// Use the Data to generate Charts
 				generateFiveMostActiveUserChart();
+				generatTopFiveHashtagChart();
 				generateTweetsPerIntervalChart();
 
+				// Remove the Blur effect and the Progress Indicator
 				anchorPane.setEffect(null);
 				dialogStackPane.getChildren().remove(progressIndicatorBox);
 			});
@@ -201,11 +214,11 @@ public class StatisticsTabController {
 
 		// Filter the tweew list so that the remaining tweets are posted by one of
 		// the 5 most active users.
-		reducedTweetList = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
+		reducedTweetListUsers = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
 
 		System.out.println("Sizes before and after");
 		System.out.println(bigTweetList.size());
-		System.out.println(reducedTweetList.size());
+		System.out.println(reducedTweetListUsers.size());
 
 		/** Timestamps **/
 		// Get current date
@@ -227,15 +240,15 @@ public class StatisticsTabController {
 		// corresponding user
 		Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap = new HashMap<>();
 
-		for (Tweet tweet : reducedTweetList) {
+		for (Tweet tweet : reducedTweetListUsers) {
 			User user = tweet.getUser();
 			System.out.println(user.getName());
 
 			Date dateTweet = tweet.getCreated_at();
 			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
 
-			System.out.println("Created at " + dateTweet);
-			System.out.println("Closest to " + intervalDate);
+			// System.out.println("Created at " + dateTweet);
+			// System.out.println("Closest to " + intervalDate);
 
 			// Check if a User entry exists
 			if (tweetsPerIntervalForEachUserMap.containsKey(user)) {
@@ -276,58 +289,73 @@ public class StatisticsTabController {
 	 *         {@code This method maps the 5 top Hashtags to a an amount of tweets per interval of time}
 	 * @return Returns a Map<User, Map<Date, Integer>>
 	 */
-	public Map<User, Map<Date, Integer>> acquireDataOfFiveTopHashtags() {
-		Map<User, Integer> tweetsPerUserMap = new HashMap<>();
+	public Map<String, Map<Date, Integer>> acquireDataOfFiveTopHashtags() {
+		Map<String, Integer> tweetsPerHashtagMap = new HashMap<>();
 
-		/** Fill the Map with a user as key and it's number of tweets **/
+		List<String> hashtags = new ArrayList<>();
 
+		// Method to get hashtag from retweets
 		for (Tweet tweet : bigTweetList) {
-			User user = tweet.getUser();
 
-			if (tweetsPerUserMap.containsKey(user)) {
-				tweetsPerUserMap.put(user, tweetsPerUserMap.get(user) + 1);
-			} else {
-				tweetsPerUserMap.put(user, 0);
+			// if the tweet is retweeted, then we get the #'s of retweeted tweet
+			if (tweet.getRetweeted_status() != null) {
+				hashtags.addAll(tweet.getRetweeted_status().getEntities().getHashtags().stream()
+						.map(Tweet.hashtags::getText).collect(Collectors.toList()));
+			} else
+			// else, if the tweet is quoted, then we get the #'s of quoted tweet
+			if (tweet.getQuoted_status() != null) {
+				hashtags.addAll(tweet.getQuoted_status().getEntities().getHashtags().stream()
+						.map(Tweet.hashtags::getText).collect(Collectors.toList()));
 			}
+			hashtags.addAll(tweet.getEntities().getHashtags().stream().map(Tweet.hashtags::getText)
+					.collect(Collectors.toList()));
+
+		}
+
+		for (String hashtagName : hashtags) {
+			Integer occurrence = tweetsPerHashtagMap.get(hashtagName);
+			tweetsPerHashtagMap.put(hashtagName, (occurrence == null) ? 1 : occurrence + 1);
 		}
 
 		/** Sort the map **/
 
-		Map<User, Integer> sortedTweetsPerUserMap = tweetsPerUserMap.entrySet().stream()
+		Map<String, Integer> sortedTweetsPerHashtagMap = tweetsPerHashtagMap.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
 						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-		List<User> topFiveActiveUsers = new ArrayList<User>();
+		List<String> topFiveHashtags = new ArrayList<String>();
 
-		Set<Entry<User, Integer>> setEntry1 = sortedTweetsPerUserMap.entrySet();
-		Iterator<Entry<User, Integer>> iterator1 = setEntry1.iterator();
+		Set<Entry<String, Integer>> setEntry1 = sortedTweetsPerHashtagMap.entrySet();
+		Iterator<Entry<String, Integer>> iterator1 = setEntry1.iterator();
 
-		/** Get top five active users **/
+		/** Get top five hashtags **/
 
 		int iter = 0;
 		while (iter < 5) {
-			Entry<User, Integer> e = iterator1.next();
+			Entry<String, Integer> e = iterator1.next();
 			System.out.println(e.getKey() + " : " + e.getValue());
 
-			topFiveActiveUsers.add(e.getKey());
+			topFiveHashtags.add(e.getKey());
 			iter++;
 		}
 
-		/** Get a reduced Tweet list to work with **/
+		/** Get the tweets we will be working with **/
 
-		// A Predicate that predicates that a user is part of the five most active users
-		Predicate<Tweet> byAppartenance = tweet -> topFiveActiveUsers.contains(tweet.getUser());
+		// A Predicate that predicates that a hashtag is used by a tweet
+		// Predicate<Tweet> byAppartenance = tweet ->
+		// !Collections.disjoint(topFiveHashtags, tweet.getEntities().getHashtags());
+		Predicate<Tweet> byAppartenance = tweet -> topFiveHashtags.stream().anyMatch(tweet.getEntities().getHashtags()
+				.stream().map(Tweet.hashtags::getText).collect(Collectors.toSet())::contains);
 
-		// Filter the tweew list so that the remaining tweets are posted by one of
-		// the 5 most active users.
-		reducedTweetList = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
+		// Filter the tweew list so that the remaining tweets contain at least one of
+		// the top 5 hashtags.
+		reducedTweetListHashtags = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
 
 		System.out.println("Sizes before and after");
 		System.out.println(bigTweetList.size());
-		System.out.println(reducedTweetList.size());
+		System.out.println(reducedTweetListHashtags.size());
 
-		/** Create Date intervals **/
-
+		/** Timestamps **/
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int hoursDifference = minutesDifference(currentDate, oldestTweet);
@@ -345,50 +373,37 @@ public class StatisticsTabController {
 
 		// Let's now map each Date interval and the number of tweets with the
 		// corresponding user
-		Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap = new HashMap<>();
+		Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap = new HashMap<>();
 
-		for (Tweet tweet : reducedTweetList) {
-			User user = tweet.getUser();
-			System.out.println(user.getName());
-
+		for (Tweet tweet : reducedTweetListUsers) {
 			Date dateTweet = tweet.getCreated_at();
 			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
 
-			System.out.println("Created at " + dateTweet);
-			System.out.println("Closest to " + intervalDate);
+			// System.out.println("Created at " + dateTweet);
+			// System.out.println("Closest to " + intervalDate);
 
-			// Check if a User entry exists
-			if (tweetsPerIntervalForEachUserMap.containsKey(user)) {
-				if (tweetsPerIntervalForEachUserMap.get(user).containsKey(intervalDate)) {
-					tweetsPerIntervalForEachUserMap.get(user).put(intervalDate,
-							tweetsPerIntervalForEachUserMap.get(user).get(intervalDate) + 1);
-				} else {
-					tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 0);
+			for (Tweet.hashtags hashtag : tweet.getEntities().getHashtags()) {
+				String hashtagName = hashtag.getText();
+
+				if (topFiveHashtags.contains(hashtagName)) {
+					// Check if a Hashtag entry exists
+					if (tweetsPerIntervalForEachHashtagMap.containsKey(hashtagName)) {
+						if (tweetsPerIntervalForEachHashtagMap.get(hashtagName).containsKey(intervalDate)) {
+							tweetsPerIntervalForEachHashtagMap.get(hashtagName).put(intervalDate,
+									tweetsPerIntervalForEachHashtagMap.get(hashtagName).get(intervalDate) + 1);
+						} else {
+							tweetsPerIntervalForEachHashtagMap.get(hashtagName).put(intervalDate, 0);
+						}
+
+					} else {
+						tweetsPerIntervalForEachHashtagMap.put(hashtagName, new LinkedHashMap<Date, Integer>());
+						tweetsPerIntervalForEachHashtagMap.get(hashtagName).put(intervalDate, 1);
+					}
 				}
-
-			} else {
-				tweetsPerIntervalForEachUserMap.put(user, new LinkedHashMap<Date, Integer>());
-				tweetsPerIntervalForEachUserMap.get(user).put(intervalDate, 1);
 			}
 		}
 
-		Set<Entry<User, Map<Date, Integer>>> setEntry2 = tweetsPerIntervalForEachUserMap.entrySet();
-		Iterator<Entry<User, Map<Date, Integer>>> iterator2 = setEntry2.iterator();
-
-		while (iterator2.hasNext()) {
-			Entry<User, Map<Date, Integer>> entry2 = iterator2.next();
-			Map<Date, Integer> tweetsNumberPerDate = entry2.getValue();
-
-			/** Sort the map **/
-			Map<Date, Integer> sortedTweetsNumberPerDate = tweetsNumberPerDate.entrySet().stream()
-					.sorted(Map.Entry.comparingByKey(Comparator.naturalOrder()))
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
-							LinkedHashMap::new));
-
-			tweetsPerIntervalForEachUserMap.put(entry2.getKey(), sortedTweetsNumberPerDate);
-		}
-
-		return tweetsPerIntervalForEachUserMap;
+		return tweetsPerIntervalForEachHashtagMap;
 	}
 
 	/**
@@ -419,8 +434,8 @@ public class StatisticsTabController {
 			Date dateTweet = tweet.getCreated_at();
 			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
 
-			System.out.println("Created at " + dateTweet);
-			System.out.println("Closest to " + intervalDate);
+			// System.out.println("Created at " + dateTweet);
+			// System.out.println("Closest to " + intervalDate);
 
 			if (tweetsTimeInterval.containsKey(intervalDate)) {
 				tweetsTimeInterval.put(intervalDate, tweetsTimeInterval.get(intervalDate) + 1);
@@ -576,7 +591,7 @@ public class StatisticsTabController {
 
 	/** Processing **/
 	void generateFiveMostActiveUserChart() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
@@ -584,9 +599,9 @@ public class StatisticsTabController {
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Number of Tweets of the most active users");
 
-		ac.setPrefSize(500, 600);
-		ac.setMinSize(500, 600);
-		ac.setMaxSize(500, 600);
+		ac.setPrefSize(500, 350);
+		ac.setMinSize(500, 350);
+		ac.setMaxSize(500, 350);
 
 		xAxis.setLabel("Time");
 		yAxis.setLabel("Number of Tweets");
@@ -618,6 +633,49 @@ public class StatisticsTabController {
 		makeChartAppear(pane1, ac);
 	}
 
+	void generatTopFiveHashtagChart() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
+
+		final CategoryAxis xAxis = new CategoryAxis();
+		final NumberAxis yAxis = new NumberAxis();
+
+		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
+		ac.setTitle("Number of Tweets of the top 5 Hashtags");
+
+		ac.setPrefSize(500, 350);
+		ac.setMinSize(500, 350);
+		ac.setMaxSize(500, 350);
+
+		xAxis.setLabel("Time");
+		yAxis.setLabel("Number of Tweets");
+
+		Set<Entry<String, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachHashtagMap.entrySet();
+		Iterator<Entry<String, Map<Date, Integer>>> iterator1 = setEntry1.iterator();
+
+		while (iterator1.hasNext()) {
+			Entry<String, Map<Date, Integer>> entry1 = iterator1.next();
+
+			XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+			series.setName(entry1.getKey());
+
+			Map<Date, Integer> tweetsOverTime = entry1.getValue();
+
+			Set<Entry<Date, Integer>> setEntry2 = tweetsOverTime.entrySet();
+			Iterator<Entry<Date, Integer>> iterator2 = setEntry2.iterator();
+
+			while (iterator2.hasNext()) {
+				Entry<Date, Integer> entry2 = iterator2.next();
+
+				series.getData().add(
+						new XYChart.Data<String, Number>(simpleDateFormat.format(entry2.getKey()), entry2.getValue()));
+			}
+
+			ac.getData().add(series);
+		}
+
+		makeChartAppear(pane3, ac);
+	}
+
 	void generateTweetsPerIntervalChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
 
@@ -627,9 +685,9 @@ public class StatisticsTabController {
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Number of Tweets per Time Interval");
 
-		ac.setPrefSize(500, 600);
-		ac.setMinSize(500, 600);
-		ac.setMaxSize(500, 600);
+		ac.setPrefSize(500, 300);
+		ac.setMinSize(500, 300);
+		ac.setMaxSize(500, 300);
 
 		xAxis.setLabel("Time");
 		yAxis.setLabel("Number of Tweets");
@@ -654,8 +712,8 @@ public class StatisticsTabController {
 
 	void dynamicallyCompleteCharts() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-		
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
+		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
@@ -675,23 +733,23 @@ public class StatisticsTabController {
 
 		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
 		series.setName("Nombre de Tweets");
-		
+
 		ac.getData().add(series);
 
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            Platform.runLater(() -> {
-            	if (iterator1.hasNext()) {
-            		Entry<Date, Integer> entry1 = iterator1.next();
-            		
-            		series.getData()
-        					.add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
-            	}
-            });
-        }, 0, 50, TimeUnit.MILLISECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(() -> {
+			Platform.runLater(() -> {
+				if (iterator1.hasNext()) {
+					Entry<Date, Integer> entry1 = iterator1.next();
+
+					series.getData().add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()),
+							entry1.getValue()));
+				}
+			});
+		}, 0, 50, TimeUnit.MILLISECONDS);
 
 		makeChartAppear(pane2, ac);
 	}
-	
+
 	void shutdownAllThreads() {
 		if (scheduledExecutorService != null) {
 			scheduledExecutorService.shutdownNow();

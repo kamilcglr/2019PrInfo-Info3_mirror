@@ -22,15 +22,12 @@
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
                      <children>
                         <Pane fx:id="pane1" prefHeight="200.0" prefWidth="200.0" />
                         <Pane fx:id="pane2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
                         <Pane fx:id="pane3" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
                         <Pane fx:id="pane4" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Pane fx:id="pane5" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
-                        <Pane fx:id="pane6" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
 						</GridPane>
 					</children>
