@@ -147,7 +147,7 @@ public class PiTabController {
     
     @FXML
     void statisticsButtonPressed(ActionEvent event) {
-        mainController.goToStatistics(piViewer);
+        mainController.goToStatistics(piViewer, bigTweetList);
     }
     
     private void initLists() {

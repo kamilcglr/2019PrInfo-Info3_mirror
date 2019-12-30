@@ -13,20 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -38,7 +33,6 @@ import javafx.scene.chart.Chart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.AnchorPane;
@@ -100,13 +94,16 @@ public class StatisticsTabController {
 	@FXML
 	private Pane pane4;
 
-	public StatisticsTabController() {
+	private List<Pane> chartContainers;
+	private List<Chart> charts;
 
+	public StatisticsTabController() {
 	}
 
 	@FXML
 	private void initialize() {
-		List<Pane> chartContainers = new ArrayList<>();
+		chartContainers = new LinkedList<>();
+		charts = new LinkedList<>();
 
 		chartContainers.add(pane1);
 		chartContainers.add(pane2);
@@ -134,7 +131,7 @@ public class StatisticsTabController {
 		dialogStackPane.getChildren().add(progressIndicatorBox);
 
 		try {
-			bigTweetList = piViewer.getTweets(new Label());
+			//bigTweetList = piViewer.getTweets(new Label());
 
 			Platform.runLater(() -> {
 				// Get the date of the oldest tweet
@@ -153,6 +150,8 @@ public class StatisticsTabController {
 				generateTweetsPerIntervalChart();
 				generateTopLinkedHashtagChart();
 
+				makeChartsAppear(chartContainers, charts, 0);
+
 				// Remove the Blur effect and the Progress Indicator
 				anchorPane.setEffect(null);
 				dialogStackPane.getChildren().remove(progressIndicatorBox);
@@ -165,9 +164,6 @@ public class StatisticsTabController {
 		return null;
 	}
 
-	// Tweets per time of 5 most active users
-	// Tweets per time of 5 most popular hashtags
-	// Tweets per time
 	/** Data **/
 
 	/**
@@ -403,7 +399,7 @@ public class StatisticsTabController {
 				}
 			}
 		}
-		
+
 		Set<Entry<String, Map<Date, Integer>>> setEntry2 = tweetsPerIntervalForEachHashtagMap.entrySet();
 		Iterator<Entry<String, Map<Date, Integer>>> iterator2 = setEntry2.iterator();
 
@@ -501,14 +497,12 @@ public class StatisticsTabController {
 		Map<String, Integer> sortedTweetsPerHashtagMap = tweetsPerHashtagMap.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
 						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-		
-		
+
 		Map<String, Integer> topTenHashtags = new HashMap<>();
 
 		Set<Entry<String, Integer>> setEntry1 = sortedTweetsPerHashtagMap.entrySet();
 		Iterator<Entry<String, Integer>> iterator1 = setEntry1.iterator();
 
-		
 		/** Get top five hashtags **/
 
 		int iter = 0;
@@ -519,10 +513,10 @@ public class StatisticsTabController {
 			topTenHashtags.put(e.getKey(), e.getValue());
 			iter++;
 		}
-		
-		return topTenHashtags;	
+
+		return topTenHashtags;
 	}
-	
+
 	/** Time **/
 
 	/**
@@ -586,6 +580,7 @@ public class StatisticsTabController {
 	}
 
 	/** Animations **/
+	
 	void rotateNode(Node node) {
 		RotateTransition rotate = new RotateTransition();
 
@@ -616,14 +611,14 @@ public class StatisticsTabController {
 		RotateTransition rotate2 = new RotateTransition();
 		rotate2.setAxis(Rotate.Y_AXIS);
 		rotate2.setByAngle(90);
-		rotate2.setDuration(Duration.millis(750));
+		rotate2.setDuration(Duration.millis(250));
 		rotate2.setAutoReverse(true);
 		rotate2.setNode(pane);
 
 		RotateTransition rotate1 = new RotateTransition();
 		rotate1.setAxis(Rotate.Y_AXIS);
 		rotate1.setByAngle(90);
-		rotate1.setDuration(Duration.millis(750));
+		rotate1.setDuration(Duration.millis(250));
 		rotate1.setAutoReverse(false);
 		rotate1.setNode(pane);
 
@@ -644,24 +639,51 @@ public class StatisticsTabController {
 		});
 
 		rotateInitial.play();
+
 	}
 
-	void makeAllChartsAppear(List<Pane> chartContainers, AreaChart<Number, Number> ac) {
-		/*
-		 * Platform.runLater(() -> { for (int i = 0; i < chartContainers.size(); i++) {
-		 * 
-		 * 
-		 * }
-		 * 
-		 * });
-		 */
+	void makeChartsAppear(List<Pane> chartContainers, List<Chart> charts, int counter) {
+		int i = counter;
 
-		makeChartAppear(chartContainers.get(0), ac);
-		makeChartAppear(chartContainers.get(1), ac);
+		RotateTransition rotate2 = new RotateTransition();
+		rotate2.setAxis(Rotate.Y_AXIS);
+		rotate2.setByAngle(90);
+		rotate2.setDuration(Duration.millis(250));
+		rotate2.setAutoReverse(true);
+		rotate2.setNode(chartContainers.get(i));
 
+		RotateTransition rotate1 = new RotateTransition();
+		rotate1.setAxis(Rotate.Y_AXIS);
+		rotate1.setByAngle(90);
+		rotate1.setDuration(Duration.millis(250));
+		rotate1.setAutoReverse(false);
+		rotate1.setNode(chartContainers.get(i));
+
+		rotate1.setOnFinished(e -> {
+			rotate2.play();
+			chartContainers.get(i).getChildren().add(charts.get(i));
+
+			if (i < 3) {
+				makeChartsAppear(chartContainers, charts, i + 1);
+			}
+		});
+
+		RotateTransition rotateInitial = new RotateTransition();
+		rotateInitial.setAxis(Rotate.Y_AXIS);
+		rotateInitial.setByAngle(180);
+		rotateInitial.setDuration(Duration.millis(1));
+		rotateInitial.setAutoReverse(false);
+		rotateInitial.setNode(chartContainers.get(i));
+
+		rotateInitial.setOnFinished(e -> {
+			rotate1.play();
+		});
+
+		rotateInitial.play();
 	}
 
 	/** Processing **/
+	
 	void generateFiveMostActiveUserChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
@@ -675,7 +697,7 @@ public class StatisticsTabController {
 		ac.setMinSize(600, 350);
 		ac.setMaxSize(600, 350);
 
-		//xAxis.setLabel("Temps");
+		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
 		Set<Entry<User, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachUserMap.entrySet();
@@ -703,7 +725,8 @@ public class StatisticsTabController {
 		}
 
 		ac.setLegendSide(Side.RIGHT);
-		makeChartAppear(pane1, ac);
+		// makeChartAppear(pane1, ac);
+		charts.add(ac);
 	}
 
 	void generatTopFiveHashtagChart() {
@@ -719,7 +742,7 @@ public class StatisticsTabController {
 		ac.setMinSize(600, 350);
 		ac.setMaxSize(600, 350);
 
-		//xAxis.setLabel("Temps");
+		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
 		Set<Entry<String, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachHashtagMap.entrySet();
@@ -745,13 +768,14 @@ public class StatisticsTabController {
 
 			ac.getData().add(series);
 		}
-		
+
 		ac.setLegendSide(Side.RIGHT);
-		makeChartAppear(pane3, ac);
+		// makeChartAppear(pane3, ac);
+		charts.add(ac);
 	}
 
 	void generateTweetsPerIntervalChart() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
@@ -759,11 +783,11 @@ public class StatisticsTabController {
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Nombre de tweets total par intervalle de temps");
 
-		ac.setPrefSize(600, 350);
-		ac.setMinSize(600, 350);
-		ac.setMaxSize(600, 350);
+		ac.setPrefSize(550, 350);
+		ac.setMinSize(550, 350);
+		ac.setMaxSize(550, 350);
 
-		//xAxis.setLabel("Temps");
+		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
 		Set<Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
@@ -780,70 +804,41 @@ public class StatisticsTabController {
 		}
 		ac.getData().add(series);
 		ac.setLegendVisible(false);
-		
-		makeChartAppear(pane2, ac);
+
+		// makeChartAppear(pane2, ac);
+
+		charts.add(ac);
 	}
 
 	void generateTopLinkedHashtagChart() {
 		final PieChart pc = new PieChart();
 		pc.setTitle("Répartition du top des hashtags liés");
-		
-		pc.setPrefSize(600, 350);
-		pc.setMinSize(600, 350);
-		pc.setMaxSize(600, 350);
 
-		
-        topTenLinkedHashtags.forEach((String,Integer) -> {
-        	pc.getData().add(new PieChart.Data(String,Integer));
-        });
+		pc.setPrefSize(650, 350);
+		pc.setMinSize(650, 350);
+		pc.setMaxSize(650, 350);
 
-        pc.setLegendSide(Side.RIGHT);
-        makeChartAppear(pane4, pc);
+		topTenLinkedHashtags.forEach((String, Integer) -> {
+			pc.getData().add(new PieChart.Data(String, Integer));
+		});
+
+		pc.setLegendSide(Side.RIGHT);
+		// makeChartAppear(pane4, pc);
+
+		charts.add(pc);
 	}
+
+	/** Stop Threads **/
 	
-	void dynamicallyCompleteCharts() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-
-		final CategoryAxis xAxis = new CategoryAxis();
-		final NumberAxis yAxis = new NumberAxis();
-
-		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
-		ac.setTitle("Number of Tweets per Time Interval");
-
-		ac.setPrefSize(500, 600);
-		ac.setMinSize(500, 600);
-		ac.setMaxSize(500, 600);
-
-		xAxis.setLabel("Time");
-		yAxis.setLabel("Number of Tweets");
-
-		Set<Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
-		Iterator<Entry<Date, Integer>> iterator1 = setEntry1.iterator();
-
-		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
-		series.setName("Nombre de Tweets");
-
-		ac.getData().add(series);
-
-		scheduledExecutorService.scheduleAtFixedRate(() -> {
-			Platform.runLater(() -> {
-				if (iterator1.hasNext()) {
-					Entry<Date, Integer> entry1 = iterator1.next();
-
-					series.getData().add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()),
-							entry1.getValue()));
-				}
-			});
-		}, 0, 50, TimeUnit.MILLISECONDS);
-
-		makeChartAppear(pane2, ac);
-	}
-
 	void shutdownAllThreads() {
 		if (scheduledExecutorService != null) {
 			scheduledExecutorService.shutdownNow();
 		}
+	}
+
+	/** Getters and Setters **/
+	
+	void setTweetList(List<Tweet> bigTweetList) {
+		this.bigTweetList = bigTweetList;
 	}
 }

@@ -28,7 +28,7 @@ public class ListObjects {
     private static final Paint GREEN = Paint.valueOf("#48AC98FF");
     private static final Paint RED = Paint.valueOf("#CB7C7AFF");
 
-    private static int currentPiId;
+    private static Integer currentPiId;
 
     /**
      * This class will represent a result of a linked hashtag
@@ -111,8 +111,13 @@ public class ListObjects {
 
             interestPoint = interestPointParam;
 
-            currentPiId = interestPoint.getId();
+            if (currentPiId == null) {
+            	currentPiId = interestPoint.getId();
+            }
+            
 
+            System.out.println(currentPiId);
+            
             cellGridPane = new GridPane();
             cellGridPane.getStyleClass().add("userCellGridPane");
             cellGridPane.setPrefSize(700, 20);
@@ -238,7 +243,9 @@ public class ListObjects {
             super();
             interestPoint = interestPointParam;
 
-            currentPiId = interestPoint.getId();
+            if (currentPiId == null) {
+            	currentPiId = interestPoint.getId();
+            }
 
             cellGridPane = new GridPane();
             cellGridPane.getStyleClass().add("userCellGridPane");

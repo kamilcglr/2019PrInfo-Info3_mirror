@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
+
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -20,6 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -448,13 +451,14 @@ public class MainController {
 
     }
     
-    public void goToStatistics(PIViewer piViewer) {
+    public void goToStatistics(PIViewer piViewer, List<Tweet> bigTweetList) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
         
         try {
             AnchorPane statisticsPane = fxmlLoader.load();
             System.out.println(statisticsPane);
             statisticsTabController = fxmlLoader.getController();
+            statisticsTabController.setTweetList(bigTweetList);
             
             Platform.runLater(() -> {
                 Tab tab = new Tab();
