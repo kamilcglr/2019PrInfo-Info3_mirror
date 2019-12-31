@@ -124,6 +124,15 @@ public class UserTabController {
     /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        LoginController loginController = new LoginController();
+
+        if (loginController.connected == 1) {
+	            favoriteToggle.setVisible(true);
+
+        } else {
+            favoriteToggle.setVisible(false);
+
+        }
     }
 
     /*

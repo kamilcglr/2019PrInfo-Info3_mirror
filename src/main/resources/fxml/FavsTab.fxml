@@ -27,25 +27,28 @@
                         <ColumnConstraints minWidth="200.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="50.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="519.800048828125" minHeight="172.59997558593744" prefHeight="239.600048828125" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="248.399951171875" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="179.19997558593752" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="130.13335113525392" minHeight="50.0" prefHeight="66.13333587646484" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="150.46666107177734" minHeight="20.0" prefHeight="114.66666412353517" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="519.800048828125" minHeight="172.59997558593744" prefHeight="208.06668548583986" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="74.80000000000001" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="222.60004882812507" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="57.600024414062545" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <JFXListView fx:id="FavsListView" prefHeight="299.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                        <JFXListView fx:id="FavsListViewUser" prefHeight="409.0" prefWidth="576.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                        <JFXListView fx:id="FavsListView" prefHeight="225.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                        <JFXListView fx:id="FavsListViewUser" prefHeight="230.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                         
                         <Label fx:id="titleLabel" alignment="CENTER" styleClass="centeredtabtitles" text="Mes favoris" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin></Label>
-                  <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label fx:id="progressIndicatorLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                  <JFXSpinner fx:id="progressIndicator" maxHeight="45.0" maxWidth="45.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                  <Label fx:id="progressIndicatorLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <padding>
                         <Insets left="50.0" />
                      </padding></Label>
+                  <Label fx:id="hashtagsLabel" text="Mes utilisateurs favoris" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="usersLabel" text="Mes Hashtags favoris" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                     </children>
                 </GridPane>
             </children>

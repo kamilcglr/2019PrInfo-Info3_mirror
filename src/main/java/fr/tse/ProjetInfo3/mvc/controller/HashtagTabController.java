@@ -3,6 +3,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.JFXToggleNode;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
@@ -98,6 +100,10 @@ public class HashtagTabController {
     private JFXProgressBar progressBar;
     @FXML
     private Label progressLabel;
+    @FXML
+    private JFXToggleNode favoriteToggle;
+    @FXML
+    private JFXToggleNode NotfavoriteToggle;
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -105,6 +111,8 @@ public class HashtagTabController {
         showHashtagElements(false);
         progressBar.setVisible(false);
         progressLabel.setVisible(false);
+        NotfavoriteToggle.setVisible(false);
+        
         JFXScrollPane.smoothScrolling(scrollPane);
         
         topTenLinkedList.setCellFactory(param -> new SimpleTopHashtagCell());
@@ -122,6 +130,15 @@ public class HashtagTabController {
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        LoginController loginController = new LoginController();
+
+        if (loginController.connected == 1) {
+	            favoriteToggle.setVisible(true);
+
+        } else {
+            favoriteToggle.setVisible(false);
+
+        }
     }
 
     public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
@@ -141,7 +158,16 @@ public class HashtagTabController {
     @FXML
     private void favouriteTogglePressed() {
     	favsViewer=new FavsViewer();
-    	favsViewer.addHashtagToFavourites(hashtagToPrint);
+    	int fav=favsViewer.addHashtagToFavourites(hashtagToPrint);
+    	if(fav==1) {        favoriteToggle.setVisible(false);
+        NotfavoriteToggle.setVisible(true);}
+    	else
+    	{
+    	       favoriteToggle.setVisible(true);
+    	        NotfavoriteToggle.setVisible(false);
+    	}
+
+
     }
 
     /**

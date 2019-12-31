@@ -51,7 +51,14 @@
                                                 <Insets right="20.0" top="-5.0" />
                                             </GridPane.margin>
                                         </JFXToggleNode>
-                                    
+                          <JFXToggleNode fx:id="NotfavoriteToggle" onAction="#favouriteTogglePressed" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                                            <graphic>
+                                                <FontIcon fx:id="favoriteIcon" iconLiteral="far-stop-circle" iconSize="40" />
+                                            </graphic>
+                                            <GridPane.margin>
+                                                <Insets right="20.0" top="-5.0" />
+                                            </GridPane.margin>
+                                        </JFXToggleNode>
                                         <Label fx:id="hashtagLabel" styleClass="tabtitles" text="NomHashtag" GridPane.columnSpan="3" GridPane.valignment="TOP" />
                                         <Label fx:id="nbTweetsLabel" styleClass="tweetnumberLabels" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <GridPane.margin>

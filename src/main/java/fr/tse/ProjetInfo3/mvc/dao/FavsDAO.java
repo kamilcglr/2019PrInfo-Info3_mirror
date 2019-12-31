@@ -109,4 +109,57 @@ public class FavsDAO {
 	        }
 	        return hashtags;
 	}
+	
+	public int checkFavHash(Hashtag hashtag) {
+		Connection connection = SingletonDBConnection.getInstance();
+		 List<Hashtag> hashtags=new ArrayList<>();
+	        try {
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM hashtagfavs WHERE hashtag=?");
+	            preparedStatement.setString(1, hashtag.getHashtag());
+	            ResultSet rs = preparedStatement.executeQuery();
+	           if (rs.next()) {
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM hashtagfavs WHERE hashtag=?");
+		            prepStatement.setString(1, hashtag.getHashtag());
+		            prepStatement.executeUpdate();
+		            System.out.println(hashtag.getHashtag()+" deleted!");
+		            return 0;
+	           }
+	           else {
+	        	   saveFavouriteHashtag(hashtag);
+		            System.out.println(hashtag.getHashtag()+" saved!");
+		            return 1;
+
+	           }
+
+	}catch (SQLException e) {
+        e.printStackTrace();
+        return 0;
+    }
+}
+	public int checkFavUser(User user) {
+		Connection connection = SingletonDBConnection.getInstance();
+		 List<Hashtag> hashtags=new ArrayList<>();
+	        try {
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM twitteruserfav WHERE userScreenName=?");
+	            preparedStatement.setString(1, user.getScreen_name());
+	            ResultSet rs = preparedStatement.executeQuery();
+	           if (rs.next()) {
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM twitteruserfav WHERE userScreenName=?");
+		            prepStatement.setString(1,user.getScreen_name());
+		            prepStatement.executeUpdate();
+		            System.out.println(user.getScreen_name()+" deleted!");
+		            return 0;
+	           }
+	           else {
+	        	   saveFavouriteUser(user);
+		            System.out.println(user.getScreen_name()+" saved!");
+		            return 1;
+
+	           }
+
+	}catch (SQLException e) {
+        e.printStackTrace();
+    }
+			return 0;
+}
 }
