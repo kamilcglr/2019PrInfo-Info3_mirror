@@ -64,7 +64,7 @@ public class ListObjects {
      */
     public static class ResultHashtag {
         private final String classementIndex;
-        private final String hashtagName;
+        public final String hashtagName;
         private final String nbTweets;
 
         public ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {

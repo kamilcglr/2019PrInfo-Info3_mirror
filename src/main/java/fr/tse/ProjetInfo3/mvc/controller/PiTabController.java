@@ -1,15 +1,24 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXProgressBar;
+
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -23,9 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author ALAMI IDRISSI Taha Controller of the Edit PI window, all user
@@ -104,6 +110,8 @@ public class PiTabController {
     private Thread threadTopTweets;
 
     private UserViewer userViewer;
+    
+    private HastagViewer hashtagViewer;
 
     //Progress indicators
     @FXML
@@ -132,6 +140,7 @@ public class PiTabController {
         trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
         trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
         userViewer = new UserViewer();
+        hashtagViewer = new HastagViewer();
         // ====================
 
     }
@@ -142,6 +151,15 @@ public class PiTabController {
         if (topFiveUserList.getSelectionModel().getSelectedIndex() != -1) {
             userViewer.searchScreenName(research);
             mainController.goToUserPane(userViewer);
+        }
+    }
+    
+    @FXML
+    public void hashtagClick(MouseEvent arg0) throws Exception {
+        String research = topTenLinkedList.getSelectionModel().getSelectedItem().hashtagName;
+        if (topTenLinkedList.getSelectionModel().getSelectedIndex() != -1) {
+        	hashtagViewer.setHashtag(research);
+            mainController.goToHashtagPane(hashtagViewer);
         }
     }
     
