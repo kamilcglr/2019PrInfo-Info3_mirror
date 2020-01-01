@@ -109,8 +109,7 @@ public class FavsDAO {
 	        }
 	        return hashtags;
 	}
-	
-	public int checkFavHash(Hashtag hashtag) {
+	public int checkFavHashtag(Hashtag hashtag) {
 		Connection connection = SingletonDBConnection.getInstance();
 		 List<Hashtag> hashtags=new ArrayList<>();
 	        try {
@@ -118,22 +117,39 @@ public class FavsDAO {
 	            preparedStatement.setString(1, hashtag.getHashtag());
 	            ResultSet rs = preparedStatement.executeQuery();
 	           if (rs.next()) {
+		            
+		            return 1;
+	           }
+	           else {
+	        	   
+		            return 0;
+
+	           }
+
+	}catch (SQLException e) {
+       e.printStackTrace();
+       return 0;
+	}
+	}
+	public void addFavHash(Hashtag hashtag) {
+		Connection connection = SingletonDBConnection.getInstance();
+		 List<Hashtag> hashtags=new ArrayList<>();
+		 int check=checkFavHashtag(hashtag);
+	        try {
+	           if (check==1) {
 		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM hashtagfavs WHERE hashtag=?");
 		            prepStatement.setString(1, hashtag.getHashtag());
 		            prepStatement.executeUpdate();
 		            System.out.println(hashtag.getHashtag()+" deleted!");
-		            return 0;
 	           }
 	           else {
 	        	   saveFavouriteHashtag(hashtag);
 		            System.out.println(hashtag.getHashtag()+" saved!");
-		            return 1;
 
 	           }
 
 	}catch (SQLException e) {
         e.printStackTrace();
-        return 0;
     }
 }
 	public int checkFavUser(User user) {

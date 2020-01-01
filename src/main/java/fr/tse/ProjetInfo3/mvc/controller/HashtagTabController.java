@@ -51,6 +51,7 @@ public class HashtagTabController {
 
     private List<Tweet> tweetList;
 
+    int favourite=0;
     @FXML
     private ScrollPane scrollPane;
 
@@ -112,6 +113,9 @@ public class HashtagTabController {
         progressBar.setVisible(false);
         progressLabel.setVisible(false);
         NotfavoriteToggle.setVisible(false);
+       
+        //favourites();
+
         
         JFXScrollPane.smoothScrolling(scrollPane);
         
@@ -130,23 +134,43 @@ public class HashtagTabController {
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
-        LoginController loginController = new LoginController();
+        
 
-        if (loginController.connected == 1) {
-	            favoriteToggle.setVisible(true);
-
-        } else {
-            favoriteToggle.setVisible(false);
-
-        }
+       
     }
 
+    public void favourites() {
+    	 //favourites
+    	favsViewer=new FavsViewer();
+		hashtagToPrint = hastagViewer.getHashtag();
+        int fav=favsViewer.checkHashInFav(hashtagToPrint);
+        System.out.println(hashtagToPrint.getHashtag());
+        System.out.println("/n"+fav);
+    	if(fav==1) {       
+    		favoriteToggle.setVisible(false);
+    		NotfavoriteToggle.setVisible(true);
+    	}
+    	else
+    	{
+    	    favoriteToggle.setVisible(true);
+    	    NotfavoriteToggle.setVisible(false);
+
+    	}
+    }
     public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
         this.hastagViewer = hastagViewer;
         hashtagToPrint = hastagViewer.getHashtag();
 
         hastagViewer.getSearchProgression();
+        LoginController loginController = new LoginController();
+        if (loginController.connected == 1) {
+	            favourites();
 
+     } else {
+     		favoriteToggle.setVisible(false);
+     		NotfavoriteToggle.setVisible(false);
+
+     }
         Platform.runLater(() -> {
             hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
         });
@@ -157,14 +181,18 @@ public class HashtagTabController {
     }
     @FXML
     private void favouriteTogglePressed() {
-    	favsViewer=new FavsViewer();
-    	int fav=favsViewer.addHashtagToFavourites(hashtagToPrint);
-    	if(fav==1) {        favoriteToggle.setVisible(false);
-        NotfavoriteToggle.setVisible(true);}
+    	favsViewer.addHashtagToFavourites(hashtagToPrint);
+    	int fav=favsViewer.checkHashInFav(hashtagToPrint);
+    	if(fav==1) {       
+    		favoriteToggle.setVisible(false);
+        NotfavoriteToggle.setVisible(true);
+    	}
     	else
     	{
     	       favoriteToggle.setVisible(true);
     	        NotfavoriteToggle.setVisible(false);
+    	        favourite=0;
+
     	}
 
 

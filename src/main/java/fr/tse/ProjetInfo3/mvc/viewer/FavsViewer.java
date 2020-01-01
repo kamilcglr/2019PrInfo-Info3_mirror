@@ -24,8 +24,11 @@ public class FavsViewer {
 	public int addUserToFavourites(User user) {
 		return favsDAO.checkFavUser(user);
 	}
-	public int addHashtagToFavourites(Hashtag hashtag) {
-		return favsDAO.checkFavHash(hashtag);
+	public void addHashtagToFavourites(Hashtag hashtag) {
+		 favsDAO.addFavHash(hashtag);
+	}
+	public int checkHashInFav(Hashtag hashtag) {
+		return favsDAO.checkFavHashtag(hashtag);
 	}
 	public Favourite getlistOfFavourites() {
 		favourites= new ArrayList<>();
