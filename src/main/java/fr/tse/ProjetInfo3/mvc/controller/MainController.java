@@ -334,6 +334,25 @@ public class MainController {
             e.printStackTrace();
         }
     }
+    public void goToMyFavsPane() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavsTab.fxml"));
+        try {
+            AnchorPane newFavTab = fxmlLoader.load();
+            FavsController favsController = fxmlLoader.getController();
+            favsController.injectMainController(this);
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(newFavTab);
+                tab.setText("Mes Favoris");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+
+                
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void goToHome() {
         tabPane.getSelectionModel().select(searchTabFromMain);
