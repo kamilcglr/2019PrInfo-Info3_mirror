@@ -237,11 +237,6 @@ public class UserTabController {
         }
     }
 
-    private char getTypeSearch() {
-        return 'c';
-        //TODO getType by user
-    }
-
     @FXML
     private void favouriteTogglePressed() {
 
