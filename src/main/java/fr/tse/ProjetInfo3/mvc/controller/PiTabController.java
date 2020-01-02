@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
@@ -35,359 +36,373 @@ import javafx.scene.layout.VBox;
 
 /**
  * @author ALAMI IDRISSI Taha Controller of the Edit PI window, all user
- * interactions whith the Edit PI windows (not the tabs) are handled
- * here
+ *         interactions whith the Edit PI windows (not the tabs) are handled
+ *         here
  */
 public class PiTabController {
+	private MainController mainController;
 
-    private MainController mainController;
+	private List<Tweet> bigTweetList;
 
-    private List<Tweet> bigTweetList;
+	private PIViewer piViewer;
 
-    private PIViewer piViewer;
+	Map<String, Integer> hashtags;
 
-    Map<String, Integer> hashtags;
+	private InterestPoint interestPointToPrint;
 
+	@FXML
+	private JFXButton editButton;
+  
+  @FXML
+  private JFXButton statisticsButton;
 
-    private InterestPoint interestPointToPrint;
+	/*
+	 * LISTS
+	 */
+	@FXML
+	private VBox vBox;
+	@FXML
+	private JFXListView<User> topFiveUserList;
+	@FXML
+	private JFXListView<ListObjects.ResultHashtag> topTenLinkedList;
+	@FXML
+	private JFXListView<JFXListCell> listTweets;
+	@FXML
+	private TitledPane titledTweet;
 
-    @FXML
-    private JFXButton editButton;
-    
-    @FXML
-    private JFXButton statisticsButton;
+	@FXML
+	private Label piNameLabel;
 
-    /* LISTS
-     */
-    @FXML
-    private VBox vBox;
-    @FXML
-    private JFXListView<User> topFiveUserList;
-    @FXML
-    private JFXListView<ListObjects.ResultHashtag> topTenLinkedList;
-    @FXML
-    private JFXListView<JFXListCell> listTweets;
-    @FXML
-    private TitledPane titledTweet;
+	@FXML
+	private Label infosNbTweetsLabel;
 
-    @FXML
-    private Label piNameLabel;
+	@FXML
+	private Label nbTweetsLabel;
 
-    @FXML
-    private Label infosNbTweetsLabel;
+	@FXML
+	private Label lastDateLabel;
 
-    @FXML
-    private Label nbTweetsLabel;
+	@FXML
+	private Label infoLastDateLabel;
 
-    @FXML
-    private Label lastDateLabel;
+	@FXML
+	private Label nbTrackedLabel;
 
-    @FXML
-    private Label infoLastDateLabel;
+	@FXML
+	private Label infoNbTrackedLabel;
 
-    @FXML
-    private Label nbTrackedLabel;
+	@FXML
+	private JFXListView<User> trackedUsersList;
 
-    @FXML
-    private Label infoNbTrackedLabel;
+	@FXML
+	private JFXListView<Hashtag> trackedHashtagsList;
 
-    @FXML
-    private JFXListView<User> trackedUsersList;
+	/*
+	 * THREADS every thread should be declared here to kill them when exiting
+	 */
+	private Thread threadGetTweets;
 
-    @FXML
-    private JFXListView<Hashtag> trackedHashtagsList;
+	private Thread threadTopFiveUsers;
 
-    /*
-     * THREADS
-     * every thread should be declared here to kill them when exiting
-     */
-    private Thread threadGetTweets;
+	private Thread threadTopLinkedHashtags;
 
-    private Thread threadTopFiveUsers;
+	private Thread threadTopTweets;
 
-    private Thread threadTopLinkedHashtags;
+	private UserViewer userViewer;
+  
+  private HastagViewer hashtagViewer;
 
-    private Thread threadTopTweets;
+	// Progress indicators
+	@FXML
+	private JFXProgressBar progressBar;
+	@FXML
+	private Label progressLabel;
 
-    private UserViewer userViewer;
-    
-    private HastagViewer hashtagViewer;
+	/* Controller can access to this Tab */
+	public void injectMainController(MainController mainController) {
+		this.mainController = mainController;
+	}
 
-    //Progress indicators
-    @FXML
-    private JFXProgressBar progressBar;
-    @FXML
-    private Label progressLabel;
+	@FXML
+	private void initialize() {
+		// hide unused elements
+		editButton.setVisible(false);
+		nbTweetsLabel.setVisible(false);
+    statisticsButton.setVisible(false);
 
-    /*Controller can access to this Tab */
-    public void injectMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
+		// this part has bto be here to use the same piviewer ========= to verify
+		topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint, piViewer));
+		topTenLinkedList
+				.setCellFactory(param -> new ListObjects.TopHashtagCellWithPlus(interestPointToPrint, piViewer));
 
-    @FXML
-    private void initialize() {
-        //hide unused elements
-        editButton.setVisible(false);
-        nbTweetsLabel.setVisible(false);
-        statisticsButton.setVisible(false);
+		// List of objects tracked by user
+		trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
+		trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
+		userViewer = new UserViewer();
+    hashtagViewer = new HastagViewer();
+		// ====================
 
+	}
 
-        //this part has bto be here to use the same piviewer ========= to verify
-        topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint, piViewer));
-        topTenLinkedList.setCellFactory(param -> new ListObjects.TopHashtagCellWithPlus(interestPointToPrint, piViewer));
+	@FXML
+	public void userClick(MouseEvent arg0) throws Exception {
+		String research = topFiveUserList.getSelectionModel().getSelectedItem().getScreen_name();
+		if (topFiveUserList.getSelectionModel().getSelectedIndex() != -1) {
+			userViewer.searchScreenName(research);
+			mainController.goToUserPane(userViewer);
+		}
+	}
+      
+  @FXML
+  public void hashtagClick(MouseEvent arg0) throws Exception {
+      String research = topTenLinkedList.getSelectionModel().getSelectedItem().hashtagName;
+      if (topTenLinkedList.getSelectionModel().getSelectedIndex() != -1) {
+        hashtagViewer.setHashtag(research);
+          mainController.goToHashtagPane(hashtagViewer);
+      }
+  }
 
-        //List of objects tracked by user
-        trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
-        trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
-        userViewer = new UserViewer();
-        hashtagViewer = new HastagViewer();
-        // ====================
+	private void initLists() {
+		List<User> users = interestPointToPrint.getUsers();
+		ObservableList<User> usersOfPI = FXCollections.observableArrayList();
+		usersOfPI.addAll(users);
 
-    }
+		List<Hashtag> hashtags = interestPointToPrint.getHashtags();
+		ObservableList<Hashtag> hashtagsOfPI = FXCollections.observableArrayList();
+		hashtagsOfPI.addAll(hashtags);
 
-    @FXML
-    public void userClick(MouseEvent arg0) throws Exception {
-        String research = topFiveUserList.getSelectionModel().getSelectedItem().getScreen_name();
-        if (topFiveUserList.getSelectionModel().getSelectedIndex() != -1) {
-            userViewer.searchScreenName(research);
-            mainController.goToUserPane(userViewer);
-        }
-    }
-    
-    @FXML
-    public void hashtagClick(MouseEvent arg0) throws Exception {
-        String research = topTenLinkedList.getSelectionModel().getSelectedItem().hashtagName;
-        if (topTenLinkedList.getSelectionModel().getSelectedIndex() != -1) {
-        	hashtagViewer.setHashtag(research);
-            mainController.goToHashtagPane(hashtagViewer);
-        }
-    }
-    
-    @FXML
-    void statisticsButtonPressed(ActionEvent event) {
-        mainController.goToStatistics(piViewer, bigTweetList);
-    }
-    
-    private void initLists() {
-        List<User> users = interestPointToPrint.getUsers();
-        ObservableList<User> usersOfPI = FXCollections.observableArrayList();
-        usersOfPI.addAll(users);
+		Platform.runLater(() -> {
+			trackedUsersList.getItems().addAll(usersOfPI);
+			trackedHashtagsList.getItems().addAll(hashtagsOfPI);
+		});
+	}
 
+	private void initProgress(boolean isIndeterminate) {
+		if (!isIndeterminate) {
+			progressBar.setVisible(true);
+			progressBar.setProgress(0);
+			progressLabel.setVisible(true);
+		} else {
+			progressBar.setProgress(-1);
+			progressLabel.setText("Analyse des tweets");
+		}
+	}
 
-        List<Hashtag> hashtags = interestPointToPrint.getHashtags();
-        ObservableList<Hashtag> hashtagsOfPI = FXCollections.observableArrayList();
-        hashtagsOfPI.addAll(hashtags);
+	public void setDatas(PIViewer piViewer) {
+		this.piViewer = piViewer;
+		this.interestPointToPrint = piViewer.getSelectedInterestPoint();
 
-        Platform.runLater(() -> {
-            trackedUsersList.getItems().addAll(usersOfPI);
-            trackedHashtagsList.getItems().addAll(hashtagsOfPI);
-        });
-    }
+		Platform.runLater(() -> {
+			piNameLabel.setText(interestPointToPrint.getName());
+			showElements(false);
+		});
+		initLists();
 
-    private void initProgress(boolean isIndeterminate) {
-        if (!isIndeterminate) {
-            progressBar.setVisible(true);
-            progressBar.setProgress(0);
-            progressLabel.setVisible(true);
-        } else {
-            progressBar.setProgress(-1);
-            progressLabel.setText("Analyse des tweets");
-        }
-    }
+		threadGetTweets = new Thread(getTweets());
+		threadGetTweets.setDaemon(true);
+		threadGetTweets.start();
+	}
 
-    public void setDatas(PIViewer piViewer) {
-        this.piViewer = piViewer;
-        this.interestPointToPrint = piViewer.getSelectedInterestPoint();
+	private Task<Void> getTweets() {
+		try {
+			bigTweetList = piViewer.getTweets(progressLabel);
 
-        Platform.runLater(() -> {
-            piNameLabel.setText(interestPointToPrint.getName());
-            showElements(false);
-        });
-        initLists();
+			// Tweet are collected
+			Platform.runLater(() -> {
+				progressLabel.setText("Analyse des résultats");
+			});
 
-        threadGetTweets = new Thread(getTweets());
-        threadGetTweets.setDaemon(true);
-        threadGetTweets.start();
-    }
+			threadTopFiveUsers = new Thread(setTopFiveUsers());
+			threadTopFiveUsers.setDaemon(true);
+			threadTopFiveUsers.start();
 
-    private Task<Void> getTweets() {
-        try {
-            bigTweetList = piViewer.getTweets(progressLabel);
+			threadTopLinkedHashtags = new Thread(setTopLinkedHashtags());
+			threadTopLinkedHashtags.setDaemon(true);
+			threadTopLinkedHashtags.start();
 
-            //Tweet are collected
-            Platform.runLater(() -> {
-                progressLabel.setText("Analyse des résultats");
-            });
+			threadTopTweets = new Thread(setTopTweets());
+			threadTopTweets.setDaemon(true);
+			threadTopTweets.start();
 
-            threadTopFiveUsers = new Thread(setTopFiveUsers());
-            threadTopFiveUsers.setDaemon(true);
-            threadTopFiveUsers.start();
+			// Wait for the two other tasks
+			while (threadTopFiveUsers.isAlive() || threadTopLinkedHashtags.isAlive()) {
+				Thread.sleep(1000);
+			}
+			Platform.runLater(() -> {
+				// Find Min Date
+				Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
 
-            threadTopLinkedHashtags = new Thread(setTopLinkedHashtags());
-            threadTopLinkedHashtags.setDaemon(true);
-            threadTopLinkedHashtags.start();
+				//DateFormats.hoursAndDateFormat.format(date);
+				
+				System.out.println();
 
-            threadTopTweets = new Thread(setTopTweets());
-            threadTopTweets.setDaemon(true);
-            threadTopTweets.start();
+				lastDateLabel.setText(getDateDiff(date, new Date()));
 
-            //Wait for the two other tasks
-            while (threadTopFiveUsers.isAlive() || threadTopLinkedHashtags.isAlive()) {
-                Thread.sleep(1000);
-            }
-            Platform.runLater(() -> {
-                //Find Min Date
-                Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
-                String dateFormatted = DateFormats.hoursAndDateFormat.format(date);
-                lastDateLabel.setText(dateFormatted);
+				nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
+				nbTrackedLabel.setText(String
+						.valueOf(interestPointToPrint.getUsers().size() + interestPointToPrint.getHashtags().size()));
 
-                nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
-                nbTrackedLabel.setText(String.valueOf(interestPointToPrint.getUsers().size() + interestPointToPrint.getHashtags().size()));
+				showElements(true);
 
-                showElements(true);
+			});
 
-            });
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+	/**
+	 * Get a diff between two dates
+	 * 
+	 * @param date1    the oldest date
+	 * @param date2    the newest date
+	 * @param timeUnit the unit in which you want the diff
+	 * @return the diff value, in the provided unit
+	 */
+	public static String getDateDiff(Date date1, Date date2) {
+		long difference =  (date2.getTime()-date1.getTime())/86400000;
+		if( difference < 31) 
+			return Math.abs(difference)+" jours";
+		else {
+			difference = (date2.getTime()-date1.getTime())/2628000000L;
+			return Math.abs(difference)+ " mois";
+		}
+	}
 
-    private Task<Void> setTopFiveUsers() throws Exception {
-        //user in parameters to find what to exclude
-        List<User> users = piViewer.getTopFiveUsers(bigTweetList);
+	private Task<Void> setTopFiveUsers() throws Exception {
+		// user in parameters to find what to exclude
+		List<User> users = piViewer.getTopFiveUsers(bigTweetList);
 
-        ObservableList<User> usersToPrint = FXCollections.observableArrayList();
-        int i = 0;
-        for (User user : users) {
-            usersToPrint.add(user);
-            i++;
-            if (i == 5) {
-                break;
-            }
-        }
-        Platform.runLater(() -> {
-            topFiveUserList.getItems().addAll(usersToPrint);
-            //topFiveUserList.setMaxHeight(50 * usersToPrint.size());
-        });
+		ObservableList<User> usersToPrint = FXCollections.observableArrayList();
+		int i = 0;
+		for (User user : users) {
+			usersToPrint.add(user);
+			i++;
+			if (i == 5) {
+				break;
+			}
+		}
+		Platform.runLater(() -> {
+			topFiveUserList.getItems().addAll(usersToPrint);
+			// topFiveUserList.setMaxHeight(50 * usersToPrint.size());
+		});
 
-        return null;
-    }
+		return null;
+	}
 
-    private Task<Void> setTopLinkedHashtags() {
-        Map<String, Integer> hashtags = userViewer.getTopTenHashtags(bigTweetList);
+	private Task<Void> setTopLinkedHashtags() {
+		Map<String, Integer> hashtags = userViewer.getTopTenHashtags(bigTweetList);
 
-        int i = 0;
-        ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
-        for (String hashtag : hashtags.keySet()) {
-            i++;
-            hashtagsToPrint.add(new ListObjects.ResultHashtag(String.valueOf(i), hashtag, hashtags.get(hashtag).toString()));
-            if (i == 10) {
-                break;
-            }
-        }
-        Platform.runLater(() -> {
-            topTenLinkedList.getItems().addAll(hashtagsToPrint);
-        });
-        //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
-        return null;
-    }
+		int i = 0;
+		ObservableList<ListObjects.ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
+		for (String hashtag : hashtags.keySet()) {
+			i++;
+			hashtagsToPrint
+					.add(new ListObjects.ResultHashtag(String.valueOf(i), hashtag, hashtags.get(hashtag).toString()));
+			if (i == 10) {
+				break;
+			}
+		}
+		Platform.runLater(() -> {
+			topTenLinkedList.getItems().addAll(hashtagsToPrint);
+		});
+		// titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
+		return null;
+	}
 
-    private Task<Void> setTopTweets() {
-        ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
-        Map<Tweet, Integer> topTweets = new HashMap<Tweet, Integer>();
-        topTweets = piViewer.topTweets(bigTweetList, progressBar);
+	private Task<Void> setTopTweets() {
+		ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
+		Map<Tweet, Integer> topTweets = new HashMap<Tweet, Integer>();
+		topTweets = piViewer.topTweets(bigTweetList, progressBar);
 
-        int i = 0;
-        for (Tweet tweet : topTweets.keySet()) {
-            tweetsToPrint.add(tweet);
-            i++;
-            if (i == 10) {
-                break;
-            }
-        }
-        Platform.runLater(() -> {
-            addTweetsToList(tweetsToPrint);
-        });
-        titledTweet.setMaxHeight(70 * tweetsToPrint.size());
-        return null;
-    }
+		int i = 0;
+		for (Tweet tweet : topTweets.keySet()) {
+			tweetsToPrint.add(tweet);
+			i++;
+			if (i == 10) {
+				break;
+			}
+		}
+		Platform.runLater(() -> {
+			addTweetsToList(tweetsToPrint);
+		});
+		titledTweet.setMaxHeight(70 * tweetsToPrint.size());
+		return null;
+	}
 
-    private void showElements(boolean show) {
-        //searching or analysing tweets
-        if (!show) {
-            progressBar.setProgress(-1);
-            progressBar.setVisible(true);
-            progressLabel.setVisible(true);
-            infoLastDateLabel.setVisible(false);
-            infoNbTrackedLabel.setVisible(false);
-            infosNbTweetsLabel.setVisible(false);
-            nbTweetsLabel.setVisible(false);
-            nbTrackedLabel.setVisible(false);
-            lastDateLabel.setVisible(false);
-            statisticsButton.setVisible(false);
-        } else {
-            progressBar.setVisible(false);
-            progressLabel.setVisible(false);
-            infoLastDateLabel.setVisible(true);
-            infoNbTrackedLabel.setVisible(true);
-            infosNbTweetsLabel.setVisible(true);
-            nbTweetsLabel.setVisible(true);
-            nbTrackedLabel.setVisible(true);
-            lastDateLabel.setVisible(true);
-            statisticsButton.setVisible(true);
-        }
+	private void showElements(boolean show) {
+		// searching or analysing tweets
+		if (!show) {
+			progressBar.setProgress(-1);
+			progressBar.setVisible(true);
+			progressLabel.setVisible(true);
+			infoLastDateLabel.setVisible(false);
+			infoNbTrackedLabel.setVisible(false);
+			infosNbTweetsLabel.setVisible(false);
+			nbTweetsLabel.setVisible(false);
+			nbTrackedLabel.setVisible(false);
+			lastDateLabel.setVisible(false);
+      statisticsButton.setVisible(false);
+		} else {
+			progressBar.setVisible(false);
+			progressLabel.setVisible(false);
+			infoLastDateLabel.setVisible(true);
+			infoNbTrackedLabel.setVisible(true);
+			infosNbTweetsLabel.setVisible(true);
+			nbTweetsLabel.setVisible(true);
+			nbTrackedLabel.setVisible(true);
+			lastDateLabel.setVisible(true);
+      statisticsButton.setVisible(true);
+		}
 
-        vBox.setVisible(show);
-        //nbUsersLabel.setVisible(hide);
-        //tweetsLabel.setVisible(hide);
-        //usersLabel.setVisible(hide);
-        //lastAnalysedLabel.setVisible(hide);
-    }
+		vBox.setVisible(show);
+		// nbUsersLabel.setVisible(hide);
+		// tweetsLabel.setVisible(hide);
+		// usersLabel.setVisible(hide);
+		// lastAnalysedLabel.setVisible(hide);
+	}
 
+	private void addTweetsToList(List<Tweet> toptweets) {
+		ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
+		try {
+			if (piViewer != null) {
+				for (Tweet tweet : toptweets) {
+					FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
+					JFXListCell jfxListCell = fxmlLoader.load();
+					jfxListCell.setMinWidth(listTweets.getWidth() - listTweets.getWidth() * 0.1);
+					listTweets.widthProperty().addListener((obs, oldval, newval) -> {
+						Double test = newval.doubleValue() - newval.doubleValue() * 0.1;
+						jfxListCell.setMinWidth(test);
+					});
+					listTweetCell.add(jfxListCell);
+					TweetController tweetController = (TweetController) fxmlLoader.getController();
 
-    private void addTweetsToList(List<Tweet> toptweets) {
-        ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
-        try {
-            if (piViewer != null) {
-                for (Tweet tweet : toptweets) {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
-                    JFXListCell jfxListCell = fxmlLoader.load();
-                    jfxListCell.setMinWidth(listTweets.getWidth() - listTweets.getWidth() * 0.1);
-                    listTweets.widthProperty().addListener((obs, oldval, newval) -> {
-                        Double test = newval.doubleValue() - newval.doubleValue() * 0.1;
-                        jfxListCell.setMinWidth(test);
-                    });
-                    listTweetCell.add(jfxListCell);
-                    TweetController tweetController = (TweetController) fxmlLoader.getController();
+					tweetController.injectPiTabController(this);
+					tweetController.populate(tweet, true);
+					listTweets.getItems().add(jfxListCell);
+				}
+			}
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
 
-                    tweetController.injectPiTabController(this);
-                    tweetController.populate(tweet, true);
-                    listTweets.getItems().add(jfxListCell);
-                }
-            }
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
-    /**
-     * Called when tab is closed
-     */
-    public void killThreads() {
-        if (threadGetTweets != null) {
-            threadGetTweets.interrupt();
-        }
-        if (threadTopFiveUsers != null) {
-            threadTopFiveUsers.interrupt();
-        }
-        if (threadTopTweets != null) {
-            threadTopTweets.interrupt();
-        }
-        if (threadTopLinkedHashtags != null) {
-            threadTopLinkedHashtags.interrupt();
-        }
-    }
-
+	/**
+	 * Called when tab is closed
+	 */
+	public void killThreads() {
+		if (threadGetTweets != null) {
+			threadGetTweets.interrupt();
+		}
+		if (threadTopFiveUsers != null) {
+			threadTopFiveUsers.interrupt();
+		}
+		if (threadTopTweets != null) {
+			threadTopTweets.interrupt();
+		}
+		if (threadTopLinkedHashtags != null) {
+			threadTopLinkedHashtags.interrupt();
+		}
+	}
 }
