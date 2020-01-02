@@ -1,14 +1,23 @@
 package fr.tse.ProjetInfo3.mvc.dao;
 
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
-import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
+import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -259,5 +268,91 @@ public class InterestPointDAO {
 			e.printStackTrace();
 		}
     }
+    
+    /**
+     * We save a User in the DB in the new table created
+     * so we could accelerate the research 
+     */
+    public User saveUser(User user,String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO usercached (user_id,userScreenName,data) "
+                    + "VALUES (?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
 
+            preparedStatement.setLong(1, user.getId());
+            preparedStatement.setString(2, user.getScreen_name());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(3, parsedData);
+
+            preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    /**
+     * we're getting a user from the DB if the user exist already we're returning the user
+     * else we're returning null
+     */
+    public User getUserFromDatabase(String screen_name,Gson gson) {
+    	
+    	Connection connection = SingletonDBConnection.getInstance();
+    	User user = null;
+    	try {
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE userScreenName = ? ");
+			ps.setString(1, screen_name);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				user = new User();
+				user = gson.fromJson(rs.getString("data"), User.class);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return user;
+    }
+    
+    public Tweet saveTweetInCache(Tweet tweet, String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO tweetcached (tweet_id,data) "
+                    + "VALUES (?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setLong(1, tweet.getId());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(2, parsedData);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tweet;
+    }
+    
+    public Hashtag saveHashtagInCache(Hashtag hashtag,String parsedData) {
+    	Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO hashtagcached (hashtag_id,data) "
+                    + "VALUES (?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setLong(1, hashtag.getId());
+            // the parsedData will contain the jsonformat parsed into a string
+            preparedStatement.setString(2, parsedData);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hashtag;
+    }
+    
 }
