@@ -451,6 +451,12 @@ GridPane {
     -fx-padding: 10 0 0 0;
 }
 
+.favoriteIcon {
+    -fx-icon-color: -red;
+    -fx-padding: 5 0 0 0;
+}
+
+
 /*Login and signin*/
 
 .jfx-text-field .input-line, .jfx-password-field .input-line {

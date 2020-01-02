@@ -45,7 +45,7 @@
                                     <children>
                           <JFXToggleNode fx:id="favoriteToggle" onAction="#favouriteTogglePressed" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                                             <graphic>
-                                                <FontIcon fx:id="favoriteIcon" iconLiteral="far-heart" iconSize="40" />
+                                                <FontIcon styleClass="favoriteIcon" iconLiteral="far-heart" iconSize="40" />
                                             </graphic>
                                             <GridPane.margin>
                                                 <Insets right="20.0" top="-5.0" />
@@ -53,7 +53,7 @@
                                         </JFXToggleNode>
                           <JFXToggleNode fx:id="NotfavoriteToggle" onAction="#favouriteTogglePressed" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                                             <graphic>
-                                                <FontIcon fx:id="favoriteIcon" iconLiteral="far-stop-circle" iconSize="40" />
+                                                <FontIcon styleClass="favoriteIcon" iconLiteral="fas-heart" iconSize="40" />
                                             </graphic>
                                             <GridPane.margin>
                                                 <Insets right="20.0" top="-5.0" />
