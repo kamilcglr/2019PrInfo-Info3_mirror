@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
+
+import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -20,6 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +60,9 @@ public class MainController {
     private HashtagTabController hashtagTabController;
     @FXML
     private MyPIsTabController myPIsTabController;
+    
+    @FXML
+    private StatisticsTabController statisticsTabController;
 
     @FXML
     private ToolBarController toolBarController;
@@ -483,5 +489,53 @@ public class MainController {
         }
 
     }
+    
+    /**
+     * @author Sergiy
+     * This method is used to load the fxml document of the Statistics Tab,
+     * to get the corresponding controller and to open a new tab containing the Charts.
+     * 
+     * @param piViewer
+     * @param bigTweetList
+     */
+    public void goToStatistics(PIViewer piViewer, List<Tweet> bigTweetList) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
+        
+        try {
+            AnchorPane statisticsPane = fxmlLoader.load();
+            System.out.println(statisticsPane);
+            statisticsTabController = fxmlLoader.getController();
+            statisticsTabController.setTweetList(bigTweetList);
+            
+            Platform.runLater(() -> {
+                Tab tab = new Tab();
+                tab.setContent(statisticsPane);
+                tab.setText("Statistiques");
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+                
+                tab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                    	statisticsTabController.killThreads();
+                    }
+                });
+            });
+            
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                	statisticsTabController.setDatas(piViewer);
+                    return null;
+                }
+            };
 
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

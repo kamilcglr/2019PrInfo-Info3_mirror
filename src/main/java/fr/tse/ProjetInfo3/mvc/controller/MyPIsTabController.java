@@ -79,7 +79,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
 
-
         PIListView.setCellFactory(param -> new ListObjects.ResultInterestPoint());
     }
 

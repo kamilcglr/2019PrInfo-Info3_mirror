@@ -19,12 +19,14 @@ import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -38,7 +40,6 @@ import javafx.scene.layout.VBox;
  *         here
  */
 public class PiTabController {
-
 	private MainController mainController;
 
 	private List<Tweet> bigTweetList;
@@ -51,6 +52,9 @@ public class PiTabController {
 
 	@FXML
 	private JFXButton editButton;
+  
+  @FXML
+  private JFXButton statisticsButton;
 
 	/*
 	 * LISTS
@@ -105,6 +109,8 @@ public class PiTabController {
 	private Thread threadTopTweets;
 
 	private UserViewer userViewer;
+  
+  private HastagViewer hashtagViewer;
 
 	// Progress indicators
 	@FXML
@@ -122,6 +128,7 @@ public class PiTabController {
 		// hide unused elements
 		editButton.setVisible(false);
 		nbTweetsLabel.setVisible(false);
+    statisticsButton.setVisible(false);
 
 		// this part has bto be here to use the same piviewer ========= to verify
 		topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint, piViewer));
@@ -132,6 +139,7 @@ public class PiTabController {
 		trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
 		trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
 		userViewer = new UserViewer();
+    hashtagViewer = new HastagViewer();
 		// ====================
 
 	}
@@ -144,6 +152,15 @@ public class PiTabController {
 			mainController.goToUserPane(userViewer);
 		}
 	}
+      
+  @FXML
+  public void hashtagClick(MouseEvent arg0) throws Exception {
+      String research = topTenLinkedList.getSelectionModel().getSelectedItem().hashtagName;
+      if (topTenLinkedList.getSelectionModel().getSelectedIndex() != -1) {
+        hashtagViewer.setHashtag(research);
+          mainController.goToHashtagPane(hashtagViewer);
+      }
+  }
 
 	private void initLists() {
 		List<User> users = interestPointToPrint.getUsers();
@@ -326,6 +343,7 @@ public class PiTabController {
 			nbTweetsLabel.setVisible(false);
 			nbTrackedLabel.setVisible(false);
 			lastDateLabel.setVisible(false);
+      statisticsButton.setVisible(false);
 		} else {
 			progressBar.setVisible(false);
 			progressLabel.setVisible(false);
@@ -335,6 +353,7 @@ public class PiTabController {
 			nbTweetsLabel.setVisible(true);
 			nbTrackedLabel.setVisible(true);
 			lastDateLabel.setVisible(true);
+      statisticsButton.setVisible(true);
 		}
 
 		vBox.setVisible(show);
@@ -386,5 +405,4 @@ public class PiTabController {
 			threadTopLinkedHashtags.interrupt();
 		}
 	}
-
 }
