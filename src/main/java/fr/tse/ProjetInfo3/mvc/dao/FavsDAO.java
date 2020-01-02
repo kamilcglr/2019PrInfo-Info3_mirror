@@ -16,6 +16,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 
 /**
  * @author Laïla
@@ -73,16 +74,15 @@ public class FavsDAO {
         }
         return user;
     }
-	public List<User> getFavouriteUsers() {
+	public List<User> getFavouriteUsers() throws Exception {
+		UserViewer userViewer=new UserViewer();
 		 Connection connection = SingletonDBConnection.getInstance();
 		 List<User> users=new ArrayList<>();
 	        try {
 	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM twitteruserfav WHERE favourite=1");
 	            ResultSet rs = preparedStatement.executeQuery();
 	            while (rs.next()) {
-	            	User user=new User(0, null, null, null, null, null, null, 0, 0, 0, 0, 0, null, null, null, null);
-		                user.setScreen_name(rs.getString("userScreenName"));
-		                user.setName(rs.getString("userName"));
+	            	User user=userViewer.searchScreenNameU(rs.getString("userScreenName"));
 		                users.add(user);
 		               
 	            }
@@ -152,24 +152,42 @@ public class FavsDAO {
         e.printStackTrace();
     }
 }
+	public void addFavUser(User user) {
+		Connection connection = SingletonDBConnection.getInstance();
+		 int check=checkFavUser(user);
+	        try {
+	        	if(check==1) {
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM twitteruserfav WHERE userScreenName=?");
+		            prepStatement.setString(1,user.getScreen_name());
+		            prepStatement.executeUpdate();
+		            System.out.println(user.getScreen_name()+" deleted!");
+		          
+	           }
+	           else {
+	        	   saveFavouriteUser(user);
+		            System.out.println(user.getScreen_name()+" saved!");
+		           
+
+	           }
+
+	}catch (SQLException e) {
+       e.printStackTrace();
+   }
+}
+	
 	public int checkFavUser(User user) {
 		Connection connection = SingletonDBConnection.getInstance();
-		 List<Hashtag> hashtags=new ArrayList<>();
 	        try {
 	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM twitteruserfav WHERE userScreenName=?");
 	            preparedStatement.setString(1, user.getScreen_name());
 	            ResultSet rs = preparedStatement.executeQuery();
 	           if (rs.next()) {
-		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM twitteruserfav WHERE userScreenName=?");
-		            prepStatement.setString(1,user.getScreen_name());
-		            prepStatement.executeUpdate();
-		            System.out.println(user.getScreen_name()+" deleted!");
-		            return 0;
+		           
+		            return 1;
 	           }
 	           else {
-	        	   saveFavouriteUser(user);
-		            System.out.println(user.getScreen_name()+" saved!");
-		            return 1;
+	        	  
+		            return 0;
 
 	           }
 

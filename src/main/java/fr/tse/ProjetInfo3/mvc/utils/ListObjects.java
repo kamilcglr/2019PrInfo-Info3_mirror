@@ -75,15 +75,15 @@ public class ListObjects {
             this.nbTweets = nbTweets;
         }
 
-        String getClassementIndex() {
+        public String getClassementIndex() {
             return classementIndex;
         }
 
-        String getHashtagName() {
+        public String getHashtagName() {
             return hashtagName;
         }
 
-        String getNbTweets() {
+        public String getNbTweets() {
             return nbTweets;
         }
     }

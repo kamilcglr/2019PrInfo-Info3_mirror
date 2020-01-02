@@ -21,7 +21,11 @@ public class FavsViewer {
     private List<User> favouriteUsers=new ArrayList<>();
     private List<Hashtag> favouriteHashtags=new ArrayList<>();
 
-	public int addUserToFavourites(User user) {
+    
+	public void addUserToFavourites(User user) {
+		 favsDAO.addFavUser(user);
+	}
+	public int checkUserInFav(User user) {
 		return favsDAO.checkFavUser(user);
 	}
 	public void addHashtagToFavourites(Hashtag hashtag) {
@@ -30,7 +34,7 @@ public class FavsViewer {
 	public int checkHashInFav(Hashtag hashtag) {
 		return favsDAO.checkFavHashtag(hashtag);
 	}
-	public Favourite getlistOfFavourites() {
+	public Favourite getlistOfFavourites() throws Exception {
 		favourites= new ArrayList<>();
 		favouriteUsers=favsDAO.getFavouriteUsers();
 		favouriteHashtags=favsDAO.getFavouriteHashtags();

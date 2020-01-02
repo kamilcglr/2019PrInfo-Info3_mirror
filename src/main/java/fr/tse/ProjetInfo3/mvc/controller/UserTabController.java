@@ -94,7 +94,9 @@ public class UserTabController {
 
     @FXML
     private Label progressLabel;
-
+    
+    @FXML
+    private JFXToggleNode NotfavoriteToggle;
 
     /*
      * We will populate this fields/labels by the result of search
@@ -124,17 +126,25 @@ public class UserTabController {
     /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
-        LoginController loginController = new LoginController();
 
-        if (loginController.connected == 1) {
-	            favoriteToggle.setVisible(true);
-
-        } else {
-            favoriteToggle.setVisible(false);
-
-        }
     }
 
+    public void favourites() {
+   	 //favourites
+   	favsViewer=new FavsViewer();
+		userToPrint = userViewer.getUser();
+       int fav=favsViewer.checkUserInFav(userToPrint);
+   	if(fav==1) {       
+   		favoriteToggle.setVisible(false);
+   		NotfavoriteToggle.setVisible(true);
+   	}
+   	else
+   	{
+   	    favoriteToggle.setVisible(true);
+   	    NotfavoriteToggle.setVisible(false);
+
+   	}
+   }
     /*
      * Set the user of the page
      * Prints User simple infos (name, id...)
@@ -143,7 +153,7 @@ public class UserTabController {
     public void setUserViewer(UserViewer userViewer) throws InterruptedException {
         this.userViewer = userViewer;
         userToPrint = userViewer.getUser();
-
+   
         Platform.runLater(() -> {
             username.setText("@" + userToPrint.getScreen_name());
             twittername.setText(userToPrint.getName());
@@ -153,7 +163,15 @@ public class UserTabController {
             nbFollowing.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFriends_count())));
             buildPicture();
         });
+        LoginController loginController = new LoginController();
+        if (loginController.connected == 1) {
+	            favourites();
 
+     } else {
+     		favoriteToggle.setVisible(false);
+     		NotfavoriteToggle.setVisible(false);
+
+     }
         threadGetTweets = new Thread(getTweets());
         threadGetTweets.setDaemon(true);
         threadGetTweets.start();
@@ -163,8 +181,10 @@ public class UserTabController {
     private void initialize() {
         //hide elements
         compareButton.setVisible(false);
-        favoriteToggle.setVisible(true);
+        favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
+   		NotfavoriteToggle.setVisible(false);
+
 
         listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
 
@@ -227,6 +247,18 @@ public class UserTabController {
                 
                         favsViewer=new FavsViewer();
                         favsViewer.addUserToFavourites(userToPrint);
+                        int fav=favsViewer.checkUserInFav(userToPrint);
+                    	if(fav==1) {       
+                    		favoriteToggle.setVisible(false);
+                        NotfavoriteToggle.setVisible(true);
+                    	}
+                    	else
+                    	{
+                    	       favoriteToggle.setVisible(true);
+                    	        NotfavoriteToggle.setVisible(false);
+
+                    	}
+
                      }
 
 

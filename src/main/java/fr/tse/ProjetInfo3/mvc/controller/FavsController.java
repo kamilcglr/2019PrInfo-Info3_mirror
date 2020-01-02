@@ -25,7 +25,9 @@ import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SearchUser;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleUserCell;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +37,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -51,7 +54,7 @@ public class FavsController {
 	@FXML
 	private JFXListView<ResultHashtag> FavsListView;
 	@FXML
-	private JFXListView<String> FavsListViewUser;
+	private JFXListView<User> FavsListViewUser;
 	  @FXML
 	    private AnchorPane anchorPane;
 
@@ -65,7 +68,7 @@ public class FavsController {
     private FavsViewer favsViewer;
 
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
         //hide elements
     	progressIndicator.setVisible(false);
     	progressIndicatorLabel.setVisible(false);
@@ -74,6 +77,8 @@ public class FavsController {
         //JFXScrollPane.smoothScrolling(scrollPane);
 
         FavsListView.setCellFactory(param -> new SimpleTopHashtagCell());
+        FavsListViewUser.setCellFactory(param -> new ListObjects.SimpleUserCell());
+
         //FavsListViewUser.setCellFactory(param-> new SearchUser());
         setTopHashtags();
         setUsers();
@@ -85,7 +90,7 @@ public class FavsController {
 	}
 	
 	@FXML
-    private void setTopHashtags() {
+    private void setTopHashtags() throws Exception {
 		favsViewer=new FavsViewer();
     	Favourite favourite=favsViewer.getlistOfFavourites();
     	
@@ -105,26 +110,47 @@ public class FavsController {
         });
         
     }
-	
-	@FXML
-	private void setUsers() {
-		favsViewer=new FavsViewer();
-    	Favourite favourite=favsViewer.getlistOfFavourites();
-    	
-        ObservableList<String> usersToPrint = FXCollections.observableArrayList();
-        int i = 0;
-        for (User user : favourite.getUsers()) {
-            usersToPrint.add(user.getScreen_name());
-            System.out.println(user.getName());
-            i++;
-            //if (i == 5) {
-              //  break;
-           // }
+    @FXML
+    public void userClick(MouseEvent arg0) throws Exception {
+    	UserViewer userViewer=new UserViewer();
+        String research = FavsListViewUser.getSelectionModel().getSelectedItem().getScreen_name();
+        if (FavsListViewUser.getSelectionModel().getSelectedIndex() != -1) {
+            userViewer.searchScreenName(research);
+            mainController.goToUserPane(userViewer);
         }
-        Platform.runLater(() -> {
-            FavsListViewUser.getItems().addAll(usersToPrint);
-            //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
-        });
+    }
+    
+    @FXML
+    public void hashtagClick(MouseEvent arg0) throws Exception {
+    	HastagViewer hashtagViewer=new HastagViewer();
+        ResultHashtag research = FavsListView.getSelectionModel().getSelectedItem();
+        if (FavsListView.getSelectionModel().getSelectedIndex() != -1) {
+        	 hashtagViewer.setHashtag(research.getHashtagName());
+            mainController.goToHashtagPane(hashtagViewer);
+        }
+    }
+    
+	
+	private Task<Void>  setUsers() throws Exception {
+		favsViewer=new FavsViewer();
+    	List<User> users=favsViewer.getlistOfFavourites().getUsers();
+    	 ObservableList<User> usersToPrint = FXCollections.observableArrayList();
+         int i = 0;
+         for (User user : users) {
+             usersToPrint.add(user);
+             i++;
+             if (i == 5) {
+                 break;
+             }
+         }
+         Platform.runLater(() -> {
+             FavsListViewUser.getItems().addAll(usersToPrint);
+             //topFiveUserList.setMaxHeight(50 * usersToPrint.size());
+         });
+
+         return null;
+
+        
 	}
 
 	/*private Task<Void> getListOfFavs() {
@@ -149,7 +175,7 @@ public class FavsController {
         });
         return null;
     }*/
-    public Favourite initializeListOfFavourites() throws IOException, InterruptedException {
+    public Favourite initializeListOfFavourites() throws Exception {
         return favsViewer.getlistOfFavourites();
     }
     private void isLoading(boolean isLoading) {

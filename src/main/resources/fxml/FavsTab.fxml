@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
+
 <AnchorPane fx:id="myFavsPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.FavsController">
     <children>
         <StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -35,8 +36,9 @@
                   <RowConstraints maxHeight="434.4" minHeight="20.0" prefHeight="57.600024414062545" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <JFXListView fx:id="FavsListView" prefHeight="225.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                        <JFXListView fx:id="FavsListViewUser" prefHeight="230.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+
+                        <JFXListView fx:id="FavsListView" onMouseClicked="#hashtagClick" prefHeight="225.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                        <JFXListView fx:id="FavsListViewUser" onMouseClicked="#userClick" prefHeight="230.0" prefWidth="800.0" styleClass="hashtagsList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                         
                         <Label fx:id="titleLabel" alignment="CENTER" styleClass="centeredtabtitles" text="Mes favoris" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                      <GridPane.margin>
@@ -47,19 +49,19 @@
                      <padding>
                         <Insets left="50.0" />
                      </padding></Label>
-                  <Label fx:id="hashtagsLabel" text="Mes utilisateurs favoris" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label fx:id="usersLabel" text="Mes Hashtags favoris" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label styleClass="trackedTitles" fx:id="hashtagsLabel" text="Mes utilisateurs favoris" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label styleClass="trackedTitles" fx:id="usersLabel" text="Mes Hashtags favoris" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                     </children>
                 </GridPane>
             </children>
             <stylesheets>
-                <URL value="@styles/myPIsTab.css" />
+                    <URL value="@styles/piTab.css" />
                 <URL value="@styles/main.css" />
             </stylesheets>
         </StackPane>
     </children>
     <stylesheets>
-        <URL value="@styles/myPIsTab.css" />
+            <URL value="@styles/piTab.css" />
         <URL value="@styles/main.css" />
     </stylesheets>
 </AnchorPane>

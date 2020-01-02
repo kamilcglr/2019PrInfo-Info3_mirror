@@ -39,6 +39,7 @@ public class HastagViewer {
         List<Tweet> tempList;
         tempList = requestManager.searchTweets(hashtag, count, maxId, progressBar);
         this.tweets = tempList;
+        
         return tempList;
     }
 

@@ -144,8 +144,6 @@ public class HashtagTabController {
     	favsViewer=new FavsViewer();
 		hashtagToPrint = hastagViewer.getHashtag();
         int fav=favsViewer.checkHashInFav(hashtagToPrint);
-        System.out.println(hashtagToPrint.getHashtag());
-        System.out.println("/n"+fav);
     	if(fav==1) {       
     		favoriteToggle.setVisible(false);
     		NotfavoriteToggle.setVisible(true);
@@ -191,7 +189,6 @@ public class HashtagTabController {
     	{
     	       favoriteToggle.setVisible(true);
     	        NotfavoriteToggle.setVisible(false);
-    	        favourite=0;
 
     	}
 
