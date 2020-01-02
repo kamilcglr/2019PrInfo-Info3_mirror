@@ -94,7 +94,7 @@ public class UserTabController {
 
     @FXML
     private Label progressLabel;
-    
+
     @FXML
     private JFXToggleNode NotfavoriteToggle;
 
@@ -130,21 +130,20 @@ public class UserTabController {
     }
 
     public void favourites() {
-   	 //favourites
-   	favsViewer=new FavsViewer();
-		userToPrint = userViewer.getUser();
-       int fav=favsViewer.checkUserInFav(userToPrint);
-   	if(fav==1) {       
-   		favoriteToggle.setVisible(false);
-   		NotfavoriteToggle.setVisible(true);
-   	}
-   	else
-   	{
-   	    favoriteToggle.setVisible(true);
-   	    NotfavoriteToggle.setVisible(false);
+        //favourites
+        favsViewer = new FavsViewer();
+        userToPrint = userViewer.getUser();
+        int fav = favsViewer.checkUserInFav(userToPrint);
+        if (fav == 1) {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+        } else {
+            favoriteToggle.setVisible(true);
+            NotfavoriteToggle.setVisible(false);
 
-   	}
-   }
+        }
+    }
+
     /*
      * Set the user of the page
      * Prints User simple infos (name, id...)
@@ -153,7 +152,7 @@ public class UserTabController {
     public void setUserViewer(UserViewer userViewer) throws InterruptedException {
         this.userViewer = userViewer;
         userToPrint = userViewer.getUser();
-   
+
         Platform.runLater(() -> {
             username.setText("@" + userToPrint.getScreen_name());
             twittername.setText(userToPrint.getName());
@@ -165,13 +164,13 @@ public class UserTabController {
         });
         LoginController loginController = new LoginController();
         if (loginController.connected == 1) {
-	            favourites();
+            favourites();
 
-     } else {
-     		favoriteToggle.setVisible(false);
-     		NotfavoriteToggle.setVisible(false);
+        } else {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(false);
 
-     }
+        }
         threadGetTweets = new Thread(getTweets());
         threadGetTweets.setDaemon(true);
         threadGetTweets.start();
@@ -183,7 +182,7 @@ public class UserTabController {
         compareButton.setVisible(false);
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
-   		NotfavoriteToggle.setVisible(false);
+        NotfavoriteToggle.setVisible(false);
 
 
         listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
@@ -242,27 +241,24 @@ public class UserTabController {
         return 'c';
         //TODO getType by user
     }
+
     @FXML
     private void favouriteTogglePressed() {
-                
-                        favsViewer=new FavsViewer();
-                        favsViewer.addUserToFavourites(userToPrint);
-                        int fav=favsViewer.checkUserInFav(userToPrint);
-                    	if(fav==1) {       
-                    		favoriteToggle.setVisible(false);
-                        NotfavoriteToggle.setVisible(true);
-                    	}
-                    	else
-                    	{
-                    	       favoriteToggle.setVisible(true);
-                    	        NotfavoriteToggle.setVisible(false);
 
-                    	}
+        favsViewer = new FavsViewer();
+        favsViewer.addUserToFavourites(userToPrint);
+        int fav = favsViewer.checkUserInFav(userToPrint);
+        if (fav == 1) {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+        } else {
+            favoriteToggle.setVisible(true);
+            NotfavoriteToggle.setVisible(false);
 
-                     }
+        }
 
+    }
 
-    
 
     private Date getDate() {
         Date twitterDate = null;
@@ -309,23 +305,22 @@ public class UserTabController {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
-        	if(tweetList.size()>0) {
-            String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
-            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
-                    date);
+            if (tweetList.size() > 0) {
+                String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+                lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                        date);
 
-            progressBar.setVisible(false);
-            progressLabel.setVisible(false);
-            hideLists(false);
-        	}
-        	else {
-        		 lastAnalysedLabel.setText("Cet utilisateur n'a aucun tweet"
-                         );
-                 progressBar.setVisible(false);
-                 progressLabel.setVisible(false);
-                 hideLists(false);
-        		
-        	}
+                progressBar.setVisible(false);
+                progressLabel.setVisible(false);
+                hideLists(false);
+            } else {
+                lastAnalysedLabel.setText("Cet utilisateur n'a aucun tweet"
+                );
+                progressBar.setVisible(false);
+                progressLabel.setVisible(false);
+                hideLists(false);
+
+            }
         });
 
         return null;

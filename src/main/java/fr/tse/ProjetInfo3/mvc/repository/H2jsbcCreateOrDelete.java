@@ -10,39 +10,40 @@ import java.sql.Statement;
  * */
 public class H2jsbcCreateOrDelete {
     public static void main(String[] args) {
-        // deleteAllTables();
-       //createTables();
-       // oldCreateUser();
-    	select();
+        //deleteAllTables();
+        //createTables();
+        //oldCreateUser();
+        //select();
     }
 
     public static void select() {
-    	  Connection conn = null; 
-	      Statement stmt = null; 
+        Connection conn = null;
+        Statement stmt = null;
         String sql = "SELECT * FROM hashtagfavs WHERE favourite=1";
-        
-        ResultSet rs;
-		try {
-			 System.out.println("Connecting to database..."); 
-	         conn = SingletonDBConnection.getInstance();  
-	         
-	         // STEP 3: Execute a query 
-	         System.out.println("Connected database successfully..."); 
-	         stmt = conn.createStatement(); 
-			rs = stmt.executeQuery(sql);
-	        while(rs.next()) {
-	          	 System.out.println("userName: "+rs.getString("hashtag"));
-	          	 System.out.println("favourite : "+rs.getInt("favourite"));
 
-	           }
-	        System.out.println("bye");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+        ResultSet rs;
+        try {
+            System.out.println("Connecting to database...");
+            conn = SingletonDBConnection.getInstance();
+
+            // STEP 3: Execute a query
+            System.out.println("Connected database successfully...");
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                System.out.println("userName: " + rs.getString("hashtag"));
+                System.out.println("favourite : " + rs.getInt("favourite"));
+
+            }
+            System.out.println("bye");
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
 
     }
+
     public static void deleteAllTables() {
         Connection conn = null;
         Statement stmt = null;
@@ -55,8 +56,8 @@ public class H2jsbcCreateOrDelete {
             stmt.executeUpdate("drop table interestpoint");
             stmt.executeUpdate("drop table hashtag");
             stmt.executeUpdate("drop table twitteruser");
-           // stmt.executeUpdate("drop table userApp");
-           // stmt.executeUpdate("drop table user");
+            // stmt.executeUpdate("drop table userApp");
+            // stmt.executeUpdate("drop table user");
 
 
             System.out.println("Delete all tables tables in given database...");
@@ -106,7 +107,7 @@ public class H2jsbcCreateOrDelete {
                     + "hashtag VARCHAR(255),"
                     + "PRIMARY KEY (hashtag_id),"
                     + "interestpoint_id INTEGER,"
-                    +"favourite INTEGER,"
+                    + "favourite INTEGER,"
                     + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
 
             String user = "CREATE TABLE   twitteruser " +
@@ -115,20 +116,20 @@ public class H2jsbcCreateOrDelete {
                     + "userScreenName VARCHAR(255),"
                     + "PRIMARY KEY (user_id),"
                     + "interestpoint_id INTEGER,"
-                    +"favourite INTEGER,"
+                    + "favourite INTEGER,"
                     + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
             String userFavs = "CREATE TABLE   twitteruserfav " +
                     "( user_id INTEGER AUTO_INCREMENT,"
                     + "userName VARCHAR(255),"
                     + "userScreenName VARCHAR(255),"
                     + "PRIMARY KEY (user_id),"
-                    +"favourite INTEGER)";
+                    + "favourite INTEGER)";
             String hashtagFavs = "CREATE TABLE   hashtagfavs " +
                     "( hashtag_id INTEGER AUTO_INCREMENT,"
                     + "hashtag VARCHAR(255),"
                     + "PRIMARY KEY (hashtag_id),"
-                    +"favourite INTEGER,)";
-                   
+                    + "favourite INTEGER,)";
+
             stmt.executeUpdate(interestpoint);
             stmt.executeUpdate(hashtag);
             stmt.executeUpdate(user);
