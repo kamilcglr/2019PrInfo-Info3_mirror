@@ -67,7 +67,7 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="logoutButton" contentDisplay="RIGHT" onAction="#signoutButtonPressed" styleClass="logginSigninButtons" text="Déconnexion" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="logoutButton" contentDisplay="RIGHT" onAction="#signoutButtonPressed" styleClass="logginSigninButtons" text="Déconnexion" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon fx:id="logoutIcon" iconLiteral="fas-sign-out-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
@@ -79,12 +79,12 @@
                                 </JFXButton>
                                 <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
 
-                                <VBox cache="true" cacheHint="SPEED" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
                            <padding>
                               <Insets bottom="10.0" top="10.0" />
                            </padding>
                            <children>
-                              <JFXListView fx:id="propositionList" cache="true" cacheHint="SPEED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#propositionListClicked" />
+                              <JFXListView fx:id="propositionList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#propositionListClicked" />
                            </children>
                                 </VBox>
                                 <VBox maxHeight="10.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">

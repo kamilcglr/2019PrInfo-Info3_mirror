@@ -23,7 +23,7 @@ public class LoginAppDAO {
     public UserApp saveUser(UserApp userApp) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            String Query = "INSERT INTO user(username,mail,twitter, password) VALUES (?,?,?,?)";
+            String Query = "INSERT INTO userApp(username,mail,twitter, password) VALUES (?,?,?,?)";
                     
             //Statement.RETURN_GENERATED_KEYS to get the id of inserted element
             PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);

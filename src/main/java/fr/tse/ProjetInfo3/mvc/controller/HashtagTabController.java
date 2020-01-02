@@ -3,6 +3,8 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.JFXToggleNode;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import com.jfoenix.controls.JFXProgressBar;
 
@@ -10,6 +12,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -37,6 +40,7 @@ public class HashtagTabController {
 
     private Hashtag hashtagToPrint;
 
+    private FavsViewer favsViewer;
     //Used to know how many tweets we have during search
     private int numberOfTweetReceived;
 
@@ -47,6 +51,7 @@ public class HashtagTabController {
 
     private List<Tweet> tweetList;
 
+    int favourite=0;
     @FXML
     private ScrollPane scrollPane;
 
@@ -96,6 +101,10 @@ public class HashtagTabController {
     private JFXProgressBar progressBar;
     @FXML
     private Label progressLabel;
+    @FXML
+    private JFXToggleNode favoriteToggle;
+    @FXML
+    private JFXToggleNode NotfavoriteToggle;
 
     /*This function is launched when this tab is launched */
     @FXML
@@ -103,6 +112,11 @@ public class HashtagTabController {
         showHashtagElements(false);
         progressBar.setVisible(false);
         progressLabel.setVisible(false);
+        NotfavoriteToggle.setVisible(false);
+       
+        //favourites();
+
+        
         JFXScrollPane.smoothScrolling(scrollPane);
         
         topTenLinkedList.setCellFactory(param -> new SimpleTopHashtagCell());
@@ -120,14 +134,41 @@ public class HashtagTabController {
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        
+
+       
     }
 
+    public void favourites() {
+    	 //favourites
+    	favsViewer=new FavsViewer();
+		hashtagToPrint = hastagViewer.getHashtag();
+        int fav=favsViewer.checkHashInFav(hashtagToPrint);
+    	if(fav==1) {       
+    		favoriteToggle.setVisible(false);
+    		NotfavoriteToggle.setVisible(true);
+    	}
+    	else
+    	{
+    	    favoriteToggle.setVisible(true);
+    	    NotfavoriteToggle.setVisible(false);
+
+    	}
+    }
     public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
         this.hastagViewer = hastagViewer;
         hashtagToPrint = hastagViewer.getHashtag();
 
         hastagViewer.getSearchProgression();
+        LoginController loginController = new LoginController();
+        if (loginController.connected == 1) {
+	            favourites();
 
+     } else {
+     		favoriteToggle.setVisible(false);
+     		NotfavoriteToggle.setVisible(false);
+
+     }
         Platform.runLater(() -> {
             hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
         });
@@ -135,6 +176,23 @@ public class HashtagTabController {
         threadGetTweetFromHashtag = new Thread(getTweetFromHashtag());
         threadGetTweetFromHashtag.setDaemon(true);
         threadGetTweetFromHashtag.start();
+    }
+    @FXML
+    private void favouriteTogglePressed() {
+    	favsViewer.addHashtagToFavourites(hashtagToPrint);
+    	int fav=favsViewer.checkHashInFav(hashtagToPrint);
+    	if(fav==1) {       
+    		favoriteToggle.setVisible(false);
+        NotfavoriteToggle.setVisible(true);
+    	}
+    	else
+    	{
+    	       favoriteToggle.setVisible(true);
+    	        NotfavoriteToggle.setVisible(false);
+
+    	}
+
+
     }
 
     /**
@@ -174,6 +232,7 @@ public class HashtagTabController {
             }
             Platform.runLater(() -> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                if(tweetList.size()>0) {
                 String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
                 lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
                         date);
@@ -181,6 +240,13 @@ public class HashtagTabController {
                 showHashtagElements(true);
                 progressBar.setVisible(false);
                 progressLabel.setVisible(false);
+                }
+                else {
+                	 lastAnalysedLabel.setText("Aucun tweet n'est relié à ce hashtag");
+                     showHashtagElements(true);
+                     progressBar.setVisible(false);
+                     progressLabel.setVisible(false);
+                }
             });
 
         } catch (Exception e) {

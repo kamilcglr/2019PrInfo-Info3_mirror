@@ -9,6 +9,8 @@ import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -43,6 +45,7 @@ public class UserTabController {
 
     private UserViewer userViewer;
 
+    private FavsViewer favsViewer;
     private User userToPrint;
 
     /* THREADS
@@ -92,6 +95,8 @@ public class UserTabController {
     @FXML
     private Label progressLabel;
 
+    @FXML
+    private JFXToggleNode NotfavoriteToggle;
 
     /*
      * We will populate this fields/labels by the result of search
@@ -121,6 +126,21 @@ public class UserTabController {
     /*Controller can access to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+
+    }
+
+    public void favourites() {
+        //favourites
+        favsViewer = new FavsViewer();
+        userToPrint = userViewer.getUser();
+        int fav = favsViewer.checkUserInFav(userToPrint);
+        if (fav == 1) {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+        } else {
+            favoriteToggle.setVisible(true);
+            NotfavoriteToggle.setVisible(false);
+        }
     }
 
     /*
@@ -141,7 +161,15 @@ public class UserTabController {
             nbFollowing.setText(String.valueOf(NumberParser.spaceBetweenNumbers(userToPrint.getFriends_count())));
             buildPicture();
         });
+        LoginController loginController = new LoginController();
+        if (loginController.connected == 1) {
+            favourites();
 
+        } else {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(false);
+
+        }
         threadGetTweets = new Thread(getTweets());
         threadGetTweets.setDaemon(true);
         threadGetTweets.start();
@@ -153,6 +181,8 @@ public class UserTabController {
         compareButton.setVisible(false);
         favoriteToggle.setVisible(false);
         JFXScrollPane.smoothScrolling(scrollPane);
+        NotfavoriteToggle.setVisible(false);
+
 
         listHashtags.setCellFactory(param -> new SimpleTopHashtagCell());
 
@@ -206,10 +236,23 @@ public class UserTabController {
         }
     }
 
-    private char getTypeSearch() {
-        return 'c';
-        //TODO getType by user
+    @FXML
+    private void favouriteTogglePressed() {
+
+        favsViewer = new FavsViewer();
+        favsViewer.addUserToFavourites(userToPrint);
+        int fav = favsViewer.checkUserInFav(userToPrint);
+        if (fav == 1) {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+        } else {
+            favoriteToggle.setVisible(true);
+            NotfavoriteToggle.setVisible(false);
+
+        }
+
     }
+
 
     private Date getDate() {
         Date twitterDate = null;
@@ -256,13 +299,22 @@ public class UserTabController {
             Thread.sleep(1000);
         }
         Platform.runLater(() -> {
-            String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
-            lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
-                    date);
+            if (tweetList.size() > 0) {
+                String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+                lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
+                        date);
 
-            progressBar.setVisible(false);
-            progressLabel.setVisible(false);
-            hideLists(false);
+                progressBar.setVisible(false);
+                progressLabel.setVisible(false);
+                hideLists(false);
+            } else {
+                lastAnalysedLabel.setText("Cet utilisateur n'a aucun tweet"
+                );
+                progressBar.setVisible(false);
+                progressLabel.setVisible(false);
+                hideLists(false);
+
+            }
         });
 
         return null;
