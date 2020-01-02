@@ -24,7 +24,7 @@ public class H2jsbcCreateOrDelete {
             conn = SingletonDBConnection.getInstance();
             stmt = conn.createStatement();
 
-            //deleteAllTables();
+            deleteAllTables();
             createAllTables();
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,7 +40,7 @@ public class H2jsbcCreateOrDelete {
         System.out.println("Goodbye!");
     }
 
-    //TODO Delete
+    //TODO ???? Delete
     public static void select() {
         Connection conn = null;
         Statement stmt = null;
@@ -269,11 +269,10 @@ public class H2jsbcCreateOrDelete {
      * Create the table that contain cached object
      */
     public static void createCachedTables() {
-
-
         String userCached = "CREATE TABLE   userCached " +
                 "( user_id INTEGER ,"
-                + "userScreenName VARCHAR(255),"
+                + "user_screen_name VARCHAR(255),"
+                + "date_of_research TIMESTAMP,"
                 + "PRIMARY KEY (user_id),"
                 + "data CLOB)";
 
@@ -281,10 +280,11 @@ public class H2jsbcCreateOrDelete {
                 "( tweet_id INTEGER ,"
                 + "data CLOB)";
 
-        String hashtagCached = "CREATE TABLE   hashtagCached " +
-                "( hashtag_id INTEGER ,"
+        String hashtagCached = "CREATE TABLE   hashtagCached "
+                + "( hashtag_id INTEGER ,"
+                + "hashtag_name  VARCHAR(255),"
+                + "date_of_research TIMESTAMP,"
                 + "data CLOB)";
-
         try {
             stmt.executeUpdate(userCached);
         } catch (SQLException e) {

@@ -36,13 +36,13 @@ public class User {
      * Our own attributes, they are not alimented by the API
      */
 
-
     private List<Tweet> listoftweets;
 
     private boolean allTweetsCollected; //true when user have no more tweets (less than 3200)
     private boolean globalTweetsLimit; //true when we have already 3200 tweets API LIMIT
     private boolean dateTweetsLimit; //true when there is no more tweets for the until date
 
+    private Date lastSearchDate;
 
     public boolean isAllTweetsCollected() {
         return allTweetsCollected;
@@ -70,11 +70,11 @@ public class User {
 
 
     public User() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	public User(long id, String name, String screen_name, String location, String description, String url,
+    public User(long id, String name, String screen_name, String location, String description, String url,
                 Boolean verified, long followers_count, long friends_count, long listed_count, long favourites_count,
                 long statuses_count, String created_at, String profile_banner_url, String profile_image_url_https,
                 List<Tweet> listoftweets) {
@@ -288,4 +288,11 @@ public class User {
     }
 
 
+    public Date getLastSearchDate() {
+        return lastSearchDate;
+    }
+
+    public void setLastSearchDate(Date lastSearchDate) {
+        this.lastSearchDate = lastSearchDate;
+    }
 }

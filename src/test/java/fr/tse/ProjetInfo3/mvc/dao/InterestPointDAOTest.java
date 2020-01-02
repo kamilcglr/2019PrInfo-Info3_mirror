@@ -5,8 +5,9 @@ import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager.RequestManagerException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class InterestPointDAOTest {
     InterestPoint interestpoint;
     InterestPointDAO interestPointDAO;
 
-    @Before
+    @BeforeAll
     public void initializeTests() {
         interestPointDAO = new InterestPointDAO();
         //First IP

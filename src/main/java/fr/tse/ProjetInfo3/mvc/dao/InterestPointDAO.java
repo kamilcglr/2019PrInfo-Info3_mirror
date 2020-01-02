@@ -203,156 +203,75 @@ public class InterestPointDAO {
         }
         return interestPoint;
     }
-    
+
     // i had to name this method like this hahahah
+
     /**
      * the interestpoint_id is a foreign key in both this table and the twitteruser table
      * so when we delete a PI we should be sure that we already had deleted all its occurence
      * in this tables
-     * 
-     * 
+     * <p>
+     * <p>
      * deleting PI reference from Hashtag table
      */
     public void deleteInterestPointFromHashtagsToAvoidCompilationErrors(int id) {
-    	Connection connection = SingletonDBConnection.getInstance();
-    	
-    	try {
-			PreparedStatement ps = connection.prepareStatement("DELETE FROM hashtag WHERE interestpoint_id = ?");
-			ps.setInt(1, id);
-			ps.executeUpdate();
-			ps.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+        Connection connection = SingletonDBConnection.getInstance();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM hashtag WHERE interestpoint_id = ?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
+
     /**
      * the interestpoint_id is a foreign key in both this table and the twitteruser table
      * so when we delete a PI we should be sure that we already had deleted all its occurence
      * in this tables
-     * 
-     * 
+     * <p>
+     * <p>
      * deleting PI reference from twitteruser table
      */
     public void deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(int id) {
-    	Connection connection = SingletonDBConnection.getInstance();
-    	
-    	try {
-			PreparedStatement ps = connection.prepareStatement("DELETE FROM twitteruser WHERE interestpoint_id = ?");
-			ps.setInt(1, id);
-			ps.executeUpdate();
-			ps.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+        Connection connection = SingletonDBConnection.getInstance();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM twitteruser WHERE interestpoint_id = ?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
-    
-    /** 
+
+    /**
      * deleting PI from the Database
      */
     public void deleteSelectedInterestPointById(int id) {
-    	Connection connection = SingletonDBConnection.getInstance();
-		deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
-		deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(id);
+        Connection connection = SingletonDBConnection.getInstance();
+        deleteInterestPointFromHashtagsToAvoidCompilationErrors(id);
+        deleteInterestPointFromTwitterUsersToAvoidCompilationErrors(id);
 
-    	try {
-			PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
-			ps.setInt(1, id);
-			ps.executeUpdate();
-			ps.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-    /**
-     * We save a User in the DB in the new table created
-     * so we could accelerate the research 
-     */
-    public User saveUser(User user,String parsedData) {
-    	Connection connection = SingletonDBConnection.getInstance();
         try {
-            String Query = "INSERT INTO usercached (user_id,userScreenName,data) "
-                    + "VALUES (?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setString(2, user.getScreen_name());
-            // the parsedData will contain the jsonformat parsed into a string
-            preparedStatement.setString(3, parsedData);
-
-            preparedStatement.executeUpdate();
-            
-            preparedStatement.close();
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return user;
     }
-    
-    /**
-     * we're getting a user from the DB if the user exist already we're returning the user
-     * else we're returning null
-     */
-    public User getUserFromDatabase(String screen_name,Gson gson) {
-    	
-    	Connection connection = SingletonDBConnection.getInstance();
-    	User user = null;
-    	try {
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE userScreenName = ? ");
-			ps.setString(1, screen_name);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				user = new User();
-				user = gson.fromJson(rs.getString("data"), User.class);
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	return user;
-    }
-    
-    public Tweet saveTweetInCache(Tweet tweet, String parsedData) {
-    	Connection connection = SingletonDBConnection.getInstance();
-        try {
-            String Query = "INSERT INTO tweetcached (tweet_id,data) "
-                    + "VALUES (?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setLong(1, tweet.getId());
-            // the parsedData will contain the jsonformat parsed into a string
-            preparedStatement.setString(2, parsedData);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tweet;
+    public InterestPointDAO getInterestPointDao() {
+        return new InterestPointDAO();
     }
-    
-    public Hashtag saveHashtagInCache(Hashtag hashtag,String parsedData) {
-    	Connection connection = SingletonDBConnection.getInstance();
-        try {
-            String Query = "INSERT INTO hashtagcached (hashtag_id,data) "
-                    + "VALUES (?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setLong(1, hashtag.getId());
-            // the parsedData will contain the jsonformat parsed into a string
-            preparedStatement.setString(2, parsedData);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return hashtag;
-    }
-    
 }
