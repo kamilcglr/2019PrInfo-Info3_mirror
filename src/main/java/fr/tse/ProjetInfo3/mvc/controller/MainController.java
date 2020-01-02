@@ -334,31 +334,51 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
     public void goToMyFavsPane() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavsTab.fxml"));
         try {
             AnchorPane newFavTab = fxmlLoader.load();
             FavsController favsController = fxmlLoader.getController();
             favsController.injectMainController(this);
+            Tab tab = new Tab();
             Platform.runLater(() -> {
-                Tab tab = new Tab();
                 tab.setContent(newFavTab);
                 tab.setText("Mes Favoris");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
+            });
 
-                
+            //Heavy task inside this thread, we go to user pane before
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                favsController.setFavsViewer();
+                return null;
+                }
+            };
+
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+
+            tab.setOnCloseRequest(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    favsController.killThreads();
+                    thread.interrupt();
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
+        drawer.close();
     }
 
     public void goToHome() {
         tabPane.getSelectionModel().select(searchTabFromMain);
         drawer.close();
     }
-
 
     public void goToHomeRefresh() {
         tabPane.getTabs().clear();
@@ -369,6 +389,7 @@ public class MainController {
             SearchTabController searchController = fxmlLoader.getController();
             searchController.injectMainController(this, hamburger);
             Tab tab = new Tab();
+            searchTabFromMain = tab;
             tab.setContent(searchTab);
             tab.setText("Rechercher");
             tab.closableProperty().set(false);
@@ -382,7 +403,6 @@ public class MainController {
     }
 
     public void goToSigninTab() {
-        //tabPane.getTabs().clear();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
         try {
             AnchorPane loginTab = fxmlLoader.load();

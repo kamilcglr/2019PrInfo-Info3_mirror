@@ -140,7 +140,6 @@ public class UserTabController {
         } else {
             favoriteToggle.setVisible(true);
             NotfavoriteToggle.setVisible(false);
-
         }
     }
 
