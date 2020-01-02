@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -48,28 +47,30 @@ import javafx.util.Duration;
  *         {@code This class acts as a Controller for the Tab which is used to display Interest Point statistics}
  */
 public class StatisticsTabController {
-	ScheduledExecutorService scheduledExecutorService;
-
 	/** Data **/
-	Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap;
-	Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
-	Map<Date, Integer> tweetsPerInterval;
-	Map<String, Integer> topTenLinkedHashtags;
 
-	/** Time **/
-	Date oldestTweet;
+	private Map<User, Map<Date, Integer>> tweetsPerIntervalForEachUserMap;
+	private Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
+	private Map<Date, Integer> tweetsPerInterval;
+	private Map<String, Integer> topTenLinkedHashtags;
 
 	private List<Tweet> bigTweetList;
 	private List<Tweet> reducedTweetListUsers;
 	private List<Tweet> reducedTweetListHashtags;
 
-	private PIViewer piViewer;
+	/** Time **/
+
+	private Date oldestTweet;
+
+	/** Threads **/
 
 	private Thread threadGetTweets;
 
-	/**
-	 * StatisticsTab.fxml FXML elements
-	 **/
+	/** Viewers **/
+	private PIViewer piViewer;
+
+	/** StatisticsTab.fxml FXML elements **/
+
 	@FXML
 	private AnchorPane statisticsPane;
 
@@ -94,8 +95,12 @@ public class StatisticsTabController {
 	@FXML
 	private Pane pane4;
 
-	private List<Pane> chartContainers;
-	private List<Chart> charts;
+	/** Lists of Graphical elements **/
+
+	private List<Pane> chartContainers; // List of Pane chart containers
+	private List<Chart> charts; // List of Charts
+
+	/** Constructors **/
 
 	public StatisticsTabController() {
 	}
@@ -111,6 +116,11 @@ public class StatisticsTabController {
 		chartContainers.add(pane4);
 	}
 
+	/**
+	 * This method launches a new Thread which executes the getTweets() method.
+	 * 
+	 * @param piViewer
+	 */
 	public void setDatas(PIViewer piViewer) {
 		this.piViewer = piViewer;
 
@@ -119,6 +129,11 @@ public class StatisticsTabController {
 		threadGetTweets.start();
 	}
 
+	/**
+	 * This method can acquire tweets and is used to build Charts.
+	 * 
+	 * @return Task<Void>
+	 */
 	private Task<Void> getTweets() {
 		// Set a Blur effect
 		BoxBlur blur = new BoxBlur(3, 3, 3);
@@ -131,7 +146,7 @@ public class StatisticsTabController {
 		dialogStackPane.getChildren().add(progressIndicatorBox);
 
 		try {
-			//bigTweetList = piViewer.getTweets(new Label());
+			// bigTweetList = piViewer.getTweets(new Label());
 
 			Platform.runLater(() -> {
 				// Get the date of the oldest tweet
@@ -337,20 +352,22 @@ public class StatisticsTabController {
 		}
 
 		/** Get the tweets we will be working with **/
+		
+		/** Now working with all tweets **/
 
 		// A Predicate that predicates that a hashtag is used by a tweet
-		// Predicate<Tweet> byAppartenance = tweet ->
-		// !Collections.disjoint(topFiveHashtags, tweet.getEntities().getHashtags());
-		Predicate<Tweet> byAppartenance = tweet -> topFiveHashtags.stream().anyMatch(tweet.getEntities().getHashtags()
-				.stream().map(Tweet.hashtags::getText).collect(Collectors.toSet())::contains);
+
+		//Predicate<Tweet> byAppartenance = tweet -> topFiveHashtags.stream().anyMatch(tweet.getEntities().getHashtags()
+		//		.stream().map(Tweet.hashtags::getText).collect(Collectors.toSet())::contains);
 
 		// Filter the tweew list so that the remaining tweets contain at least one of
 		// the top 5 hashtags.
-		reducedTweetListHashtags = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
+		
+		//reducedTweetListHashtags = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
 
-		System.out.println("Sizes before and after");
-		System.out.println(bigTweetList.size());
-		System.out.println(reducedTweetListHashtags.size());
+		//System.out.println("Sizes before and after");
+		//System.out.println(bigTweetList.size());
+		//System.out.println(reducedTweetListHashtags.size());
 
 		/** Timestamps **/
 		// Get current date
@@ -372,7 +389,7 @@ public class StatisticsTabController {
 		// corresponding user
 		Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap = new HashMap<>();
 
-		for (Tweet tweet : reducedTweetListUsers) {
+		for (Tweet tweet : bigTweetList) {
 			Date dateTweet = tweet.getCreated_at();
 			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
 
@@ -464,6 +481,11 @@ public class StatisticsTabController {
 		return sortedTweetsTimeInterval;
 	}
 
+	/**
+	 * @author Sergiy, Sobun
+	 *         {@code This method maps the 10 most popular hashtags to a an amount of occurences of these hashtags in tweets}
+	 * @return Returns a Map<String, Integer>
+	 */
 	public Map<String, Integer> acquireDataOfTopLinkedHashtags() {
 		Map<String, Integer> tweetsPerHashtagMap = new HashMap<>();
 
@@ -580,41 +602,39 @@ public class StatisticsTabController {
 	}
 
 	/** Animations **/
-	
+
+	/**
+	 * @author Sergiy {@code This method rotates a Node}
+	 * @param node
+	 */
 	void rotateNode(Node node) {
 		RotateTransition rotate = new RotateTransition();
 
-		// Setting Axis of rotation
 		rotate.setAxis(Rotate.Y_AXIS);
-
-		// setting the angle of rotation
 		rotate.setByAngle(90);
-
-		// setting cycle count of the rotation
 		// rotate.setCycleCount(500);
-
-		// Setting duration of the transition
 		rotate.setDuration(Duration.millis(1000));
-
-		// the transition will be auto reversed by setting this to true
 		// rotate.setAutoReverse(true);
-
-		// setting Rectangle as the node onto which the
-		// transition will be applied
 		rotate.setNode(node);
 
-		// playing the transition
 		rotate.play();
 	}
 
+	/**
+	 * @author Sergiy
+	 *         {@code This method puts a chart in a pane and creates an animation}
+	 * @param pane, chart
+	 */
 	void makeChartAppear(Pane pane, Chart chart) {
+		/** Transition 2 **/
 		RotateTransition rotate2 = new RotateTransition();
 		rotate2.setAxis(Rotate.Y_AXIS);
 		rotate2.setByAngle(90);
 		rotate2.setDuration(Duration.millis(250));
 		rotate2.setAutoReverse(true);
 		rotate2.setNode(pane);
-
+		
+		/** Transition 1 **/
 		RotateTransition rotate1 = new RotateTransition();
 		rotate1.setAxis(Rotate.Y_AXIS);
 		rotate1.setByAngle(90);
@@ -627,7 +647,8 @@ public class StatisticsTabController {
 			pane.getChildren().add(chart);
 		});
 
-		RotateTransition rotateInitial = new RotateTransition();
+		/** Transition 0 **/
+		RotateTransition rotateInitial = new RotateTransition(); // Mirror effect
 		rotateInitial.setAxis(Rotate.Y_AXIS);
 		rotateInitial.setByAngle(180);
 		rotateInitial.setDuration(Duration.millis(1));
@@ -639,12 +660,17 @@ public class StatisticsTabController {
 		});
 
 		rotateInitial.play();
-
 	}
 
+	/**
+	 * @author Sergiy
+	 *         {@code This method puts all charts in their panes, one after another, thus creating an animated sequence}
+	 * @param pane, chart
+	 */
 	void makeChartsAppear(List<Pane> chartContainers, List<Chart> charts, int counter) {
 		int i = counter;
 
+		/** Transition 2 **/
 		RotateTransition rotate2 = new RotateTransition();
 		rotate2.setAxis(Rotate.Y_AXIS);
 		rotate2.setByAngle(90);
@@ -652,6 +678,7 @@ public class StatisticsTabController {
 		rotate2.setAutoReverse(true);
 		rotate2.setNode(chartContainers.get(i));
 
+		/** Transition 1 **/
 		RotateTransition rotate1 = new RotateTransition();
 		rotate1.setAxis(Rotate.Y_AXIS);
 		rotate1.setByAngle(90);
@@ -668,6 +695,7 @@ public class StatisticsTabController {
 			}
 		});
 
+		/** Transition 0 **/
 		RotateTransition rotateInitial = new RotateTransition();
 		rotateInitial.setAxis(Rotate.Y_AXIS);
 		rotateInitial.setByAngle(180);
@@ -683,13 +711,21 @@ public class StatisticsTabController {
 	}
 
 	/** Processing **/
-	
+
+	/**
+	 * @author Sergiy
+	 *         {@code This method builds the chart of the five most active users}
+	 */
 	void generateFiveMostActiveUserChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
+		/** Axis creation **/
+		
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
 
+		/** Chart creation **/
+		
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Nombre de tweets des 5 utilisateurs les plus actifs");
 
@@ -700,9 +736,14 @@ public class StatisticsTabController {
 		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
+		/** Iterator configuration **/
+		
 		Set<Entry<User, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachUserMap.entrySet();
 		Iterator<Entry<User, Map<Date, Integer>>> iterator1 = setEntry1.iterator();
 
+		
+		/** Iterate over the data and fill the chart **/
+		
 		while (iterator1.hasNext()) {
 			Entry<User, Map<Date, Integer>> entry1 = iterator1.next();
 
@@ -714,7 +755,7 @@ public class StatisticsTabController {
 			Set<Entry<Date, Integer>> setEntry2 = tweetsOverTime.entrySet();
 			Iterator<Entry<Date, Integer>> iterator2 = setEntry2.iterator();
 
-			while (iterator2.hasNext()) {
+			while (iterator2.hasNext()) { // Since the map maps a map, we need to reiterate each time inside the map
 				Entry<Date, Integer> entry2 = iterator2.next();
 
 				series.getData().add(
@@ -724,17 +765,25 @@ public class StatisticsTabController {
 			ac.getData().add(series);
 		}
 
-		ac.setLegendSide(Side.RIGHT);
+		ac.setLegendSide(Side.RIGHT); // Put the legend on the right
 		// makeChartAppear(pane1, ac);
 		charts.add(ac);
 	}
 
+	/**
+	 * @author Sergiy
+	 *         {@code This method builds the chart of the five most used hashtags}
+	 */
 	void generatTopFiveHashtagChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
+		/** Axis creation **/
+		
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
 
+		/** Chart creation **/
+		
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Nombre de tweets des 5 hashtags les plus utilisés");
 
@@ -745,9 +794,13 @@ public class StatisticsTabController {
 		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
+		/** Iterator configuration **/
+		
 		Set<Entry<String, Map<Date, Integer>>> setEntry1 = tweetsPerIntervalForEachHashtagMap.entrySet();
 		Iterator<Entry<String, Map<Date, Integer>>> iterator1 = setEntry1.iterator();
 
+		/** Iterate over the data and fill the chart **/
+		
 		while (iterator1.hasNext()) {
 			Entry<String, Map<Date, Integer>> entry1 = iterator1.next();
 
@@ -774,12 +827,20 @@ public class StatisticsTabController {
 		charts.add(ac);
 	}
 
+	/**
+	 * @author Sergiy
+	 *         {@code This method builds the chart of the amount of tweets in time}
+	 */
 	void generateTweetsPerIntervalChart() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
 
+		/** Axis creation **/
+		
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
 
+		/** Chart creation **/
+		
 		final AreaChart<String, Number> ac = new AreaChart<String, Number>(xAxis, yAxis);
 		ac.setTitle("Nombre de tweets total par intervalle de temps");
 
@@ -790,11 +851,17 @@ public class StatisticsTabController {
 		// xAxis.setLabel("Temps");
 		yAxis.setLabel("Nombre de tweets");
 
+		/** Iterator configuration **/
+		
 		Set<Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
 		Iterator<Entry<Date, Integer>> iterator1 = setEntry1.iterator();
 
+		/** Create series **/
+		
 		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
 
+		/** Iterate over the data and fill the chart **/
+		
 		while (iterator1.hasNext()) {
 			Entry<Date, Integer> entry1 = iterator1.next();
 
@@ -810,13 +877,22 @@ public class StatisticsTabController {
 		charts.add(ac);
 	}
 
+	/**
+	 * @author Sergiy, Sobun
+	 *         {@code This method builds the pie chart of the ten most used hashtags}
+	 */
 	void generateTopLinkedHashtagChart() {
+		
+		/** Chart creation **/
+		
 		final PieChart pc = new PieChart();
 		pc.setTitle("Répartition du top des hashtags liés");
 
 		pc.setPrefSize(650, 350);
 		pc.setMinSize(650, 350);
 		pc.setMaxSize(650, 350);
+		
+		/** Fill chart with data **/
 
 		topTenLinkedHashtags.forEach((String, Integer) -> {
 			pc.getData().add(new PieChart.Data(String, Integer));
@@ -828,16 +904,16 @@ public class StatisticsTabController {
 		charts.add(pc);
 	}
 
-	/** Stop Threads **/
+	/** Kill Threads **/
 	
-	void shutdownAllThreads() {
-		if (scheduledExecutorService != null) {
-			scheduledExecutorService.shutdownNow();
-		}
-	}
-
+    public void killThreads() {
+        if (threadGetTweets != null) {
+            threadGetTweets.interrupt();
+        }
+    }
+	
 	/** Getters and Setters **/
-	
+
 	void setTweetList(List<Tweet> bigTweetList) {
 		this.bigTweetList = bigTweetList;
 	}

@@ -451,6 +451,14 @@ public class MainController {
 
     }
     
+    /**
+     * @author Sergiy
+     * This method is used to load the fxml document of the Statistics Tab,
+     * to get the corresponding controller and to open a new tab containing the Charts.
+     * 
+     * @param piViewer
+     * @param bigTweetList
+     */
     public void goToStatistics(PIViewer piViewer, List<Tweet> bigTweetList) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
         
@@ -470,7 +478,7 @@ public class MainController {
                 tab.setOnCloseRequest(new EventHandler<Event>() {
                     @Override
                     public void handle(Event event) {
-                    	statisticsTabController.shutdownAllThreads();
+                    	statisticsTabController.killThreads();
                     }
                 });
             });
