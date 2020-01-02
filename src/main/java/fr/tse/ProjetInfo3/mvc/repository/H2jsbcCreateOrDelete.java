@@ -1,6 +1,5 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +13,11 @@ public class H2jsbcCreateOrDelete {
     private static Connection conn;
     private static Statement stmt;
 
+    /**
+     * You this function can delete all the tables and recreate them.
+     * They call global function that create or delete anything, if you want a more fain-grained
+     * control, you can can the desired function.
+     */
     public static void main(String[] args) {
         try {
             System.out.println("Connecting to database...");
