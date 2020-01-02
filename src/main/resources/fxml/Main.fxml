@@ -11,7 +11,7 @@
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.MainController">
     <StackPane fx:id="stackPane" prefHeight="741.0" prefWidth="1200.0" stylesheets="@styles/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
-            <JFXDrawer fx:id="drawer" defaultDrawerSize="150.0" resizableOnDrag="true" resizeContent="true" styleClass="jfx-drawer" />
+            <JFXDrawer fx:id="drawer" defaultDrawerSize="150.0" direction="RIGHT" resizableOnDrag="true" resizeContent="true" styleClass="jfx-drawer" />
                 <AnchorPane>
                     <children>
                         <JFXTabPane fx:id="tabPane" side="BOTTOM" stylesheets="@styles/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -36,9 +36,9 @@
                                 </content>
                             </Tab>-->
                         </JFXTabPane>
-                        <JFXHamburger fx:id="hamburger" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1118.0">
+                        <JFXHamburger fx:id="hamburger" prefHeight="80.0" prefWidth="80.0" AnchorPane.rightAnchor="0.0">
                             <padding>
-                                <Insets left="30.0" top="25.0" />
+                                <Insets right="30.0" top="25.0" />
                             </padding>
                         </JFXHamburger>
                     </children>
