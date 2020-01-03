@@ -143,7 +143,7 @@ public class HashtagViewer {
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
         Map<Tweet, Integer> TweetsSorted;
-        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+        Map<Tweet, Integer> Tweeted = new HashMap<>();
 
         for (Tweet tweet : tweetList) {
             if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) {

@@ -41,12 +41,8 @@ public class HashtagTabController {
     private Hashtag hashtagToPrint;
 
     private FavsViewer favsViewer;
-    //Used to know how many tweets we have during search
-    private int numberOfTweetReceived;
 
-    Map<String, Integer> hashtagUsed;
-
-    Map<Tweet, Integer> Tweeted;
+    Map<String, Integer> hashtagLinked;
 
     private List<Tweet> tweetList;
 
@@ -182,7 +178,7 @@ public class HashtagTabController {
     private void setHashtagInfos() {
         hashtagToPrint = hashtagViewer.getHashtag();
         Platform.runLater(() -> {
-            if (hashtagToPrint.getLastSearchDate()!=null){
+            if (hashtagToPrint.getLastSearchDate() != null) {
                 lastSearchLabel.setText("Dernière recherche effectuée le " + hoursAndDateFormat.format(hashtagToPrint.getLastSearchDate()));
                 lastSearchLabel.setVisible(true);
             }
@@ -264,13 +260,12 @@ public class HashtagTabController {
     }
 
     private Task<Void> setTopLinkedHashtag() {
-        List<String> hashtags = hashtagViewer.getHashtagsLinked();
-        hashtagUsed = hashtagViewer.topHashtag(hashtags);
+        hashtagLinked = hashtagViewer.topHashtag(hashtagViewer.getHashtagsLinked());
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (String hashtag : hashtagUsed.keySet()) {
-            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagUsed.get(hashtag).toString()));
+        for (String hashtag : hashtagLinked.keySet()) {
+            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagLinked.get(hashtag).toString()));
             i++;
             if (i == 10) {
                 break;
@@ -297,10 +292,10 @@ public class HashtagTabController {
     }
 
     private Task<Void> setTopTweets() {
-        Tweeted = hashtagViewer.topTweets(tweetList);
+        Map<Tweet, Integer> topTweets = hashtagViewer.topTweets(tweetList);
         ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (Tweet tweet : Tweeted.keySet()) {
+        for (Tweet tweet : topTweets.keySet()) {
             tweetsToPrint.add(tweet);
             i++;
             if (i == 5) {

@@ -68,7 +68,7 @@
                                  <GridPane.margin>
                                     <Insets top="60.0" />
                                  </GridPane.margin></Label>
-                                        <Label fx:id="tweetsLabel" alignment="CENTER" styleClass="countLabel" text="Tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                        <Label fx:id="tweetsLabel" styleClass="countLabel" text="Tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin></Label>
