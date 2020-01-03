@@ -6,7 +6,7 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -60,7 +60,7 @@ public class MainController {
     private HashtagTabController hashtagTabController;
     @FXML
     private MyPIsTabController myPIsTabController;
-    
+
     @FXML
     private StatisticsTabController statisticsTabController;
 
@@ -182,7 +182,7 @@ public class MainController {
     }
 
 
-    public void goToHashtagPane(HastagViewer hastagViewer) {
+    public void goToHashtagPane(HashtagViewer hashtagViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
         try {
             AnchorPane newHashtagTab = fxmlLoader.load();
@@ -191,7 +191,7 @@ public class MainController {
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(newHashtagTab);
-                tab.setText("#" + hastagViewer.getHashtag().getHashtag());
+                tab.setText("#" + hashtagViewer.getHashtag().getHashtag());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
             });
@@ -200,7 +200,7 @@ public class MainController {
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    hashtagTabController.setHastagViewer(hastagViewer);
+                    hashtagTabController.setHashtagViewer(hashtagViewer);
                     return null;
                 }
             };
@@ -359,8 +359,8 @@ public class MainController {
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                favsController.setFavsViewer();
-                return null;
+                    favsController.setFavsViewer();
+                    return null;
                 }
             };
 
@@ -489,43 +489,42 @@ public class MainController {
         }
 
     }
-    
+
     /**
+     * @param piViewer
+     * @param bigTweetList
      * @author Sergiy
      * This method is used to load the fxml document of the Statistics Tab,
      * to get the corresponding controller and to open a new tab containing the Charts.
-     * 
-     * @param piViewer
-     * @param bigTweetList
      */
     public void goToStatistics(PIViewer piViewer, List<Tweet> bigTweetList) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/StatisticsTab.fxml"));
-        
+
         try {
             AnchorPane statisticsPane = fxmlLoader.load();
             System.out.println(statisticsPane);
             statisticsTabController = fxmlLoader.getController();
             statisticsTabController.setTweetList(bigTweetList);
-            
+
             Platform.runLater(() -> {
                 Tab tab = new Tab();
                 tab.setContent(statisticsPane);
                 tab.setText("Statistiques");
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
-                
+
                 tab.setOnCloseRequest(new EventHandler<Event>() {
                     @Override
                     public void handle(Event event) {
-                    	statisticsTabController.killThreads();
+                        statisticsTabController.killThreads();
                     }
                 });
             });
-            
+
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                	statisticsTabController.setDatas(piViewer);
+                    statisticsTabController.setDatas(piViewer);
                     return null;
                 }
             };
@@ -537,5 +536,9 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void closeCurrentTab() {
+        tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem());
     }
 }

@@ -32,11 +32,11 @@ public class PIViewer {
 
     private InterestPoint selectedInterestPoint;
     private UserViewer userViewer;
-    private HastagViewer hashtagViewer;
+    private HashtagViewer hashtagViewer;
 
     public PIViewer() {
         userViewer = new UserViewer();
-        hashtagViewer = new HastagViewer();
+        hashtagViewer = new HashtagViewer();
     }
 
     /**
@@ -145,9 +145,9 @@ public class PIViewer {
             }
         }
         for (User user : usersOfIP) {
-            if (user.getListoftweets().size() > 0) {
-                System.out.println("@" + user.getScreen_name() + " Nb tweets=" + user.getListoftweets().size()
-                        + " Date last " + user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
+            if (user.getTweets().size() > 0) {
+                System.out.println("@" + user.getScreen_name() + " Nb tweets=" + user.getTweets().size()
+                        + " Date last " + user.getTweets().get(user.getTweets().size() - 1).getCreated_at());
             } else {
                 System.out.println("@" + user.getScreen_name() + " Nb tweets=0");
             }
@@ -198,10 +198,10 @@ public class PIViewer {
             }
         }
         for (User user : users) {
-            if (user.getListoftweets().size() > 0) {
-                user.getListoftweets()
+            if (user.getTweets().size() > 0) {
+                user.getTweets()
                         .removeIf(tweet -> tweet.getCreated_at().before(filterFromDate));
-                tweets.addAll(user.getListoftweets());
+                tweets.addAll(user.getTweets());
             }
         }
         return tweets;
@@ -217,8 +217,8 @@ public class PIViewer {
             }
         }
         for (User user : users) {
-            if (user.getListoftweets().size() > 0) {
-                datesOfLast.add(user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
+            if (user.getTweets().size() > 0) {
+                datesOfLast.add(user.getTweets().get(user.getTweets().size() - 1).getCreated_at());
             }
         }
         Collections.sort(datesOfLast);
@@ -248,7 +248,7 @@ public class PIViewer {
         for (User user : users) {
             if (user.isGlobalTweetsLimit()) {
                 userHaveGlobalLimit = true;
-                datesOfMostOldInEach.add(user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
+                datesOfMostOldInEach.add(user.getTweets().get(user.getTweets().size() - 1).getCreated_at());
                 break;
             }
         }
@@ -275,8 +275,8 @@ public class PIViewer {
                 }
             }
             for (User user : users) {
-                if (user.getListoftweets().size() > 0 && !user.isAllTweetsCollected()) {
-                    datesOfMostOldInEach.add(user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
+                if (user.getTweets().size() > 0 && !user.isAllTweetsCollected()) {
+                    datesOfMostOldInEach.add(user.getTweets().get(user.getTweets().size() - 1).getCreated_at());
                 }
             }
 
@@ -288,8 +288,8 @@ public class PIViewer {
                     }
                 }
                 for (User user : users) {
-                    if (user.getListoftweets().size() > 0) {
-                        datesOfMostOldInEach.add(user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at());
+                    if (user.getTweets().size() > 0) {
+                        datesOfMostOldInEach.add(user.getTweets().get(user.getTweets().size() - 1).getCreated_at());
                     }
                 }
             }
@@ -314,11 +314,11 @@ public class PIViewer {
             }
             //else SEARCH ONLY IF DATE IS OK
             else {
-                if (user.getListoftweets().size() > 0) {
-                    if (user.getListoftweets().size() < 3194) {
-                        if (user.getListoftweets().get(user.getListoftweets().size() - 1).getCreated_at().after(untilDate)) {
+                if (user.getTweets().size() > 0) {
+                    if (user.getTweets().size() < 3194) {
+                        if (user.getTweets().get(user.getTweets().size() - 1).getCreated_at().after(untilDate)) {
                             System.out.println("search Tweets by date for " + user.getScreen_name());
-                            Pair<List<Tweet>, Integer> pair = userViewer.getTweetsByDate(user, nbRequestMax, untilDate, user.getMaxId(), user.getListoftweets().size());
+                            Pair<List<Tweet>, Integer> pair = userViewer.getTweetsByDate(user, nbRequestMax, untilDate, user.getMaxId(), user.getTweets().size());
                             NbRequestDone = pair.getValue();
                             tweetList = pair.getKey();
                         } else {
@@ -334,7 +334,7 @@ public class PIViewer {
                 }
             }
             //Add tweets to list of tweets inside USer
-            user.getListoftweets().addAll(tweetList);
+            user.getTweets().addAll(tweetList);
         } else {
             user.setAllTweetsCollected(true); //user have no tweets
             System.out.println("skip search for " + user.getScreen_name() + " : ALL TWEETS COLLECTED");

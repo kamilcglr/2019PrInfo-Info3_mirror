@@ -270,20 +270,20 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createCachedTables() {
         String userCached = "CREATE TABLE   userCached " +
-                "( user_id INTEGER ,"
+                "( user_id BIGINT,"
                 + "user_screen_name VARCHAR(255),"
                 + "date_of_research TIMESTAMP,"
                 + "PRIMARY KEY (user_id),"
                 + "data CLOB)";
 
         String tweetCached = "CREATE TABLE   tweetCached " +
-                "( tweet_id INTEGER ,"
+                "( tweet_id BIGINT,"
                 + "data CLOB)";
 
         String hashtagCached = "CREATE TABLE   hashtagCached "
-                + "( hashtag_id INTEGER ,"
-                + "hashtag_name  VARCHAR(255),"
+                + "( hashtag_name  VARCHAR(255),"
                 + "date_of_research TIMESTAMP,"
+                + "PRIMARY KEY (hashtag_name),"
                 + "data CLOB)";
         try {
             stmt.executeUpdate(userCached);

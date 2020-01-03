@@ -1,9 +1,9 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
 import com.jfoenix.controls.JFXProgressBar;
-import fr.tse.ProjetInfo3.mvc.controller.UserTabController;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.util.Pair;
 
@@ -19,11 +19,11 @@ import static java.util.stream.Collectors.toMap;
 public class UserViewer {
     private User user;
     private RequestManager requestManager;
+    DatabaseManager databaseManager;
     private List<Tweet> tweets;
 
-    private UserTabController userTabController;
-
     public UserViewer() {
+        databaseManager = new DatabaseManager();
         requestManager = new RequestManager();
         tweets = new ArrayList<>();
     }
@@ -38,7 +38,7 @@ public class UserViewer {
      */
     public void searchScreenName(String screen_name) throws Exception {
         user = requestManager.getUser(screen_name);
-        user.setListoftweets(new ArrayList<>());
+        user.setTweets(new ArrayList<>());
     }
 
     public User searchScreenNameU(String screen_name) throws Exception {
@@ -48,7 +48,7 @@ public class UserViewer {
     public Pair<List<Tweet>, Integer> getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot) {
         int nbRequestDone;
         List<Tweet> tweetList = new ArrayList<>();
-        if (user.getListoftweets().size() < user.getStatuses_count()) {
+        if (user.getTweets().size() < user.getStatuses_count()) {
             Pair<List<Tweet>, Integer> pair = requestManager.getTweetsFromUserNBRequest(user.getScreen_name(), nbRequestMax, untilDate, maxId, alreadyGot);
             tweetList = pair.getKey();
             nbRequestDone = pair.getValue();
@@ -75,7 +75,7 @@ public class UserViewer {
 
     public void setUser(User user) {
         this.user = user;
-        this.tweets = user.getListoftweets();
+        this.tweets = user.getTweets();
     }
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
@@ -153,5 +153,34 @@ public class UserViewer {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         //.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
+    }
+
+    /*=======================================DATABASE FUNCTIONS ========================================*/
+
+    /**
+     * Set this.user to the user got from DB.
+     *
+     * @return boolean
+     */
+    public void setUserFromDataBase() {
+        // look first in the Database if there is an user.
+        user = databaseManager.getCachedUserFromDatabase(user.getScreen_name());
+    }
+
+    /**
+     * Search in the DB if user exist. If exist, it sends true.
+     *
+     * @return boolean
+     */
+    public boolean verifyUserInDataBase() {
+        return databaseManager.cachedUserInDataBase(user.getScreen_name());
+    }
+
+    public void cacheUserToDataBase(User user) {
+        databaseManager.cacheUserToDataBase(user);
+    }
+
+    public void deleteCachedUser() {
+        databaseManager.deleteCachedUserFromDataBase(user.getScreen_name());
     }
 }

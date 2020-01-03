@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
@@ -17,9 +16,8 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -110,7 +108,7 @@ public class PiTabController {
 
     private UserViewer userViewer;
 
-    private HastagViewer hashtagViewer;
+    private HashtagViewer hashtagViewer;
 
     // Progress indicators
     @FXML
@@ -139,7 +137,7 @@ public class PiTabController {
         trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
         trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
         userViewer = new UserViewer();
-        hashtagViewer = new HastagViewer();
+        hashtagViewer = new HashtagViewer();
         // ====================
 
     }

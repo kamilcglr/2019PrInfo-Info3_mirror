@@ -32,6 +32,8 @@ public class DatabaseManager {
      * @param user that we want to save (RequestManager.getUser())
      */
     public void cacheUserToDataBase(User user) {
+        //Before caching, delete old if present
+        deleteCachedUserFromDataBase(user.getScreen_name());
         String userJson = gson.toJson(user);
 
         Connection connection = SingletonDBConnection.getInstance();
@@ -80,24 +82,27 @@ public class DatabaseManager {
 
     /**
      * Cache a hashtag on the db
+     * DON'T LOWERCASE because twitter does not. Unique is guaranteed by twitter.
      *
      * @param hashtag that we want to save
      */
     public void cacheHashtagToDataBase(Hashtag hashtag) {
+        //Before caching, delete old if present
+        deleteCachedHashtagFromDatabase(hashtag.getHashtag());
+
         String hashtagJson = gson.toJson(hashtag);
 
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            String Query = "INSERT INTO hashtagcached (hashtag_id, hashtag_name, date_of_research, data) "
-                    + "VALUES (?,?,?,?)";
+            String Query = "INSERT INTO hashtagcached (hashtag_name, date_of_research, data) "
+                    + "VALUES (?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setLong(1, hashtag.getId());
-            preparedStatement.setString(2, hashtag.getHashtag());
+            preparedStatement.setString(1, hashtag.getHashtag());
             //Get the current Date
             java.util.Date date = new java.util.Date();
-            preparedStatement.setTimestamp(3, new Timestamp(date.getTime()));
-            preparedStatement.setString(4, hashtagJson);
+            preparedStatement.setTimestamp(2, new Timestamp(date.getTime()));
+            preparedStatement.setString(3, hashtagJson);
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -110,13 +115,13 @@ public class DatabaseManager {
      *
      * @return user (if exists in DB) null (if not in DB)
      */
-    public User getCachedUserFromDatabase(String screen_name) {
+    public User getCachedUserFromDatabase(String screenName) {
         Connection connection = SingletonDBConnection.getInstance();
         User user = null;
         try {
-            screen_name = screen_name.toLowerCase();
+            screenName = screenName.toLowerCase();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM usercached WHERE user_screen_name = ? ");
-            ps.setString(1, screen_name);
+            ps.setString(1, screenName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 user = new User();
@@ -131,7 +136,29 @@ public class DatabaseManager {
     }
 
     /**
-     * Gets a user from the DB.
+     * Gets if user is in database
+     *
+     * @return true if at least one time
+     */
+    public boolean cachedUserInDataBase(String screenName) {
+        Connection connection = SingletonDBConnection.getInstance();
+        int result = 0;
+        try {
+            screenName = screenName.toLowerCase();
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM usercached WHERE user_screen_name = ? ");
+            ps.setString(1, screenName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result > 0;
+    }
+
+    /**
+     * Gets a hashtag from the DB.
      *
      * @return user (if exists in DB) null (if not in DB)
      */
@@ -145,11 +172,33 @@ public class DatabaseManager {
             while (rs.next()) {
                 hashtag = new Hashtag();
                 hashtag = gson.fromJson(rs.getString("data"), Hashtag.class);
+                hashtag.setLastSearchDate(new Date(rs.getTimestamp("date_of_research").getTime()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return hashtag;
+    }
+
+    /**
+     * Gets if user is in database
+     *
+     * @return true if at least one time
+     */
+    public boolean cachedHashtagInDataBase(String hashtagName) {
+        Connection connection = SingletonDBConnection.getInstance();
+        int result = 0;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM HASHTAGCACHED WHERE hashtag_name = ? ");
+            ps.setString(1, hashtagName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result > 0;
     }
 
     /**
@@ -180,8 +229,8 @@ public class DatabaseManager {
      */
     public void deleteCachedUserFromDataBase(String screen_name) {
         Connection connection = SingletonDBConnection.getInstance();
-        User user = null;
         try {
+            screen_name = screen_name.toLowerCase();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM usercached WHERE user_screen_name = ? ");
             ps.setString(1, screen_name);
             ps.executeUpdate();

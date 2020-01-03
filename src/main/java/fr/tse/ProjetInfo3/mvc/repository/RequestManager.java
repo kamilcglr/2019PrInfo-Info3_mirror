@@ -143,9 +143,7 @@ public class RequestManager {
         HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(urlSpaceRemoved))
                 .setHeader("Authorization", oAuthManager.getheader(url)).build();
 
-        List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-
-        return users;
+        return new ArrayList<>(parseUsers(httpRequest, false));
     }
 
     /**

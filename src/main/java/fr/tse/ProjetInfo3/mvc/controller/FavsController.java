@@ -9,7 +9,7 @@ import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -106,7 +106,7 @@ public class FavsController {
     }
 
     public void hashtagClick(MouseEvent arg0) throws Exception {
-        HastagViewer hashtagViewer = new HastagViewer();
+        HashtagViewer hashtagViewer = new HashtagViewer();
         ResultHashtag research = favsListViewHashtag.getSelectionModel().getSelectedItem();
         if (favsListViewHashtag.getSelectionModel().getSelectedIndex() != -1) {
             hashtagViewer.setHashtag(research.getHashtagName());
