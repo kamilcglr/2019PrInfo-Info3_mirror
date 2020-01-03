@@ -25,8 +25,7 @@ import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
  * like Saving , reading , updating PI in the DB
  */
 public class InterestPointDAO {
-
-
+    
     /**
      * in this method we're saving an interestpoint into the DB using singleton pattern to have one instance
      * accessing the DB

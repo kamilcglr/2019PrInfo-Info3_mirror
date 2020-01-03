@@ -424,16 +424,6 @@ public class PIViewer {
 
     }
 
-    /*
-     * This method will create a restricted PI in the DB just to test some of the methods of insertion and creation
-     * in the db , the Interest Point does not contain the list of users , tweets , and hastags for the moment
-     * */
-    public void createRestrictedPIinDatabase() {
-        Date date = new Date();
-        InterestPoint ip1 = new InterestPoint("Politique", "Suivi des personnalites politiques", date);
-        // TO-DO
-    }
-
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList, JFXProgressBar progressBar) {
         Map<Tweet, Integer> TweetsSorted;
         Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
@@ -454,66 +444,5 @@ public class PIViewer {
                                 LinkedHashMap::new));
 
         return TweetsSorted;
-    }
-
-
-    //Controller of PITabController
-    //Called by Sergiy PITabController
-    private void saveInterestPoint() {
-        //function to save in DAO
-    }
-
-    /**
-     * This function generate a list of PIs for the tests
-     */
-    public void generatePIsDemo() throws IOException, InterruptedException {
-        //First IP
-        List<Hashtag> hashtags = new ArrayList<>();
-        Hashtag h1 = new Hashtag("#blackfriday");
-        Hashtag h2 = new Hashtag("#amazon");
-        Hashtag h3 = new Hashtag("#darty");
-
-        hashtags.add(h1);
-        //hashtags.add(h2);
-        //hashtags.add(h3);
-
-        List<User> users = new ArrayList<>();
-        RequestManager requestManager = new RequestManager();
-        User u1 = requestManager.getUser("twandroid");
-        User u2 = requestManager.getUser("Dealabs");
-
-        users.add(u1);
-        //users.add(u2);
-
-
-        Date date = new Date();
-        InterestPoint ip1 = new InterestPoint("Black friday", "Suivi des promotions", date);
-        ip1.setHashtags(hashtags);
-        ip1.setUsers(users);
-
-        //Second IP
-        List<Hashtag> hashtags1 = new ArrayList<>();
-        Hashtag example = new Hashtag("#Telecom");
-        Hashtag city = new Hashtag("#Saint-Etienne");
-        Hashtag dep = new Hashtag("#42");
-
-        hashtags1.add(example);
-        hashtags1.add(city);
-        hashtags1.add(dep);
-
-        List<User> users2 = new ArrayList<>();
-        User sobun = requestManager.getUser("sobunung");
-        User kamil = requestManager.getUser("kamilcglr");
-
-        users2.add(sobun);
-        users2.add(kamil);
-
-        Date date2 = new Date();
-        InterestPoint ip2 = new InterestPoint("Mes amis", "Suivi des amis", date2);
-        ip2.setHashtags(hashtags1);
-        ip2.setUsers(users2);
-
-        listOfInterestPoint.add(ip1);
-        listOfInterestPoint.add(ip2);
     }
 }

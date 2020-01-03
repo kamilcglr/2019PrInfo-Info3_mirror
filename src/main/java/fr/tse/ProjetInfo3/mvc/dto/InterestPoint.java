@@ -1,7 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,8 +131,6 @@ public class InterestPoint implements Serializable {
      * (non-Javadoc)
      * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
      */
-
-
     public boolean createInterestPoint(Hashtag hashtag, User user, String name, String description, Date dateOfCreation) {
         InterestPoint interestPoint = new InterestPoint(name, description, dateOfCreation);
         // create a list of Interest of point to check (after)  if the interest point already exist
@@ -195,7 +192,6 @@ public class InterestPoint implements Serializable {
                 return found;
             }
         }
-
         return found;
     }
 
