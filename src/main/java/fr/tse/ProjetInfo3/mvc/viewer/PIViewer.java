@@ -7,6 +7,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -28,6 +29,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
+    private DatabaseManager databaseManager;
     private static InterestPointDAO interestPointDAO = new InterestPointDAO();
 
     private InterestPoint selectedInterestPoint;
@@ -35,6 +37,7 @@ public class PIViewer {
     private HashtagViewer hashtagViewer;
 
     public PIViewer() {
+        databaseManager = new DatabaseManager();
         userViewer = new UserViewer();
         hashtagViewer = new HashtagViewer();
     }
@@ -64,19 +67,18 @@ public class PIViewer {
      *
      */
     public long addInterestPointToDatabase(InterestPoint interestPoint) {
-        //listOfInterestPoint.add(interestPoint);
-        return interestPointDAO.saveInterestPoint(interestPoint);
+        return databaseManager.saveInterestPointToDataBase(interestPoint);
     }
 
     public void deleteInterestPointFromDatabaseById(int id) {
-        interestPointDAO.deleteSelectedInterestPointById(id);
+        databaseManager.deleteSelectedInterestPointById(id);
     }
 
     /**
      * In the futur, this function will return the created Interest Point into the database
      */
     public List<InterestPoint> getListOfInterestPointFromDataBase() {
-        return interestPointDAO.getAllInterestPoints();
+        return databaseManager.getAllInterestPointFromDataBase();
     }
 
 
@@ -306,11 +308,15 @@ public class PIViewer {
         List<Tweet> tweetList = new ArrayList<>();
         //Get the user timeline only if it is possible
         if (user.getStatuses_count() > 0) {
-            //search without date
+            //EXPLORATION Do this only if maxDate is null and user does not contain any tweet.
             if (untilDate == null) {
-                System.out.println("search Tweets by count for " + user.getScreen_name());
-                tweetList = userViewer.getTweetsByCount(user.getScreen_name(), 5, null);
-                NbRequestDone++;
+                if ( user.getTweets().size() == 0){
+                    System.out.println("search Tweets by count for " + user.getScreen_name());
+                    tweetList = userViewer.getTweetsByCount(user.getScreen_name(), 5, null);
+                    NbRequestDone++;
+                }else{
+                    System.out.println(user.getScreen_name() + " has already tweets");
+                }
             }
             //else SEARCH ONLY IF DATE IS OK
             else {
@@ -347,14 +353,18 @@ public class PIViewer {
         int NbRequestDone = 0;
         List<Tweet> tweetList = new ArrayList<>();
 
-        //EXPLORATION only 5
+        //EXPLORATION Do this only if maxDate is null and hashtag does not contain any tweet.
         if (maxDate == null) {
-            System.out.println("search Tweets by count for " + hashtag.getHashtag());
-            tweetList = hashtagViewer.searchByCount(hashtag.getHashtag(), null, 5, hashtag.getMaxId());
-            if (tweetList.size() == 0) {//this hashtag will not have any tweets
-                hashtag.setAllTweetsCollected(true);
+            if (hashtag.getTweets().size() == 0) {
+                System.out.println("search Tweets by count for " + hashtag.getHashtag());
+                tweetList = hashtagViewer.searchByCount(hashtag.getHashtag(), null, 5, hashtag.getMaxId());
+                if (tweetList.size() == 0) {//this hashtag will not have any tweets
+                    hashtag.setAllTweetsCollected(true);
+                }
+                NbRequestDone++;
+            } else {
+                System.out.println(hashtag.getHashtag() + " has already tweets");
             }
-            NbRequestDone++;
         } else {
             if (!hashtag.isAllTweetsCollected()) {
                 LocalDate now = LocalDate.now();

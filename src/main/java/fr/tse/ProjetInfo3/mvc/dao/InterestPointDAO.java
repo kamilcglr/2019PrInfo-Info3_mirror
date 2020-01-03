@@ -15,9 +15,12 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
+
+import javax.xml.crypto.Data;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -25,7 +28,10 @@ import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
  * like Saving , reading , updating PI in the DB
  */
 public class InterestPointDAO {
-    
+
+    public InterestPointDAO(){
+    }
+
     /**
      * in this method we're saving an interestpoint into the DB using singleton pattern to have one instance
      * accessing the DB
