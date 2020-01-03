@@ -302,6 +302,7 @@ public class HashtagTabController {
                 break;
             }
         }
+
         Platform.runLater(() -> {
             addTweetsToList(tweetsToPrint);
             titledTweet.setMaxHeight(70 * tweetsToPrint.size());
