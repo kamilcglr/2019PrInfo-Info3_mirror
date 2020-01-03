@@ -81,7 +81,7 @@ public class HashtagTabController {
     @FXML
     private VBox vBox;
     @FXML
-    private JFXListView listTweets;
+    private JFXListView<JFXListCell> listTweets;
     @FXML
     private JFXListView<ResultHashtag> topTenLinkedList;
     @FXML
@@ -302,7 +302,6 @@ public class HashtagTabController {
                 break;
             }
         }
-
         Platform.runLater(() -> {
             addTweetsToList(tweetsToPrint);
             titledTweet.setMaxHeight(70 * tweetsToPrint.size());
@@ -327,7 +326,7 @@ public class HashtagTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectHashtagTabController(this);
-                    tweetController.populate(tweet, true);
+                    tweetController.populate(tweet, false);
                     listTweets.getItems().add(jfxListCell);
                 }
             }
