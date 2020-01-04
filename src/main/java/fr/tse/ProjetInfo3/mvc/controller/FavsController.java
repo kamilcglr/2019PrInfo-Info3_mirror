@@ -155,4 +155,11 @@ public class FavsController {
         //    threadGetFavs.interrupt();
         //}
     }
+
+    /**
+     * Calls the viewer to get PIs
+     */
+    public void refreshFavs() {
+        setFavsViewer();
+    }
 }

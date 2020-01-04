@@ -8,12 +8,10 @@ import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
-import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.util.Pair;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -21,6 +19,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.hoursAndDateFormat;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -29,7 +28,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
-    private DatabaseManager databaseManager;
+    private static DatabaseManager databaseManager = new DatabaseManager();
     private static InterestPointDAO interestPointDAO = new InterestPointDAO();
 
     private InterestPoint selectedInterestPoint;
@@ -37,7 +36,6 @@ public class PIViewer {
     private HashtagViewer hashtagViewer;
 
     public PIViewer() {
-        databaseManager = new DatabaseManager();
         userViewer = new UserViewer();
         hashtagViewer = new HashtagViewer();
     }
@@ -75,12 +73,42 @@ public class PIViewer {
     }
 
     /**
-     * In the futur, this function will return the created Interest Point into the database
+     *
      */
     public List<InterestPoint> getListOfInterestPointFromDataBase() {
         return databaseManager.getAllInterestPointFromDataBase();
     }
 
+    public void deleteTweetsFromInterestPoint() {
+        databaseManager.deleteTweetsFromInterestPoint(selectedInterestPoint.getId());
+    }
+
+    /**
+     * Look first in DB
+     */
+    public List<Tweet> getTweetsWrapper(Label progressLabel, Label lastSearchLabel) throws Exception {
+        List<Tweet> tweetsToReturn;
+        //Search in the database if the IP has tweets
+        //Yes, load them
+        Platform.runLater(() -> progressLabel.setText("Recherche de résultats dans le cache"));
+        tweetsToReturn = databaseManager.getTweetsFromInterestPoint(selectedInterestPoint.getId());
+        if (tweetsToReturn != null && tweetsToReturn.size() > 0) {
+            System.out.println(tweetsToReturn.size() + " loaded from db");
+        } else {
+            //No, do the research
+            tweetsToReturn = this.getTweets(progressLabel);
+            //save this new result to database
+            Platform.runLater(() -> progressLabel.setText("Sauvegarde des résultats dans le cache"));
+            databaseManager.setTweetsToInterestPoint(selectedInterestPoint.getId(), tweetsToReturn);
+            selectedInterestPoint.setLastSearchDate(new Date());
+        }
+        Platform.runLater(() -> {
+            if (selectedInterestPoint.getLastSearchDate() != null) {
+                lastSearchLabel.setText("Dernière recherche effectuée le " + hoursAndDateFormat.format(selectedInterestPoint.getLastSearchDate()));
+            }
+        });
+        return tweetsToReturn;
+    }
 
     /*
      * New function designed for US53
@@ -88,7 +116,7 @@ public class PIViewer {
      *  */
     public List<Tweet> getTweets(Label progressLabel) throws Exception {
         List<Tweet> tweetsToReturn;
-
+        //clean cache if refresh
         List<User> usersOfIP = selectedInterestPoint.getUsers();
         List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
 
@@ -122,7 +150,7 @@ public class PIViewer {
 
             dateToSearch = findSecondMostRecentDate(hashtagsOfIP, usersOfIP);
 
-            logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP);
+            logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP, dateToSearch);
 
         }
         Platform.runLater(() -> {
@@ -130,12 +158,13 @@ public class PIViewer {
         });
         tweetsToReturn = filterResult(hashtagsOfIP, usersOfIP);
 
-        logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP);
+        logProgress(totalNumberOfRequest, hashtagsOfIP, usersOfIP, null);
 
         return tweetsToReturn;
     }
 
-    private void logProgress(int totalNumberOfRequest, List<Hashtag> hashtagsOfIP, List<User> usersOfIP) {
+    private void logProgress(int totalNumberOfRequest, List<Hashtag> hashtagsOfIP, List<User> usersOfIP, Date date) {
+        System.out.println("");
         System.out.println("Nb request : " + totalNumberOfRequest);
         for (Hashtag hashtag : hashtagsOfIP) {
             if (hashtag.getTweets().size() > 0) {
@@ -153,6 +182,9 @@ public class PIViewer {
             } else {
                 System.out.println("@" + user.getScreen_name() + " Nb tweets=0");
             }
+        }
+        if (date != null) {
+            System.out.println("Next date " + date + "\n");
         }
     }
 
@@ -194,6 +226,11 @@ public class PIViewer {
 
         for (Hashtag hashtag : hashtags) {
             if (hashtag.getTweets().size() > 0) {
+                //List<Tweet> tempList = new ArrayList<>();
+                //tempList = hashtag.getTweets()
+                //        .stream()
+                //        .filter(tweet -> tweet.getCreated_at().after(filterFromDate))
+                //        .collect(Collectors.toList());
                 hashtag.getTweets()
                         .removeIf(tweet -> tweet.getCreated_at().before(filterFromDate));
                 tweets.addAll(hashtag.getTweets());
@@ -201,6 +238,11 @@ public class PIViewer {
         }
         for (User user : users) {
             if (user.getTweets().size() > 0) {
+                //List<Tweet> tempList = new ArrayList<>();
+                //tempList = user.getTweets()
+                //        .stream()
+                //        .filter(tweet -> tweet.getCreated_at().after(filterFromDate))
+                //        .collect(Collectors.toList());
                 user.getTweets()
                         .removeIf(tweet -> tweet.getCreated_at().before(filterFromDate));
                 tweets.addAll(user.getTweets());
@@ -310,11 +352,11 @@ public class PIViewer {
         if (user.getStatuses_count() > 0) {
             //EXPLORATION Do this only if maxDate is null and user does not contain any tweet.
             if (untilDate == null) {
-                if ( user.getTweets().size() == 0){
+                if (user.getTweets().size() == 0) {
                     System.out.println("search Tweets by count for " + user.getScreen_name());
                     tweetList = userViewer.getTweetsByCount(user.getScreen_name(), 5, null);
                     NbRequestDone++;
-                }else{
+                } else {
                     System.out.println(user.getScreen_name() + " has already tweets");
                 }
             }
@@ -362,9 +404,9 @@ public class PIViewer {
                     hashtag.setAllTweetsCollected(true);
                 }
                 NbRequestDone++;
-            } else {
+            } /*else {   //TODO DELETE THIS AFTER END OF SPRINT 5
                 System.out.println(hashtag.getHashtag() + " has already tweets");
-            }
+            }*/
         } else {
             if (!hashtag.isAllTweetsCollected()) {
                 LocalDate now = LocalDate.now();
@@ -380,10 +422,10 @@ public class PIViewer {
                         Pair<List<Tweet>, Integer> pair = hashtagViewer.searchTweetsByDate(hashtag.getHashtag(), 30, maxDate, hashtag.getMaxId());
                         tweetList = pair.getKey();
                         NbRequestDone = pair.getValue();
-                    } else {
+                    } /*else {   //TODO DELETE THIS AFTER END OF SPRINT 5
                         System.out.println("skip search for " + hashtag.getHashtag() + " : NO TWEETS FOR THIS DATE");
                         hashtag.setDateTweetsLimit(true);
-                    }
+                    }*/
                 } else {
                     System.out.println("skip search for " + hashtag.getHashtag() + " : GLOBAL 7 DAYS LIMIT");
                     hashtag.setGlobalTweetsLimit(true);

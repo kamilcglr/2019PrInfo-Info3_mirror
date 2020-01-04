@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class DatabaseManager {
 
     private Gson gson;
-    private static  HashtagViewer hashtagViewer = new HashtagViewer();
+    private static HashtagViewer hashtagViewer = new HashtagViewer();
     private static UserViewer userViewer = new UserViewer();
 
     public DatabaseManager() {
@@ -265,7 +265,9 @@ public class DatabaseManager {
 
     /**
      * Gets the Interest Points from DataBase.
-     * If Users or Hashtags are already in DB, load them.
+     * NO -> (If Users or Hashtags are already in DB, load them.)
+     *
+     * @implNote DO NOT DELETE COMMENTS INSIDE UNTIL END SPRINT 5
      */
     public List<InterestPoint> getAllInterestPointFromDataBase() {
         Connection connection = SingletonDBConnection.getInstance();
@@ -281,6 +283,11 @@ public class DatabaseManager {
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));
                 interestPoint.setDateOfCreation(rs.getDate("CREATED_AT"));
 
+                Timestamp timestamp = rs.getTimestamp("DATE_OF_RESEARCH");
+                if (timestamp != null) {
+                    interestPoint.setLastSearchDate(new Date(timestamp.getTime()));
+                }
+
                 TypeToken<List<String>> token = new TypeToken<List<String>>() {
                 };
 
@@ -290,23 +297,23 @@ public class DatabaseManager {
                 for (String screenName : usersScreenNames) {
                     User user = new User();
                     //if user is in db
-                    if (this.cachedUserInDataBase(screenName)) {
-                        user = this.getCachedUserFromDatabase(screenName);
-                    } else {
-                        userViewer.searchScreenName(screenName);
-                        user = userViewer.getUser();
-                    }
+                    //if (this.cachedUserInDataBase(screenName)) {
+                    //    user = this.getCachedUserFromDatabase(screenName);
+                    //} else {
+                    userViewer.searchScreenName(screenName);
+                    user = userViewer.getUser();
+                    //}
                     interestPoint.addToInterestPoint(user);
                 }
 
                 for (String hashtagName : hashtagNames) {
                     Hashtag hashtag = new Hashtag(hashtagName);
                     //if user is in db
-                    if (this.cachedHashtagInDataBase(hashtagName)) {
-                        hashtag = this.getCachedHashtagFromDatabase(hashtagName);
-                    } else {
-                        hashtag.setHashtag(hashtagName);
-                    }
+                    //if (this.cachedHashtagInDataBase(hashtagName)) {
+                    //    hashtag = this.getCachedHashtagFromDatabase(hashtagName);
+                    //} else {
+                    hashtag.setHashtag(hashtagName);
+                    //}
                     interestPoint.addToInterestPoint(hashtag);
                 }
 
@@ -325,7 +332,7 @@ public class DatabaseManager {
         Connection connection = SingletonDBConnection.getInstance();
         InterestPoint interestPoint = new InterestPoint();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint WHERE id= ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint WHERE INTERESTPOINT_ID= ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -380,6 +387,74 @@ public class DatabaseManager {
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets list of tweets from IP
+     *
+     * @return List of tweets. If nothing, the size is 0.
+     */
+    public List<Tweet> getTweetsFromInterestPoint(long id) {
+        Connection connection = SingletonDBConnection.getInstance();
+        List<Tweet> tweetList = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT LIST_TWEETS FROM INTERESTPOINT WHERE INTERESTPOINT_ID = ? ");
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TypeToken<List<Tweet>> token = new TypeToken<List<Tweet>>() {
+                };
+                tweetList = gson.fromJson(rs.getString("LIST_TWEETS"), token.getType());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tweetList;
+    }
+
+    /**
+     * Sets list of tweets to IP
+     *
+     * @param id
+     * @param tweets new tweets
+     */
+    public void setTweetsToInterestPoint(long id, List<Tweet> tweets) {
+        Connection connection = SingletonDBConnection.getInstance();
+        String tweetsJson = gson.toJson(tweets);
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ? ");
+            ps.setString(1, tweetsJson);
+
+            //Get the current Date
+            java.util.Date date = new java.util.Date();
+            ps.setTimestamp(2, new Timestamp(date.getTime()));
+
+            ps.setLong(3, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete list of tweets to IP
+     */
+    public void deleteTweetsFromInterestPoint(long id) {
+        Connection connection = SingletonDBConnection.getInstance();
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ? ");
+            ps.setString(1, null);
+
+            //Get the current Date
+            ps.setTimestamp(2, null);
+
+            ps.setLong(3, id);
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

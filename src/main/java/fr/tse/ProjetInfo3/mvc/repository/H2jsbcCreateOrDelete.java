@@ -202,13 +202,14 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createInterestPointTables() {
 
-
         String interestPoint = "CREATE TABLE   interestPoint " +
                 "(interestpoint_id INTEGER AUTO_INCREMENT,"
                 + "name VARCHAR(255),"
                 + "LIST_USERS CLOB,"
                 + "LIST_HASHTAGS CLOB,"
                 + "description VARCHAR(255),"
+                + "LIST_TWEETS CLOB,"
+                + "date_of_research TIMESTAMP,"
                 + "created_at DATE,"
                 + "PRIMARY KEY (interestpoint_id))";
 //        String interestPoint = "CREATE TABLE   interestPoint " +

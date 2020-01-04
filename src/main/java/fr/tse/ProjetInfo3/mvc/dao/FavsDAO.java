@@ -27,7 +27,7 @@ public class FavsDAO {
 	public User saveFavouriteUser(User user) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO twitteruserfav(userName,userScreenName,favourite) " + 
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TWITTERUSERFAVS(userName,userScreenName,favourite) " +
             		 "VALUES (?,?,?)");
                     
             preparedStatement.setString(1, user.getName());
@@ -62,7 +62,7 @@ public class FavsDAO {
 	public User deleteFavouriteUser(User user) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO twitteruserfav(hashtag,favourite) " 
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TWITTERUSERFAVS(hashtag,favourite) "
             		                    + "VALUES (?,?)");
 
             preparedStatement.setString(1, user.getName());
@@ -79,7 +79,7 @@ public class FavsDAO {
 		 Connection connection = SingletonDBConnection.getInstance();
 		 List<User> users=new ArrayList<>();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM twitteruserfav WHERE favourite=1");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE favourite=1");
 	            ResultSet rs = preparedStatement.executeQuery();
 	            while (rs.next()) {
 	            	User user=userViewer.searchScreenNameU(rs.getString("userScreenName"));
@@ -157,7 +157,7 @@ public class FavsDAO {
 		 int check=checkFavUser(user);
 	        try {
 	        	if(check==1) {
-		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM twitteruserfav WHERE userScreenName=?");
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM TWITTERUSERFAVS WHERE userScreenName=?");
 		            prepStatement.setString(1,user.getScreen_name());
 		            prepStatement.executeUpdate();
 		            System.out.println(user.getScreen_name()+" deleted!");
@@ -178,7 +178,7 @@ public class FavsDAO {
 	public int checkFavUser(User user) {
 		Connection connection = SingletonDBConnection.getInstance();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM twitteruserfav WHERE userScreenName=?");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE userScreenName=?");
 	            preparedStatement.setString(1, user.getScreen_name());
 	            ResultSet rs = preparedStatement.executeQuery();
 	           if (rs.next()) {

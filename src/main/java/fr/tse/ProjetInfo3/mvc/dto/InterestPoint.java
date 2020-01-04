@@ -19,6 +19,7 @@ public class InterestPoint implements Serializable {
     private String description;
 
     private Date dateOfCreation;
+    private Date lastSearchDate;
 
     private List<Hashtag> hashtags;
     private List<User> users;
@@ -217,4 +218,11 @@ public class InterestPoint implements Serializable {
                 + "]";
     }
 
+    public Date getLastSearchDate() {
+        return lastSearchDate;
+    }
+
+    public void setLastSearchDate(Date lastSearchDate) {
+        this.lastSearchDate = lastSearchDate;
+    }
 }

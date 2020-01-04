@@ -62,6 +62,9 @@ public class MainController {
     private MyPIsTabController myPIsTabController;
 
     @FXML
+    private FavsController favsController;
+
+    @FXML
     private StatisticsTabController statisticsTabController;
 
     @FXML
@@ -92,6 +95,8 @@ public class MainController {
     private PIViewer piViewer;
 
     private Tab myPisTab;
+    private Tab myFavsTab;
+
 
     /*This function is launched when Mainwindow is launched */
     @FXML
@@ -242,7 +247,6 @@ public class MainController {
         }
     }
 
-
     public void goToMyPisPane() {
         //We declare this controller here, it will be used when the tab already exist in the else
         if (myPisTab == null) { //the tab is not initialised/charged in memory
@@ -311,6 +315,95 @@ public class MainController {
             drawer.close();
         }
     }
+    public void goToMyFavsPane() {
+        //We declare this controller here, it will be used when the tab already exist in the else
+        if (myFavsTab == null) { //the tab is not initialised/charged in memory
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavsTab.fxml"));
+            try {
+                AnchorPane newFavTab = fxmlLoader.load();
+                favsController = fxmlLoader.getController();
+                favsController.injectMainController(this);
+                myFavsTab = new Tab();
+                Platform.runLater(() -> {
+                    myFavsTab.setContent(newFavTab);
+                    myFavsTab.setText("Mes Favoris");
+                    tabPane.getTabs().add(myFavsTab);
+                    tabPane.getSelectionModel().select(myFavsTab);
+                });
+
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        favsController.setFavsViewer();
+                        return null;
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+
+                myFavsTab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                        favsController.killThreads();
+                        thread.interrupt();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            //the tab is already initialized, so we just refresh the list of PIs
+            Platform.runLater(() -> {
+                tabPane.getSelectionModel().select(myFavsTab);
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        favsController.refreshFavs();
+                        return null;
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+            });
+        }
+        if (!drawer.isClosed()) {
+            drawer.close();
+        }
+    }
+
+    public void goToHome() {
+        tabPane.getSelectionModel().select(searchTabFromMain);
+        drawer.close();
+    }
+
+    public void goToHomeRefresh() {
+        tabPane.getTabs().clear();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SearchTab.fxml"));
+        try {
+
+            AnchorPane searchTab = fxmlLoader.load();
+            SearchTabController searchController = fxmlLoader.getController();
+            searchController.injectMainController(this, hamburger);
+            Tab tab = new Tab();
+            searchTabFromMain = tab;
+            tab.setContent(searchTab);
+            tab.setText("Rechercher");
+            tab.closableProperty().set(false);
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
 
     public void goToPICreateOrEditPane(boolean isNew, PIViewer piViewer) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTabCreate.fxml"));
@@ -341,72 +434,6 @@ public class MainController {
         }
     }
 
-    public void goToMyFavsPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavsTab.fxml"));
-        try {
-            AnchorPane newFavTab = fxmlLoader.load();
-            FavsController favsController = fxmlLoader.getController();
-            favsController.injectMainController(this);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                tab.setContent(newFavTab);
-                tab.setText("Mes Favoris");
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-            });
-
-            //Heavy task inside this thread, we go to user pane before
-            Task<Void> task = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    favsController.setFavsViewer();
-                    return null;
-                }
-            };
-
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
-
-            tab.setOnCloseRequest(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    favsController.killThreads();
-                    thread.interrupt();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        drawer.close();
-    }
-
-    public void goToHome() {
-        tabPane.getSelectionModel().select(searchTabFromMain);
-        drawer.close();
-    }
-
-    public void goToHomeRefresh() {
-        tabPane.getTabs().clear();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SearchTab.fxml"));
-        try {
-
-            AnchorPane searchTab = fxmlLoader.load();
-            SearchTabController searchController = fxmlLoader.getController();
-            searchController.injectMainController(this, hamburger);
-            Tab tab = new Tab();
-            searchTabFromMain = tab;
-            tab.setContent(searchTab);
-            tab.setText("Rechercher");
-            tab.closableProperty().set(false);
-            tabPane.getTabs().add(tab);
-            tabPane.getSelectionModel().select(tab);
-
-
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-    }
 
     public void goToSigninTab() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
