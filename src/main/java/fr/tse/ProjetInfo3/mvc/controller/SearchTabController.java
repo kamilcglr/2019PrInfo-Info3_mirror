@@ -5,7 +5,7 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.animation.PauseTransition;
@@ -87,14 +87,12 @@ public class SearchTabController {
 
     private List<User> resultUsers;
 
-    /*Controller can acces to this Tab */
+    /*Controller can access to this Tab */
     public void injectMainController(MainController mainController, JFXHamburger hamburger) {
         this.mainController = mainController;
         this.hamburger = hamburger;
 
-        LoginController loginController = new LoginController();
-
-        if (loginController.connected == 1) {
+        if (LoginController.connected == 1) {
             loginButton.setVisible(false);
             signinButton.setVisible(false);
             logoutButton.setVisible(true);
@@ -317,10 +315,10 @@ public class SearchTabController {
                 try {
                     //if search does not throw error
                     if (typeOfSearch == 'h') {
-                        HastagViewer hastagViewer = new HastagViewer();
+                        HashtagViewer hashtagViewer = new HashtagViewer();
                         //Remove # from researchfield
-                        hastagViewer.setHashtag(research.substring(1));
-                        mainController.goToHashtagPane(hastagViewer);
+                        hashtagViewer.setHashtag(research.substring(1));
+                        mainController.goToHashtagPane(hashtagViewer);
 
                         //we go to this part when hashtag exists, else Exception is thrown
                         progressLabel.setVisible(false);

@@ -1,12 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListCell;
@@ -17,9 +12,9 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
 import javafx.application.Platform;
@@ -55,6 +50,12 @@ public class PiTabController {
 
     @FXML
     private JFXButton statisticsButton;
+
+    @FXML
+    private JFXButton refreshButton;
+
+    @FXML
+    private Label lastSearchLabel;
 
     /*
      * LISTS
@@ -110,7 +111,7 @@ public class PiTabController {
 
     private UserViewer userViewer;
 
-    private HastagViewer hashtagViewer;
+    private HashtagViewer hashtagViewer;
 
     // Progress indicators
     @FXML
@@ -139,9 +140,8 @@ public class PiTabController {
         trackedUsersList.setCellFactory(param -> new ListObjects.SimpleUserCell());
         trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
         userViewer = new UserViewer();
-        hashtagViewer = new HastagViewer();
+        hashtagViewer = new HashtagViewer();
         // ====================
-
     }
 
     @FXML
@@ -160,6 +160,19 @@ public class PiTabController {
             hashtagViewer.setHashtag(research);
             mainController.goToHashtagPane(hashtagViewer);
         }
+    }
+
+    public void refreshButtonPressed(ActionEvent actionEvent) {
+        piViewer.deleteTweetsFromInterestPoint();
+        mainController.closeCurrentTab();
+
+        for (User user: piViewer.getSelectedInterestPoint().getUsers()){
+            user.setTweets(new ArrayList<>());
+        }
+        for (Hashtag hashtag: piViewer.getSelectedInterestPoint().getHashtags()){
+            hashtag.setTweets(new ArrayList<>());
+        }
+        mainController.goToSelectedPi(piViewer);
     }
 
     private void initLists() {
@@ -205,7 +218,8 @@ public class PiTabController {
 
     private Task<Void> getTweets() {
         try {
-            bigTweetList = piViewer.getTweets(progressLabel);
+
+            bigTweetList = piViewer.getTweetsWrapper(progressLabel,lastSearchLabel);
 
             // Tweet are collected
             Platform.runLater(() -> {
@@ -344,6 +358,8 @@ public class PiTabController {
             nbTrackedLabel.setVisible(false);
             lastDateLabel.setVisible(false);
             statisticsButton.setVisible(false);
+            lastSearchLabel.setVisible(false);
+            refreshButton.setVisible(false);
         } else {
             progressBar.setVisible(false);
             progressLabel.setVisible(false);
@@ -354,6 +370,8 @@ public class PiTabController {
             nbTrackedLabel.setVisible(true);
             lastDateLabel.setVisible(true);
             statisticsButton.setVisible(true);
+            lastSearchLabel.setVisible(true);
+            refreshButton.setVisible(true);
         }
 
         vBox.setVisible(show);

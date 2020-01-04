@@ -118,16 +118,16 @@ public class H2jsbcCreateOrDelete {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            stmt.executeUpdate("drop table hashtag");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.executeUpdate("drop table twitteruser");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    stmt.executeUpdate("drop table hashtag");
+        //} catch (SQLException e) {
+        //    e.printStackTrace();
+        //}
+        //try {
+        //    stmt.executeUpdate("drop table twitteruser");
+        //} catch (SQLException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     /**
@@ -152,11 +152,6 @@ public class H2jsbcCreateOrDelete {
         }
         try {
             stmt.executeUpdate("drop table userCached");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.executeUpdate("drop table tweetCached");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -207,46 +202,55 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createInterestPointTables() {
 
-
         String interestPoint = "CREATE TABLE   interestPoint " +
                 "(interestpoint_id INTEGER AUTO_INCREMENT,"
-                + "name VARCHAR(255) , " +
-                " description VARCHAR(255), " +
-                " created_at DATE,"
+                + "name VARCHAR(255),"
+                + "LIST_USERS CLOB,"
+                + "LIST_HASHTAGS CLOB,"
+                + "description VARCHAR(255),"
+                + "LIST_TWEETS CLOB,"
+                + "date_of_research TIMESTAMP,"
+                + "created_at DATE,"
                 + "PRIMARY KEY (interestpoint_id))";
-
-        String hashtag = "CREATE TABLE   hashtag " +
-                "( hashtag_id INTEGER AUTO_INCREMENT,"
-                + "hashtag VARCHAR(255),"
-                + "PRIMARY KEY (hashtag_id),"
-                + "interestpoint_id INTEGER,"
-                + "favourite INTEGER,"
-                + "FOREIGN KEY(interestpoint_id) REFERENCES interestPoint)";
-
-        String twitterUser = "CREATE TABLE   twitterUser " +
-                "( user_id INTEGER AUTO_INCREMENT,"
-                + "userName VARCHAR(255),"
-                + "userScreenName VARCHAR(255),"
-                + "PRIMARY KEY (user_id),"
-                + "interestpoint_id INTEGER,"
-                + "favourite INTEGER,"
-                + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
+//        String interestPoint = "CREATE TABLE   interestPoint " +
+//                "(interestpoint_id INTEGER AUTO_INCREMENT,"
+//                + "name VARCHAR(255) , " +
+//                " description VARCHAR(255), " +
+//                " created_at DATE,"
+//                + "PRIMARY KEY (interestpoint_id))";
+//
+//        String hashtag = "CREATE TABLE   hashtag " +
+//                "( hashtag_id INTEGER AUTO_INCREMENT,"
+//                + "hashtag VARCHAR(255),"
+//                + "PRIMARY KEY (hashtag_id),"
+//                + "interestpoint_id INTEGER,"
+//                + "favourite INTEGER,"
+//                + "FOREIGN KEY(interestpoint_id) REFERENCES interestPoint)";
+//
+//        String twitterUser = "CREATE TABLE   twitterUser " +
+//                "( user_id INTEGER AUTO_INCREMENT,"
+//                + "userName VARCHAR(255),"
+//                + "userScreenName VARCHAR(255),"
+//                + "PRIMARY KEY (user_id),"
+//                + "interestpoint_id INTEGER,"
+//                + "favourite INTEGER,"
+//                + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
 
         try {
             stmt.executeUpdate(interestPoint);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            stmt.executeUpdate(hashtag);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.executeUpdate(twitterUser);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    stmt.executeUpdate(hashtag);
+        //} catch (SQLException e) {
+        //    e.printStackTrace();
+        //}
+        //try {
+        //    stmt.executeUpdate(twitterUser);
+        //} catch (SQLException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     /**
@@ -270,28 +274,19 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createCachedTables() {
         String userCached = "CREATE TABLE   userCached " +
-                "( user_id INTEGER ,"
+                "( user_id BIGINT,"
                 + "user_screen_name VARCHAR(255),"
                 + "date_of_research TIMESTAMP,"
                 + "PRIMARY KEY (user_id),"
                 + "data CLOB)";
 
-        String tweetCached = "CREATE TABLE   tweetCached " +
-                "( tweet_id INTEGER ,"
-                + "data CLOB)";
-
         String hashtagCached = "CREATE TABLE   hashtagCached "
-                + "( hashtag_id INTEGER ,"
-                + "hashtag_name  VARCHAR(255),"
+                + "( hashtag_name  VARCHAR(255),"
                 + "date_of_research TIMESTAMP,"
+                + "PRIMARY KEY (hashtag_name),"
                 + "data CLOB)";
         try {
             stmt.executeUpdate(userCached);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.executeUpdate(tweetCached);
         } catch (SQLException e) {
             e.printStackTrace();
         }

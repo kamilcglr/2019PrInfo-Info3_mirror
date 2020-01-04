@@ -1,7 +1,6 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +19,7 @@ public class InterestPoint implements Serializable {
     private String description;
 
     private Date dateOfCreation;
+    private Date lastSearchDate;
 
     private List<Hashtag> hashtags;
     private List<User> users;
@@ -35,26 +35,6 @@ public class InterestPoint implements Serializable {
     }
 
     public InterestPoint() {
-    }
-
-    public InterestPoint(InterestPoint interestPoint) {
-        super();
-        this.id = interestPoint.getId();
-        this.name = interestPoint.getName();
-        this.description = interestPoint.getDescription();
-        this.dateOfCreation = interestPoint.getDateOfCreation();
-        this.hashtags = interestPoint.getHashtags();
-        this.users = interestPoint.getUsers();
-        this.interestPoints = interestPoint.getInterestPoints();
-        this.tweets = interestPoint.getTweets();
-    }
-
-    public InterestPoint(int id, String name, String description, Date dateOfCreation) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.dateOfCreation = dateOfCreation;
     }
 
     public InterestPoint(String name, String description, Date dateOfCreation) {
@@ -91,84 +71,27 @@ public class InterestPoint implements Serializable {
     /*
      * every interest point that going to call this method is going to add to his
      * current list a brand new user
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
      */
     public void addToInterestPoint(User user) {
-        // TODO Auto-generated method stub
+        if (this.users == null) {
+            this.users = new ArrayList<>();
+        }
         this.users.add(user);
     }
 
     /*
      * every interest point that going to call this method is going to add to his
      * current list a brand new hashtag
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
      */
     public void addToInterestPoint(Hashtag hashtag) {
-        // TODO Auto-generated method stub
+        if (this.hashtags == null) {
+            this.hashtags = new ArrayList<>();
+        }
         this.hashtags.add(hashtag);
-    }
-
-    /*
-     * Method not FINISHED YET !
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-     */
-    public boolean modifyInterestPoint(InterestPoint interestPoint, Hashtag hashtag, User user) {
-
-        for (InterestPoint ip : interestPoints) {
-            if (ip.equals(interestPoint)) {
-                // for the moment we're just adding not modifying i'll solve problem really soon and quick
-                interestPoint.addToInterestPoint(hashtag, user);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
-     * creating a new Interest point
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-     */
-
-
-    public boolean createInterestPoint(Hashtag hashtag, User user, String name, String description, Date dateOfCreation) {
-        InterestPoint interestPoint = new InterestPoint(name, description, dateOfCreation);
-        // create a list of Interest of point to check (after)  if the interest point already exist
-        for (InterestPoint ip : interestPoints) {
-            if (ip.equals(interestPoint))
-                return false;
-        }
-
-        interestPoint.hashtags.add(hashtag);
-        interestPoint.users.add(user);
-        interestPoint.interestPoints.add(interestPoint);
-        return true;
-    }
-
-    /*
-     * removing an interest point from the list of interests points
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-     */
-    public boolean removeInterestPoint(InterestPoint interestPoint) {
-        // TODO Auto-generated method stub
-        for (InterestPoint ip : interestPoints) {
-            if (ip.equals(interestPoints))
-                return interestPoints.remove(interestPoint);
-        }
-        return false;
     }
 
     public boolean containsUser(User user) {
         return this.getUsers().contains(user);
-        //System.out.println(user);
-        //System.out.println(user.getName());
-        //List<String> screenNames = this.getUsers().stream().map(User::getName).collect(Collectors.toList());
-        //System.out.println(screenNames);
-        //return this.getUsers().stream().map(User::getName).collect(Collectors.toList()).contains(user.getName());
     }
 
     public boolean containsHashtag(String hashtagName) {
@@ -195,7 +118,6 @@ public class InterestPoint implements Serializable {
                 return found;
             }
         }
-
         return found;
     }
 
@@ -296,4 +218,11 @@ public class InterestPoint implements Serializable {
                 + "]";
     }
 
+    public Date getLastSearchDate() {
+        return lastSearchDate;
+    }
+
+    public void setLastSearchDate(Date lastSearchDate) {
+        this.lastSearchDate = lastSearchDate;
+    }
 }

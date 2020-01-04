@@ -36,7 +36,7 @@ public class User {
      * Our own attributes, they are not alimented by the API
      */
 
-    private List<Tweet> listoftweets;
+    private List<Tweet> tweets;
 
     private boolean allTweetsCollected; //true when user have no more tweets (less than 3200)
     private boolean globalTweetsLimit; //true when we have already 3200 tweets API LIMIT
@@ -94,13 +94,13 @@ public class User {
         this.created_at = created_at;
         this.profile_banner_url = profile_banner_url;
         this.profile_image_url_https = profile_image_url_https;
-        this.listoftweets = new ArrayList<>();
+        this.tweets = new ArrayList<>();
         this.dateTweetsLimit = false;
         this.globalTweetsLimit = false;
     }
 
-    public List<Tweet> getListoftweets() {
-        return listoftweets;
+    public List<Tweet> getTweets() {
+        return tweets;
     }
     /* ************************************************** */
 
@@ -122,7 +122,7 @@ public class User {
                 ", created_at='" + created_at + '\'' +
                 ", profile_banner_url='" + profile_banner_url + '\'' +
                 ", profile_image_url_https='" + profile_image_url_https + '\'' +
-                ", listoftweets=" + listoftweets +
+                ", listoftweets=" + tweets +
                 '}';
     }
 
@@ -143,8 +143,8 @@ public class User {
     }
 
     public Long getMaxId() {
-        if (listoftweets.size() > 0) {
-            return listoftweets.get(listoftweets.size() - 1).getId() - 1;
+        if (tweets.size() > 0) {
+            return tweets.get(tweets.size() - 1).getId() - 1;
         } else {
             return null;
         }
@@ -283,8 +283,8 @@ public class User {
         this.profile_image_url_https = profile_image_url_https;
     }
 
-    public void setListoftweets(List<Tweet> listoftweets) {
-        this.listoftweets = listoftweets;
+    public void setTweets(List<Tweet> listoftweets) {
+        this.tweets = listoftweets;
     }
 
 
