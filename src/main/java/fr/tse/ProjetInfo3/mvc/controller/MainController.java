@@ -268,6 +268,14 @@ public class MainController {
                             myPisTab = null;
                         }
                     });
+                    myPisTab.setOnSelectionChanged(new EventHandler<Event>() {
+                        @Override
+                        public void handle(Event t) {
+                            if (myPisTab.isSelected()) {
+                                goToMyPisPane();
+                            }
+                        }
+                    });
                 });
 
                 //Heavy task inside this thread, we go to user pane before
@@ -435,7 +443,6 @@ public class MainController {
         }
     }
 
-
     public void goToSigninTab() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
         try {
@@ -509,7 +516,7 @@ public class MainController {
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 long id = piViewer.getSelectedInterestPoint().getId();
-                piViewer.deleteInterestPointFromDatabaseById(id,LoginController.id);
+                piViewer.deleteInterestPointFromDatabaseById(id);
 
             });
 

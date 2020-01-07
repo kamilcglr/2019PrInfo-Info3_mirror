@@ -64,13 +64,13 @@ public class PIViewer {
     /**
      *
      */
-    public long addInterestPointToDatabase(InterestPoint interestPoint,int userID) {
-        return databaseManager.saveInterestPointToDataBase(interestPoint,userID);
+    public long addInterestPointToDatabase(InterestPoint interestPoint) {
+        return databaseManager.saveInterestPointToDataBase(interestPoint);
     }
 
 
-    public void deleteInterestPointFromDatabaseById(int id,int userID) {
-        databaseManager.deleteSelectedInterestPointById(id,userID);
+    public void deleteInterestPointFromDatabaseById(long id) {
+        databaseManager.deleteSelectedInterestPointById(id);
     }
 
     /**
@@ -80,19 +80,19 @@ public class PIViewer {
         return databaseManager.getAllInterestPointFromDataBase(userID);
     }
 
-    public void deleteTweetsFromInterestPoint(int userID) {
-        databaseManager.deleteTweetsFromInterestPoint(selectedInterestPoint.getId(),userID);
+    public void deleteTweetsFromInterestPoint() {
+        databaseManager.deleteTweetsFromInterestPoint(selectedInterestPoint.getId());
     }
 
     /**
      * Look first in DB
      */
-    public List<Tweet> getTweetsWrapper(Label progressLabel, Label lastSearchLabel,int userID) throws Exception {
+    public List<Tweet> getTweetsWrapper(Label progressLabel, Label lastSearchLabel) throws Exception {
         List<Tweet> tweetsToReturn;
         //Search in the database if the IP has tweets
         //Yes, load them
         Platform.runLater(() -> progressLabel.setText("Recherche de résultats dans le cache"));
-        tweetsToReturn = databaseManager.getTweetsFromInterestPoint(selectedInterestPoint.getId(),userID);
+        tweetsToReturn = databaseManager.getTweetsFromInterestPoint(selectedInterestPoint.getId());
         if (tweetsToReturn != null && tweetsToReturn.size() > 0) {
             System.out.println(tweetsToReturn.size() + " loaded from db");
         } else {
@@ -100,7 +100,7 @@ public class PIViewer {
             tweetsToReturn = this.getTweets(progressLabel);
             //save this new result to database
             Platform.runLater(() -> progressLabel.setText("Sauvegarde des résultats dans le cache"));
-            databaseManager.setTweetsToInterestPoint(selectedInterestPoint.getId(), tweetsToReturn,userID);
+            databaseManager.setTweetsToInterestPoint(selectedInterestPoint.getId(), tweetsToReturn);
             selectedInterestPoint.setLastSearchDate(new Date());
         }
         Platform.runLater(() -> {

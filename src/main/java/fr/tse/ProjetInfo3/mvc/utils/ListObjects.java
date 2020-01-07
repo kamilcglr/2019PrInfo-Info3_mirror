@@ -146,7 +146,7 @@ public class ListObjects {
                     if (interestPoint.containsHashtag(getItem().getHashtagName())) {
                         ResultHashtag currentHashtag = getItem();
 
-                        piViewer.deleteInterestPointFromDatabaseById(currentPiId,LoginController.id);
+                        piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         List<Hashtag> newListOfHashtags = interestPoint.getHashtags()
                                 .stream().filter(hashtag -> !hashtag.getHashtag()
@@ -154,7 +154,7 @@ public class ListObjects {
                                 .collect(Collectors.toList());
                         interestPoint.setHashtags(newListOfHashtags);
 
-                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint,LoginController.id);
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                       addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
@@ -162,12 +162,12 @@ public class ListObjects {
                     } else {
                         ResultHashtag currentHashtag = getItem();
 
-                        piViewer.deleteInterestPointFromDatabaseById(currentPiId,LoginController.id);
+                        piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         Hashtag hashtagToAdd = new Hashtag(currentHashtag.getHashtagName());
                         interestPoint.addToInterestPoint(hashtagToAdd);
 
-                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint,LoginController.id);
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-minus");
                         addDeleteIcon.setIconColor(RED);
@@ -265,11 +265,11 @@ public class ListObjects {
                     if (interestPoint.containsUser(getItem())) {
                         User currentUser = getItem();
 
-                        piViewer.deleteInterestPointFromDatabaseById(currentPiId,LoginController.id);
+                        piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         interestPoint.getUsers().remove(currentUser);
                       
-                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint,LoginController.id);
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
@@ -277,11 +277,11 @@ public class ListObjects {
                     } else {
                         User currentUser = getItem();
 
-                        piViewer.deleteInterestPointFromDatabaseById(currentPiId,LoginController.id);
+                        piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         interestPoint.addToInterestPoint(currentUser);
 
-                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint,LoginController.id);
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-minus");
                         addDeleteIcon.setIconColor(RED);

@@ -17,6 +17,7 @@ public class InterestPoint implements Serializable {
     private long id;
     private String name;
     private String description;
+    private int userID;
 
     private Date dateOfCreation;
     private Date lastSearchDate;
@@ -220,5 +221,13 @@ public class InterestPoint implements Serializable {
 
     public void setLastSearchDate(Date lastSearchDate) {
         this.lastSearchDate = lastSearchDate;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }

@@ -48,6 +48,7 @@ public class LoginController {
 
     public static int connected = 0;
     public static int id;
+
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
@@ -88,7 +89,7 @@ public class LoginController {
 
             // STEP 4: Extract data from result set
             if (rs.next()) {
-            	id=rs.getInt("user_id");
+                id = rs.getInt("user_id");
                 connected = 1;
                 Label headerLabel = new Label("Connection réussie");
                 Text bodyText = new Text("Vous êtes connecté. Vous avez accès aux fonctionnalités avancées dans le menu principal.");
@@ -152,7 +153,7 @@ public class LoginController {
                 System.out.println("ok" + identifiant + " " + password + "\n" + rs);
                 rs.close();
 
-        		return 0;
+                return 0;
 
             }
 
@@ -176,7 +177,7 @@ public class LoginController {
             } // end finally try
         } // end try
         System.out.println("Goodbye!");
-		return 0;
+        return 0;
     }
 
     public JFXTextField getIdentifiantField() {

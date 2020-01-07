@@ -218,7 +218,7 @@ public class DatabaseManager {
         }
     }
 
-    public long saveInterestPointToDataBase(InterestPoint interestPoint,int userID) {
+    public long saveInterestPointToDataBase(InterestPoint interestPoint) {
         Connection connection = SingletonDBConnection.getInstance();
         long piID = 0;
         try {
@@ -226,7 +226,7 @@ public class DatabaseManager {
                     + "VALUES (?,?,?,?,?,?)";
             //Statement.RETURN_GENERATED_KEYS to get the id of inserted element
             PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(1, interestPoint.getUserID());
             preparedStatement.setString(2, interestPoint.getName());
             preparedStatement.setString(3, interestPoint.getDescription());
 
@@ -289,6 +289,7 @@ public class DatabaseManager {
             while (rs.next()) {
                 interestPoint = new InterestPoint();
                 interestPoint.setId(rs.getLong("interestpoint_id"));
+                interestPoint.setUserID(rs.getInt("user_id"));
                 interestPoint.setName(rs.getString("NAME"));
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));
                 interestPoint.setDateOfCreation(rs.getDate("CREATED_AT"));
@@ -332,74 +333,20 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (InterestPoint ip : interestPoints){
+        for (InterestPoint ip : interestPoints) {
             System.out.println(ip.getId());
         }
         return interestPoints;
     }
 
     /**
-     * Gets interest Point from id
-     */
-    public InterestPoint getSelectedInterestPoint(int id,int userID) {
-        Connection connection = SingletonDBConnection.getInstance();
-        InterestPoint interestPoint = new InterestPoint();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint WHERE INTERESTPOINT_ID= ? and user_id=?");
-            ps.setInt(1, id);
-            ps.setInt(2, userID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                interestPoint.setId(rs.getLong("interestpoint_id"));
-                interestPoint.setName(rs.getString("NAME"));
-                interestPoint.setDescription(rs.getString("DESCRIPTION"));
-                interestPoint.setDateOfCreation(rs.getDate("CREATED_AT"));
-
-                TypeToken<List<String>> token = new TypeToken<List<String>>() {
-                };
-
-                List<String> usersScreenNames = gson.fromJson(rs.getString("LIST_USERS"), token.getType());
-                List<String> hashtagNames = gson.fromJson(rs.getString("LIST_HASHTAGS"), token.getType());
-
-                for (String screenName : usersScreenNames) {
-                    User user = new User();
-                    //if user is in db
-                    if (this.cachedUserInDataBase(screenName)) {
-                        user = this.getCachedUserFromDatabase(screenName);
-                    } else {
-                        userViewer.searchScreenName(screenName);
-                        user = userViewer.getUser();
-                    }
-                    interestPoint.addToInterestPoint(user);
-                }
-
-                for (String hashtagName : hashtagNames) {
-                    Hashtag hashtag = new Hashtag();
-                    //if user is in db
-                    if (this.cachedHashtagInDataBase(hashtagName)) {
-                        hashtag = this.getCachedHashtagFromDatabase(hashtagName);
-                    } else {
-                        hashtag.setHashtag(hashtagName);
-                    }
-                    interestPoint.addToInterestPoint(hashtag);
-                }
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return interestPoint;
-    }
-
-    /**
      * Delete PI from his id.
      */
-    public void deleteSelectedInterestPointById(long id, int userID) {
+    public void deleteSelectedInterestPointById(long id) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
             ps.setLong(1, id);
-                      ps.setInt(2, userID);
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -412,13 +359,12 @@ public class DatabaseManager {
      *
      * @return List of tweets. If nothing, the size is 0.
      */
-    public List<Tweet> getTweetsFromInterestPoint(long id,int userID) {
+    public List<Tweet> getTweetsFromInterestPoint(long id) {
         Connection connection = SingletonDBConnection.getInstance();
         List<Tweet> tweetList = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT LIST_TWEETS FROM INTERESTPOINT WHERE INTERESTPOINT_ID = ? and user_id=?");
+            PreparedStatement ps = connection.prepareStatement("SELECT LIST_TWEETS FROM INTERESTPOINT WHERE INTERESTPOINT_ID = ?");
             ps.setLong(1, id);
-            ps.setInt(2, userID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 TypeToken<List<Tweet>> token = new TypeToken<List<Tweet>>() {
@@ -437,13 +383,12 @@ public class DatabaseManager {
      * @param id
      * @param tweets new tweets
      */
-    public void setTweetsToInterestPoint(long id, List<Tweet> tweets,int userID) {
+    public void setTweetsToInterestPoint(long id, List<Tweet> tweets) {
         Connection connection = SingletonDBConnection.getInstance();
         String tweetsJson = gson.toJson(tweets);
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ? and user_id=?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ?");
             ps.setString(1, tweetsJson);
-            ps.setInt(4, userID);
             //Get the current Date
             java.util.Date date = new java.util.Date();
             ps.setTimestamp(2, new Timestamp(date.getTime()));
@@ -459,12 +404,11 @@ public class DatabaseManager {
     /**
      * Delete list of tweets to IP
      */
-    public void deleteTweetsFromInterestPoint(long id,int userID) {
+    public void deleteTweetsFromInterestPoint(long id) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ? and user_id=? ");
+            PreparedStatement ps = connection.prepareStatement("UPDATE INTERESTPOINT SET LIST_TWEETS = ?, DATE_OF_RESEARCH = ? WHERE INTERESTPOINT_ID = ?");
             ps.setString(1, null);
-            ps.setInt(4, userID);
             //Get the current Date
             ps.setTimestamp(2, null);
 
