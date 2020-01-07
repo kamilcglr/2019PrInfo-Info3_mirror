@@ -153,7 +153,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                piViewer.deleteInterestPointFromDatabaseById(piViewer.getSelectedInterestPoint().getId(),LoginController.id);
+                piViewer.deleteInterestPointFromDatabaseById(piViewer.getSelectedInterestPoint().getId());
                 Platform.runLater(() -> {
                     deletionIsRunning(false);
                 });
