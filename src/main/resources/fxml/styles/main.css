@@ -531,3 +531,8 @@ GridPane {
     -fx-border-color: -accent;
 }*/
 
+/* Charts */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
