@@ -8,19 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
-import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.SingletonDBConnection;
-import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
-
-import javax.xml.crypto.Data;
 
 /**
  * @author ALAMI IDRISSI Taha
@@ -148,7 +140,7 @@ public class InterestPointDAO {
         Hashtag hashtag = null;
         try {
             PreparedStatement ps2 = connection.prepareStatement("SELECT hashtag FROM hashtag WHERE interestpoint_id = ?");
-            ps2.setInt(1, interestPoint.getId());
+            ps2.setLong(1, interestPoint.getId());
 
             ResultSet rs2 = ps2.executeQuery();
             while (rs2.next()) {
@@ -170,7 +162,7 @@ public class InterestPointDAO {
         UserViewer userViewer = new UserViewer();
         try {
             PreparedStatement ps2 = connection.prepareStatement("SELECT USERSCREENNAME FROM TWITTERUSER WHERE interestpoint_id = ?");
-            ps2.setInt(1, interestPoint.getId());
+            ps2.setLong(1, interestPoint.getId());
 
             ResultSet rs2 = ps2.executeQuery();
             while (rs2.next()) {

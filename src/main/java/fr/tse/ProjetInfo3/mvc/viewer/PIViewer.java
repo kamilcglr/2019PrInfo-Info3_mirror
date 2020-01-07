@@ -68,6 +68,7 @@ public class PIViewer {
         return databaseManager.saveInterestPointToDataBase(interestPoint,userID);
     }
 
+
     public void deleteInterestPointFromDatabaseById(int id,int userID) {
         databaseManager.deleteSelectedInterestPointById(id,userID);
     }

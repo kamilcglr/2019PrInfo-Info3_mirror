@@ -246,10 +246,6 @@ public class PiTabController {
                 // Find Min Date
                 Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
 
-                //DateFormats.hoursAndDateFormat.format(date);
-
-                System.out.println();
-
                 lastDateLabel.setText(getDateDiff(date, new Date()));
 
                 nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
