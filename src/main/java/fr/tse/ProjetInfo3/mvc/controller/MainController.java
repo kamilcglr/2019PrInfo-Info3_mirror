@@ -506,7 +506,7 @@ public class MainController {
             PiTabController piTabController = fxmlLoader.getController();
             Tab tab = new Tab();
             Platform.runLater(() -> {
-                int id = piViewer.getSelectedInterestPoint().getId();
+                long id = piViewer.getSelectedInterestPoint().getId();
                 piViewer.deleteInterestPointFromDatabaseById(id);
 
             });

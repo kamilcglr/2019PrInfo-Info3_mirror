@@ -3,7 +3,6 @@ package fr.tse.ProjetInfo3.mvc.repository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -250,8 +249,17 @@ public class DatabaseManager {
             //Save the hashtags and users only if the preparedStatement is successful
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
+                    System.out.println(generatedKeys.getLong(1));
                     //TODO delete if it is unnecessary
                     piID = generatedKeys.getLong(1);
+                    //PreparedStatement ps = connection.prepareStatement("SELECT * FROM HASHTAGCACHED WHERE hashtag_name = ? ");
+                    //ps.setString(1, hashtagName);
+                    //ResultSet rs = ps.executeQuery();
+                    //while (rs.next()) {
+                    //    hashtag = new Hashtag();
+                    //    hashtag = gson.fromJson(rs.getString("data"), Hashtag.class);
+                    //    hashtag.setLastSearchDate(new Date(rs.getTimestamp("date_of_research").getTime()));
+                    //}
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
@@ -260,6 +268,7 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        interestPoint.setId(piID);
         return piID;
     }
 
@@ -278,7 +287,7 @@ public class DatabaseManager {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 interestPoint = new InterestPoint();
-                interestPoint.setId(rs.getInt("interestpoint_id"));
+                interestPoint.setId(rs.getLong("interestpoint_id"));
                 interestPoint.setName(rs.getString("NAME"));
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));
                 interestPoint.setDateOfCreation(rs.getDate("CREATED_AT"));
@@ -322,6 +331,9 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        for (InterestPoint ip : interestPoints){
+            System.out.println(ip.getId());
+        }
         return interestPoints;
     }
 
@@ -336,7 +348,7 @@ public class DatabaseManager {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                interestPoint.setId(rs.getInt("interestpoint_id"));
+                interestPoint.setId(rs.getLong("interestpoint_id"));
                 interestPoint.setName(rs.getString("NAME"));
                 interestPoint.setDescription(rs.getString("DESCRIPTION"));
                 interestPoint.setDateOfCreation(rs.getDate("CREATED_AT"));
@@ -380,11 +392,11 @@ public class DatabaseManager {
     /**
      * Delete PI from his id.
      */
-    public void deleteSelectedInterestPointById(int id) {
+    public void deleteSelectedInterestPointById(long id) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM interestpoint WHERE interestpoint_id = ?");
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {

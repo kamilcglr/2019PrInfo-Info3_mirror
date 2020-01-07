@@ -46,7 +46,7 @@ public class LoginController {
     static final String PASS = "";
 
 
-    public static int connected = 0;
+    public static int connected = 1;
 
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {

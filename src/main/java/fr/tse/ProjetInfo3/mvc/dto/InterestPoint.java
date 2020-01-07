@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 
 public class InterestPoint implements Serializable {
-    private int id;
+    private long id;
     private String name;
     private String description;
 
@@ -26,11 +26,11 @@ public class InterestPoint implements Serializable {
     private List<Tweet> tweets;
     private List<InterestPoint> interestPoints;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -95,10 +95,6 @@ public class InterestPoint implements Serializable {
     }
 
     public boolean containsHashtag(String hashtagName) {
-        System.out.println(this.getHashtags().stream()
-                .map(Hashtag::getHashtag)
-                .collect(Collectors.toList())
-                .contains(hashtagName));
         return this.getHashtags().stream()
                 .map(Hashtag::getHashtag)
                 .collect(Collectors.toList())
