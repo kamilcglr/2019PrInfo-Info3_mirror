@@ -258,13 +258,13 @@ public class PiTabCreateController {
 	public void saveJFXButtonPressed(ActionEvent event) {
 		if (!observableListHashtag.isEmpty() || !observableListUser.isEmpty()) {
 			if (!isNew) {
-				piViewer.deleteInterestPointFromDatabaseById(interestPointToEdit.getId());
+				piViewer.deleteInterestPointFromDatabaseById(interestPointToEdit.getId(),LoginController.id);
 			}
 
 			interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
 					hashtagList, userList);
 
-			piViewer.addInterestPointToDatabase(interestPoint);
+			piViewer.addInterestPointToDatabase(interestPoint,LoginController.id);
 			launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true, true);
 		} else {
 			launchInfoDialog("Point d'Interêt incomplet",

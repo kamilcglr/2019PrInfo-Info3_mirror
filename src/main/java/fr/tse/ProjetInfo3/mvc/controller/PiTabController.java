@@ -163,7 +163,7 @@ public class PiTabController {
     }
 
     public void refreshButtonPressed(ActionEvent actionEvent) {
-        piViewer.deleteTweetsFromInterestPoint();
+        piViewer.deleteTweetsFromInterestPoint(LoginController.id);
         mainController.closeCurrentTab();
 
         for (User user: piViewer.getSelectedInterestPoint().getUsers()){
@@ -219,7 +219,7 @@ public class PiTabController {
     private Task<Void> getTweets() {
         try {
 
-            bigTweetList = piViewer.getTweetsWrapper(progressLabel,lastSearchLabel);
+            bigTweetList = piViewer.getTweetsWrapper(progressLabel,lastSearchLabel,LoginController.id);
 
             // Tweet are collected
             Platform.runLater(() -> {

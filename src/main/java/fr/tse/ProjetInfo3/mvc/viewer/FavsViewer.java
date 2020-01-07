@@ -22,22 +22,22 @@ public class FavsViewer {
     private List<Hashtag> favouriteHashtags=new ArrayList<>();
 
     
-	public void addUserToFavourites(User user) {
-		 favsDAO.addFavUser(user);
+	public void addUserToFavourites(User user,int userID) {
+		 favsDAO.addFavUser(user,userID);
 	}
-	public int checkUserInFav(User user) {
-		return favsDAO.checkFavUser(user);
+	public int checkUserInFav(User user,int userID) {
+		return favsDAO.checkFavUser(user,userID);
 	}
-	public void addHashtagToFavourites(Hashtag hashtag) {
-		 favsDAO.addFavHash(hashtag);
+	public void addHashtagToFavourites(Hashtag hashtag,int userID) {
+		 favsDAO.addFavHash(hashtag,userID);
 	}
-	public int checkHashInFav(Hashtag hashtag) {
-		return favsDAO.checkFavHashtag(hashtag);
+	public int checkHashInFav(Hashtag hashtag,int userID) {
+		return favsDAO.checkFavHashtag(hashtag,userID);
 	}
-	public Favourite getlistOfFavourites() throws Exception {
+	public Favourite getlistOfFavourites(int userID) throws Exception {
 		favourites= new ArrayList<>();
-		favouriteUsers=favsDAO.getFavouriteUsers();
-		favouriteHashtags=favsDAO.getFavouriteHashtags();
+		favouriteUsers=favsDAO.getFavouriteUsers(userID);
+		favouriteHashtags=favsDAO.getFavouriteHashtags(userID);
 		Favourite favourite=new Favourite();
 		favourite.setUsers(favouriteUsers);
 		favourite.setHashtags(favouriteHashtags);
