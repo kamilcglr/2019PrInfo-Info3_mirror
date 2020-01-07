@@ -75,12 +75,12 @@ public class FavsController {
     }
 
     public Favourite initializeListOfFavourites() throws Exception {
-        return favsViewer.getlistOfFavourites();
+        return favsViewer.getlistOfFavourites(LoginController.id);
     }
 
     private void setTopHashtags() throws Exception {
         favsViewer = new FavsViewer();
-        Favourite favourite = favsViewer.getlistOfFavourites();
+        Favourite favourite = favsViewer.getlistOfFavourites(LoginController.id);
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
@@ -116,7 +116,7 @@ public class FavsController {
 
     private void setUsers() throws Exception {
         favsViewer = new FavsViewer();
-        List<User> users = favsViewer.getlistOfFavourites().getUsers();
+        List<User> users = favsViewer.getlistOfFavourites(LoginController.id).getUsers();
         ObservableList<User> usersToPrint = FXCollections.observableArrayList();
         for (User user : users) {
             usersToPrint.add(user);

@@ -32,7 +32,7 @@ public class LoginAppDAO {
             preparedStatement.setString(2, userApp.getMail());
             preparedStatement.setString(3, userApp.getTwitterName());
             preparedStatement.setString(4, userApp.getPassword());
-
+            
 
             preparedStatement.executeUpdate();
 

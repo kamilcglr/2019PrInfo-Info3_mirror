@@ -119,7 +119,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         });
 
         //Get the PI and set them on the listView
-        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint(LoginController.id);
 
         Platform.runLater(() -> {
             for (InterestPoint interestPoint : interestPoints) {
@@ -155,7 +155,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                piViewer.deleteInterestPointFromDatabaseById(piViewer.getSelectedInterestPoint().getId());
+                piViewer.deleteInterestPointFromDatabaseById(piViewer.getSelectedInterestPoint().getId(),LoginController.id);
                 Platform.runLater(() -> {
                     deletionIsRunning(false);
                 });
@@ -191,7 +191,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      * @throws InterruptedException
      */
     public List<InterestPoint> initializeListOfInterestPoints() throws IOException, InterruptedException {
-        return piViewer.getlistOfInterestPoint();
+        return piViewer.getlistOfInterestPoint(LoginController.id);
     }
 
     /**

@@ -26,6 +26,7 @@ public class H2jsbcCreateOrDelete {
 
             deleteAllTables();
             createAllTables();
+            
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -174,16 +175,17 @@ public class H2jsbcCreateOrDelete {
 
 
         String twitterUserFavs = "CREATE TABLE   twitterUserFavs " +
-                "( user_id INTEGER AUTO_INCREMENT,"
+                "( user_id INTEGER auto_increment,"
                 + "userName VARCHAR(255),"
                 + "userScreenName VARCHAR(255),"
                 + "PRIMARY KEY (user_id),"
                 + "favourite INTEGER)";
         String hashtagFavs = "CREATE TABLE   hashtagFavs " +
-                "( hashtag_id INTEGER AUTO_INCREMENT,"
+                "( user_id INTEGER auto_increment,"
+        		//+"hashtag_id INTEGER ,"
                 + "hashtag VARCHAR(255),"
-                + "PRIMARY KEY (hashtag_id),"
-                + "favourite INTEGER,)";
+               // + "PRIMARY KEY (hashtag_id),"
+                + "favourite INTEGER)";
 
         try {
             stmt.execute(twitterUserFavs);
@@ -204,6 +206,7 @@ public class H2jsbcCreateOrDelete {
 
         String interestPoint = "CREATE TABLE   interestPoint " +
                 "(interestpoint_id INTEGER AUTO_INCREMENT,"
+        		+"user_id INTEGER,"
                 + "name VARCHAR(255),"
                 + "LIST_USERS CLOB,"
                 + "LIST_HASHTAGS CLOB,"
@@ -258,7 +261,8 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createUserOfAppTable() {
         String userApp = "CREATE TABLE   userApp" +
-                "(username VARCHAR(255) , " +
+                "(user_id INTEGER AUTO_INCREMENT,"+
+                 "username VARCHAR(255) , " +
                 " mail VARCHAR(255), " +
                 " twitter VARCHAR(255), " +
                 " password VARCHAR(20))";

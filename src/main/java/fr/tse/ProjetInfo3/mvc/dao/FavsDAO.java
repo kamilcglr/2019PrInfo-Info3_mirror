@@ -24,15 +24,15 @@ import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
  */
 public class FavsDAO {
 
-	public User saveFavouriteUser(User user) {
+	public User saveFavouriteUser(User user,int userID) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TWITTERUSERFAVS(userName,userScreenName,favourite) " +
-            		 "VALUES (?,?,?)");
-                    
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getScreen_name());
-            preparedStatement.setInt(3, 1);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO TWITTERUSERFAVS(user_id,userName,userScreenName,favourite) " +
+            		 "VALUES (?,?,?,?)");
+            preparedStatement.setInt(1,userID);   
+            preparedStatement.setString(2, user.getName());
+            preparedStatement.setString(3, user.getScreen_name());
+            preparedStatement.setInt(4, 1);
             preparedStatement.executeUpdate();
 
             System.out.println("added"+user.getName());
@@ -42,14 +42,14 @@ public class FavsDAO {
         }
         return user;
     }
-	public Hashtag saveFavouriteHashtag(Hashtag hashtag) {
+	public Hashtag saveFavouriteHashtag(Hashtag hashtag,int userID) {
         Connection connection = SingletonDBConnection.getInstance();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO hashtagfavs(hashtag,favourite) "
-                    + "VALUES (?,?)");
-                    
-            preparedStatement.setString(1, hashtag.getHashtag());
-            preparedStatement.setInt(2, 1);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO hashtagfavs(user_id,hashtag,favourite) "
+                    + "VALUES (?,?,?)");
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setString(2, hashtag.getHashtag());
+            preparedStatement.setInt(3, 1);
             preparedStatement.executeUpdate();
 
             System.out.println("added "+hashtag.getHashtag());
@@ -74,12 +74,13 @@ public class FavsDAO {
         }
         return user;
     }
-	public List<User> getFavouriteUsers() throws Exception {
+	public List<User> getFavouriteUsers(int userID) throws Exception {
 		UserViewer userViewer=new UserViewer();
 		 Connection connection = SingletonDBConnection.getInstance();
 		 List<User> users=new ArrayList<>();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE favourite=1");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE favourite=1 and user_id=?");
+	            preparedStatement.setInt(1, userID);
 	            ResultSet rs = preparedStatement.executeQuery();
 	            while (rs.next()) {
 	            	User user=userViewer.searchScreenNameU(rs.getString("userScreenName"));
@@ -91,11 +92,12 @@ public class FavsDAO {
 	        }
 	        return users;
 	}
-	public List<Hashtag> getFavouriteHashtags() {
+	public List<Hashtag> getFavouriteHashtags(int userID) {
 		 Connection connection = SingletonDBConnection.getInstance();
 		 List<Hashtag> hashtags=new ArrayList<>();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM hashtagfavs WHERE favourite=1");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM hashtagfavs WHERE favourite=1 and user_id=?");
+	            preparedStatement.setInt(1, userID);
 	            ResultSet rs = preparedStatement.executeQuery();
 	            while (rs.next()) {
 	            	Hashtag hashtag=new Hashtag();
@@ -109,12 +111,14 @@ public class FavsDAO {
 	        }
 	        return hashtags;
 	}
-	public int checkFavHashtag(Hashtag hashtag) {
+	public int checkFavHashtag(Hashtag hashtag,int userID) {
 		Connection connection = SingletonDBConnection.getInstance();
 		 List<Hashtag> hashtags=new ArrayList<>();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM hashtagfavs WHERE hashtag=?");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM hashtagfavs WHERE hashtag=? and user_id=?");
 	            preparedStatement.setString(1, hashtag.getHashtag());
+	            preparedStatement.setInt(2, userID);
+
 	            ResultSet rs = preparedStatement.executeQuery();
 	           if (rs.next()) {
 		            
@@ -131,19 +135,21 @@ public class FavsDAO {
        return 0;
 	}
 	}
-	public void addFavHash(Hashtag hashtag) {
+	public void addFavHash(Hashtag hashtag,int userID) {
 		Connection connection = SingletonDBConnection.getInstance();
 		 List<Hashtag> hashtags=new ArrayList<>();
-		 int check=checkFavHashtag(hashtag);
+		 int check=checkFavHashtag(hashtag,userID);
 	        try {
 	           if (check==1) {
-		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM hashtagfavs WHERE hashtag=?");
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM hashtagfavs WHERE hashtag=? and user_id=?");
 		            prepStatement.setString(1, hashtag.getHashtag());
+		            prepStatement.setInt(2, userID);
+
 		            prepStatement.executeUpdate();
 		            System.out.println(hashtag.getHashtag()+" deleted!");
 	           }
 	           else {
-	        	   saveFavouriteHashtag(hashtag);
+	        	   saveFavouriteHashtag(hashtag,userID);
 		            System.out.println(hashtag.getHashtag()+" saved!");
 
 	           }
@@ -152,19 +158,21 @@ public class FavsDAO {
         e.printStackTrace();
     }
 }
-	public void addFavUser(User user) {
+	public void addFavUser(User user,int userID) {
 		Connection connection = SingletonDBConnection.getInstance();
-		 int check=checkFavUser(user);
+		 int check=checkFavUser(user,userID);
 	        try {
 	        	if(check==1) {
-		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM TWITTERUSERFAVS WHERE userScreenName=?");
+		            PreparedStatement prepStatement = connection.prepareStatement("DELETE FROM TWITTERUSERFAVS WHERE userScreenName=? and userID=?");
 		            prepStatement.setString(1,user.getScreen_name());
+		            prepStatement.setInt(2, userID);
+
 		            prepStatement.executeUpdate();
 		            System.out.println(user.getScreen_name()+" deleted!");
 		          
 	           }
 	           else {
-	        	   saveFavouriteUser(user);
+	        	   saveFavouriteUser(user,userID);
 		            System.out.println(user.getScreen_name()+" saved!");
 		           
 
@@ -175,10 +183,11 @@ public class FavsDAO {
    }
 }
 	
-	public int checkFavUser(User user) {
+	public int checkFavUser(User user,int userID) {
 		Connection connection = SingletonDBConnection.getInstance();
 	        try {
-	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE userScreenName=?");
+	            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM TWITTERUSERFAVS WHERE userScreenName=? and user_id=?");
+	            preparedStatement.setInt(2, userID);
 	            preparedStatement.setString(1, user.getScreen_name());
 	            ResultSet rs = preparedStatement.executeQuery();
 	           if (rs.next()) {
