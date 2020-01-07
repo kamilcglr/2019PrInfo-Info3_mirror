@@ -353,7 +353,7 @@ public class HashtagTabController {
         //favourites
         favsViewer = new FavsViewer();
         hashtagToPrint = hashtagViewer.getHashtag();
-        int fav = favsViewer.checkHashInFav(hashtagToPrint);
+        int fav = favsViewer.checkHashInFav(hashtagToPrint,LoginController.id);
         if (fav == 1) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);
@@ -365,8 +365,8 @@ public class HashtagTabController {
 
     @FXML
     private void favouriteTogglePressed() {
-        favsViewer.addHashtagToFavourites(hashtagToPrint);
-        int fav = favsViewer.checkHashInFav(hashtagToPrint);
+        favsViewer.addHashtagToFavourites(hashtagToPrint,LoginController.id);
+        int fav = favsViewer.checkHashInFav(hashtagToPrint,LoginController.id);
         if (fav == 1) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);

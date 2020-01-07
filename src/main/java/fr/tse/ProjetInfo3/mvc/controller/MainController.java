@@ -349,6 +349,7 @@ public class MainController {
                     public void handle(Event event) {
                         favsController.killThreads();
                         thread.interrupt();
+                        myFavsTab=null;
                     }
                 });
             } catch (IOException e) {
@@ -491,6 +492,7 @@ public class MainController {
                 public void handle(Event event) {
                     piTabController.killThreads();
                     thread.interrupt();
+      
                 }
             });
 
@@ -507,7 +509,7 @@ public class MainController {
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 long id = piViewer.getSelectedInterestPoint().getId();
-                piViewer.deleteInterestPointFromDatabaseById(id);
+                piViewer.deleteInterestPointFromDatabaseById(id,LoginController.id);
 
             });
 

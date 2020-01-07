@@ -28,18 +28,18 @@ public class InterestPointDAO {
      * in this method we're saving an interestpoint into the DB using singleton pattern to have one instance
      * accessing the DB
      */
-    public long saveInterestPoint(InterestPoint interestPoint) {
+    public long saveInterestPoint(InterestPoint interestPoint,int userID) {
         Connection connection = SingletonDBConnection.getInstance();
         long piID = 0;
         try {
-            String Query = "INSERT INTO interestpoint(NAME,DESCRIPTION,CREATED_AT) "
-                    + "VALUES (?,?,?)";
+            String Query = "INSERT INTO interestpoint(user_id,NAME,DESCRIPTION,CREATED_AT) "
+                    + "VALUES (?,?,?,?)";
             //Statement.RETURN_GENERATED_KEYS to get the id of inserted element
             PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setString(1, interestPoint.getName());
-            preparedStatement.setString(2, interestPoint.getDescription());
-            preparedStatement.setDate(3, new java.sql.Date(interestPoint.getDateOfCreation().getTime()));
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setString(2, interestPoint.getName());
+            preparedStatement.setString(3, interestPoint.getDescription());
+            preparedStatement.setDate(4, new java.sql.Date(interestPoint.getDateOfCreation().getTime()));
 
             preparedStatement.executeUpdate();
 
@@ -109,12 +109,13 @@ public class InterestPointDAO {
      * here we can get all the data about interestpoints to list them in our window
      * we query all the info needed about all the PIs
      */
-    public List<InterestPoint> getAllInterestPoints() {
+    public List<InterestPoint> getAllInterestPoints(int userID) {
         Connection connection = SingletonDBConnection.getInstance();
         List<InterestPoint> interestPoints = new ArrayList<>();
         InterestPoint interestPoint = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM interestpoint where user_id=?");
+            ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 interestPoint = new InterestPoint();

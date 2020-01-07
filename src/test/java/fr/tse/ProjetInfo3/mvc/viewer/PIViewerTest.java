@@ -1,6 +1,8 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
 import com.jfoenix.controls.JFXProgressBar;
+
+import fr.tse.ProjetInfo3.mvc.controller.LoginController;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -29,7 +31,7 @@ class PIViewerTest {
     @Test
     void getlistOfInterestPoint() {
         List<InterestPoint> listOfInterestPoints = new ArrayList<>();
-        listOfInterestPoints = piViewer.getListOfInterestPointFromDataBase();
+        listOfInterestPoints = piViewer.getListOfInterestPointFromDataBase(LoginController.id);
 
         assertTrue(listOfInterestPoints.size()>0);
     }
@@ -63,7 +65,7 @@ class PIViewerTest {
         ip1.setUsers(users);
 
 
-        piViewer.getlistOfInterestPoint();
+        piViewer.getlistOfInterestPoint(LoginController.id);
         piViewer.setSelectedInterestPoint(0);
 
         Label label = new Label();

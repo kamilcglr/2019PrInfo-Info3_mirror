@@ -46,8 +46,8 @@ public class LoginController {
     static final String PASS = "";
 
 
-    public static int connected = 1;
-
+    public static int connected = 0;
+    public static int id;
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
@@ -64,7 +64,7 @@ public class LoginController {
     }
 
     @FXML
-    private void validateButtonPressed(ActionEvent event) {
+    private int validateButtonPressed(ActionEvent event) {
 
         //Identifiant de connexion
         String identifiant = identifiantField.getText();
@@ -83,11 +83,12 @@ public class LoginController {
             // STEP 3: Execute a query
             System.out.println("Connected database successfully...");
             stmt = conn.createStatement();
-            String sql = "SELECT mail, password FROM userApp where mail='" + identifiant + "'" + " and password= '" + password + "'";
+            String sql = "SELECT user_id,mail, password FROM userApp where mail='" + identifiant + "'" + " and password= '" + password + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
             // STEP 4: Extract data from result set
             if (rs.next()) {
+            	id=rs.getInt("user_id");
                 connected = 1;
                 Label headerLabel = new Label("Connection réussie");
                 Text bodyText = new Text("Vous êtes connecté. Vous avez accès aux fonctionnalités avancées dans le menu principal.");
@@ -119,6 +120,7 @@ public class LoginController {
                 anchorPane.setEffect(blur);
                 //verification sur console
                 System.out.println("ok" + identifiant + " " + password + "\n" + rs);
+                return 0;
 
             } else {
                 Label headerLabel = new Label("Erreur");
@@ -148,10 +150,13 @@ public class LoginController {
                 anchorPane.setEffect(blur);
                 // verification sur console
                 System.out.println("ok" + identifiant + " " + password + "\n" + rs);
+                rs.close();
+
+        		return 0;
+
             }
 
             // STEP 5: Clean-up environment
-            rs.close();
         } catch (SQLException se) {
             // Handle errors for JDBC
             se.printStackTrace();
@@ -171,6 +176,7 @@ public class LoginController {
             } // end finally try
         } // end try
         System.out.println("Goodbye!");
+		return 0;
     }
 
     public JFXTextField getIdentifiantField() {

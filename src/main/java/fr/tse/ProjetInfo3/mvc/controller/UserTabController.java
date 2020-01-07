@@ -366,7 +366,7 @@ public class UserTabController {
     public void favourites() {
         favsViewer = new FavsViewer();
         userToPrint = userViewer.getUser();
-        int fav = favsViewer.checkUserInFav(userToPrint);
+        int fav = favsViewer.checkUserInFav(userToPrint,LoginController.id);
         if (fav == 1) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);
@@ -380,8 +380,8 @@ public class UserTabController {
     private void favouriteTogglePressed() {
 
         favsViewer = new FavsViewer();
-        favsViewer.addUserToFavourites(userToPrint);
-        int fav = favsViewer.checkUserInFav(userToPrint);
+        favsViewer.addUserToFavourites(userToPrint,LoginController.id);
+        int fav = favsViewer.checkUserInFav(userToPrint,LoginController.id);
         if (fav == 1) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);
