@@ -1,6 +1,16 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.*;
 
 import com.jfoenix.controls.JFXButton;
@@ -31,10 +41,11 @@ import javafx.scene.layout.VBox;
 
 /**
  * @author ALAMI IDRISSI Taha Controller of the Edit PI window, all user
- * interactions whith the Edit PI windows (not the tabs) are handled
- * here
+ *         interactions whith the Edit PI windows (not the tabs) are handled
+ *         here
  */
 public class PiTabController {
+
     private MainController mainController;
 
     private List<Tweet> bigTweetList;
@@ -103,13 +114,13 @@ public class PiTabController {
      */
     private Thread threadGetTweets;
 
-    private Thread threadTopFiveUsers;
+	private List<Tweet> bigTweetList;
 
-    private Thread threadTopLinkedHashtags;
+	private PIViewer piViewer;
 
-    private Thread threadTopTweets;
+	Map<String, Integer> hashtags;
 
-    private UserViewer userViewer;
+	private InterestPoint interestPointToPrint;
 
     private HashtagViewer hashtagViewer;
 
@@ -406,6 +417,56 @@ public class PiTabController {
     void statisticsButtonPressed(ActionEvent event) {
         mainController.goToStatistics(piViewer, bigTweetList);
     }
+  
+  /**
+	 * Get a diff between two dates
+	 * 
+	 * @param date1 the oldest date
+	 * @param date2 the newest date
+	 * @return the diff value, in the provided unit
+	 */
+	public static String getDateDiff(Date date1, Date date2) {
+		long difference = (date2.getTime() - date1.getTime());
+		/*
+		 * if (difference < 31) { if (difference >= 1) { return Math.abs(difference) +
+		 * " jours"; } else { difference = (date2.getTime() - date1.getTime()) /
+		 * 3600000; if (difference < 24) { return Math.abs(difference) + " heures"; }
+		 * else { difference = (date2.getTime() - date1.getTime()) / 86400000; return
+		 * Math.abs(difference) + " jours"; } } } else { difference = (date2.getTime() -
+		 * date1.getTime()) / 2628000000L; return Math.abs(difference) + " mois"; }
+		 */
+		return Math.abs(difference)+" thing";
+	}
+	public String getDiff(Date date1,Date date2) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate d1= convertToLocalDateViaMilisecond(date1);
+		LocalDate d2 = convertToLocalDateViaMilisecond(date2);
+		long daysBetween = ChronoUnit.DAYS.between(d1, d2);
+		
+		if(daysBetween<31 && daysBetween>1) 
+			return daysBetween+" jours";
+		else if(daysBetween>=31) 
+			return (long) (daysBetween/30.42)+" mois";
+		else{
+			long newDiff = daysBetween/24;
+			if(newDiff<24 && newDiff>=1)
+				return newDiff+" heures";
+			else if(newDiff>=24)
+				return newDiff+" jours";
+			else {
+				long anotherDiff = newDiff/60;
+				if(anotherDiff<60 && anotherDiff>=1)
+					return anotherDiff+" minutes";
+				else
+					return anotherDiff+" heures";
+			}
+		}
+	}
+	private static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+	    return Instant.ofEpochMilli(dateToConvert.getTime())
+	      .atZone(ZoneId.systemDefault())
+	      .toLocalDate();
+	}
 
     /**
      * Called when tab is closed
