@@ -1,6 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.jfoenix.controls.JFXButton;
@@ -166,10 +171,10 @@ public class PiTabController {
         piViewer.deleteTweetsFromInterestPoint();
         mainController.closeCurrentTab();
 
-        for (User user: piViewer.getSelectedInterestPoint().getUsers()){
+        for (User user : piViewer.getSelectedInterestPoint().getUsers()) {
             user.setTweets(new ArrayList<>());
         }
-        for (Hashtag hashtag: piViewer.getSelectedInterestPoint().getHashtags()){
+        for (Hashtag hashtag : piViewer.getSelectedInterestPoint().getHashtags()) {
             hashtag.setTweets(new ArrayList<>());
         }
         mainController.goToSelectedPi(piViewer);
@@ -219,7 +224,7 @@ public class PiTabController {
     private Task<Void> getTweets() {
         try {
 
-            bigTweetList = piViewer.getTweetsWrapper(progressLabel,lastSearchLabel);
+            bigTweetList = piViewer.getTweetsWrapper(progressLabel, lastSearchLabel);
 
             // Tweet are collected
             Platform.runLater(() -> {
@@ -246,7 +251,7 @@ public class PiTabController {
                 // Find Min Date
                 Date date = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get().getCreated_at();
 
-                lastDateLabel.setText(getDateDiff(date, new Date()));
+                lastDateLabel.setText(getDiff(date, new Date()));
 
                 nbTweetsLabel.setText(String.valueOf(bigTweetList.size()));
                 nbTrackedLabel.setText(String
@@ -262,22 +267,55 @@ public class PiTabController {
         return null;
     }
 
-    /**
-     * Get a diff between two dates
-     *
-     * @param date1    the oldest date
-     * @param date2    the newest date
-     * @param timeUnit the unit in which you want the diff
-     * @return the diff value, in the provided unit
-     */
-    public static String getDateDiff(Date date1, Date date2) {
-        long difference = (date2.getTime() - date1.getTime()) / 86400000;
-        if (difference < 31)
-            return Math.abs(difference) + " jours";
-        else {
-            difference = (date2.getTime() - date1.getTime()) / 2628000000L;
-            return Math.abs(difference) + " mois";
+    public String getDiff(Date date1, Date date2) {
+       /* DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate d1 = convertToLocalDateViaMilisecond(date1);
+        LocalDate d2 = convertToLocalDateViaMilisecond(date2);
+        long daysBetween = ChronoUnit.DAYS.between(d1, d2);*/
+
+        /*if(daysBetween<31 && daysBetween>1)
+            return daysBetween+" jours";
+        else if(daysBetween>=31)
+            return (long) (daysBetween/30.42)+" mois";
+        else{ // daysBetween <1
+            long newDiff = daysBetween/24;
+            if(newDiff<24 && newDiff>=1)
+                return newDiff+" heures";
+            else if(newDiff>=24)
+                return newDiff+" jours";
+            else {
+                long anotherDiff = newDiff/60;
+                if(anotherDiff<60 && anotherDiff>=1)
+                    return anotherDiff+" minutes";
+                else
+                    return anotherDiff+" heures";
+            }
+        }*/
+        long diff = date2.getTime() - date1.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        if (diffDays <= 31 && diffDays > 1)
+            return diffDays + " jours";
+        else if (diffDays >= 31)
+            return (long) (diffDays / 30.42) + " mois";
+        else { // diffDays <1
+            if (diffHours > 1)
+                return diffHours + " heures";
+            else if (diffMinutes > 1)
+                return diffMinutes + " minutes";
+            else {
+                return diffSeconds + " minutes";
+            }
         }
+    }
+
+    private static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     private Task<Void> setTopFiveUsers() throws Exception {
