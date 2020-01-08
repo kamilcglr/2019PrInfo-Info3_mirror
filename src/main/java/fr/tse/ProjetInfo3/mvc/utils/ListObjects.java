@@ -7,6 +7,7 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.SnapshotParameters;
@@ -156,7 +157,7 @@ public class ListObjects {
 
                         currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
-                      addDeleteIcon = new FontIcon("fas-plus");
+                        addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
                         addDeleteHashtag.setGraphic(addDeleteIcon);
                     } else {
@@ -268,7 +269,7 @@ public class ListObjects {
                         piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         interestPoint.getUsers().remove(currentUser);
-                      
+
                         currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-plus");
@@ -354,7 +355,7 @@ public class ListObjects {
         Label nameLabel;
         Label screenName;
 
-        Image profilePicture;
+        //Image profilePicture;
 
         public SearchUser() {
             super();
@@ -373,10 +374,11 @@ public class ListObjects {
                 setGraphic(null);
 
             } else {
-                if (profilePicture == null) {
-                    profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+                if (user.getProfilePicture() == null) {
+                    Platform.runLater(() -> user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false)));
+                    //user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
                 }
-                profileImageView.setImage(profilePicture);
+                profileImageView.setImage(user.getProfilePicture());
 
                 Circle clip = new Circle(20, 20, 20);
                 profileImageView.setClip(clip);

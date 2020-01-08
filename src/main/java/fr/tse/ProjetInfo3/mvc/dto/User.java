@@ -1,5 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.dto;
 
+import javafx.scene.image.Image;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class User {
     /**
      * Our own attributes, they are not alimented by the API
      */
+    private Image profilePicture;
 
     private List<Tweet> tweets;
 
@@ -294,5 +297,13 @@ public class User {
 
     public void setLastSearchDate(Date lastSearchDate) {
         this.lastSearchDate = lastSearchDate;
+    }
+
+    public Image getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Image profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
