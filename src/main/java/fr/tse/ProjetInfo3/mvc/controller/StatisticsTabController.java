@@ -243,18 +243,27 @@ public class StatisticsTabController {
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
 		int minutesDifference = minutesDifference(currentDate, oldestTweet);
-		double interval = minutesDifference / 20.0d;
-
 		System.out.println(minutesDifference);
+
+		double interval = minutesDifference / 20.0d;
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		System.out.println(oldestTweet);
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 21; i++) {
-			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
-			System.out.println((int) (i * interval));
+
+		if (minutesDifference > 1440) {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+				System.out.println((int) (i * interval));
+			}
+		} else {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(addMinutesToDate(oldestTweet, (int) (i * interval)));
+				System.out.println((int) (i * interval));
+			}
 		}
+		
 
 		// Let's now map each Date interval and the number of tweets with the
 		// corresponding user
@@ -394,17 +403,25 @@ public class StatisticsTabController {
 		/** Timestamps **/
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
-		int hoursDifference = minutesDifference(currentDate, oldestTweet);
-		double interval = hoursDifference / 20.0d;
+		int minutesDifference = minutesDifference(currentDate, oldestTweet);
+		double interval = minutesDifference / 20.0d;
 
-		System.out.println(hoursDifference);
+		System.out.println(minutesDifference);
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 21; i++) {
-			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
-			System.out.println(dateIntervals.get(i - 1));
+		
+		if (minutesDifference > 1440) {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+				System.out.println((int) (i * interval));
+			}
+		} else {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(addMinutesToDate(oldestTweet, (int) (i * interval)));
+				System.out.println((int) (i * interval));
+			}
 		}
 
 		// Let's now map each Date interval and the number of tweets with the
@@ -474,19 +491,27 @@ public class StatisticsTabController {
 		/** Timestamps **/
 		// Get current date
 		Date currentDate = new Date(System.currentTimeMillis());
-		int hoursDifference = minutesDifference(currentDate, oldestTweet);
-		double interval = hoursDifference / 20;
+		int minutesDifference = minutesDifference(currentDate, oldestTweet);
+		double interval = minutesDifference / 20.0d;
 
-		System.out.println(hoursDifference);
+		System.out.println(minutesDifference);
 
 		// Create 20 dates that will serve as intervals
 		System.out.println("Intervals");
 		List<Date> dateIntervals = new LinkedList<Date>();
-		for (int i = 1; i < 21; i++) {
-			dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
-			System.out.println(dateIntervals.get(i - 1));
-		}
 
+		if (minutesDifference > 1440) {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+				System.out.println((int) (i * interval));
+			}
+		} else {
+			for (int i = 1; i < 21; i++) {
+				dateIntervals.add(addMinutesToDate(oldestTweet, (int) (i * interval)));
+				System.out.println((int) (i * interval));
+			}
+		}
+		
 		for (Tweet tweet : bigTweetList) {
 			Date dateTweet = tweet.getCreated_at();
 			Date intervalDate = approximateInterval(dateIntervals, dateTweet);
@@ -588,7 +613,7 @@ public class StatisticsTabController {
 	 */
 	private int minutesDifference(Date start, Date end) {
 		final int MILLIS_TO_HOUR = 1000 * 60;
-		
+
 		int difference = (int) ((start.getTime() - end.getTime()) / MILLIS_TO_HOUR);
 		return difference;
 	}
