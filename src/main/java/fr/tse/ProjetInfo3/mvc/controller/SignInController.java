@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -100,6 +101,11 @@ public class SignInController {
                 tabPane.getTabs().remove(tab);
                 mainController.goToLoginPane();
             });
+            button.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent keyEvent) -> {
+                dialog.close();
+                tabPane.getTabs().remove(tab);
+                mainController.goToLoginPane();
+            });
 
             dialogLayout.setHeading(headerLabel);
             dialogLayout.setBody(bodyText);
@@ -127,6 +133,9 @@ public class SignInController {
                 dialog.close();
             });
 
+            button.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent keyEvent) -> {
+                dialog.close();
+            });
             dialogLayout.setHeading(headerLabel);
             dialogLayout.setBody(bodyText);
             dialogLayout.setActions(button);
@@ -138,6 +147,10 @@ public class SignInController {
 
         }
 
+    }
+    @FXML
+    private void onEnter(ActionEvent event) {
+        signinButtonpressed(event);
     }
 }
 
