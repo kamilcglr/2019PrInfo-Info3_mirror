@@ -3,6 +3,7 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
@@ -25,6 +26,8 @@ import java.util.ResourceBundle;
  */
 public class MyPIsTabController extends ListView<String> implements Initializable {
     private MainController mainController;
+
+    private UserApp userApp;
 
     /* THREADS
      * Every thread should be declared here to kill them when exiting
@@ -67,6 +70,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        this.userApp = mainController.getUserApp();
     }
 
     @Override
@@ -117,7 +121,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         });
 
         //Get the PI and set them on the listView
-        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint(LoginController.id);
+        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint(userApp.getId());
 
         Platform.runLater(() -> {
             for (InterestPoint interestPoint : interestPoints) {
@@ -189,7 +193,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      * @throws InterruptedException
      */
     public List<InterestPoint> initializeListOfInterestPoints() throws IOException, InterruptedException {
-        return piViewer.getlistOfInterestPoint(LoginController.id);
+        return piViewer.getlistOfInterestPoint(userApp.getId());
     }
 
     /**

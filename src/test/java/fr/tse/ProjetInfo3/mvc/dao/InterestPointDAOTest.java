@@ -18,11 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InterestPointDAOTest {
     InterestPoint interestpoint;
-    InterestPointDAO interestPointDAO;
 
     @BeforeAll
     public void initializeTests() {
-        interestPointDAO = new InterestPointDAO();
         //First IP
         List<Hashtag> hashtags = new ArrayList<>();
         Hashtag h1 = new Hashtag("#blackfriday");

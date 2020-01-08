@@ -3,10 +3,7 @@ package fr.tse.ProjetInfo3.mvc.repository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
-import fr.tse.ProjetInfo3.mvc.dto.Tweet;
-import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.dto.*;
 import fr.tse.ProjetInfo3.mvc.utils.TwitterDateParser;
 import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -61,8 +58,15 @@ public class DatabaseManager {
             preparedStatement.executeUpdate();
 
             preparedStatement.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -93,6 +97,12 @@ public class DatabaseManager {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -117,6 +127,12 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }
@@ -139,6 +155,12 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result > 0;
     }
@@ -162,6 +184,12 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return hashtag;
     }
@@ -183,6 +211,12 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result > 0;
     }
@@ -199,6 +233,12 @@ public class DatabaseManager {
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -215,6 +255,12 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -252,14 +298,6 @@ public class DatabaseManager {
                     System.out.println(generatedKeys.getLong(1));
                     //TODO delete if it is unnecessary
                     piID = generatedKeys.getLong(1);
-                    //PreparedStatement ps = connection.prepareStatement("SELECT * FROM HASHTAGCACHED WHERE hashtag_name = ? ");
-                    //ps.setString(1, hashtagName);
-                    //ResultSet rs = ps.executeQuery();
-                    //while (rs.next()) {
-                    //    hashtag = new Hashtag();
-                    //    hashtag = gson.fromJson(rs.getString("data"), Hashtag.class);
-                    //    hashtag.setLastSearchDate(new Date(rs.getTimestamp("date_of_research").getTime()));
-                    //}
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
@@ -267,6 +305,12 @@ public class DatabaseManager {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         interestPoint.setId(piID);
         return piID;
@@ -332,9 +376,12 @@ public class DatabaseManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        for (InterestPoint ip : interestPoints) {
-            System.out.println(ip.getId());
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return interestPoints;
     }
@@ -351,6 +398,12 @@ public class DatabaseManager {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -371,8 +424,15 @@ public class DatabaseManager {
                 };
                 tweetList = gson.fromJson(rs.getString("LIST_TWEETS"), token.getType());
             }
+            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return tweetList;
     }
@@ -398,6 +458,12 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -417,7 +483,191 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    /**
+     * Called just after userApp creation
+     */
+    public void createFavorites(int userID) {
+        Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO FAVORITES(USER_ID, LIST_USERS, LIST_HASHTAGS) VALUES (?,?,?)";
+
+            //Statement.RETURN_GENERATED_KEYS to get the id of inserted element
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setInt(1, userID);
+
+            //Convert users screen names to List then to Json
+            List<String> usersScreenNames = new ArrayList<>();
+            String userScreenNamesJson = gson.toJson(usersScreenNames);
+            preparedStatement.setString(2, userScreenNamesJson);
+
+            List<String> hashtagsNames = new ArrayList<>();
+            String hashtagsNamesJson = gson.toJson(hashtagsNames);
+            preparedStatement.setString(3, hashtagsNamesJson);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Update the favourites
+     */
+    public void updateFavouritesInDatabase(Favourites favourites) {
+        Connection connection = SingletonDBConnection.getInstance();
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE FAVORITES SET LIST_USERS = ?, LIST_HASHTAGS = ? WHERE USER_ID = ?");
+
+            String usersJson = gson.toJson(favourites.getUsers().stream().map(User::getScreen_name).collect(Collectors.toList()));
+            ps.setString(1, usersJson);
+
+            String hashtagsJson = gson.toJson(favourites.getHashtags().stream().map(Hashtag::getHashtag).collect(Collectors.toList()));
+            ps.setString(2, hashtagsJson);
+
+
+            ps.setInt(3, favourites.getUser_id());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Gets the Favorite for one user from DataBase.
+     */
+    public Favourites getFavourite(int userID) {
+        Connection connection = SingletonDBConnection.getInstance();
+        Favourites favourites = new Favourites();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM FAVORITES where user_id=?");
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                favourites.setFavouritesID(rs.getInt("favorite_id"));
+                favourites.setUser_id(rs.getInt("user_id"));
+
+                TypeToken<List<String>> token = new TypeToken<List<String>>() {
+                };
+
+                List<String> usersScreenNames = gson.fromJson(rs.getString("LIST_USERS"), token.getType());
+                List<String> hashtagNames = gson.fromJson(rs.getString("LIST_HASHTAGS"), token.getType());
+
+                for (String screenName : usersScreenNames) {
+                    User user = new User();
+                    userViewer.searchScreenName(screenName);
+                    user = userViewer.getUser();
+                    favourites.addUser(user);
+                }
+
+                for (String hashtagName : hashtagNames) {
+                    Hashtag hashtag = new Hashtag(hashtagName);
+                    hashtag.setHashtag(hashtagName);
+                    favourites.addHashtag(hashtag);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return favourites;
+    }
+
+    /*
+     * Functions for sign up and connection
+     */
+
+    /**
+     * @return boolean if true user is correctly registered
+     */
+    public boolean addNewUserToDataBase(UserApp userApp) {
+        Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "INSERT INTO userApp(user_name, PASSWORD, MAIL) VALUES (?,?,?)";
+
+            //Statement.RETURN_GENERATED_KEYS to get the id of inserted element
+            PreparedStatement preparedStatement = connection.prepareStatement(Query, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, userApp.getUserName());
+            preparedStatement.setString(2, userApp.getPassword());
+            preparedStatement.setString(3, userApp.getMail());
+
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if (rs.next()) {
+                createFavorites( rs.getInt(1));
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Gets userApp object with id
+     *
+     * @return userApp object if exist null if not
+     */
+    public UserApp getUserFromDataBase(String username, String password) {
+        UserApp userApp = null;
+        Connection connection = SingletonDBConnection.getInstance();
+        try {
+            String Query = "SELECT user_id, user_name, mail, password FROM userApp where user_name='" + username + "'" + " and password= '" + password + "'";
+            PreparedStatement ps = connection.prepareStatement(Query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                userApp = new UserApp();
+                userApp.setId(rs.getInt("user_id"));
+                userApp.setUserName(rs.getString("user_name"));
+                userApp.setMail(rs.getString("mail"));
+                userApp.setPassword(rs.getString("password"));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return userApp;
+    }
 }

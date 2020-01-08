@@ -92,7 +92,7 @@ public class SearchTabController {
         this.mainController = mainController;
         this.hamburger = hamburger;
 
-        if (LoginController.connected == 1) {
+        if (mainController.isConnected()) {
             loginButton.setVisible(false);
             signinButton.setVisible(false);
             logoutButton.setVisible(true);
@@ -205,9 +205,8 @@ public class SearchTabController {
 
     @FXML
     public void signoutButtonPressed(ActionEvent event) {
-        LoginController.connected = 0;
+        mainController.setConnected(false);
         mainController.goToHomeRefresh();
-
     }
 
     /*

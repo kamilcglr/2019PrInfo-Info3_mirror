@@ -277,7 +277,7 @@ public class PiTabCreateController {
             interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
                     hashtagList, userList);
 
-            interestPoint.setUserID(LoginController.id);
+            interestPoint.setUserID(mainController.getUserApp().getId());
             piViewer.addInterestPointToDatabase(interestPoint);
             launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true, true);
         } else {

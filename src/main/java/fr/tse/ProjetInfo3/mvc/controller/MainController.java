@@ -6,6 +6,9 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -93,6 +96,15 @@ public class MainController {
      * Viewers
      */
     private PIViewer piViewer;
+    private FavsViewer favsViewer;
+
+    /*
+     * DatabaseManager
+     */
+    private DatabaseManager databaseManager;
+
+    private boolean connected;
+    private UserApp userApp;
 
     private Tab myPisTab;
     private Tab myFavsTab;
@@ -101,7 +113,11 @@ public class MainController {
     /*This function is launched when Mainwindow is launched */
     @FXML
     private void initialize() {
+        databaseManager = new DatabaseManager();
+        connected = false;
         piViewer = new PIViewer();
+        favsViewer = new FavsViewer(databaseManager);
+
         //TABS can be closed
         tabPane.setTabClosingPolicy(JFXTabPane.TabClosingPolicy.ALL_TABS);
 
@@ -152,7 +168,7 @@ public class MainController {
         try {
             AnchorPane newUserTab = fxmlLoader.load();
             UserTabController userTabController = fxmlLoader.getController();
-            userTabController.injectMainController(this);
+            userTabController.injectMainController(this, favsViewer);
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(newUserTab);
@@ -192,7 +208,7 @@ public class MainController {
         try {
             AnchorPane newHashtagTab = fxmlLoader.load();
             HashtagTabController hashtagTabController = fxmlLoader.getController();
-            hashtagTabController.injectMainController(this);
+            hashtagTabController.injectMainController(this,favsViewer);
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(newHashtagTab);
@@ -232,10 +248,10 @@ public class MainController {
         try {
             AnchorPane loginTab = fxmlLoader.load();
             LoginController loginController = fxmlLoader.getController();
-            loginController.injectMainController(this);
+            loginController.injectMainController(this, databaseManager, favsViewer);
             Tab tab = new Tab();
             Platform.runLater(() -> {
-                if (loginController.connected == 0) {
+                if (!isConnected()) {
                     tab.setContent(loginTab);
                     tab.setText("Login");
                     tabPane.getTabs().add(tab);
@@ -268,14 +284,14 @@ public class MainController {
                             myPisTab = null;
                         }
                     });
-                    myPisTab.setOnSelectionChanged(new EventHandler<Event>() {
+                    /*myPisTab.setOnSelectionChanged(new EventHandler<Event>() {
                         @Override
                         public void handle(Event t) {
                             if (myPisTab.isSelected()) {
                                 goToMyPisPane();
                             }
                         }
-                    });
+                    });*/
                 });
 
                 //Heavy task inside this thread, we go to user pane before
@@ -306,7 +322,7 @@ public class MainController {
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
                 //Heavy task inside this thread, we go to user pane before
-                Task<Void> task = new Task<Void>() {
+                /*Task<Void> task = new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
                         myPIsTabController.refreshPIs();
@@ -316,13 +332,15 @@ public class MainController {
 
                 Thread thread = new Thread(task);
                 thread.setDaemon(true);
-                thread.start();
+                thread.start();*/
+                myPIsTabController.refreshPIs();
             });
         }
         if (!drawer.isClosed()) {
             drawer.close();
         }
     }
+
     public void goToMyFavsPane() {
         //We declare this controller here, it will be used when the tab already exist in the else
         if (myFavsTab == null) { //the tab is not initialised/charged in memory
@@ -330,7 +348,7 @@ public class MainController {
             try {
                 AnchorPane newFavTab = fxmlLoader.load();
                 favsController = fxmlLoader.getController();
-                favsController.injectMainController(this);
+                favsController.injectMainController(this, favsViewer);
                 myFavsTab = new Tab();
                 Platform.runLater(() -> {
                     myFavsTab.setContent(newFavTab);
@@ -357,14 +375,14 @@ public class MainController {
                     public void handle(Event event) {
                         favsController.killThreads();
                         thread.interrupt();
-                        myFavsTab=null;
+                        myFavsTab = null;
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        }else {
+        } else {
             //the tab is already initialized, so we just refresh the list of PIs
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myFavsTab);
@@ -499,7 +517,7 @@ public class MainController {
                 public void handle(Event event) {
                     piTabController.killThreads();
                     thread.interrupt();
-      
+                    myPIsTabController.refreshPIs();
                 }
             });
 
@@ -576,5 +594,21 @@ public class MainController {
 
     public void closeCurrentTab() {
         tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem());
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public UserApp getUserApp() {
+        return userApp;
+    }
+
+    public void setUserApp(UserApp userApp) {
+        this.userApp = userApp;
     }
 }
