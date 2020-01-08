@@ -88,11 +88,32 @@
                                     </TitledPane>
                                                 <TitledPane expanded="false" text="Top 10 des # liés">
                                        <content>
-                                          <JFXListView fx:id="topTenLinkedList" styleClass="hashtagsList" />
+                                          <JFXListView fx:id="topTenLinkedList" onMouseClicked="#hashtagClick" styleClass="hashtagsList" />
                                        </content>
                                     </TitledPane>
                                  </children>
                               </VBox>
+                              <JFXButton fx:id="statisticsButton" alignment="CENTER" onAction="#statisticsButtonPressed" prefHeight="42.0" prefWidth="180.0" styleClass="actionButton" text="Statistiques" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fas-chart-area" styleClass="icon" />
+                                 </graphic>
+                                 <GridPane.margin>
+                                    
+                                 </GridPane.margin>
+                              </JFXButton>
+                              <Label fx:id="lastSearchLabel" text="Date de la dernière recherche : " GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.halignment="RIGHT">
+                                 <GridPane.margin>
+                                    <Insets right="100.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <JFXButton fx:id="refreshButton" onAction="#refreshButtonPressed" text="" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fas-sync" iconSize="24" styleClass="refreshIcon" />
+                                 </graphic>
+                                 <GridPane.margin>
+                                    <Insets right="50.0" top="5.0" />
+                                 </GridPane.margin>
+                              </JFXButton>
                                     </children>
                                 </GridPane>
                             </content>

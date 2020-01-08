@@ -451,6 +451,22 @@ GridPane {
     -fx-padding: 10 0 0 0;
 }
 
+.favoriteIcon {
+    -fx-icon-color: -red;
+    -fx-padding: 5 0 0 0;
+}
+
+.refreshIcon {
+    -fx-icon-color: -primary;
+    -fx-padding: 0 0 0 0;
+}
+
+#lastSearchLabel{
+    -fx-font-size: 15;
+    -fx-font-family: 'Raleway-Regular';
+}
+
+
 /*Login and signin*/
 
 .jfx-text-field .input-line, .jfx-password-field .input-line {
@@ -514,4 +530,9 @@ GridPane {
     -fx-background-radius: 15pt;
     -fx-border-color: -accent;
 }*/
+
+/* Charts */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
 

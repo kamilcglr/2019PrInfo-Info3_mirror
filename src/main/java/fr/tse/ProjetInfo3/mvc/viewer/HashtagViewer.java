@@ -1,31 +1,32 @@
 package fr.tse.ProjetInfo3.mvc.viewer;
 
-import java.lang.reflect.Parameter;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.jfoenix.controls.JFXProgressBar;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import javafx.util.Pair;
 
-import static java.util.stream.Collectors.partitioningBy;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toMap;
 
-public class HastagViewer {
+public class HashtagViewer {
 
     private RequestManager requestManager;
     private Hashtag hashtag;
+    private DatabaseManager databaseManager;
 
     private List<Tweet> tweets = new ArrayList<>();
     private List<User> users = new ArrayList<User>();
     private List<String> hashtags = new ArrayList<>();
 
-    public HastagViewer() {
+    public HashtagViewer() {
         requestManager = new RequestManager();
         hashtag = new Hashtag();
+        databaseManager = new DatabaseManager();
     }
 
     /**
@@ -39,6 +40,7 @@ public class HastagViewer {
         List<Tweet> tempList;
         tempList = requestManager.searchTweets(hashtag, count, maxId, progressBar);
         this.tweets = tempList;
+
         return tempList;
     }
 
@@ -60,10 +62,6 @@ public class HastagViewer {
         this.tweets = tweets;
     }
 
-    public List<Tweet> getTweetList() {
-        return tweets;
-    }
-
     public Integer getNumberOfTweets() {
         return tweets.size();
     }
@@ -71,11 +69,6 @@ public class HastagViewer {
     public Integer getNumberOfUniqueAccounts() {
         users = getUsersFromHashtag();
         return users.size();
-    }
-
-    public List<String> getHashtagsLinked() {
-        hashtags = getHashtagLinked();
-        return hashtags;
     }
 
     public Hashtag getHashtag() {
@@ -112,7 +105,7 @@ public class HastagViewer {
      * @return the list of hashtags linked to that #
      * @author Laïla
      **/
-    public List<String> getHashtagLinked() {
+    public List<String> getHashtagsLinked() {
         List<String> hashtags = new ArrayList<>();
         List<String> result = null;
         tweets.forEach(tweet -> tweet.getEntities().getHashtags().forEach(hashtag -> hashtags.add(hashtag.getText())));
@@ -150,7 +143,7 @@ public class HastagViewer {
 
     public Map<Tweet, Integer> topTweets(List<Tweet> tweetList) {
         Map<Tweet, Integer> TweetsSorted;
-        Map<Tweet, Integer> Tweeted = new HashMap<Tweet, Integer>();
+        Map<Tweet, Integer> Tweeted = new HashMap<>();
 
         for (Tweet tweet : tweetList) {
             if (!Tweeted.containsKey(tweet) && tweet.getRetweeted_status() == null) {
@@ -168,5 +161,34 @@ public class HastagViewer {
                                 LinkedHashMap::new));
 
         return TweetsSorted;
+    }
+
+    /*=======================================DATABASE FUNCTIONS ========================================*/
+
+    /**
+     * Set this.hashtag to the user got from DB.
+     *
+     * @return boolean
+     */
+    public void setHashtagFromDataBase() {
+        // look first in the Database if there is an hashtag.
+        hashtag = databaseManager.getCachedHashtagFromDatabase(hashtag.getHashtag());
+    }
+
+    /**
+     * Search in the DB if hashtag exist. If exist, it sends true.
+     *
+     * @return boolean
+     */
+    public boolean verifyHahstagInDataBase() {
+        return databaseManager.cachedHashtagInDataBase(hashtag.getHashtag());
+    }
+
+    public void cacheHashtagToDataBase(Hashtag hashtag) {
+        databaseManager.cacheHashtagToDataBase(hashtag);
+    }
+
+    public void deleteCachedHashtag() {
+        databaseManager.deleteCachedHashtagFromDatabase(hashtag.getHashtag());
     }
 }

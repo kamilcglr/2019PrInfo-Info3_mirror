@@ -3,11 +3,10 @@ package fr.tse.ProjetInfo3.mvc.controller;
 import com.jfoenix.controls.*;
 
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +26,8 @@ import java.util.ResourceBundle;
  */
 public class MyPIsTabController extends ListView<String> implements Initializable {
     private MainController mainController;
+
+    private UserApp userApp;
 
     /* THREADS
      * Every thread should be declared here to kill them when exiting
@@ -69,6 +70,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     /*Controller can acces to this Tab */
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
+        this.userApp = mainController.getUserApp();
     }
 
     @Override
@@ -78,7 +80,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         deletePI.setVisible(false);
         //While user has not selected an Interest Point, we hide edit or show button
         seeButton.setVisible(false);
-
 
         PIListView.setCellFactory(param -> new ListObjects.ResultInterestPoint());
     }
@@ -92,7 +93,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             piViewer.setSelectedInterestPoint(PIListView.getSelectionModel().getSelectedIndex());
             seeButton.setVisible(true);
             deletePI.setVisible(true);
-            editPI.setVisible(true);
             editPI.setVisible(true);
         }
 
@@ -121,7 +121,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
         });
 
         //Get the PI and set them on the listView
-        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint();
+        List<InterestPoint> interestPoints = piViewer.getlistOfInterestPoint(userApp.getId());
 
         Platform.runLater(() -> {
             for (InterestPoint interestPoint : interestPoints) {
@@ -193,7 +193,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
      * @throws InterruptedException
      */
     public List<InterestPoint> initializeListOfInterestPoints() throws IOException, InterruptedException {
-        return piViewer.getlistOfInterestPoint();
+        return piViewer.getlistOfInterestPoint(userApp.getId());
     }
 
     /**

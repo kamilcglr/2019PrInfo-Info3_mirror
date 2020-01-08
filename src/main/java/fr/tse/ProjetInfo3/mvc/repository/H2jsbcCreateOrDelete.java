@@ -1,6 +1,7 @@
 package fr.tse.ProjetInfo3.mvc.repository;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -8,142 +9,204 @@ import java.sql.Statement;
  * This class init the tables, use it CAREFULLY
  * */
 public class H2jsbcCreateOrDelete {
+
+    private static Connection conn;
+    private static Statement stmt;
+
+    /**
+     * You this function can delete all the tables and recreate them.
+     * They call global function that create or delete anything, if you want a more fain-grained
+     * control, you can can the desired function.
+     */
     public static void main(String[] args) {
-        //  deleteAllTables();
-        //createTables();
-        oldCreateUser();
+        try {
+            System.out.println("Connecting to database...");
+            conn = SingletonDBConnection.getInstance();
+            stmt = conn.createStatement();
+
+            deleteAllTables();
+            createAllTables();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Goodbye!");
     }
 
+    /**
+     * Delete ALL the tabs
+     */
     public static void deleteAllTables() {
-        Connection conn = null;
-        Statement stmt = null;
         try {
-            //STEP 2: Open a connection
-            System.out.println("Connecting to database...");
-            conn = SingletonDBConnection.getInstance();
-            stmt = conn.createStatement();
+            deleteInterestPointTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteUserOfAppTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteFavoriteTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteCachedTables();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-            stmt.executeUpdate("drop table interestpoint");
-            stmt.executeUpdate("drop table hashtag");
-            stmt.executeUpdate("drop table twitteruser");
+    /**
+     * Delete favorites users and hashtags
+     */
+    public static void deleteFavoriteTable() {
+        try {
+            stmt.executeUpdate("drop table favorites");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete Interest Point Table but also user and hashtag
+     */
+    public static void deleteInterestPointTable() {
+        try {
+            stmt.executeUpdate("drop table interestPoint");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete the table that contain user of application (e.g. Bob)
+     */
+    public static void deleteUserOfAppTable() {
+        try {
             stmt.executeUpdate("drop table userApp");
-
-
-            System.out.println("Delete all tables tables in given database...");
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // STEP 4: Clean-up environment
-            try {
-                stmt.close();
-                conn.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Goodbye!");
-    }
-
-
-    public static void createTables() {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-
-            //STEP 2: Open a connection
-            System.out.println("Connecting to database...");
-            conn = SingletonDBConnection.getInstance();
-
-            //STEP 3: Execute a query
-            System.out.println("Creating tables in given database...");
-            stmt = conn.createStatement();
-
-            // we are creating interestpoint table and hashtag table
-            // hashtag table will have a foreign key which is
-            // the interestpoint_id so we could for each PI store its hashtags !
-
-            String interestpoint = "CREATE TABLE   interestpoint " +
-                    "(interestpoint_id INTEGER AUTO_INCREMENT,"
-                    + "name VARCHAR(255) , " +
-                    " description VARCHAR(255), " +
-                    " created_at DATE,"
-                    + "PRIMARY KEY (interestpoint_id))";
-
-            String hashtag = "CREATE TABLE   hashtag " +
-                    "( hashtag_id INTEGER AUTO_INCREMENT,"
-                    + "hashtag VARCHAR(255),"
-                    + "PRIMARY KEY (hashtag_id),"
-                    + "interestpoint_id INTEGER,"
-                    + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
-
-            String user = "CREATE TABLE   twitteruser " +
-                    "( user_id INTEGER AUTO_INCREMENT,"
-                    + "userName VARCHAR(255),"
-                    + "userScreenName VARCHAR(255),"
-                    + "PRIMARY KEY (user_id),"
-                    + "interestpoint_id INTEGER,"
-                    + "FOREIGN KEY(interestpoint_id) REFERENCES interestpoint)";
-
-            stmt.executeUpdate(interestpoint);
-            stmt.executeUpdate(hashtag);
-            stmt.executeUpdate(user);
-
-            System.out.println("Created tables in given database...");
-
-            // STEP 4: Clean-up environment
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            //Handle errors for Class.forName
-            e.printStackTrace();
-        } finally {
-            // STEP 4: Clean-up environment
-            try {
-                stmt.close();
-                conn.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Goodbye!");
         }
     }
 
-    public static void oldCreateUser() {
-        Connection conn = null;
-        Statement stmt = null;
+    /**
+     * Delete the table that contain cached object
+     */
+    public static void deleteCachedTables() {
         try {
-
-            //STEP 2: Open a connection
-            System.out.println("Connecting to database...");
-            conn = SingletonDBConnection.getInstance();
-
-            //STEP 3: Execute a query
-            System.out.println("Creating table in given database...");
-            stmt = conn.createStatement();
-            String userapp = "CREATE TABLE   user" +
-                    "(username VARCHAR(255) , " +
-                    " mail VARCHAR(255), " +
-                    " twitter VARCHAR(255), " +
-                    " password VARCHAR(20))";
-            stmt.executeUpdate(userapp);
-            System.out.println("Created tables in given database...");
-        } catch (Exception e) {
-            //Handle errors for Class.forName
+            stmt.executeUpdate("drop table hashtagCached");
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // STEP 4: Clean-up environment
-            try {
-                stmt.close();
-                conn.close();
+        }
+        try {
+            stmt.executeUpdate("drop table userCached");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Goodbye!");
-        } //end try
-        System.out.println("Goodbye!");
+    /**
+     * Delete the table that contain user of application (e.g. Bob)
+     */
+    public static void createAllTables() {
+        createUserOfAppTable();
+        createFavoriteTable();
+        createCachedTables();
+        createInterestPointTables();
+    }
+
+    /**
+     * Create favorites table
+     */
+    public static void createFavoriteTable() {
+        String favorite = "CREATE TABLE   favorites " +
+                "( favorite_id INTEGER auto_increment,"
+                + "user_id INTEGER,"
+                + "LIST_USERS CLOB,"
+                + "LIST_HASHTAGS CLOB,"
+                + "PRIMARY KEY (user_id))";
+        try {
+            stmt.execute(favorite);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create Interest Point Table but also user and hashtag
+     */
+    public static void createInterestPointTables() {
+
+        String interestPoint = "CREATE TABLE   interestPoint " +
+                "(interestpoint_id INTEGER AUTO_INCREMENT,"
+                + "user_id INTEGER,"
+                + "name VARCHAR(255),"
+                + "LIST_USERS CLOB,"
+                + "LIST_HASHTAGS CLOB,"
+                + "description VARCHAR(255),"
+                + "LIST_TWEETS CLOB,"
+                + "date_of_research TIMESTAMP,"
+                + "created_at DATE,"
+                + "PRIMARY KEY (interestpoint_id))";
+        try {
+            stmt.executeUpdate(interestPoint);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create the table that contain user of application (e.g. Bob)
+     */
+    public static void createUserOfAppTable() {
+        String userApp = "CREATE TABLE   userApp" +
+                "(user_id INTEGER AUTO_INCREMENT," +
+                " user_name VARCHAR(255) , " +
+                " mail VARCHAR(255), " +
+                " twitter VARCHAR(255), " +
+                " password VARCHAR(20))";
+        try {
+            stmt.executeUpdate(userApp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create the table that contain cached object
+     */
+    public static void createCachedTables() {
+        String userCached = "CREATE TABLE   userCached " +
+                "( user_id BIGINT,"
+                + "user_screen_name VARCHAR(255),"
+                + "date_of_research TIMESTAMP,"
+                + "PRIMARY KEY (user_id),"
+                + "data CLOB)";
+
+        String hashtagCached = "CREATE TABLE   hashtagCached "
+                + "( hashtag_name  VARCHAR(255),"
+                + "date_of_research TIMESTAMP,"
+                + "PRIMARY KEY (hashtag_name),"
+                + "data CLOB)";
+        try {
+            stmt.executeUpdate(userCached);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.executeUpdate(hashtagCached);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

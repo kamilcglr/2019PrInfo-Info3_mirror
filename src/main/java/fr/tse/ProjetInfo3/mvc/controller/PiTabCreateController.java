@@ -7,21 +7,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.jfoenix.controls.*;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
-import fr.tse.ProjetInfo3.mvc.utils.DateFormats;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.*;
-import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXProgressBar;
+import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.JFXSnackbar;
+import com.jfoenix.controls.JFXSnackbarLayout;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.events.JFXDialogEvent;
 
+import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.SearchViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -36,6 +40,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,7 +71,9 @@ public class PiTabCreateController {
     private PIViewer piViewer;
     private InterestPoint interestPointToEdit;
 
-    /* Controller can acces to this Tab */
+    /**
+     * Injections
+     **/
     public void injectMainController(MainController mainController) {
         this.mainController = mainController;
     }
@@ -83,24 +95,39 @@ public class PiTabCreateController {
     }
 
     /**
-     * Controller variables
+     * Time
      **/
-
-    boolean isNew; // if true, it is teh creation of a PI, else false (edition of existing PI)
-    boolean userSelected;
-    boolean suppressionDone;
 
     private Date date;
 
+    /**
+     * Tabs
+     **/
+
     private TabPane tabPane;
     private Tab tab;
-    private InterestPoint interestPoint;
+
+    /**
+     * Lists
+     **/
 
     private ObservableList<String> observableListHashtag;
     private ObservableList<User> observableListUser;
 
+    private List<User> resultUsers;
+
     /**
-     * PiTabCreate.fxml FXML elements
+     * Other
+     **/
+
+    boolean isNew; // if true, the IP is being created, else false (edition of an existing IP)
+    boolean userSelected;
+    boolean suppressionDone;
+
+    private InterestPoint interestPoint;
+
+    /**
+     * PiTabCreate.fxml FXML element
      **/
     @FXML
     private ScrollPane scrollPane;
@@ -147,10 +174,10 @@ public class PiTabCreateController {
     @FXML
     private JFXListView<User> propositionList;
 
-    private List<User> resultUsers;
 
-    // We separate ListViews from Lsit of object, because we will need them when
-    // savign
+    /**
+     * JFXListView elements
+     **/
     @FXML
     private JFXListView<String> hashtagListView;
     private List<Hashtag> hashtagList = new ArrayList<>();
@@ -180,7 +207,6 @@ public class PiTabCreateController {
         propositionProgressBar.setProgress(-1);
 
         propositionList.setCellFactory(param -> new ListObjects.SearchUser());
-
 
         userSelected = false;
         suppressionDone = true;
@@ -251,6 +277,7 @@ public class PiTabCreateController {
             interestPoint = new InterestPoint(nameJFXTextField.getText(), descriptionJFXTextArea.getText(), date,
                     hashtagList, userList);
 
+            interestPoint.setUserID(mainController.getUserApp().getId());
             piViewer.addInterestPointToDatabase(interestPoint);
             launchInfoDialog("Enregistrement réussi", "Votre point d'intérêt a été enregistré", "D'accord", true, true);
         } else {
@@ -432,23 +459,23 @@ public class PiTabCreateController {
     }
 
     /**
-     * If user choose an entry in the table, we launch the search by firing an event.
-     * But we have to take the screen_name fisrt from the list
+     * If user choose an entry in the table, we launch the search by firing an
+     * event. But we have to take the screen_name fisrt from the list
      *
      * @param event
      */
     @FXML
     private void propositionListClicked(MouseEvent event) {
         User selectedResult = propositionList.getSelectionModel().getSelectedItem();
-        userSelected = true; //keep userSelected before userField.setText
+        userSelected = true; // keep userSelected before userField.setText
         userField.setText(selectedResult.getScreen_name());
         propositionVBox.setVisible(false);
 
     }
 
     /**
-     * @author Sergiy A Cell element used as an entity shown in the Hashtag
-     * JFXListView
+     * @author Sergiy
+     * A Cell element used as an entity shown in the Hashtag JFXListView
      */
     public final class HashtagCell extends ListCell<String> {
         GridPane cellGridPane;
@@ -501,10 +528,10 @@ public class PiTabCreateController {
                 public void handle(ActionEvent event) {
                     System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-                    //hashtagList = hashtagList.stream()
-                    //        .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
-                    //        .collect(Collectors.toList());
-                    //test
+                    // hashtagList = hashtagList.stream()
+                    // .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
+                    // .collect(Collectors.toList());
+                    // test
                     List<Hashtag> toRemove = hashtagList.stream()
                             .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
                             .collect(Collectors.toList());
@@ -538,7 +565,6 @@ public class PiTabCreateController {
 
     /**
      * @author Sergiy
-     * <p>
      * A Cell element used as an entity shown in the Users JFXListView
      */
     public final class UserCell extends ListCell<User> {

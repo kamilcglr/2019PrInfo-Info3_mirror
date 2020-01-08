@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class SingletonDBConnection {
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "org.h2.Driver";
-	static final String DB_URL = "jdbc:h2:~/user";
+	static final String DB_URL = "jdbc:h2:~/user;DB_CLOSE_DELAY=1";
 
 	// Database credentials
 	static final String USER = "sa";
@@ -28,24 +28,25 @@ public class SingletonDBConnection {
 	// create a private Constructor ( can be accessed only via the getters of this
 	// class)
 	private SingletonDBConnection() {
-
 		try {
 			// STEP 1: Register JDBC driver
 			Class.forName(JDBC_DRIVER);
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
-		} catch (SQLException se) {
+		} catch (SQLException | ClassNotFoundException se) {
 			se.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
 
 	}
 
 	// the getters that will return the connection
 	public static Connection getInstance() {
-		if (connection == null) {
-			new SingletonDBConnection();
+		try {
+			if (connection == null  || connection.isClosed()) {
+				new SingletonDBConnection();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return connection;
 	}
