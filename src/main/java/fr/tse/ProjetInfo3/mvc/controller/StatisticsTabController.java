@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
@@ -32,6 +33,7 @@ import javafx.scene.chart.Chart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.AnchorPane;
@@ -53,6 +55,7 @@ public class StatisticsTabController {
 	private Map<String, Map<Date, Integer>> tweetsPerIntervalForEachHashtagMap;
 	private Map<Date, Integer> tweetsPerInterval;
 	private Map<String, Integer> topTenLinkedHashtags;
+	private InterestPoint interestPointToPrint;
 
 	private List<Tweet> bigTweetList;
 	private List<Tweet> reducedTweetListUsers;
@@ -95,6 +98,9 @@ public class StatisticsTabController {
 	@FXML
 	private Pane pane4;
 
+	@FXML
+	private Label piNameLabel;
+
 	/** Lists of Graphical elements **/
 
 	private List<Pane> chartContainers; // List of Pane chart containers
@@ -123,10 +129,12 @@ public class StatisticsTabController {
 	 */
 	public void setDatas(PIViewer piViewer) {
 		this.piViewer = piViewer;
+		this.interestPointToPrint = piViewer.getSelectedInterestPoint();
 
 		threadGetTweets = new Thread(getTweets());
 		threadGetTweets.setDaemon(true);
 		threadGetTweets.start();
+		piNameLabel.setText(interestPointToPrint.getName());
 	}
 
 	/**
@@ -819,6 +827,7 @@ public class StatisticsTabController {
 		}
 
 		ac.setLegendSide(Side.RIGHT); // Put the legend on the right
+
 		// makeChartAppear(pane1, ac);
 		charts.add(ac);
 	}
