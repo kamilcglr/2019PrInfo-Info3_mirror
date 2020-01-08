@@ -30,10 +30,7 @@ class PIViewerTest {
 
     @Test
     void getlistOfInterestPoint() {
-        List<InterestPoint> listOfInterestPoints = new ArrayList<>();
-        listOfInterestPoints = piViewer.getListOfInterestPointFromDataBase(LoginController.id);
 
-        assertTrue(listOfInterestPoints.size()>0);
     }
 
     /**
@@ -65,7 +62,7 @@ class PIViewerTest {
         ip1.setUsers(users);
 
 
-        piViewer.getlistOfInterestPoint(LoginController.id);
+        //piViewer.getlistOfInterestPoint(LoginController.id);
         piViewer.setSelectedInterestPoint(0);
 
         Label label = new Label();

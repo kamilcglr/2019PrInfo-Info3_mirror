@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 
@@ -43,7 +44,10 @@ public class UserTabController {
     private UserViewer userViewer;
 
     private FavsViewer favsViewer;
+
     private User userToPrint;
+
+    private UserApp userApp;
 
     /* THREADS
      * Every thread should be declared here to kill them when exiting
@@ -116,8 +120,12 @@ public class UserTabController {
 
     /**************************************************************/
     /*Controller can access to main Controller */
-    public void injectMainController(MainController mainController) {
+    public void injectMainController(MainController mainController, FavsViewer favsViewer) {
         this.mainController = mainController;
+        if (mainController.isConnected()) {
+            this.userApp = mainController.getUserApp();
+            this.favsViewer = favsViewer;
+        }
     }
 
     /*This function is launched when this tab is launched */
@@ -206,7 +214,7 @@ public class UserTabController {
             nbFollowing.setVisible(true);
             buildPicture();
         });
-        if (LoginController.connected == 1) {
+        if (mainController.isConnected()) {
             favourites();
         } else {
             favoriteToggle.setVisible(false);
@@ -364,10 +372,7 @@ public class UserTabController {
 
     /* ================ FAVORITES ================    */
     public void favourites() {
-        favsViewer = new FavsViewer();
-        userToPrint = userViewer.getUser();
-        int fav = favsViewer.checkUserInFav(userToPrint,LoginController.id);
-        if (fav == 1) {
+        if (favsViewer.checkUserInFav(userToPrint)) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);
         } else {
@@ -378,16 +383,15 @@ public class UserTabController {
 
     @FXML
     private void favouriteTogglePressed() {
-
-        favsViewer = new FavsViewer();
-        favsViewer.addUserToFavourites(userToPrint,LoginController.id);
-        int fav = favsViewer.checkUserInFav(userToPrint,LoginController.id);
-        if (fav == 1) {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
-        } else {
+        if (favsViewer.checkUserInFav(userToPrint)) {
             favoriteToggle.setVisible(true);
             NotfavoriteToggle.setVisible(false);
+            favsViewer.removeUserFromFavourites(userToPrint);
+
+        } else {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+            favsViewer.addUserToFavourites(userToPrint);
         }
     }
 

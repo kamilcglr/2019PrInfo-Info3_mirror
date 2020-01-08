@@ -5,6 +5,7 @@ import com.jfoenix.controls.*;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
@@ -41,6 +42,8 @@ public class HashtagTabController {
     private Hashtag hashtagToPrint;
 
     private FavsViewer favsViewer;
+
+    private UserApp userApp = new UserApp();
 
     Map<String, Integer> hashtagLinked;
 
@@ -106,8 +109,12 @@ public class HashtagTabController {
 
     /**************************************************************/
     /*Controller can access to main Controller */
-    public void injectMainController(MainController mainController) {
+    public void injectMainController(MainController mainController, FavsViewer favsViewer) {
         this.mainController = mainController;
+        if (mainController.isConnected()){
+            this.userApp = mainController.getUserApp();
+            this.favsViewer = favsViewer;
+        }
     }
 
     /*This function is launched when this tab is launched */
@@ -186,7 +193,7 @@ public class HashtagTabController {
             hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
             hashtagLabel.setVisible(true);
         });
-        if (LoginController.connected == 1) {
+        if (mainController.isConnected()) {
             favourites();
         } else {
             favoriteToggle.setVisible(false);
@@ -350,11 +357,7 @@ public class HashtagTabController {
 
     /* ================ FAVORITES ================    */
     public void favourites() {
-        //favourites
-        favsViewer = new FavsViewer();
-        hashtagToPrint = hashtagViewer.getHashtag();
-        int fav = favsViewer.checkHashInFav(hashtagToPrint,LoginController.id);
-        if (fav == 1) {
+        if (favsViewer.checkHashInFav(hashtagToPrint)) {
             favoriteToggle.setVisible(false);
             NotfavoriteToggle.setVisible(true);
         } else {
@@ -365,15 +368,14 @@ public class HashtagTabController {
 
     @FXML
     private void favouriteTogglePressed() {
-        favsViewer.addHashtagToFavourites(hashtagToPrint,LoginController.id);
-        int fav = favsViewer.checkHashInFav(hashtagToPrint,LoginController.id);
-        if (fav == 1) {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
-        } else {
+        if (favsViewer.checkHashInFav(hashtagToPrint)) {
             favoriteToggle.setVisible(true);
             NotfavoriteToggle.setVisible(false);
-
+            favsViewer.removeHashtagFromFavourites(hashtagToPrint);
+        } else {
+            favoriteToggle.setVisible(false);
+            NotfavoriteToggle.setVisible(true);
+            favsViewer.addHashtagToFavourites(hashtagToPrint);
         }
     }
 

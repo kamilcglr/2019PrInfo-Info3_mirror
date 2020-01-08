@@ -30,7 +30,6 @@ public class H2jsbcCreateOrDelete {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // STEP 4: Clean-up environment
             try {
                 stmt.close();
                 conn.close();
@@ -56,7 +55,7 @@ public class H2jsbcCreateOrDelete {
             e.printStackTrace();
         }
         try {
-            deleteFavoritesTable();
+            deleteFavoriteTable();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,14 +69,9 @@ public class H2jsbcCreateOrDelete {
     /**
      * Delete favorites users and hashtags
      */
-    public static void deleteFavoritesTable() {
+    public static void deleteFavoriteTable() {
         try {
-            stmt.executeUpdate("drop table twitterUserFavs");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.executeUpdate("drop table hashtagFavs");
+            stmt.executeUpdate("drop table favorites");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,37 +120,23 @@ public class H2jsbcCreateOrDelete {
      */
     public static void createAllTables() {
         createUserOfAppTable();
-        createFavoritesTable();
+        createFavoriteTable();
         createCachedTables();
         createInterestPointTables();
     }
 
     /**
-     * Create favorites users and hashtags
+     * Create favorites table
      */
-    public static void createFavoritesTable() {
-
-
-        String twitterUserFavs = "CREATE TABLE   twitterUserFavs " +
-                "( user_id INTEGER auto_increment,"
-                + "userName VARCHAR(255),"
-                + "userScreenName VARCHAR(255),"
-                + "PRIMARY KEY (user_id),"
-                + "favourite INTEGER)";
-        String hashtagFavs = "CREATE TABLE   hashtagFavs " +
-                "( user_id INTEGER auto_increment,"
-                //+"hashtag_id INTEGER ,"
-                + "hashtag VARCHAR(255),"
-                // + "PRIMARY KEY (hashtag_id),"
-                + "favourite INTEGER)";
-
+    public static void createFavoriteTable() {
+        String favorite = "CREATE TABLE   favorites " +
+                "( favorite_id INTEGER auto_increment,"
+                + "user_id INTEGER,"
+                + "LIST_USERS CLOB,"
+                + "LIST_HASHTAGS CLOB,"
+                + "PRIMARY KEY (user_id))";
         try {
-            stmt.execute(twitterUserFavs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            stmt.execute(hashtagFavs);
+            stmt.execute(favorite);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -191,7 +171,7 @@ public class H2jsbcCreateOrDelete {
     public static void createUserOfAppTable() {
         String userApp = "CREATE TABLE   userApp" +
                 "(user_id INTEGER AUTO_INCREMENT," +
-                " username VARCHAR(255) , " +
+                " user_name VARCHAR(255) , " +
                 " mail VARCHAR(255), " +
                 " twitter VARCHAR(255), " +
                 " password VARCHAR(20))";

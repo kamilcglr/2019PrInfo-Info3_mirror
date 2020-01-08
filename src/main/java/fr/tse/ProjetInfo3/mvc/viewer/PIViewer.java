@@ -2,7 +2,6 @@ package fr.tse.ProjetInfo3.mvc.viewer;
 
 
 import com.jfoenix.controls.JFXProgressBar;
-import fr.tse.ProjetInfo3.mvc.dao.InterestPointDAO;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
@@ -29,7 +28,6 @@ import static java.util.stream.Collectors.toMap;
 public class PIViewer {
     private static List<InterestPoint> listOfInterestPoint = new ArrayList<>();
     private static DatabaseManager databaseManager = new DatabaseManager();
-    private static InterestPointDAO interestPointDAO = new InterestPointDAO();
 
     private InterestPoint selectedInterestPoint;
     private UserViewer userViewer;

@@ -2,9 +2,9 @@ package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSpinner;
-import fr.tse.ProjetInfo3.mvc.dto.Favourite;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.User;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
@@ -17,8 +17,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-
-import java.util.List;
 
 /**
  * @author Laïla
@@ -43,6 +41,7 @@ public class FavsController {
     private Label hashtagsLabel;
 
     private MainController mainController;
+    private UserApp userApp;
     private FavsViewer favsViewer;
 
     @FXML
@@ -51,19 +50,20 @@ public class FavsController {
         favsListViewUser.setCellFactory(param -> new ListObjects.SimpleUserCell());
     }
 
-    public void injectMainController(MainController mainController) {
+    public void injectMainController(MainController mainController, FavsViewer favsViewer) {
         this.mainController = mainController;
+        this.userApp = mainController.getUserApp();
+        this.favsViewer = favsViewer;
     }
 
     public void setFavsViewer() {
-
         Platform.runLater(() -> {
             isLoading(true);
             favsListViewHashtag.getItems().clear();
         });
 
         try {
-            setTopHashtags();
+            setHashtags();
             setUsers();
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,17 +74,10 @@ public class FavsController {
         });
     }
 
-    public Favourite initializeListOfFavourites() throws Exception {
-        return favsViewer.getlistOfFavourites(LoginController.id);
-    }
-
-    private void setTopHashtags() throws Exception {
-        favsViewer = new FavsViewer();
-        Favourite favourite = favsViewer.getlistOfFavourites(LoginController.id);
-
+    private void setHashtags() throws Exception {
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (Hashtag hashtag : favourite.getHashtags()) {
+        for (Hashtag hashtag : favsViewer.getFavourites().getHashtags()) {
             hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag.getHashtag(), hashtag.getHashtag()));
             System.out.println(hashtag.getHashtag());
             i++;
@@ -115,15 +108,10 @@ public class FavsController {
     }
 
     private void setUsers() throws Exception {
-        favsViewer = new FavsViewer();
-        List<User> users = favsViewer.getlistOfFavourites(LoginController.id).getUsers();
         ObservableList<User> usersToPrint = FXCollections.observableArrayList();
-        for (User user : users) {
-            usersToPrint.add(user);
-        }
+        usersToPrint.addAll(favsViewer.getFavourites().getUsers());
         Platform.runLater(() -> {
             favsListViewUser.getItems().addAll(usersToPrint);
-            //topFiveUserList.setMaxHeight(50 * usersToPrint.size());
         });
     }
 
