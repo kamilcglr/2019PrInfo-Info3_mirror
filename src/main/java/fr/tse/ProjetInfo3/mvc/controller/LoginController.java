@@ -114,9 +114,6 @@ public class LoginController {
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
                 dialog.close();
             });
-            button.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent keyEvent) -> {
-                dialog.close();
-            });
 
             dialogLayout.setHeading(headerLabel);
             dialogLayout.setBody(bodyText);
