@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,12 +30,23 @@
                   								<RowConstraints minHeight="400.0" vgrow="ALWAYS" />
                   							</rowConstraints>
                            <children>
-                              <Pane fx:id="pane1" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                              <Pane fx:id="pane2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Pane fx:id="pane3" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
-                              <Pane fx:id="pane4" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Pane fx:id="pane1" prefHeight="200.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <Pane fx:id="pane2" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets right="30.0" />
+                                 </GridPane.margin>
+                              </Pane>
+                              <Pane fx:id="pane3" prefHeight="200.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                              <Pane fx:id="pane4" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets right="30.0" />
+                                 </GridPane.margin>
+                              </Pane>
                               <Label fx:id="piNameLabel" styleClass="tabtitles" text="Label" GridPane.valignment="TOP" />
                            </children>
+                           <padding>
+                              <Insets right="50.0" />
+                           </padding>
                   						</GridPane>
                      </content>
                   </ScrollPane>

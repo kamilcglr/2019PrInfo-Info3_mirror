@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -124,6 +125,10 @@ public class LoginController {
             anchorPane.setEffect(blur);
             return 0;
         }
+    }
+    @FXML
+    private void onEnter(ActionEvent event) {
+        validateButtonPressed(event);
     }
 }
 
