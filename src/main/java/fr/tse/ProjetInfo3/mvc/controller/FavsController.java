@@ -80,12 +80,10 @@ public class FavsController {
         int i = 0;
         for (Hashtag hashtag : favsViewer.getFavourites().getHashtags()) {
             hashtagsToPrint.add(hashtag);
-            System.out.println(hashtag.getHashtag());
             i++;
         }
         Platform.runLater(() -> {
             favsListViewHashtag.getItems().addAll(hashtagsToPrint);
-            //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
         });
 
     }

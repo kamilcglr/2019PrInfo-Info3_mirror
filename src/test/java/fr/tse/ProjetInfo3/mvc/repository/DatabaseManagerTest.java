@@ -38,7 +38,7 @@
 //        User userFromCache1 = databaseManager.getCachedUserFromDatabase(user1.getScreen_name());
 //        User userFromCache2 = databaseManager.getCachedUserFromDatabase(user2.getScreen_name());
 //
-//        assertEquals(user1.getScreen_name(), userFromCache1.getScreen_name());
+    //        assertEquals(user1.getScreen_name(), userFromCache1.getScreen_name());
 //        assertEquals(user2.getScreen_name(), userFromCache2.getScreen_name());
 //        assertEquals(user1.getTweets().size(), userFromCache1.getTweets().size());
 //        assertEquals(user2.getTweets().size(), userFromCache2.getTweets().size());
