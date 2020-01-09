@@ -585,18 +585,30 @@ public class StatisticsTabController {
 		Set<Entry<String, Integer>> setEntry1 = sortedTweetsPerHashtagMap.entrySet();
 		Iterator<Entry<String, Integer>> iterator1 = setEntry1.iterator();
 
-		/** Get top five hashtags **/
+		/** Get top ten hashtags **/
 
 		int iter = 0;
 		while (iter < 10) {
-			Entry<String, Integer> e = iterator1.next();
-			System.out.println(e.getKey() + " : " + e.getValue());
 
-			topTenHashtags.put(e.getKey(), e.getValue());
-			iter++;
+			try {
+				Entry<String, Integer> e = iterator1.next();
+				System.out.println(e.getKey() + " : " + e.getValue());
+
+				topTenHashtags.put(e.getKey(), e.getValue());
+			} catch (Exception e) {
+
+			} finally {
+				iter++;
+			}
 		}
 
-		return topTenHashtags;
+		/** Finally sort the map **/
+
+		Map<String, Integer> sortedTopTenHashtags = topTenHashtags.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toMap(
+						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+		return sortedTopTenHashtags;
 	}
 
 	/** Time **/

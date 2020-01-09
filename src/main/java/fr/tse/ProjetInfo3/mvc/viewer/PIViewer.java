@@ -125,7 +125,7 @@ public class PIViewer {
         int totalNumberOfRequest = 0;
 
         //Default 40, 10 for tests
-        while (totalNumberOfRequest < 10 && !limitsReached(hashtagsOfIP, usersOfIP)) {
+        while (totalNumberOfRequest < 50 && !limitsReached(hashtagsOfIP, usersOfIP)) {
             //For each hashtag and user, get tweets until oldestTweet
             //In each request, increase the number of request
             for (Hashtag hashtag : hashtagsOfIP) {
