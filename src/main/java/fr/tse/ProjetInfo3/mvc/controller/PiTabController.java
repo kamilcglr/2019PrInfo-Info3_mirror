@@ -268,12 +268,12 @@ public class PiTabController {
     }
 
     public String getDiff(Date date1, Date date2) {
-       /* DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate d1 = convertToLocalDateViaMilisecond(date1);
         LocalDate d2 = convertToLocalDateViaMilisecond(date2);
-        long daysBetween = ChronoUnit.DAYS.between(d1, d2);*/
+        long daysBetween = ChronoUnit.DAYS.between(d1, d2);
 
-        /*if(daysBetween<31 && daysBetween>1)
+        if(daysBetween<31 && daysBetween>1)
             return daysBetween+" jours";
         else if(daysBetween>=31)
             return (long) (daysBetween/30.42)+" mois";
