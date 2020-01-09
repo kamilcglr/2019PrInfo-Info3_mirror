@@ -7,6 +7,7 @@ import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
+import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
@@ -24,7 +25,7 @@ import javafx.scene.input.MouseEvent;
 public class FavsController {
 
     @FXML
-    private JFXListView<ResultHashtag> favsListViewHashtag;
+    private JFXListView<Hashtag> favsListViewHashtag;
     @FXML
     private JFXListView<User> favsListViewUser;
 
@@ -46,7 +47,7 @@ public class FavsController {
 
     @FXML
     private void initialize() throws Exception {
-        favsListViewHashtag.setCellFactory(param -> new SimpleTopHashtagCell());
+        favsListViewHashtag.setCellFactory(param ->  new ListObjects.SimpleHashtag());
         favsListViewUser.setCellFactory(param -> new ListObjects.SimpleUserCell());
     }
 
@@ -75,10 +76,10 @@ public class FavsController {
     }
 
     private void setHashtags() throws Exception {
-        ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
+        ObservableList<Hashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
         for (Hashtag hashtag : favsViewer.getFavourites().getHashtags()) {
-            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag.getHashtag(), hashtag.getHashtag()));
+            hashtagsToPrint.add(hashtag);
             System.out.println(hashtag.getHashtag());
             i++;
         }
@@ -100,9 +101,9 @@ public class FavsController {
 
     public void hashtagClick(MouseEvent arg0) throws Exception {
         HashtagViewer hashtagViewer = new HashtagViewer();
-        ResultHashtag research = favsListViewHashtag.getSelectionModel().getSelectedItem();
+        Hashtag research = favsListViewHashtag.getSelectionModel().getSelectedItem();
         if (favsListViewHashtag.getSelectionModel().getSelectedIndex() != -1) {
-            hashtagViewer.setHashtag(research.getHashtagName());
+            hashtagViewer.setHashtag(research.getHashtag());
             mainController.goToHashtagPane(hashtagViewer);
         }
     }
