@@ -41,7 +41,7 @@
                                 <RowConstraints maxHeight="100.0" minHeight="10.0" />
                             </rowConstraints>
                             <children>
-                                <JFXButton fx:id="searchButton" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#searchButtonPressed" prefHeight="42.0" prefWidth="0.0" textAlignment="JUSTIFY" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" onAction="#searchButtonPressed" prefHeight="42.0" prefWidth="0.0" textAlignment="JUSTIFY" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon iconColor="#48ac98" iconLiteral="fas-search" iconSize="32" />
                                     </graphic>
