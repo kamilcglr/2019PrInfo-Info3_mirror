@@ -6,9 +6,6 @@ import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleHashtag;
-import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -47,7 +44,7 @@ public class FavsController {
 
     @FXML
     private void initialize() throws Exception {
-        favsListViewHashtag.setCellFactory(param ->  new ListObjects.SimpleHashtag());
+        favsListViewHashtag.setCellFactory(param -> new ListObjects.SimpleHashtag());
         favsListViewUser.setCellFactory(param -> new ListObjects.SimpleUserCell());
     }
 
@@ -80,12 +77,11 @@ public class FavsController {
         int i = 0;
         for (Hashtag hashtag : favsViewer.getFavourites().getHashtags()) {
             hashtagsToPrint.add(hashtag);
-            System.out.println(hashtag.getHashtag());
             i++;
         }
         Platform.runLater(() -> {
+            favsListViewHashtag.getItems().clear();
             favsListViewHashtag.getItems().addAll(hashtagsToPrint);
-            //titledHashtag.setMaxHeight(50 * hashtagsToPrint.size());
         });
 
     }
@@ -95,6 +91,7 @@ public class FavsController {
         String research = favsListViewUser.getSelectionModel().getSelectedItem().getScreen_name();
         if (favsListViewUser.getSelectionModel().getSelectedIndex() != -1) {
             userViewer.searchScreenName(research);
+            mainController.closeCurrentTab();
             mainController.goToUserPane(userViewer);
         }
     }
@@ -104,6 +101,7 @@ public class FavsController {
         Hashtag research = favsListViewHashtag.getSelectionModel().getSelectedItem();
         if (favsListViewHashtag.getSelectionModel().getSelectedIndex() != -1) {
             hashtagViewer.setHashtag(research.getHashtag());
+            mainController.closeCurrentTab();
             mainController.goToHashtagPane(hashtagViewer);
         }
     }
@@ -112,6 +110,7 @@ public class FavsController {
         ObservableList<User> usersToPrint = FXCollections.observableArrayList();
         usersToPrint.addAll(favsViewer.getFavourites().getUsers());
         Platform.runLater(() -> {
+            favsListViewUser.getItems().clear();
             favsListViewUser.getItems().addAll(usersToPrint);
         });
     }

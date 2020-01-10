@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
-
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
@@ -18,6 +17,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -36,6 +36,7 @@ import java.util.logging.Logger;
  * here
  */
 public class MainController {
+    private Scene scene;
     /*
      *FXML elements are declared here
      */
@@ -54,14 +55,6 @@ public class MainController {
      * Controllers
      * */
     @FXML
-    private SearchTabController searchTabController;
-    @FXML
-    private PiTabController piTabController;
-    @FXML
-    private UserTabController userTabController;
-    @FXML
-    private HashtagTabController hashtagTabController;
-    @FXML
     private MyPIsTabController myPIsTabController;
 
     @FXML
@@ -71,26 +64,11 @@ public class MainController {
     private StatisticsTabController statisticsTabController;
 
     @FXML
-    private ToolBarController toolBarController;
+    private SearchTabController searchTabController;
 
-
-    /*
-     * These are necessary for tests
-     * */
-    //@FXML
-    //private Tab hashtagTabFromMain;
-    @FXML
-    private Tab userTabFromMain;
-    @FXML
-    private Tab piTabEditFromMain;
-    @FXML
-    private Tab piTabFromMain;
-    @FXML
-    private Tab myPITabFromMain;
     @FXML
     private Tab searchTabFromMain;
-    @FXML
-    private Tab loginTabFromMain;
+
 
     /*
      * Viewers
@@ -208,7 +186,7 @@ public class MainController {
         try {
             AnchorPane newHashtagTab = fxmlLoader.load();
             HashtagTabController hashtagTabController = fxmlLoader.getController();
-            hashtagTabController.injectMainController(this,favsViewer);
+            hashtagTabController.injectMainController(this, favsViewer);
             Tab tab = new Tab();
             Platform.runLater(() -> {
                 tab.setContent(newHashtagTab);
@@ -284,14 +262,6 @@ public class MainController {
                             myPisTab = null;
                         }
                     });
-                    /*myPisTab.setOnSelectionChanged(new EventHandler<Event>() {
-                        @Override
-                        public void handle(Event t) {
-                            if (myPisTab.isSelected()) {
-                                goToMyPisPane();
-                            }
-                        }
-                    });*/
                 });
 
                 //Heavy task inside this thread, we go to user pane before
@@ -311,6 +281,7 @@ public class MainController {
                     public void handle(Event event) {
                         myPIsTabController.killThreads();
                         thread.interrupt();
+                        myPisTab = null;
                     }
                 });
 
@@ -321,18 +292,6 @@ public class MainController {
             //the tab is already initialized, so we just refresh the list of PIs
             Platform.runLater(() -> {
                 tabPane.getSelectionModel().select(myPisTab);
-                //Heavy task inside this thread, we go to user pane before
-                /*Task<Void> task = new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        myPIsTabController.refreshPIs();
-                        return null;
-                    }
-                };
-
-                Thread thread = new Thread(task);
-                thread.setDaemon(true);
-                thread.start();*/
                 myPIsTabController.refreshPIs();
             });
         }
@@ -394,7 +353,6 @@ public class MainController {
                         return null;
                     }
                 };
-
                 Thread thread = new Thread(task);
                 thread.setDaemon(true);
                 thread.start();
@@ -517,7 +475,6 @@ public class MainController {
                 public void handle(Event event) {
                     piTabController.killThreads();
                     thread.interrupt();
-                    myPIsTabController.refreshPIs();
                 }
             });
 
@@ -593,6 +550,10 @@ public class MainController {
     }
 
     public void closeCurrentTab() {
+        EventHandler handler = tabPane.getSelectionModel().getSelectedItem().getOnCloseRequest();
+        if (handler != null) {
+            handler.handle(null);
+        }
         tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem());
     }
 
@@ -610,5 +571,9 @@ public class MainController {
 
     public void setUserApp(UserApp userApp) {
         this.userApp = userApp;
+    }
+
+    public Scene getScene() {
+        return hamburger.getScene();
     }
 }

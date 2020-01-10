@@ -22,6 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.Date;
@@ -101,9 +102,11 @@ public class HashtagTabController {
     @FXML
     private Label progressLabel;
     @FXML
-    private JFXToggleNode favoriteToggle;
+    private JFXButton favoriteToggle;
     @FXML
-    private JFXToggleNode NotfavoriteToggle;
+    private FontIcon favoriteIcon;
+
+    private boolean isFavorite;
     @FXML
     private Label lastSearchLabel;
 
@@ -130,7 +133,6 @@ public class HashtagTabController {
             refreshButton.setVisible(false);
             lastSearchLabel.setVisible(false);
             favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(false);
             hideLists(true);
             if (hideAll) {
                 hashtagLabel.setVisible(false);
@@ -194,10 +196,9 @@ public class HashtagTabController {
             hashtagLabel.setVisible(true);
         });
         if (mainController.isConnected()) {
-            favourites();
+            verifyFavorites();
         } else {
             favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(false);
         }
     }
 
@@ -356,25 +357,26 @@ public class HashtagTabController {
     }
 
     /* ================ FAVORITES ================    */
-    public void favourites() {
+    public void verifyFavorites() {
+        favoriteToggle.setVisible(true);
         if (favsViewer.checkHashInFav(hashtagToPrint)) {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
         } else {
-            favoriteToggle.setVisible(true);
-            NotfavoriteToggle.setVisible(false);
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
         }
     }
 
     @FXML
     private void favouriteTogglePressed() {
-        if (favsViewer.checkHashInFav(hashtagToPrint)) {
-            favoriteToggle.setVisible(true);
-            NotfavoriteToggle.setVisible(false);
+        if (isFavorite) {
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
             favsViewer.removeHashtagFromFavourites(hashtagToPrint);
         } else {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
             favsViewer.addHashtagToFavourites(hashtagToPrint);
         }
     }

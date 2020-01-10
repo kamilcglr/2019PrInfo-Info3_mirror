@@ -26,6 +26,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
 import java.util.Date;
@@ -84,16 +86,18 @@ public class UserTabController {
     private JFXButton refreshButton;
 
     @FXML
-    private JFXToggleNode favoriteToggle;
+    private JFXButton favoriteToggle;
+
+    @FXML
+    private FontIcon favoriteIcon;
+
+    private boolean isFavorite;
 
     @FXML
     private JFXProgressBar progressBar;
 
     @FXML
     private Label progressLabel;
-
-    @FXML
-    private JFXToggleNode NotfavoriteToggle;
 
     /*
      * We will populate this fields/labels by the result of search
@@ -141,7 +145,6 @@ public class UserTabController {
             refreshButton.setVisible(false);
             lastSearchLabel.setVisible(false);
             favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(false);
             hideLists(true);
             if (hideAll) {
                 username.setVisible(false);
@@ -215,10 +218,9 @@ public class UserTabController {
             buildPicture();
         });
         if (mainController.isConnected()) {
-            favourites();
+            verifyFavorites();
         } else {
             favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(false);
         }
     }
 
@@ -371,26 +373,26 @@ public class UserTabController {
     }
 
     /* ================ FAVORITES ================    */
-    public void favourites() {
+    public void verifyFavorites() {
+        favoriteToggle.setVisible(true);
         if (favsViewer.checkUserInFav(userToPrint)) {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
         } else {
-            favoriteToggle.setVisible(true);
-            NotfavoriteToggle.setVisible(false);
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
         }
     }
 
     @FXML
     private void favouriteTogglePressed() {
-        if (favsViewer.checkUserInFav(userToPrint)) {
-            favoriteToggle.setVisible(true);
-            NotfavoriteToggle.setVisible(false);
+        if (isFavorite) {
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
             favsViewer.removeUserFromFavourites(userToPrint);
-
         } else {
-            favoriteToggle.setVisible(false);
-            NotfavoriteToggle.setVisible(true);
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
             favsViewer.addUserToFavourites(userToPrint);
         }
     }
