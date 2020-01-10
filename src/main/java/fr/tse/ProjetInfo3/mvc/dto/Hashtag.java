@@ -8,6 +8,7 @@ import java.io.Serializable;
 import org.h2.engine.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ import java.util.List;
 public class Hashtag implements Serializable {
     private int id;
     private String hashtag;
+    private Date lastSearchDate;
 
     private boolean allTweetsCollected; //true when hashtag have no more tweets (less than 3200)
     private boolean dateTweetsLimit; //true when there is no more tweets for the until date
@@ -106,4 +108,11 @@ public class Hashtag implements Serializable {
         return tweets;
     }
 
+    public Date getLastSearchDate() {
+        return lastSearchDate;
+    }
+
+    public void setLastSearchDate(Date lastSearchDate) {
+        this.lastSearchDate = lastSearchDate;
+    }
 }

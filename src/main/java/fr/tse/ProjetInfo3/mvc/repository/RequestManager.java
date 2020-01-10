@@ -47,6 +47,7 @@ public class RequestManager {
     //We get this bearer only once, we will use it to make the calls
     private RequestManager.Bearer bearer;
     private OAuthManager oAuthManager;
+    private Gson gson;
 
     // one instance, reuse
     private final HttpClient httpClient = HttpClient.newBuilder()
@@ -69,6 +70,11 @@ public class RequestManager {
      * Code 200 is OK
      */
     public RequestManager() {
+        //Create Gson Object First !
+        gson = new GsonBuilder()
+                .setPrettyPrinting() //human-readable json
+                .setDateFormat(TwitterDateParser.twitterFormat)
+                .create();
 
         //Parameters of the body : https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
         HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers
@@ -85,11 +91,6 @@ public class RequestManager {
         try {
             var response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-            //The response body is in JSON format, we will need gson to parse the result in the class barrier
-            Gson gson = new GsonBuilder()
-                    .setPrettyPrinting() //human-readable json
-                    .create();
-
             //add the access_token value to bearer, we will use it for other request
             bearer = gson.fromJson(response.body(), RequestManager.Bearer.class);
 
@@ -98,7 +99,6 @@ public class RequestManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /*  ****************************************************************************************************************
@@ -143,9 +143,7 @@ public class RequestManager {
         HttpRequest httpRequest = HttpRequest.newBuilder().GET().uri(URI.create(urlSpaceRemoved))
                 .setHeader("Authorization", oAuthManager.getheader(url)).build();
 
-        List<User> users = new ArrayList<>(parseUsers(httpRequest, false));
-
-        return users;
+        return new ArrayList<>(parseUsers(httpRequest, false));
     }
 
     /**
@@ -164,8 +162,6 @@ public class RequestManager {
         if (response.body().contains("code\":50")) {
             throw new RequestManagerException("Unknown user");
         }
-        Gson gson = new GsonBuilder().setPrettyPrinting() // human-readable json
-                .setLenient().create();
 
         if (unique) {
             users.add(gson.fromJson(response.body(), User.class));
@@ -224,11 +220,6 @@ public class RequestManager {
                     oldFailed = false;
                     successiveFails = 0;
                 }
-
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        .setDateFormat(TwitterDateParser.twitterFormat)
-                        .create();
 
                 Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
                 }.getType();
@@ -291,11 +282,6 @@ public class RequestManager {
                     successiveFails = 0;
                 }
 
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        .setDateFormat(TwitterDateParser.twitterFormat)
-                        .create();
-
                 Type tweetListType = new TypeToken<ArrayList<Tweet>>() {
                 }.getType();
                 //gson will complete the attributes of object if it finds elements that have the same name
@@ -356,12 +342,6 @@ public class RequestManager {
                     tentatives++;
                 }
 
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        //.setLenient()
-                        .setDateFormat(TwitterDateParser.twitterFormat)
-                        .create();
-
                 //gson will complete the attributes of object if it finds elements that have the same name
                 //we use statuses because twitter sends statuses in this search {statuses : [...
                 Statuses tempStatuses = gson.fromJson(response.body(), Statuses.class);
@@ -414,11 +394,6 @@ public class RequestManager {
                 request = buildHashtagTweetRequest(hashtagName, 100, maxId, null);
 
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting() //human-readable json
-                        .setDateFormat(TwitterDateParser.twitterFormat)
-                        .create();
 
                 //gson will complete the attributes of object if it finds elements that have the same name
                 //we use statuses because twitter sends statuses in this search {statuses : [...

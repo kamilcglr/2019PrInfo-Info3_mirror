@@ -1,10 +1,13 @@
 package fr.tse.ProjetInfo3.mvc.utils;
 
 import com.jfoenix.controls.JFXButton;
+
+import fr.tse.ProjetInfo3.mvc.controller.LoginController;
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.SnapshotParameters;
@@ -28,7 +31,7 @@ public class ListObjects {
     private static final Paint GREEN = Paint.valueOf("#48AC98FF");
     private static final Paint RED = Paint.valueOf("#CB7C7AFF");
 
-    private static int currentPiId;
+    private static long currentPiId;
 
     /**
      * This class will represent a result of a linked hashtag
@@ -64,7 +67,7 @@ public class ListObjects {
      */
     public static class ResultHashtag {
         private final String classementIndex;
-        private final String hashtagName;
+        public final String hashtagName;
         private final String nbTweets;
 
         public ResultHashtag(String classementIndex, String hashtagName, String nbTweets) {
@@ -73,15 +76,15 @@ public class ListObjects {
             this.nbTweets = nbTweets;
         }
 
-        String getClassementIndex() {
+        public String getClassementIndex() {
             return classementIndex;
         }
 
-        String getHashtagName() {
+        public String getHashtagName() {
             return hashtagName;
         }
 
-        String getNbTweets() {
+        public String getNbTweets() {
             return nbTweets;
         }
     }
@@ -146,18 +149,13 @@ public class ListObjects {
 
                         piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
-                        //Hashtag hashtagToRemove = interestPoint.getHashtagFromName(currentHashtag.getHashtagName());
-                        //
-                        //interestPoint.getHashtags().remove(hashtagToRemove);
                         List<Hashtag> newListOfHashtags = interestPoint.getHashtags()
                                 .stream().filter(hashtag -> !hashtag.getHashtag()
                                         .equals(currentHashtag.getHashtagName()))
-                                        .collect(Collectors.toList());
+                                .collect(Collectors.toList());
                         interestPoint.setHashtags(newListOfHashtags);
 
-                        System.out.println(interestPoint.getHashtags());
-                        currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
-
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
@@ -169,7 +167,8 @@ public class ListObjects {
 
                         Hashtag hashtagToAdd = new Hashtag(currentHashtag.getHashtagName());
                         interestPoint.addToInterestPoint(hashtagToAdd);
-                        currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-minus");
                         addDeleteIcon.setIconColor(RED);
@@ -270,7 +269,8 @@ public class ListObjects {
                         piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         interestPoint.getUsers().remove(currentUser);
-                        currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-plus");
                         addDeleteIcon.setIconColor(GREEN);
@@ -281,12 +281,12 @@ public class ListObjects {
                         piViewer.deleteInterestPointFromDatabaseById(currentPiId);
 
                         interestPoint.addToInterestPoint(currentUser);
-                        currentPiId = (int) piViewer.addInterestPointToDatabase(interestPoint);
+
+                        currentPiId = piViewer.addInterestPointToDatabase(interestPoint);
 
                         addDeleteIcon = new FontIcon("fas-minus");
                         addDeleteIcon.setIconColor(RED);
                         addDeleteUser.setGraphic(addDeleteIcon);
-
                     }
                 }
             });
@@ -355,7 +355,7 @@ public class ListObjects {
         Label nameLabel;
         Label screenName;
 
-        Image profilePicture;
+        //Image profilePicture;
 
         public SearchUser() {
             super();
@@ -374,10 +374,11 @@ public class ListObjects {
                 setGraphic(null);
 
             } else {
-                if (profilePicture == null) {
-                    profilePicture = new Image(user.getProfile_image_url_https(), 40, 40, false, false);
+                if (user.getProfilePicture() == null) {
+                    Platform.runLater(() -> user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false)));
+                    //user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
                 }
-                profileImageView.setImage(profilePicture);
+                profileImageView.setImage(user.getProfilePicture());
 
                 Circle clip = new Circle(20, 20, 20);
                 profileImageView.setClip(clip);
@@ -437,11 +438,16 @@ public class ListObjects {
                 hBox.getStyleClass().add("hbox");
                 hBox.setPrefWidth(100);
 
-                String userNamesInPI = interestPoint.getUsers().stream()
-                        .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
-                String hashtagNamesInPI = interestPoint.getHashtags().stream()
-                        .map(hashtag -> "#" + hashtag.getHashtag()).collect(Collectors.joining(" "));
-
+                String userNamesInPI = "";
+                String hashtagNamesInPI = "";
+                if (interestPoint.getUsers() != null) {
+                    userNamesInPI = interestPoint.getUsers().stream()
+                            .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
+                }
+                if (interestPoint.getHashtags() != null) {
+                    hashtagNamesInPI = interestPoint.getHashtags().stream()
+                            .map(hashtag -> "#" + hashtag.getHashtag()).collect(Collectors.joining(" "));
+                }
 
                 name.setText(interestPoint.getName());
                 name.setMinWidth(100);

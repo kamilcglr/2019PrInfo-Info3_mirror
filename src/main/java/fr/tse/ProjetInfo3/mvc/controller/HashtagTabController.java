@@ -1,31 +1,36 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import com.jfoenix.controls.JFXListCell;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.*;
+
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
-import com.jfoenix.controls.JFXProgressBar;
 
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
+import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
-import fr.tse.ProjetInfo3.mvc.viewer.HastagViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
+import fr.tse.ProjetInfo3.mvc.viewer.HashtagViewer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import java.util.Map;
+
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.hoursAndDateFormat;
 
 public class HashtagTabController {
     /**
@@ -33,17 +38,15 @@ public class HashtagTabController {
      */
     private MainController mainController;
 
-    private HastagViewer hastagViewer;
+    private HashtagViewer hashtagViewer;
 
     private Hashtag hashtagToPrint;
 
-    //Used to know how many tweets we have during search
-    private int numberOfTweetReceived;
+    private FavsViewer favsViewer;
 
-    Map<String, Integer> hashtagUsed;
+    private UserApp userApp = new UserApp();
 
-    Map<Tweet, Integer> Tweeted;
-
+    Map<String, Integer> hashtagLinked;
 
     private List<Tweet> tweetList;
 
@@ -54,13 +57,13 @@ public class HashtagTabController {
      * THREADS
      * every thread should be declared here to kill them when exiting
      */
-    private Thread threadGetTweetFromHashtag;
+    private Thread threadGetTweets;
 
-    private Thread threadGetTopLinkedHashtag;
+    private Thread threadSetTopLinkedHashtag;
 
-    private Thread threadDetNumbers;
+    private Thread threadSetNumbers;
 
-    private Thread threadTopTweets;
+    private Thread threadSetTopTweets;
 
     /**
      * Elements that will be populated with result
@@ -78,9 +81,11 @@ public class HashtagTabController {
 
     //lists
     @FXML
-    private VBox vbox;
+    private JFXButton refreshButton;
     @FXML
-    private JFXListView listTweets;
+    private VBox vBox;
+    @FXML
+    private JFXListView<JFXListCell> listTweets;
     @FXML
     private JFXListView<ResultHashtag> topTenLinkedList;
     @FXML
@@ -96,45 +101,144 @@ public class HashtagTabController {
     private JFXProgressBar progressBar;
     @FXML
     private Label progressLabel;
+    @FXML
+    private JFXButton favoriteToggle;
+    @FXML
+    private FontIcon favoriteIcon;
+
+    private boolean isFavorite;
+    @FXML
+    private Label lastSearchLabel;
+
+    /**************************************************************/
+    /*Controller can access to main Controller */
+    public void injectMainController(MainController mainController, FavsViewer favsViewer) {
+        this.mainController = mainController;
+        if (mainController.isConnected()){
+            this.userApp = mainController.getUserApp();
+            this.favsViewer = favsViewer;
+        }
+    }
 
     /*This function is launched when this tab is launched */
     @FXML
     private void initialize() {
-        showHashtagElements(false);
-        progressBar.setVisible(false);
-        progressLabel.setVisible(false);
-        JFXScrollPane.smoothScrolling(scrollPane);
-        
+        hideElements(true);
         topTenLinkedList.setCellFactory(param -> new SimpleTopHashtagCell());
+        JFXScrollPane.smoothScrolling(scrollPane);
     }
 
-    private void showHashtagElements(boolean hide) {
-        vbox.setVisible(hide);
-        nbTweetsLabel.setVisible(hide);
-        nbUsersLabel.setVisible(hide);
-        tweetsLabel.setVisible(hide);
-        usersLabel.setVisible(hide);
-        lastAnalysedLabel.setVisible(hide);
-    }
-
-    /*Controller can acces to this Tab */
-    public void injectMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
-
-    public void setHastagViewer(HastagViewer hastagViewer) throws Exception {
-        this.hastagViewer = hastagViewer;
-        hashtagToPrint = hastagViewer.getHashtag();
-
-        hastagViewer.getSearchProgression();
-
+    private void hideElements(boolean hideAll) {
         Platform.runLater(() -> {
-            hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
+            refreshButton.setVisible(false);
+            lastSearchLabel.setVisible(false);
+            favoriteToggle.setVisible(false);
+            hideLists(true);
+            if (hideAll) {
+                hashtagLabel.setVisible(false);
+                nbTweetsLabel.setVisible(false);
+                nbUsersLabel.setVisible(false);
+                tweetsLabel.setVisible(false);
+                usersLabel.setVisible(false);
+            }
         });
+    }
 
-        threadGetTweetFromHashtag = new Thread(getTweetFromHashtag());
-        threadGetTweetFromHashtag.setDaemon(true);
-        threadGetTweetFromHashtag.start();
+    private void hideLists(boolean show) {
+        vBox.setVisible(!show);
+        lastAnalysedLabel.setVisible(!show);
+    }
+
+    public void refreshButtonPressed(ActionEvent actionEvent) {
+        hashtagViewer.deleteCachedHashtag();
+        mainController.closeCurrentTab();
+        mainController.goToHashtagPane(hashtagViewer);
+    }
+
+    /**
+     * Set the hashtag of the page. Get from db if exist, do search if not.
+     * Prints hashtag simple infos (name, id...)
+     *
+     * @param hashtagViewer
+     */
+    public void setHashtagViewer(HashtagViewer hashtagViewer) {
+        this.hashtagViewer = hashtagViewer;
+
+        Platform.runLater(() -> initProgress(true, "Vérification si l'utilisateur est déjà dans la base."));
+
+        //if in database, load everything from there
+        if (hashtagViewer.verifyHahstagInDataBase()) {
+            Platform.runLater(() -> progressLabel.setText("Récupération des données depuis la base de données."));
+            hashtagViewer.setHashtagFromDataBase();
+            setHashtagInfos();
+            tweetList = hashtagToPrint.getTweets();
+            hashtagViewer.setTweets(tweetList);
+            setTops();
+        } else {
+            setHashtagInfos();
+            //user not in db, get tweets from twitter
+            threadGetTweets = new Thread(getTweets());
+            threadGetTweets.setDaemon(true);
+            threadGetTweets.start();
+        }
+
+    }
+
+    private void setHashtagInfos() {
+        hashtagToPrint = hashtagViewer.getHashtag();
+        Platform.runLater(() -> {
+            if (hashtagToPrint.getLastSearchDate() != null) {
+                lastSearchLabel.setText("Dernière recherche effectuée le " + hoursAndDateFormat.format(hashtagToPrint.getLastSearchDate()));
+                lastSearchLabel.setVisible(true);
+            }
+            refreshButton.setVisible(true);
+            hashtagLabel.setText("#" + hashtagToPrint.getHashtag());
+            hashtagLabel.setVisible(true);
+        });
+        if (mainController.isConnected()) {
+            verifyFavorites();
+        } else {
+            favoriteToggle.setVisible(false);
+        }
+    }
+
+    /**
+     * Sets top tweets and top hashtags
+     */
+    private void setTops() {
+        Platform.runLater(() -> initProgress(true, "Analyse des tweets"));
+        threadSetTopLinkedHashtag = new Thread(setTopLinkedHashtag());
+        threadSetTopLinkedHashtag.setDaemon(true);
+        threadSetTopLinkedHashtag.start();
+
+        threadSetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
+        threadSetNumbers.setDaemon(true);
+        threadSetNumbers.start();
+
+        threadSetTopTweets = new Thread(setTopTweets());
+        threadSetTopTweets.setDaemon(true);
+        threadSetTopTweets.start();
+
+        //Wait for the two other tasks
+        while (threadSetTopLinkedHashtag.isAlive() || threadSetNumbers.isAlive() || threadSetTopTweets.isAlive()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Platform.runLater(() -> {
+            lastSearchLabel.setText("Dernière recherche effectuée le " + hoursAndDateFormat.format(hashtagToPrint.getLastSearchDate()));
+            if (tweetList.size() > 0) {
+                String date = frenchSimpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
+                lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " + date);
+            } else {
+                lastAnalysedLabel.setText("Aucun tweet n'est relié à ce hashtag");
+            }
+            progressBar.setVisible(false);
+            progressLabel.setVisible(false);
+            hideLists(false);
+        });
     }
 
     /**
@@ -143,46 +247,20 @@ public class HashtagTabController {
      * This task is very long.
      * Do not change the order. We have to wait to get all tweets before doing analysis
      */
-    private Task<Void> getTweetFromHashtag() {
-        Platform.runLater(() -> {
-            initProgress(false);
-        });
+    private Task<Void> getTweets() {
+        Platform.runLater(() -> initProgress(false, "Récupération des tweets depuis Twitter.com"));
+
         try {
             //search and get tweets from hashtag first
-            this.tweetList = hastagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 4500, null);
+            this.tweetList = hashtagViewer.searchByCount(hashtagToPrint.getHashtag(), progressBar, 4500, null);
 
-            //Tweet are collected
-            Platform.runLater(() -> {
-                initProgress(true);
-            });
+            //Save the new search to DB
+            hashtagToPrint.setLastSearchDate(new Date());
+            hashtagToPrint.setTweets(tweetList);
+            hashtagViewer.cacheHashtagToDataBase(hashtagToPrint);
 
-            threadGetTopLinkedHashtag = new Thread(setTopLinkedHashtag());
-            threadGetTopLinkedHashtag.setDaemon(true);
-            threadGetTopLinkedHashtag.start();
-
-            threadDetNumbers = new Thread(setNumberOfUniqueAccountAndNumberOfTweets());
-            threadDetNumbers.setDaemon(true);
-            threadDetNumbers.start();
-
-            threadTopTweets = new Thread(setTopTweets());
-            threadTopTweets.setDaemon(true);
-            threadTopTweets.start();
-
-            //Wait for the two other tasks
-            while (threadGetTopLinkedHashtag.isAlive() || threadDetNumbers.isAlive() || threadTopTweets.isAlive()) {
-                Thread.sleep(1000);
-            }
-            Platform.runLater(() -> {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String date = simpleDateFormat.format(tweetList.get(tweetList.size() - 1).getCreated_at());
-                lastAnalysedLabel.setText(tweetList.size() + " tweets ont été analysés depuis le " +
-                        date);
-
-                showHashtagElements(true);
-                progressBar.setVisible(false);
-                progressLabel.setVisible(false);
-            });
-
+            setTops();
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -190,13 +268,12 @@ public class HashtagTabController {
     }
 
     private Task<Void> setTopLinkedHashtag() {
-        List<String> hashtags = hastagViewer.getHashtagsLinked();
-        hashtagUsed = hastagViewer.topHashtag(hashtags);
+        hashtagLinked = hashtagViewer.topHashtag(hashtagViewer.getHashtagsLinked());
 
         ObservableList<ResultHashtag> hashtagsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (String hashtag : hashtagUsed.keySet()) {
-            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagUsed.get(hashtag).toString()));
+        for (String hashtag : hashtagLinked.keySet()) {
+            hashtagsToPrint.add(new ResultHashtag(String.valueOf(i + 1), hashtag, hashtagLinked.get(hashtag).toString()));
             i++;
             if (i == 10) {
                 break;
@@ -212,17 +289,21 @@ public class HashtagTabController {
 
     private Task<Void> setNumberOfUniqueAccountAndNumberOfTweets() {
         Platform.runLater(() -> {
-            nbUsersLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfUniqueAccounts()));
-            nbTweetsLabel.setText(NumberParser.spaceBetweenNumbers(hastagViewer.getNumberOfTweets()));
+            nbUsersLabel.setText(NumberParser.spaceBetweenNumbers(hashtagViewer.getNumberOfUniqueAccounts()));
+            nbUsersLabel.setVisible(true);
+            nbTweetsLabel.setText(NumberParser.spaceBetweenNumbers(hashtagViewer.getNumberOfTweets()));
+            nbTweetsLabel.setVisible(true);
+            tweetsLabel.setVisible(true);
+            usersLabel.setVisible(true);
         });
         return null;
     }
 
     private Task<Void> setTopTweets() {
-        Tweeted = hastagViewer.topTweets(tweetList);
+        Map<Tweet, Integer> topTweets = hashtagViewer.topTweets(tweetList);
         ObservableList<Tweet> tweetsToPrint = FXCollections.observableArrayList();
         int i = 0;
-        for (Tweet tweet : Tweeted.keySet()) {
+        for (Tweet tweet : topTweets.keySet()) {
             tweetsToPrint.add(tweet);
             i++;
             if (i == 5) {
@@ -241,7 +322,7 @@ public class HashtagTabController {
     private void addTweetsToList(List<Tweet> toptweets) {
         ObservableList<JFXListCell> listTweetCell = FXCollections.observableArrayList();
         try {
-            if (hastagViewer != null) {
+            if (hashtagViewer != null) {
                 for (Tweet tweet : toptweets) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Tweet.fxml"));
                     JFXListCell jfxListCell = fxmlLoader.load();
@@ -254,7 +335,7 @@ public class HashtagTabController {
                     TweetController tweetController = (TweetController) fxmlLoader.getController();
 
                     tweetController.injectHashtagTabController(this);
-                    tweetController.populate(tweet,true);
+                    tweetController.populate(tweet, false);
                     listTweets.getItems().add(jfxListCell);
                 }
             }
@@ -263,15 +344,40 @@ public class HashtagTabController {
         }
     }
 
-    private void initProgress(boolean isIndeterminate) {
+    private void initProgress(boolean isIndeterminate, String text) {
         if (!isIndeterminate) {
             progressBar.setVisible(true);
             progressBar.setProgress(0);
             progressLabel.setVisible(true);
-            progressLabel.setText("Récupération des tweets depuis Twitter.com");
+            progressLabel.setText(text);
         } else {
             progressBar.setProgress(-1);
-            progressLabel.setText("Analyse des tweets");
+            progressLabel.setText(text);
+        }
+    }
+
+    /* ================ FAVORITES ================    */
+    public void verifyFavorites() {
+        favoriteToggle.setVisible(true);
+        if (favsViewer.checkHashInFav(hashtagToPrint)) {
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
+        } else {
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
+        }
+    }
+
+    @FXML
+    private void favouriteTogglePressed() {
+        if (isFavorite) {
+            isFavorite = false;
+            favoriteIcon.setIconLiteral("far-heart");
+            favsViewer.removeHashtagFromFavourites(hashtagToPrint);
+        } else {
+            isFavorite = true;
+            favoriteIcon.setIconLiteral("fas-heart");
+            favsViewer.addHashtagToFavourites(hashtagToPrint);
         }
     }
 
@@ -279,18 +385,18 @@ public class HashtagTabController {
      * Called when tab is closed
      */
     public void killThreads() {
-        if (threadGetTweetFromHashtag != null) {
-            threadGetTweetFromHashtag.interrupt();
+        if (threadGetTweets != null) {
+            threadGetTweets.interrupt();
         }
-        if (threadDetNumbers != null) {
-            threadDetNumbers.interrupt();
+        if (threadSetNumbers != null) {
+            threadSetNumbers.interrupt();
 
         }
-        if (threadGetTopLinkedHashtag != null) {
-            threadGetTopLinkedHashtag.interrupt();
+        if (threadSetTopLinkedHashtag != null) {
+            threadSetTopLinkedHashtag.interrupt();
         }
-        if (threadTopTweets != null) {
-            threadTopTweets.interrupt();
+        if (threadSetTopTweets != null) {
+            threadSetTopTweets.interrupt();
         }
     }
 }

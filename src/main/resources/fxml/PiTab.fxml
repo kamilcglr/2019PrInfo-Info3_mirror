@@ -67,13 +67,13 @@
                                  </opaqueInsets></JFXListView>
                               <JFXProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="25.0" progress="0.04" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                               <Label fx:id="progressLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                                        <Label fx:id="infosNbTweetsLabel" styleClass="descriptionLabels" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                                        <Label fx:id="infosNbTweetsLabel" styleClass="descriptionLabels" text="Nombre de tweets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                                         <Label fx:id="nbTweetsLabel" styleClass="countLabel" text="XXX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
                               <Label styleClass="trackedTitles" text="Hashtags Suivis" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
                               <Label fx:id="lastDateLabel" styleClass="countLabel" text="dd MM YYYY HH:mm:ss" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                              <Label fx:id="infoLastDateLabel" styleClass="descriptionLabels" text="Depuis le" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="infoLastDateLabel" styleClass="descriptionLabels" text="Il y a" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                               <Label fx:id="nbTrackedLabel" styleClass="countLabel" text="XXX" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                              <Label fx:id="infoNbTrackedLabel" styleClass="descriptionLabels" text="Objets suivis" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="infoNbTrackedLabel" styleClass="descriptionLabels" text="Objets suivis" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                               <VBox fx:id="vBox" minHeight="600.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" GridPane.rowSpan="2">
                                  <children>
                                                 <TitledPane fx:id="topFiveUserTitled" expanded="false" text="Top 5 des utilisateurs liés à ce point d'intérêt">
@@ -88,11 +88,32 @@
                                     </TitledPane>
                                                 <TitledPane expanded="false" text="Top 10 des # liés">
                                        <content>
-                                          <JFXListView fx:id="topTenLinkedList" styleClass="hashtagsList" />
+                                          <JFXListView fx:id="topTenLinkedList" onMouseClicked="#hashtagClick" styleClass="hashtagsList" />
                                        </content>
                                     </TitledPane>
                                  </children>
                               </VBox>
+                              <JFXButton fx:id="statisticsButton" alignment="CENTER" onAction="#statisticsButtonPressed" prefHeight="42.0" prefWidth="180.0" styleClass="actionButton" text="Statistiques" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fas-chart-area" styleClass="icon" />
+                                 </graphic>
+                                 <GridPane.margin>
+                                    
+                                 </GridPane.margin>
+                              </JFXButton>
+                              <Label fx:id="lastSearchLabel" text="Date de la dernière recherche : " GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.halignment="RIGHT">
+                                 <GridPane.margin>
+                                    <Insets right="100.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <JFXButton fx:id="refreshButton" onAction="#refreshButtonPressed" text="" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+                                 <graphic>
+                                    <FontIcon iconLiteral="fas-sync" iconSize="24" styleClass="refreshIcon" />
+                                 </graphic>
+                                 <GridPane.margin>
+                                    <Insets right="50.0" top="5.0" />
+                                 </GridPane.margin>
+                              </JFXButton>
                                     </children>
                                 </GridPane>
                             </content>

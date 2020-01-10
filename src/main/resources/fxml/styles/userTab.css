@@ -73,7 +73,3 @@
 .jfx-scroll-pane .main-header {
     -fx-background-color: white;
 }
-
-#favoriteIcon {
-    -fx-icon-color: -red;
-}

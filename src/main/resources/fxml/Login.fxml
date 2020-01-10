@@ -36,10 +36,10 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <JFXTextField fx:id="identifiantField" labelFloat="true" promptText="Entrez votre identifiant" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                        <JFXPasswordField fx:id="passwordField" labelFloat="true" promptText="Entrez votre mot de passe" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+                                <JFXTextField fx:id="userNameField" labelFloat="true" onAction="#onEnter" promptText="Entrez votre identifiant" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                        <JFXPasswordField fx:id="passwordField" labelFloat="true" onAction="#onEnter" promptText="Entrez votre mot de passe" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                                 <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="416.0" text="Login" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                <JFXButton fx:id="validateButton" contentDisplay="RIGHT" onAction="#validateButtonPressed" text="Login" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                <JFXButton fx:id="validateButton" onAction="#validateButtonPressed" contentDisplay="RIGHT" text="Login" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                     <graphic>
                                         <FontIcon fx:id="validateIcon" iconLiteral="fas-arrow-right" iconSize="16" styleClass="filledIcons" />
                                     </graphic>

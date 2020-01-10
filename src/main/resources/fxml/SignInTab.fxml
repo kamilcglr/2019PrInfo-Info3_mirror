@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+<?import com.jfoenix.controls.JFXPasswordField?>
 <AnchorPane fx:id="searchPane" prefHeight="741.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.SignInController">
     <children>
@@ -38,7 +39,7 @@
                             <children>
                                 <JFXTextField fx:id="mail" labelFloat="true" promptText="Entrez votre adresse mail"
                                               GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1"
-                                              GridPane.valignment="CENTER"/>
+                                              GridPane.valignment="CENTER" onAction="#onEnter"/>
                                 <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER"
                                        prefHeight="34.0" prefWidth="416.0" text="Inscription" textAlignment="CENTER"
                                        GridPane.columnSpan="5" GridPane.halignment="CENTER"
@@ -59,13 +60,13 @@
                                                   styleClass="logginSigninIcons"/>
                                     </graphic>
                                 </JFXButton>
-                                <JFXTextField fx:id="password" labelFloat="true" promptText="Entrez votre mot de passe"
+                                <JFXPasswordField fx:id="password" labelFloat="true" promptText="Entrez votre mot de passe"
                                               GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2"
-                                              GridPane.valignment="CENTER"/>
-                                <JFXTextField fx:id="twitterName" labelFloat="true"
+                                              GridPane.valignment="CENTER" onAction="#onEnter"/>
+                                <JFXTextField fx:id="username" labelFloat="true"
                                               promptText="Entrez votre identifiant" GridPane.columnIndex="1"
                                               GridPane.columnSpan="3" GridPane.rowIndex="3"
-                                              GridPane.valignment="CENTER"/>
+                                              GridPane.valignment="CENTER" onAction="#onEnter"/>
 
                             </children>
                         </GridPane>
