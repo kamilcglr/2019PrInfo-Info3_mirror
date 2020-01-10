@@ -2,8 +2,17 @@
     -fx-background-color: -main-bg-color;
 }
 
-.userCellGridPane{
-    -fx-background-color: white;
+/*Bigger text here han in main*/
+.labelElements{
+    -fx-padding: 10;
+    -fx-font-family: "Roboto Bold";
+    -fx-font-size: 20;
+}
+/*Bigger text here han in main*/
+.labelElementsLight{
+    -fx-padding: 10;
+    -fx-font-family: "Roboto Light";
+    -fx-font-size: 20;
 }
 /*
 * Labels
