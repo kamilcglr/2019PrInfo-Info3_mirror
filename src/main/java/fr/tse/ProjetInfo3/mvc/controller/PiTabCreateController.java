@@ -1,12 +1,15 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import com.jfoenix.controls.JFXButton;
@@ -51,11 +54,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -478,10 +476,11 @@ public class PiTabCreateController {
      * A Cell element used as an entity shown in the Hashtag JFXListView
      */
     public final class HashtagCell extends ListCell<String> {
-        GridPane cellGridPane;
-        ColumnConstraints column1;
-        ColumnConstraints column2;
-        ColumnConstraints column3;
+        HBox hBox = new HBox();
+
+        Label name;
+        Label users;
+        Label hashtags;
 
         Label hashtagIconLabel;
         Label hashtagLabel;
@@ -493,26 +492,15 @@ public class PiTabCreateController {
         public HashtagCell() {
             super();
 
-            cellGridPane = new GridPane();
-            cellGridPane.setPrefSize(550, 50);
-            cellGridPane.getStyleClass().add("userCellGridPane");
-
-            column1 = new ColumnConstraints();
-            column1.setPrefWidth(100);
-            column2 = new ColumnConstraints();
-            column2.setPrefWidth(400);
-            column3 = new ColumnConstraints();
-            column3.setPrefWidth(50);
-
-            cellGridPane.getColumnConstraints().addAll(column1, column2, column3);
-
             hashtagIconLabel = new Label();
 
             hashtagIcon = new FontIcon("fas-hashtag");
             hashtagIcon.setIconSize(18);
             hashtagIconLabel.setGraphic(hashtagIcon);
+            hashtagIconLabel.getStyleClass().add("labelElements");
 
             hashtagLabel = new Label();
+            hashtagLabel.getStyleClass().add("labelElements");
             removeHashtagJFXButton = new JFXButton();
 
             minusIcon = new FontIcon("fas-minus");
@@ -526,12 +514,7 @@ public class PiTabCreateController {
             removeHashtagJFXButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    System.out.println("Action: " + getItem());
                     String hashtagStringObject = getItem();
-                    // hashtagList = hashtagList.stream()
-                    // .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
-                    // .collect(Collectors.toList());
-                    // test
                     List<Hashtag> toRemove = hashtagList.stream()
                             .filter(hashtag -> hashtag.getHashtag().equals(hashtagStringObject))
                             .collect(Collectors.toList());
@@ -540,10 +523,9 @@ public class PiTabCreateController {
                     observableListHashtag.remove(hashtagStringObject);
                 }
             });
-
-            cellGridPane.add(hashtagIconLabel, 0, 0);
-            cellGridPane.add(hashtagLabel, 1, 0);
-            cellGridPane.add(removeHashtagJFXButton, 2, 0);
+            Region filler = new Region();
+            HBox.setHgrow(filler, Priority.ALWAYS);
+            hBox.getChildren().addAll(hashtagIconLabel, hashtagLabel, filler, removeHashtagJFXButton);
         }
 
         @Override
@@ -558,7 +540,10 @@ public class PiTabCreateController {
                 hashtagLabel.setText(hashtagName);
 
                 setText(null);
-                setGraphic(cellGridPane);
+                hBox.setAlignment(Pos.CENTER_LEFT);// Changed the alignment to center-left
+                hBox.getStyleClass().add("hbox");
+                hBox.setPrefWidth(100);
+                setGraphic(hBox);
             }
         }
     }
@@ -568,11 +553,8 @@ public class PiTabCreateController {
      * A Cell element used as an entity shown in the Users JFXListView
      */
     public final class UserCell extends ListCell<User> {
-        GridPane cellGridPane;
-        ColumnConstraints column1;
-        ColumnConstraints column2;
-        ColumnConstraints column3;
-        ColumnConstraints column4;
+        HBox hBox = new HBox();
+
 
         ImageView profileImageView;
         Label screenNameLabel;
@@ -585,25 +567,15 @@ public class PiTabCreateController {
         public UserCell() {
             super();
 
-            cellGridPane = new GridPane();
-            cellGridPane.setPrefSize(550, 50);
-            cellGridPane.getStyleClass().add("userCellGridPane");
-
-            column1 = new ColumnConstraints();
-            column1.setPrefWidth(50);
-            column2 = new ColumnConstraints();
-            column2.setPrefWidth(150);
-            column3 = new ColumnConstraints();
-            column3.setPrefWidth(300);
-            column4 = new ColumnConstraints();
-            column4.setPrefWidth(50);
-
-            cellGridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
-
             profileImageView = new ImageView();
+            profileImageView.getStyleClass().add("labelElements");
 
             screenNameLabel = new Label();
+            screenNameLabel.getStyleClass().add("labelElements");
+
             followersCountLabel = new Label();
+            followersCountLabel.setAlignment(Pos.CENTER_LEFT);
+            followersCountLabel.getStyleClass().add("labelLightElements");
 
             removeUserJFXButton = new JFXButton();
 
@@ -631,7 +603,7 @@ public class PiTabCreateController {
                                 System.out.println("Action: " + getItem());
                                 User userObject = getItem();
 
-                                cellGridPane.setVisible(false);
+                                hBox.setVisible(false);
                                 userList.remove(userObject);
                                 observableListUser.remove(userObject);
                                 userListView.setItems(observableListUser);
@@ -646,11 +618,9 @@ public class PiTabCreateController {
 
                 }
             });
-
-            cellGridPane.add(profileImageView, 0, 0);
-            cellGridPane.add(screenNameLabel, 1, 0);
-            cellGridPane.add(followersCountLabel, 2, 0);
-            cellGridPane.add(removeUserJFXButton, 3, 0);
+            Region filler = new Region();
+            HBox.setHgrow(filler, Priority.ALWAYS);
+            hBox.getChildren().addAll(profileImageView, screenNameLabel, followersCountLabel, filler, removeUserJFXButton);
         }
 
         @Override
@@ -680,10 +650,12 @@ public class PiTabCreateController {
                         profileImageView.setImage(image);
 
                         screenNameLabel.setText(user.getScreen_name());
-                        followersCountLabel.setText("Followers: " + Long.toString(user.getFollowers_count()));
+                        followersCountLabel.setText("Followers: " + user.getFollowers_count());
 
                         setText(null);
-                        setGraphic(cellGridPane);
+                        hBox.setAlignment(Pos.CENTER_LEFT);// Changed the alignment to center-left
+                        hBox.getStyleClass().add("hbox");
+                        setGraphic(hBox);
                     }
                 });
 
