@@ -438,11 +438,16 @@ public class ListObjects {
                 hBox.getStyleClass().add("hbox");
                 hBox.setPrefWidth(100);
 
-                String userNamesInPI = interestPoint.getUsers().stream()
-                        .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
-                String hashtagNamesInPI = interestPoint.getHashtags().stream()
-                        .map(hashtag -> "#" + hashtag.getHashtag()).collect(Collectors.joining(" "));
-
+                String userNamesInPI = "";
+                String hashtagNamesInPI = "";
+                if (interestPoint.getUsers() != null) {
+                    userNamesInPI = interestPoint.getUsers().stream()
+                            .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
+                }
+                if (interestPoint.getHashtags() != null) {
+                    hashtagNamesInPI = interestPoint.getHashtags().stream()
+                            .map(hashtag -> "#" + hashtag.getHashtag()).collect(Collectors.joining(" "));
+                }
 
                 name.setText(interestPoint.getName());
                 name.setMinWidth(100);

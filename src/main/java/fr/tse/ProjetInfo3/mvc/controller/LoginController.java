@@ -10,8 +10,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -96,6 +95,27 @@ public class LoginController {
                 anchorPane.setEffect(null);
             });
             anchorPane.setEffect(blur);
+
+            //Handle shortcut
+            mainController.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.F, KeyCombination.ALT_ANY),
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mainController.goToMyFavsPane();
+                        }
+                    }
+            );
+            mainController.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.P, KeyCombination.ALT_ANY),
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mainController.goToMyPisPane();
+                        }
+                    }
+            );
+
             return 0;
         } else {
             Label headerLabel = new Label("Erreur");
@@ -126,6 +146,7 @@ public class LoginController {
             return 0;
         }
     }
+
     @FXML
     private void onEnter(ActionEvent event) {
         validateButtonPressed(event);

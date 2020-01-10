@@ -95,7 +95,6 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
             deletePI.setVisible(true);
             editPI.setVisible(true);
         }
-
     }
 
     /*
@@ -140,6 +139,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
     @FXML
     void editPIPressed(ActionEvent event) {
         //Not new, then we add true in the parameters
+        mainController.closeCurrentTab();
         mainController.goToPICreateOrEditPane(false, piViewer);
     }
 
@@ -172,6 +172,7 @@ public class MyPIsTabController extends ListView<String> implements Initializabl
 
     @FXML
     void seeButtonPressed(ActionEvent event) {
+        mainController.closeCurrentTab();
         mainController.goToSelectedPi(piViewer);
     }
 
