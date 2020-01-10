@@ -435,6 +435,11 @@ GridPane {
     -fx-font-size: 20;
 }
 
+.roundSpinner .arc {
+    -fx-stroke: -accent;
+}
+
+
 /* TITLES ON TABS */
 
 .tabtitles {
