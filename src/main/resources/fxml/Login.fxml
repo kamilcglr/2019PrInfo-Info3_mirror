@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
@@ -44,12 +45,13 @@
                                         <FontIcon fx:id="validateIcon" iconLiteral="fas-arrow-right" iconSize="16" styleClass="filledIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="Signin" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="S'inscrire" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon fx:id="signinIcon" iconLiteral="fas-sign-in-alt" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
                         <Label fx:id="progressLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                        <JFXSpinner fx:id="jfxSpinner" styleClass="roundSpinner" maxHeight="50.0" maxWidth="50.0" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="TOP" />
 
                             </children>
                         </GridPane>
