@@ -375,8 +375,7 @@ public class ListObjects {
 
             } else {
                 if (user.getProfilePicture() == null) {
-                    Platform.runLater(() -> user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false)));
-                    //user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
+                    user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
                 }
                 profileImageView.setImage(user.getProfilePicture());
 
@@ -390,8 +389,8 @@ public class ListObjects {
 
                 profileImageView.setClip(null);
                 profileImageView.setImage(image);
-                profileImageView.getStyleClass().add("profileImageView");
 
+                profileImageView.getStyleClass().add("profileImageView");
 
                 hBox.getStyleClass().add("hbox");
                 nameLabel.setText(user.getName());
