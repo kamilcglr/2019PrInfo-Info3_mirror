@@ -134,7 +134,7 @@ public class RequestManager {
      * @return Map of Names and screen_names of user
      */
     public List<User> getUsersbyName(String userProposition) throws IOException, InterruptedException {
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false&result_type=popular";
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=10&include_entities=false&result_type=popular";
 
         //if the proposition contains spaces we will remove them
         //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces
