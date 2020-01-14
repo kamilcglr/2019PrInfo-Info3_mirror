@@ -3,9 +3,7 @@ package fr.tse.ProjetInfo3.mvc;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
-import fr.tse.ProjetInfo3.mvc.controller.LoginController;
-import fr.tse.ProjetInfo3.mvc.controller.MainController;
-import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
+import fr.tse.ProjetInfo3.mvc.repository.H2jsbcCreateOrDelete;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,8 +17,6 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    private RequestManager mainRequestManager;
-
     @FXML
     private AnchorPane root;
 
@@ -28,10 +24,13 @@ public class Main extends Application {
      * Constructor
      */
     public Main() {
-        mainRequestManager = new RequestManager();
     }
 
     public static void main(String[] args) {
+        // If the first argument is install, create the database.
+        if (args.length > 0 && args[0].toLowerCase().equals("install")) {
+            H2jsbcCreateOrDelete.createDatabase();
+        }
         launch();
     }
 
@@ -63,12 +62,11 @@ public class Main extends Application {
         new Thread(() -> {
             try {
                 SVGGlyphLoader.loadGlyphsFont(getClass().getResourceAsStream("/fonts/icon.svg"),
-                    "icon.svg");
+                        "icon.svg");
             } catch (IOException ioExc) {
                 ioExc.printStackTrace();
             }
         }).start();
-
     }
 
     /**
