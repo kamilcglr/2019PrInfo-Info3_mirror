@@ -64,6 +64,7 @@ public class StatisticsTabController {
 	/** Time **/
 
 	private Date oldestTweet;
+	private Date newestTweet;
 
 	/** Threads **/
 
@@ -160,7 +161,10 @@ public class StatisticsTabController {
 				// Get the date of the oldest tweet
 				oldestTweet = bigTweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
 						.getCreated_at();
-
+				
+				newestTweet = bigTweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+						.getCreated_at();
+				
 				// Acquire Data
 				tweetsPerIntervalForEachUserMap = acquireDataOfFiveMostActiveUsers();
 				tweetsPerIntervalForEachHashtagMap = acquireDataOfFiveTopHashtags();
@@ -249,8 +253,8 @@ public class StatisticsTabController {
 
 		/** Timestamps **/
 		// Get current date
-		Date currentDate = new Date(System.currentTimeMillis());
-		int minutesDifference = minutesDifference(currentDate, oldestTweet);
+		//Date currentDate = new Date(System.currentTimeMillis());
+		int minutesDifference = minutesDifference(newestTweet, oldestTweet);
 		System.out.println(minutesDifference);
 
 		double interval = minutesDifference / 20.0d;
@@ -410,8 +414,8 @@ public class StatisticsTabController {
 
 		/** Timestamps **/
 		// Get current date
-		Date currentDate = new Date(System.currentTimeMillis());
-		int minutesDifference = minutesDifference(currentDate, oldestTweet);
+		//Date currentDate = new Date(System.currentTimeMillis());
+		int minutesDifference = minutesDifference(newestTweet, oldestTweet);
 		double interval = minutesDifference / 20.0d;
 
 		System.out.println(minutesDifference);
@@ -498,8 +502,8 @@ public class StatisticsTabController {
 
 		/** Timestamps **/
 		// Get current date
-		Date currentDate = new Date(System.currentTimeMillis());
-		int minutesDifference = minutesDifference(currentDate, oldestTweet);
+		//Date currentDate = new Date(System.currentTimeMillis());
+		int minutesDifference = minutesDifference(newestTweet, oldestTweet);
 		double interval = minutesDifference / 20.0d;
 
 		System.out.println(minutesDifference);
