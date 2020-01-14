@@ -21,7 +21,7 @@ public class Hashtag implements Serializable {
     private String hashtag;
     private Date lastSearchDate;
 
-    private boolean allTweetsCollected; //true when hashtag have no more tweets (less than 3200)
+    private boolean allTweetsCollected; //true when hashtag have no more tweets. Not called in filter or stop.
     private boolean dateTweetsLimit; //true when there is no more tweets for the until date
 
     private boolean globalTweetsLimit; //true when date more than 7 days

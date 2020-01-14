@@ -119,7 +119,7 @@ public class PIViewer {
         List<User> usersOfIP = selectedInterestPoint.getUsers();
         List<Hashtag> hashtagsOfIP = selectedInterestPoint.getHashtags();
 
-        int maxRequestPerTour = 10;
+        int maxRequestPerTour = 10; //This variable fix the limit for each turn ~1000tweets for an hashtag
 
         Date dateToSearch = null;
         int totalNumberOfRequest = 0;
@@ -201,19 +201,27 @@ public class PIViewer {
             }
         }
 
+        //More than 7 days
+        for (Hashtag hashtag : hashtags) {
+            if (hashtag.isGlobalTweetsLimit()) {
+                return true;
+            }
+        }
+
+        //We can continue while there is at least one object that can have tweets
         //Then, we can continue searching while there are at least one object that has not reach his limit
         //It stops only there is no tweets, e.g. all collected
         for (Hashtag hashtag : hashtags) {
-            if (!hashtag.isAllTweetsCollected()) {
+            if (hashtag.isAllTweetsCollected()) {
                 return false;
             }
         }
         for (User user : users) {
-            if (!user.isAllTweetsCollected()) {
+            if (user.isAllTweetsCollected()) {
                 return false;
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -225,11 +233,6 @@ public class PIViewer {
 
         for (Hashtag hashtag : hashtags) {
             if (hashtag.getTweets().size() > 0) {
-                //List<Tweet> tempList = new ArrayList<>();
-                //tempList = hashtag.getTweets()
-                //        .stream()
-                //        .filter(tweet -> tweet.getCreated_at().after(filterFromDate))
-                //        .collect(Collectors.toList());
                 hashtag.getTweets()
                         .removeIf(tweet -> tweet.getCreated_at().before(filterFromDate));
                 tweets.addAll(hashtag.getTweets());
@@ -237,11 +240,6 @@ public class PIViewer {
         }
         for (User user : users) {
             if (user.getTweets().size() > 0) {
-                //List<Tweet> tempList = new ArrayList<>();
-                //tempList = user.getTweets()
-                //        .stream()
-                //        .filter(tweet -> tweet.getCreated_at().after(filterFromDate))
-                //        .collect(Collectors.toList());
                 user.getTweets()
                         .removeIf(tweet -> tweet.getCreated_at().before(filterFromDate));
                 tweets.addAll(user.getTweets());
@@ -311,7 +309,9 @@ public class PIViewer {
             Collections.sort(datesOfMostOldInEach);
             Collections.reverse(datesOfMostOldInEach);
         } else {
-            // The date is taken in account only if all the tweets are not collected. (a user or hashtag could not have tweets)
+            // The date is taken in account only if all the tweets are not collected.
+            // (a user or hashtag could not have tweets)
+            // For example #azerty can have only 5 tweets but trump 1000. The filter is not applied on trump.
             for (Hashtag hashtag : hashtags) {
                 if (hashtag.getTweets().size() > 0 && !hashtag.isAllTweetsCollected()) {
                     datesOfMostOldInEach.add(hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at());
@@ -403,28 +403,23 @@ public class PIViewer {
                     hashtag.setAllTweetsCollected(true);
                 }
                 NbRequestDone++;
-            } /*else {   //TODO DELETE THIS AFTER END OF SPRINT 5
-                System.out.println(hashtag.getHashtag() + " has already tweets");
-            }*/
+            }
         } else {
             if (!hashtag.isAllTweetsCollected()) {
                 LocalDate now = LocalDate.now();
                 LocalDate dateOfLast = new java.sql.Date(hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().getTime()).toLocalDate();
 
-                Period period = Period.between(now, dateOfLast);
+                Period period = Period.between(dateOfLast, now);
                 int diff = period.getDays();
 
-                if (diff < 9) { //TODO Handle this in the request
+                if (diff < 8) { //TODO Handle this in the request
                     //else SEARCH ONLY IF DATE IS OK
                     if (hashtag.getTweets().get(hashtag.getTweets().size() - 1).getCreated_at().after(maxDate)) {
                         System.out.println("search Tweets by date for " + hashtag.getHashtag());
-                        Pair<List<Tweet>, Integer> pair = hashtagViewer.searchTweetsByDate(hashtag.getHashtag(), 30, maxDate, hashtag.getMaxId());
+                        Pair<List<Tweet>, Integer> pair = hashtagViewer.searchTweetsByDate(hashtag.getHashtag(), nbRequestMax, maxDate, hashtag.getMaxId());
                         tweetList = pair.getKey();
                         NbRequestDone = pair.getValue();
-                    } /*else {   //TODO DELETE THIS AFTER END OF SPRINT 5
-                        System.out.println("skip search for " + hashtag.getHashtag() + " : NO TWEETS FOR THIS DATE");
-                        hashtag.setDateTweetsLimit(true);
-                    }*/
+                    }
                 } else {
                     System.out.println("skip search for " + hashtag.getHashtag() + " : GLOBAL 7 DAYS LIMIT");
                     hashtag.setGlobalTweetsLimit(true);
