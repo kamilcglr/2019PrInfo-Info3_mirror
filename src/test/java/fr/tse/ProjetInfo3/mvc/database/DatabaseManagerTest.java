@@ -43,7 +43,7 @@ public class DatabaseManagerTest {
 		databaseManager = new DatabaseManager();
 		requestManager = new RequestManager();
 		hashtag = new Hashtag("Hashtag");
-		interestPoint = new InterestPoint("test", "description interest point", new Date("dd/mm/yyyy"));
+		interestPoint = new InterestPoint("test", "description interest point", new Date());
 	}
 
 	@Test
@@ -139,7 +139,6 @@ public class DatabaseManagerTest {
 	 */
 	@Test
 	public void testDeleteSelectedInterestPointById() {
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class DatabaseManagerTest {
 	 */
 	@Test
 	public void testCreateFavorites() {
-		fail("Not yet implemented");
+		databaseManager.createFavorites((int) user.getId());
 	}
 
 	/**
