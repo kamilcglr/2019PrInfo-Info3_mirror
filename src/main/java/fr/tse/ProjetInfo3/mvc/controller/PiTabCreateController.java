@@ -233,7 +233,7 @@ public class PiTabCreateController {
 
         propositionList.setVisible(false);
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
         userField.textProperty().addListener((observable, old_value, new_value) -> {
             propositionList.setVisible(false);
 

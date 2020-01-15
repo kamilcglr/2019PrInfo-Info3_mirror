@@ -312,12 +312,6 @@ public class PiTabController {
         }
     }
 
-    private static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
-        return Instant.ofEpochMilli(dateToConvert.getTime())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-    }
-
     private Task<Void> setTopFiveUsers() throws Exception {
         // user in parameters to find what to exclude
         List<User> users = piViewer.getTopFiveUsers(bigTweetList);
@@ -409,10 +403,6 @@ public class PiTabController {
         }
 
         vBox.setVisible(show);
-        // nbUsersLabel.setVisible(hide);
-        // tweetsLabel.setVisible(hide);
-        // usersLabel.setVisible(hide);
-        // lastAnalysedLabel.setVisible(hide);
     }
 
     private void addTweetsToList(List<Tweet> toptweets) {
