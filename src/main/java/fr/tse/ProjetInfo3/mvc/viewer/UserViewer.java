@@ -41,10 +41,6 @@ public class UserViewer {
         user.setTweets(new ArrayList<>());
     }
 
-    public User searchScreenNameU(String screen_name) throws Exception {
-        return user = requestManager.getUser(screen_name);
-    }
-
     public Pair<List<Tweet>, Integer> getTweetsByDate(User user, int nbRequestMax, Date untilDate, Long maxId, int alreadyGot) {
         int nbRequestDone;
         List<Tweet> tweetList = new ArrayList<>();
@@ -53,7 +49,6 @@ public class UserViewer {
             tweetList = pair.getKey();
             nbRequestDone = pair.getValue();
         } else {
-            //TODO Handle JUL or not enough tweets
             //All tweets for the user are collected
             user.setAllTweetsCollected(true);
             nbRequestDone = 0;
