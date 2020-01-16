@@ -50,7 +50,7 @@
                                 <FontIcon iconLiteral="fas-edit" styleClass="icon" text="" />
                             </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="seeButton" onAction="#seeButtonPressed" styleClass="actionButton" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                        <JFXButton fx:id="seeButton" contentDisplay="RIGHT" onAction="#seeButtonPressed" styleClass="actionButton" text="Afficher" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                             <graphic>
                                 <FontIcon iconLiteral="fas-arrow-right" styleClass="icon" />
                             </graphic>
