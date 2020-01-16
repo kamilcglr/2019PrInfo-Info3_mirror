@@ -1,21 +1,5 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
@@ -25,12 +9,8 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.Chart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
@@ -38,11 +18,16 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergiy
@@ -156,7 +141,7 @@ public class StatisticsTabController {
         showGraphs(false);
     }
 
-    private void showGraphs(boolean show){
+    private void showGraphs(boolean show) {
         topFiveUserCadenceChart.setVisible(show);
         topFiveHashtagCadenceChart.setVisible(show);
         tweetCadenceChart.setVisible(show);
@@ -231,7 +216,7 @@ public class StatisticsTabController {
         return null;
     }
 
-    /** Data **/
+    /* Data */
 
     /**
      * @return Returns a Map<User, Map<Date, Integer>>
@@ -634,7 +619,7 @@ public class StatisticsTabController {
         return sortedTopTenHashtags;
     }
 
-    /** Time **/
+    /* Time */
 
     /**
      * @return Returns a Date
@@ -698,10 +683,10 @@ public class StatisticsTabController {
         return calendar.getTime();
     }
 
-    /** Animations **/
+    /* Animations */
 
     /**
-     * @param pane, chart
+     * @param chartContainers, chart
      * @author Sergiy
      * {@code This method puts all charts in their panes, one after another, thus creating an animated sequence}
      */
@@ -818,7 +803,7 @@ public class StatisticsTabController {
                         new XYChart.Data<String, Number>(simpleDateFormat.format(entry2.getKey()), entry2.getValue()));
             }
 
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 topFiveHashtagCadenceChart.getData().add(series);
             });
         }
@@ -846,7 +831,7 @@ public class StatisticsTabController {
                     .add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
 
         }
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             tweetCadenceChart.getData().add(series);
         });
     }
@@ -856,7 +841,7 @@ public class StatisticsTabController {
      * {@code This method builds the pie chart of the ten most used hashtags}
      */
     void generateTopLinkedHashtagChart() {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             /* Fill chart with data */
             topTenLinkedHashtags.forEach((String, Integer) -> {
                 pieChart.getData().add(new PieChart.Data(String, Integer));
