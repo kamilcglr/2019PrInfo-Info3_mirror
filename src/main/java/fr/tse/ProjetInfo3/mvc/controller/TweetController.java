@@ -6,7 +6,7 @@ import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.frenchSimpleDateFormat;
 
 public class TweetController {
     private HashtagTabController hashtagTabController;

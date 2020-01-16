@@ -39,10 +39,10 @@
                                         <FontIcon fx:id="logginIcon" iconLiteral="far-user-circle" iconSize="16" styleClass="logginSigninIcons" />
                                     </graphic>
                                 </JFXButton>
-                                <JFXTextField fx:id="mail" labelFloat="true" onAction="#onEnter" promptText="Entrez votre adresse mail" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                 <Label fx:id="questionLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="416.0" text="Inscription" textAlignment="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                <JFXPasswordField fx:id="password" labelFloat="true" onAction="#onEnter" promptText="Entrez votre mot de passe" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                                <JFXTextField fx:id="mail" labelFloat="true" onAction="#onEnter" promptText="Entrez votre adresse mail" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                 <JFXTextField fx:id="username" labelFloat="true" onAction="#onEnter" promptText="Entrez votre identifiant" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                <JFXPasswordField fx:id="password" labelFloat="true" onAction="#onEnter" promptText="Entrez votre mot de passe" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
                                 <JFXButton fx:id="signinButton" contentDisplay="RIGHT" onAction="#signinButtonpressed" styleClass="logginSigninButtons" text="Valider" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                     <graphic>
                                         <FontIcon fx:id="saveIcon" iconLiteral="fas-save" iconSize="16" styleClass="logginSigninIcons" />

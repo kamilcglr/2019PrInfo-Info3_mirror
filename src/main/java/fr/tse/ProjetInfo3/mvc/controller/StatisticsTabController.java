@@ -9,10 +9,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.Chart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.BoxBlur;
@@ -28,6 +25,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.*;
 
 /**
  * @author Sergiy
@@ -133,8 +132,8 @@ public class StatisticsTabController {
         chartContainers.add(pane3);
         chartContainers.add(pane4);
 
-        charts.add(topFiveUserCadenceChart);
         charts.add(topFiveHashtagCadenceChart);
+        charts.add(topFiveUserCadenceChart);
         charts.add(tweetCadenceChart);
         charts.add(pieChart);
 
@@ -264,11 +263,11 @@ public class StatisticsTabController {
             }
         }
 
-        /** Get the tweets we will be working with **/
+        /* Get the tweets we will be working with */
         // A Predicate that predicates that a user is part of the five most active users
         Predicate<Tweet> byAppartenance = tweet -> topFiveActiveUsers.contains(tweet.getUser());
 
-        // Filter the tweew list so that the remaining tweets are posted by one of
+        // Filter the tweet list so that the remaining tweets are posted by one of
         // the 5 most active users.
         reducedTweetListUsers = bigTweetList.stream().filter(byAppartenance).collect(Collectors.toList());
 
@@ -276,7 +275,7 @@ public class StatisticsTabController {
         System.out.println(bigTweetList.size());
         System.out.println(reducedTweetListUsers.size());
 
-        /** Timestamps **/
+        /* Timestamps */
         // Get current date
         //Date currentDate = new Date(System.currentTimeMillis());
         int minutesDifference = minutesDifference(newestTweet, oldestTweet);
@@ -313,8 +312,6 @@ public class StatisticsTabController {
             Date dateTweet = tweet.getCreated_at();
             Date intervalDate = approximateInterval(dateIntervals, dateTweet);
 
-            // System.out.println("Created at " + dateTweet);
-            // System.out.println("Closest to " + intervalDate);
 
             // Check if a User entry exists
             if (tweetsPerIntervalForEachUserMap.containsKey(user)) {
@@ -617,70 +614,6 @@ public class StatisticsTabController {
                         Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         return sortedTopTenHashtags;
-    }
-
-    /* Time */
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method returns Date, created by adding time (in minutes) to an another Date}
-     */
-    public Date addMinutesToDate(Date date, int minutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, minutes);
-
-        return calendar.getTime();
-    }
-
-    /**
-     * @return Returns an integer
-     * @author Sergiy
-     * {@code This method calculates a difference (in minutes between two dates)}
-     */
-    private int minutesDifference(Date start, Date end) {
-        final int MILLIS_TO_HOUR = 1000 * 60;
-
-        int difference = (int) ((start.getTime() - end.getTime()) / MILLIS_TO_HOUR);
-        return difference;
-    }
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method returns Date within the interval list that is the closest to the parameter.
-     * In other terms, it allows to place the tweets in clusters of time}
-     */
-    private Date approximateInterval(List<Date> dateIntervals, Date tweetDate) {
-        long minDifference = Long.MAX_VALUE;
-        Date closestDate = null;
-
-        for (Date date : dateIntervals) {
-            long differenceInMillis = Math.abs(date.getTime() - tweetDate.getTime());
-
-            if (differenceInMillis < minDifference) {
-                minDifference = differenceInMillis;
-                closestDate = date;
-            }
-        }
-
-        return closestDate;
-    }
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method rounds a Date so that everything below hours is rounded to 0}
-     */
-    public Date roundDateToHour(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        return calendar.getTime();
     }
 
     /* Animations */

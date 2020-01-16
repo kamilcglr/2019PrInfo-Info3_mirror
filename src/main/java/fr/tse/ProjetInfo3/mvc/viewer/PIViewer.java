@@ -18,7 +18,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.hoursAndDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.hoursAndDateFormat;
 import static java.util.stream.Collectors.toMap;
 
 /**

@@ -29,9 +29,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.twitterRequestFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.twitterRequestFormat;
 
 /**
  * @author Sergiy
