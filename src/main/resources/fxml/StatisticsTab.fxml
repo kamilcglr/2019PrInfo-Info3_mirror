@@ -35,7 +35,7 @@
                               <Label fx:id="piNameLabel" styleClass="tabtitles" text="Label" GridPane.valignment="TOP" />
                               <AnchorPane fx:id="pane1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
                                  <children>
-                                    <AreaChart fx:id="topFiveHashtagCadenceChart" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 hashtags les plus utilisés" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <AreaChart fx:id="topFiveHashtagCadenceChart" animated="false" createSymbols="false" legendSide="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 hashtags les plus utilisés" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <xAxis>
                                         <CategoryAxis label="Temps" side="BOTTOM" />
                                       </xAxis>
@@ -46,7 +46,7 @@
                                  </children></AnchorPane>
                               <AnchorPane fx:id="pane2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
-                                    <AreaChart fx:id="topFiveUserCadenceChart" animated="false" layoutX="-108.0" layoutY="50.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 utilisateurs les plus actifs" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <AreaChart fx:id="topFiveUserCadenceChart" animated="false" createSymbols="false" layoutX="-108.0" layoutY="50.0" legendSide="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 utilisateurs les plus actifs" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <xAxis>
                                         <CategoryAxis label="Temps" side="BOTTOM" />
                                       </xAxis>
@@ -57,7 +57,7 @@
                                  </children></AnchorPane>
                               <AnchorPane fx:id="pane3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="2">
                                  <children>
-                                    <AreaChart fx:id="tweetCadenceChart" animated="false" legendVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets total par intervalle de temps" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <AreaChart fx:id="tweetCadenceChart" animated="false" createSymbols="false" legendVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets total par intervalle de temps" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                       </xAxis>

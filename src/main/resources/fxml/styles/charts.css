@@ -9,17 +9,28 @@
 }
 
 .chart-title {
-    -fx-font-family: "Raleway-Bold";
+    -fx-font-family: "Raleway Bold";
     -fx-font-size: 20;
     -fx-text-fill: -grey-dark;
     -fx-wrap-text: true;
     -fx-alignment: center;
 }
 
+.chart-legend {
+    -fx-background-color: -gray3;
+    -fx-font-size: 13;
+    -fx-font-family: "Roboto Light";
+}
+
 .axis-label {
     -fx-text-fill: -grey-dark;
-    -fx-font-size: 19;
+    -fx-font-size: 13;
     -fx-font-family: "Roboto Light";
+}
+
+.axis {
+    -fx-tick-label-font: "Roboto Light";
+    -fx-tick-label-font-size: 7pt;
 }
 
 .chart-horizontal-grid-lines {
@@ -31,31 +42,17 @@
     -fx-stroke: transparent;
 }
 
-#tweetCadenceChart .chart-series-area-line, #tweetCadenceChart .chart-series-area-line {
+#tweetCadenceChart .chart-series-area-line {
     -fx-effect: dropshadow(gaussian, #55ACEE, 10, 0.0, 0, 2);
+}
+
+.withBackgroundChart {
+    -fx-background-color: -gray3;
 }
 
 .default-color0.chart-series-line {
     -fx-stroke: #55ACEE;
 }
-
-.default-color1.chart-series-line {
-    -fx-stroke: #3b4856;
-}
-
-.default-color2.chart-series-line {
-    -fx-stroke: #9fadbd;
-}
-
-.default-color3.chart-series-line {
-    -fx-stroke: #e588b1;
-}
-
-.default-color4.chart-series-line {
-    -fx-stroke: #ac547d;
-}
-
-
 
 .default-color0.chart-series-area-line {
     -fx-stroke: #55ACEE;
@@ -65,7 +62,6 @@
     -fx-fill: #55ACEE;
     -fx-opacity: 0.5;
 }
-
 
 #pane1, #pane2, #pane3, #pane4 {
     -fx-padding: 20px;

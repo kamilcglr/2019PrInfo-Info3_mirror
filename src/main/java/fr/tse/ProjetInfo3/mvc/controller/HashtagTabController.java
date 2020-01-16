@@ -18,6 +18,8 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
@@ -25,12 +27,11 @@ import javafx.scene.control.TitledPane;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.hoursAndDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.*;
 
 public class HashtagTabController {
     /**
@@ -109,6 +110,11 @@ public class HashtagTabController {
     private boolean isFavorite;
     @FXML
     private Label lastSearchLabel;
+
+    @FXML
+    private AreaChart<String, Number> tweetCadenceChart;
+
+    private Map<Date, Integer> tweetsPerInterval;
 
     /**************************************************************/
     /*Controller can access to main Controller */
@@ -218,6 +224,9 @@ public class HashtagTabController {
         threadSetTopTweets = new Thread(setTopTweets());
         threadSetTopTweets.setDaemon(true);
         threadSetTopTweets.start();
+
+        tweetsPerInterval = acquireDataOfTweetsPerTimeInterval();
+        generateTweetsPerIntervalChart();
 
         //Wait for the two other tasks
         while (threadSetTopLinkedHashtag.isAlive() || threadSetNumbers.isAlive() || threadSetTopTweets.isAlive()) {
@@ -379,6 +388,96 @@ public class HashtagTabController {
             favoriteIcon.setIconLiteral("fas-heart");
             favsViewer.addHashtagToFavourites(hashtagToPrint);
         }
+    }
+
+    /**
+     * Build the chart of tweets cadence
+     */
+    void generateTweetsPerIntervalChart() {
+        Date oldestTweet = tweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+
+        Date newestTweet = tweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+        /* Timestamps **/
+        // Get current date
+        int minutesDifference = minutesDifference(newestTweet, oldestTweet);
+        SimpleDateFormat simpleDateFormat;
+        if (minutesDifference < 24 * 60 ) {
+            simpleDateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            if(minutesDifference < 24 * 60 * 20) {
+                simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/YYYY");
+            }else{
+                simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+            }
+        }
+
+        /* Iterator configuration **/
+
+        Set<Map.Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
+        Iterator<Map.Entry<Date, Integer>> iterator1 = setEntry1.iterator();
+
+        /* Create series **/
+
+        XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+
+        /* Iterate over the data and fill the chart **/
+        while (iterator1.hasNext()) {
+            Map.Entry<Date, Integer> entry1 = iterator1.next();
+            series.getData()
+                    .add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
+
+        }
+        Platform.runLater(() -> {
+            tweetCadenceChart.getData().add(series);
+            tweetCadenceChart.setLegendVisible(false);
+        });
+    }
+
+    /**
+     * @return Returns a Map<Date, Integer>
+     * @author Sergiy
+     * {@code This method returns an overall amount of tweets per time interval}
+     */
+    public Map<Date, Integer> acquireDataOfTweetsPerTimeInterval() {
+        Map<Date, Integer> tweetsTimeInterval = new HashMap<>();
+        Date oldestTweet = tweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+
+        Date newestTweet = tweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+        /* Timestamps **/
+        // Get current date
+        int minutesDifference = minutesDifference(newestTweet, oldestTweet);
+        double interval = minutesDifference / 20.0d;
+
+        List<Date> dateIntervals = new LinkedList<Date>();
+
+        if (minutesDifference > 1440) {
+            for (int i = 1; i < 21; i++) {
+                dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+            }
+        } else {
+            for (int i = 1; i < 21; i++) {
+                dateIntervals.add(addMinutesToDate(oldestTweet, (int) (i * interval)));
+            }
+        }
+
+        for (Tweet tweet : tweetList) {
+            Date dateTweet = tweet.getCreated_at();
+            Date intervalDate = approximateInterval(dateIntervals, dateTweet);
+
+            if (tweetsTimeInterval.containsKey(intervalDate)) {
+                tweetsTimeInterval.put(intervalDate, tweetsTimeInterval.get(intervalDate) + 1);
+            } else {
+                tweetsTimeInterval.put(intervalDate, 0);
+            }
+        }
+
+        return tweetsTimeInterval.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
     /**

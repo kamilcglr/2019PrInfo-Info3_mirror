@@ -18,8 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -38,8 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.frenchSimpleDateFormat;
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.hoursAndDateFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.*;
 
 /**
  * @author Sobun UNG
@@ -129,7 +126,6 @@ public class UserTabController {
     private HBox profileImageBox;
     @FXML
     private AreaChart<String, Number> tweetCadenceChart;
-
 
     private Map<Date, Integer> tweetsPerInterval;
 
@@ -418,7 +414,24 @@ public class UserTabController {
      * Build the chart of tweets cadence
      */
     void generateTweetsPerIntervalChart() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/YYYY");
+        Date oldestTweet = tweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+
+        Date newestTweet = tweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+        /* Timestamps **/
+        // Get current date
+        int minutesDifference = minutesDifference(newestTweet, oldestTweet);
+        SimpleDateFormat simpleDateFormat;
+        if (minutesDifference < 24 * 60 ) {
+            simpleDateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            if(minutesDifference < 24 * 60 * 20) {
+                simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/YYYY");
+            }else{
+                simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+            }
+        }
 
         /* Iterator configuration **/
 
@@ -436,7 +449,7 @@ public class UserTabController {
                     .add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
 
         }
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             tweetCadenceChart.getData().add(series);
             tweetCadenceChart.setLegendVisible(false);
         });
@@ -485,68 +498,6 @@ public class UserTabController {
         return tweetsTimeInterval.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).collect(Collectors.toMap(Map.Entry::getKey,
                         Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-    }
-
-    /* Time **/
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method returns Date, created by adding time (in minutes) to an another Date}
-     */
-    public Date addMinutesToDate(Date date, int minutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, minutes);
-
-        return calendar.getTime();
-    }
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method returns Date within the interval list that is the closest to the parameter.
-     * In other terms, it allows to place the tweets in clusters of time}
-     */
-    private Date approximateInterval(List<Date> dateIntervals, Date tweetDate) {
-        long minDifference = Long.MAX_VALUE;
-        Date closestDate = null;
-
-        for (Date date : dateIntervals) {
-            long differenceInMillis = Math.abs(date.getTime() - tweetDate.getTime());
-
-            if (differenceInMillis < minDifference) {
-                minDifference = differenceInMillis;
-                closestDate = date;
-            }
-        }
-        return closestDate;
-    }
-
-    /**
-     * @return Returns an integer
-     * @author Sergiy
-     * {@code This method calculates a difference (in minutes between two dates)}
-     */
-    private int minutesDifference(Date start, Date end) {
-        final int MILLIS_TO_HOUR = 1000 * 60;
-
-        return (int) ((start.getTime() - end.getTime()) / MILLIS_TO_HOUR);
-    }
-
-    /**
-     * @return Returns a Date
-     * @author Sergiy
-     * {@code This method rounds a Date so that everything below hours is rounded to 0}
-     */
-    public Date roundDateToHour(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        return calendar.getTime();
     }
 
 

@@ -130,7 +130,7 @@
                                       <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0">
                                              <children>
-                                                <AreaChart fx:id="tweetCadenceChart" createSymbols="false" layoutX="-184.0" layoutY="-239.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <AreaChart fx:id="tweetCadenceChart" styleClass="withBackgroundChart" createSymbols="false" layoutX="-184.0" layoutY="-239.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <xAxis>
                                                     <CategoryAxis label="Temps" side="BOTTOM" />
                                                   </xAxis>
@@ -163,10 +163,6 @@
                     </children>
                 </AnchorPane>
             </children>
-            <stylesheets>
-                <URL value="@styles/main.css" />
-                <URL value="@styles/userTab.css" />
-            </stylesheets>
         </StackPane>
     </children>
     <stylesheets>

@@ -38,6 +38,7 @@
     -accent2: #cad7caff;
     -gray: #66757F;
     -grey-dark: #292F33;
+    -gray3: #F5F5F5;
     -red: #cb7c7aff;
     -white: #ffffff;
 }
@@ -85,6 +86,8 @@ GridPane {
     -fx-text-fill: white;
     -fx-background-radius: 0px;
     -fx-border-radius: 0px;
+    -fx-font-family: "Raleway Bold";
+    -fx-font-size: 20;
 }
 
 .toolbar-button .toolbar-button-icon, .toolbar-button .toolbar-button-icon {
@@ -466,7 +469,7 @@ GridPane {
     -fx-padding: 0 0 0 0;
 }
 
-#lastSearchLabel{
+#lastSearchLabel {
     -fx-font-size: 15;
     -fx-font-family: 'Raleway-Regular';
 }
