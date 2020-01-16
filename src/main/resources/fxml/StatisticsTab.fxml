@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -9,13 +13,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane fx:id="statisticsPane" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.StatisticsTabController">
+<AnchorPane fx:id="statisticsPane" prefHeight="768.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tse.ProjetInfo3.mvc.controller.StatisticsTabController">
 	<children>
-		<StackPane fx:id="dialogStackPane" prefHeight="741.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<StackPane fx:id="dialogStackPane" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
 				<AnchorPane fx:id="anchorPane">
 					<children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="741.0" prefWidth="1200.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefWidth="1200.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
                   						<GridPane fx:id="gridPane" prefWidth="1200.0">
                   							<columnConstraints>
@@ -23,16 +27,49 @@
                   								<ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" />
                   							</columnConstraints>
                   							<rowConstraints>
-                              <RowConstraints minHeight="100.0" />
-                  								<RowConstraints maxHeight="1.7976931348623157E308" minHeight="500.0" vgrow="ALWAYS" />
-                  								<RowConstraints maxHeight="1.7976931348623157E308" minHeight="500.0" vgrow="ALWAYS" />
+                              <RowConstraints minHeight="50.0" />
+                  								<RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                  								<RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                   							</rowConstraints>
                            <children>
                               <Label fx:id="piNameLabel" styleClass="tabtitles" text="Label" GridPane.valignment="TOP" />
-                              <AnchorPane fx:id="pane1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
-                              <AnchorPane fx:id="pane2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <AnchorPane fx:id="pane3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="2" />
-                              <AnchorPane fx:id="pane4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <AnchorPane fx:id="pane1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
+                                 <children>
+                                    <AreaChart fx:id="topFiveHashtagCadenceChart" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 hashtags les plus utilisés" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <xAxis>
+                                        <CategoryAxis label="Temps" side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis label="Nombre de tweets" minorTickVisible="false" side="LEFT" />
+                                      </yAxis>
+                                    </AreaChart>
+                                 </children></AnchorPane>
+                              <AnchorPane fx:id="pane2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <AreaChart fx:id="topFiveUserCadenceChart" animated="false" layoutX="-108.0" layoutY="50.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets des 5 utilisateurs les plus actifs" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <xAxis>
+                                        <CategoryAxis label="Temps" side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis label="Nombre de tweets" minorTickVisible="false" side="LEFT" />
+                                      </yAxis>
+                                    </AreaChart>
+                                 </children></AnchorPane>
+                              <AnchorPane fx:id="pane3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="2">
+                                 <children>
+                                    <AreaChart fx:id="tweetCadenceChart" animated="false" legendVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Nombre de tweets total par intervalle de temps" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis label="Nombre de tweets" minorTickVisible="false" side="LEFT" />
+                                      </yAxis>
+                                    </AreaChart>
+                                 </children></AnchorPane>
+                              <AnchorPane fx:id="pane4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <PieChart fx:id="pieChart" animated="false" layoutX="46.0" layoutY="107.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Répartition du top des hashtags liés" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children></AnchorPane>
                            </children>
                   						</GridPane>
                      </content>
