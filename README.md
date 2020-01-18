@@ -5,14 +5,14 @@ Fonctionne grâce à l'API Twitter (https://developer.twitter.com/)
 ## Sommaire
 * [A propos du projet](#A-propos-du-projet)
   
-* [Utilisation](#getting-started)
+* [Commmencer](#Commmencer)
   * [Prérequis](#Prérequis)
-  * [Installation](#installation)
-  * [Limitations](#installation)
+  * [Installation](#Installation)
+  * [Limitations](#Limitations)
   
-* [Contribuer ou Modifier](#contribuer)
+* [Contribuer ou Modifier](#Contribuer-ou-Modifier)
 
-* [Contributors](#contributing)
+* [Contributors](#Contributors)
 
 ## A propos du projet
 Ce projet a été réalisé dans le cadre d'un projet informatique à Télécom Saint Etienne.
@@ -20,7 +20,7 @@ L'objectif est de pouvoir suivre et analyser les statistiques sur des utilisateu
 En créant un compte, l'utilisateur peut aussi créer des points d'intérêts regroupant plusieurs utilisateurs ou hashtags. Il peut aussi ajouter des users ou des hasthags à ses favoris.
 Pour des informations techniques détaillées, veuillez consulter le wiki. 
 
-## Utilisation
+## Commmencer
 ### Prérequis
 Java 11.
 ### Installation
