@@ -30,7 +30,7 @@
 
 .axis {
     -fx-tick-label-font: "Roboto Light";
-    -fx-tick-label-font-size: 7pt;
+    -fx-tick-label-font-size: 7px;
 }
 
 .chart-horizontal-grid-lines {
