@@ -3,23 +3,20 @@
  */
 package fr.tse.ProjetInfo3.mvc.database;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import fr.tse.ProjetInfo3.mvc.dto.Hashtag;
 import fr.tse.ProjetInfo3.mvc.dto.InterestPoint;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
-import fr.tse.ProjetInfo3.mvc.repository.RequestManager.RequestManagerException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Testing methods OF DB
@@ -38,7 +35,7 @@ public class DatabaseManagerTest {
 	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#DatabaseManager()}.
 	 */
 
-	@Before
+	@BeforeAll
 	public void initialize() {
 		databaseManager = new DatabaseManager();
 		requestManager = new RequestManager();
@@ -48,7 +45,7 @@ public class DatabaseManagerTest {
 
 	@Test
 	public void testDatabaseManager() {
-		assertNotNull(databaseManager.getInstanceOfGson());
+		Assertions.assertNotNull(databaseManager.getInstanceOfGson());
 	}
 
 	/**
