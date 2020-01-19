@@ -70,6 +70,9 @@ public class UserTabController {
     private JFXListView<JFXListCell> listTweets;
 
     @FXML
+    private JFXListView<ResultHashtag> listHashtags;
+
+    @FXML
     private Label lastAnalysedLabel;
 
     @FXML
@@ -116,8 +119,6 @@ public class UserTabController {
     private Label nbFollowers;
     @FXML
     private Label nbFollowing;
-    @FXML
-    private JFXListView<ResultHashtag> listHashtags;
     @FXML
     private ImageView profileImageView;
     @FXML
