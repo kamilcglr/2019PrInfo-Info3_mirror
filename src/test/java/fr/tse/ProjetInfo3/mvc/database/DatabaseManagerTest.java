@@ -22,7 +22,7 @@ import fr.tse.ProjetInfo3.mvc.repository.RequestManager;
 import fr.tse.ProjetInfo3.mvc.repository.RequestManager.RequestManagerException;
 
 /**
- * 
+ * Testing methods OF DB
  *
  */
 public class DatabaseManagerTest {
@@ -133,40 +133,6 @@ public class DatabaseManagerTest {
 		assertTrue(databaseManager.getAllInterestPointFromDataBase((int)user.getId()).size() > 0);
 	}
 
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#deleteSelectedInterestPointById(long)}.
-	 */
-	@Test
-	public void testDeleteSelectedInterestPointById() {
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#getTweetsFromInterestPoint(long)}.
-	 */
-	@Test
-	public void testGetTweetsFromInterestPoint() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#setTweetsToInterestPoint(long, java.util.List)}.
-	 */
-	@Test
-	public void testSetTweetsToInterestPoint() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#deleteTweetsFromInterestPoint(long)}.
-	 */
-	@Test
-	public void testDeleteTweetsFromInterestPoint() {
-		fail("Not yet implemented");
-	}
 
 	/**
 	 * Test method for
@@ -177,40 +143,5 @@ public class DatabaseManagerTest {
 		databaseManager.createFavorites((int) user.getId());
 	}
 
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#updateFavouritesInDatabase(fr.tse.ProjetInfo3.mvc.dto.Favourites)}.
-	 */
-	@Test
-	public void testUpdateFavouritesInDatabase() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#getFavourite(int)}.
-	 */
-	@Test
-	public void testGetFavourite() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#addNewUserToDataBase(fr.tse.ProjetInfo3.mvc.dto.UserApp)}.
-	 */
-	@Test
-	public void testAddNewUserToDataBase() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.tse.ProjetInfo3.mvc.repository.DatabaseManager#getUserFromDataBase(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testGetUserFromDataBase() {
-		fail("Not yet implemented");
-	}
-
+	
 }
