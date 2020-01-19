@@ -25,7 +25,6 @@ public class InterestPoint implements Serializable {
     private List<Hashtag> hashtags;
     private List<User> users;
     private List<Tweet> tweets;
-    private List<InterestPoint> interestPoints;
 
     public long getId() {
         return id;
@@ -44,7 +43,6 @@ public class InterestPoint implements Serializable {
         this.dateOfCreation = dateOfCreation;
         this.hashtags = new ArrayList<Hashtag>();
         this.users = new ArrayList<User>();
-        this.interestPoints = new ArrayList<InterestPoint>();
         this.tweets = new ArrayList<Tweet>();
     }
 
@@ -54,19 +52,7 @@ public class InterestPoint implements Serializable {
         this.dateOfCreation = dateOfCreation;
         this.hashtags = hashtags;
         this.users = users;
-        this.interestPoints = new ArrayList<InterestPoint>();
         this.tweets = new ArrayList<Tweet>();
-    }
-
-    /*
-     * every interest point that going to call this method is going to add to his
-     * current list a brand new hashtag and a new user
-     * (non-Javadoc)
-     * @see fr.tse.ProjetInfo3.mwp.dao.InterestPointInterface#retreiveAllInterestPoints()
-     */
-    public void addToInterestPoint(Hashtag hashtag, User user) {
-        this.hashtags.add(hashtag);
-        this.users.add(user);
     }
 
     /*
@@ -199,14 +185,6 @@ public class InterestPoint implements Serializable {
 
     public void setTweets(List<Tweet> tweets) {
         this.tweets = tweets;
-    }
-
-    public void setInterestPoints(List<InterestPoint> interestPoints) {
-        this.interestPoints = interestPoints;
-    }
-
-    public List<InterestPoint> getInterestPoints() {
-        return interestPoints;
     }
 
     @Override
