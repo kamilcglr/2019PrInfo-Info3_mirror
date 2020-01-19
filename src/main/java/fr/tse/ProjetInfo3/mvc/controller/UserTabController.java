@@ -1,13 +1,11 @@
 package fr.tse.ProjetInfo3.mvc.controller;
 
 import com.jfoenix.controls.*;
-
 import fr.tse.ProjetInfo3.mvc.dto.Tweet;
 import fr.tse.ProjetInfo3.mvc.dto.User;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.ResultHashtag;
 import fr.tse.ProjetInfo3.mvc.utils.ListObjects.SimpleTopHashtagCell;
-
 import fr.tse.ProjetInfo3.mvc.utils.NumberParser;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
 import fr.tse.ProjetInfo3.mvc.viewer.UserViewer;
@@ -19,22 +17,26 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.*;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.javafx.Icon;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.*;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.*;
 
 /**
  * @author Sobun UNG
@@ -66,6 +68,9 @@ public class UserTabController {
 
     @FXML
     private JFXListView<JFXListCell> listTweets;
+
+    @FXML
+    private JFXListView<ResultHashtag> listHashtags;
 
     @FXML
     private Label lastAnalysedLabel;
@@ -115,11 +120,15 @@ public class UserTabController {
     @FXML
     private Label nbFollowing;
     @FXML
-    private JFXListView<ResultHashtag> listHashtags;
-    @FXML
     private ImageView profileImageView;
     @FXML
     private Label lastSearchLabel;
+    @FXML
+    private HBox profileImageBox;
+    @FXML
+    private AreaChart<String, Number> tweetCadenceChart;
+
+    private Map<Date, Integer> tweetsPerInterval;
 
 
     /**************************************************************/
@@ -153,6 +162,7 @@ public class UserTabController {
                 nbTweet.setVisible(false);
                 nbFollowers.setVisible(false);
                 nbFollowing.setVisible(false);
+                profileImageBox.setVisible(false);
             }
         });
     }
@@ -237,6 +247,9 @@ public class UserTabController {
         threadSetTopTweets = new Thread(setTopTweets());
         threadSetTopTweets.setDaemon(true);
         threadSetTopTweets.start();
+
+        tweetsPerInterval = acquireDataOfTweetsPerTimeInterval();
+        generateTweetsPerIntervalChart();
 
         //Wait for the two other tasks
         while (threadSetTopHashtags.isAlive() || threadSetTopTweets.isAlive()) {
@@ -324,6 +337,7 @@ public class UserTabController {
      * Draws the profile picture after rounding it.
      * */
     private void buildPicture() {
+        profileImageBox.setVisible(true);
         Image profilePic = new Image(userToPrint.getProfile_image_url_https());
         profileImageView.setImage(profilePic);
         Circle clip = new Circle(67, 67, 67);
@@ -396,6 +410,97 @@ public class UserTabController {
             favsViewer.addUserToFavourites(userToPrint);
         }
     }
+
+    /**
+     * Build the chart of tweets cadence
+     */
+    void generateTweetsPerIntervalChart() {
+        Date oldestTweet = tweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+
+        Date newestTweet = tweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+        /* Timestamps **/
+        // Get current date
+        int minutesDifference = minutesDifference(newestTweet, oldestTweet);
+        SimpleDateFormat simpleDateFormat;
+        if (minutesDifference < 24 * 60 ) {
+            simpleDateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            if(minutesDifference < 24 * 60 * 20) {
+                simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/YYYY");
+            }else{
+                simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+            }
+        }
+
+        /* Iterator configuration **/
+
+        Set<Map.Entry<Date, Integer>> setEntry1 = tweetsPerInterval.entrySet();
+        Iterator<Map.Entry<Date, Integer>> iterator1 = setEntry1.iterator();
+
+        /* Create series **/
+
+        XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+
+        /* Iterate over the data and fill the chart **/
+        while (iterator1.hasNext()) {
+            Map.Entry<Date, Integer> entry1 = iterator1.next();
+            series.getData()
+                    .add(new XYChart.Data<String, Number>(simpleDateFormat.format(entry1.getKey()), entry1.getValue()));
+
+        }
+        Platform.runLater(() -> {
+            tweetCadenceChart.getData().add(series);
+            tweetCadenceChart.setLegendVisible(false);
+        });
+    }
+
+    /**
+     * @return Returns a Map<Date, Integer>
+     * @author Sergiy
+     * {@code This method returns an overall amount of tweets per time interval}
+     */
+    public Map<Date, Integer> acquireDataOfTweetsPerTimeInterval() {
+        Map<Date, Integer> tweetsTimeInterval = new HashMap<>();
+        Date oldestTweet = tweetList.stream().min(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+
+        Date newestTweet = tweetList.stream().max(Comparator.comparing(Tweet::getCreated_at)).get()
+                .getCreated_at();
+        /* Timestamps **/
+        // Get current date
+        int minutesDifference = minutesDifference(newestTweet, oldestTweet);
+        double interval = minutesDifference / 20.0d;
+
+        List<Date> dateIntervals = new LinkedList<Date>();
+
+        if (minutesDifference > 1440) {
+            for (int i = 1; i < 21; i++) {
+                dateIntervals.add(roundDateToHour(addMinutesToDate(oldestTweet, (int) (i * interval))));
+            }
+        } else {
+            for (int i = 1; i < 21; i++) {
+                dateIntervals.add(addMinutesToDate(oldestTweet, (int) (i * interval)));
+            }
+        }
+
+        for (Tweet tweet : tweetList) {
+            Date dateTweet = tweet.getCreated_at();
+            Date intervalDate = approximateInterval(dateIntervals, dateTweet);
+
+            if (tweetsTimeInterval.containsKey(intervalDate)) {
+                tweetsTimeInterval.put(intervalDate, tweetsTimeInterval.get(intervalDate) + 1);
+            } else {
+                tweetsTimeInterval.put(intervalDate, 0);
+            }
+        }
+
+        return tweetsTimeInterval.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.naturalOrder())).collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+
 
     /**
      * Called when tab is closed

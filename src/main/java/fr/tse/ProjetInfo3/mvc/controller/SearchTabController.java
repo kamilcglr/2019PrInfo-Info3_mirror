@@ -124,7 +124,7 @@ public class SearchTabController {
          * When the text in the input field is changed,
          * we constantly remove spaces (forhashtag) and add the # or @ at the begining
          */
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
         searchField.textProperty().addListener(
                 (observable, old_value, new_value) -> {
                     propositionList.setVisible(false);

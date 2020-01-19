@@ -5,6 +5,8 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import fr.tse.ProjetInfo3.mvc.dto.UserApp;
 import fr.tse.ProjetInfo3.mvc.repository.DatabaseManager;
 import fr.tse.ProjetInfo3.mvc.viewer.FavsViewer;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -36,6 +38,9 @@ public class LoginController {
     private JFXButton validateButton;
 
     @FXML
+    private JFXSpinner jfxSpinner;
+
+    @FXML
     private JFXTextField userNameField;
     @FXML
     private JFXPasswordField passwordField;
@@ -50,6 +55,7 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        jfxSpinner.setVisible(false);
     }
 
     @FXML
@@ -60,12 +66,34 @@ public class LoginController {
 
     @FXML
     private int validateButtonPressed(ActionEvent event) {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+                    jfxSpinner.setVisible(true);
+                    validateButton.setVisible(false);
+                });
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+
 
         String username = userNameField.getText();
         String password = passwordField.getText();
 
         UserApp userApp = databaseManager.getUserFromDataBase(username, password);
         if (userApp != null) {
+            Platform.runLater(() -> {
+                jfxSpinner.setVisible(false);
+                validateButton.setVisible(false);
+            });
+
+            mainController.setConnected(true);
+            mainController.setUserApp(userApp);
+            favsViewer.setUserID(userApp.getId());
             Label headerLabel = new Label("Connection réussie");
             Text bodyText = new Text("Vous êtes connecté. Vous avez accès aux fonctionnalités avancées dans le menu principal.");
             JFXButton button = new JFXButton("D'accord");
@@ -79,22 +107,20 @@ public class LoginController {
             JFXDialogLayout dialogLayout = new JFXDialogLayout();
             dialogLayout.setPadding(new Insets(10));
             JFXDialog dialog = new JFXDialog(dialogStackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
-            button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
-                dialog.close();
-                mainController.setConnected(true);
-                mainController.setUserApp(userApp);
-                favsViewer.setUserID(userApp.getId());
-                mainController.goToHomeRefresh();
-            });
 
             dialogLayout.setHeading(headerLabel);
             dialogLayout.setBody(bodyText);
             dialogLayout.setActions(button);
+            anchorPane.setEffect(blur);
             dialog.show();
+
             dialog.setOnDialogClosed((JFXDialogEvent event1) -> {
                 anchorPane.setEffect(null);
+                mainController.goToHomeRefresh();
             });
-            anchorPane.setEffect(blur);
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+                dialog.close();
+            });
 
             //Handle shortcut
             mainController.getScene().getAccelerators().put(
@@ -118,6 +144,10 @@ public class LoginController {
 
             return 0;
         } else {
+            Platform.runLater(() -> {
+                jfxSpinner.setVisible(false);
+                validateButton.setVisible(true);
+            });
             Label headerLabel = new Label("Erreur");
             Text bodyText = new Text("Identifiant ou mot de passe incorrect");
             JFXButton button = new JFXButton("D'accord");

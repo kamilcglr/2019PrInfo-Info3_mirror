@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author Kamil CAGLAR Controller of the main window, all user interactions
@@ -142,102 +143,107 @@ public class MainController {
      * @param userViewer
      */
     public void goToUserPane(UserViewer userViewer) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/UserTab.fxml"));
-        try {
-            AnchorPane newUserTab = fxmlLoader.load();
-            UserTabController userTabController = fxmlLoader.getController();
-            userTabController.injectMainController(this, favsViewer);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                tab.setContent(newUserTab);
-                tab.setText(userViewer.getUser().getName());
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-            });
+        if (!isAlreadyOpen(userViewer.getUser().getName())) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/UserTab.fxml"));
+            try {
+                AnchorPane newUserTab = fxmlLoader.load();
+                UserTabController userTabController = fxmlLoader.getController();
+                userTabController.injectMainController(this, favsViewer);
+                Tab tab = new Tab();
+                Platform.runLater(() -> {
+                    tab.setContent(newUserTab);
+                    tab.setText(userViewer.getUser().getName());
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
+                });
 
-            //Heavy task inside this thread, we go to user pane before
-            Task<Void> task = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    userTabController.setUserViewer(userViewer);
-                    return null;
-                }
-            };
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        userTabController.setUserViewer(userViewer);
+                        return null;
+                    }
+                };
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
 
-            tab.setOnCloseRequest(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    userTabController.killThreads();
-                    thread.interrupt();
-                }
-            });
+                tab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                        userTabController.killThreads();
+                        thread.interrupt();
+                    }
+                });
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-
     public void goToHashtagPane(HashtagViewer hashtagViewer) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
-        try {
-            AnchorPane newHashtagTab = fxmlLoader.load();
-            HashtagTabController hashtagTabController = fxmlLoader.getController();
-            hashtagTabController.injectMainController(this, favsViewer);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                tab.setContent(newHashtagTab);
-                tab.setText("#" + hashtagViewer.getHashtag().getHashtag());
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-            });
+        if (!isAlreadyOpen("#" + hashtagViewer.getHashtag().getHashtag())) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/HashtagTab.fxml"));
+            try {
+                AnchorPane newHashtagTab = fxmlLoader.load();
+                HashtagTabController hashtagTabController = fxmlLoader.getController();
+                hashtagTabController.injectMainController(this, favsViewer);
+                Tab tab = new Tab();
+                Platform.runLater(() -> {
+                    tab.setContent(newHashtagTab);
+                    tab.setText("#" + hashtagViewer.getHashtag().getHashtag());
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
+                });
 
-            //Heavy task inside this thread, we go to user pane before
-            Task<Void> task = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    hashtagTabController.setHashtagViewer(hashtagViewer);
-                    return null;
-                }
-            };
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        hashtagTabController.setHashtagViewer(hashtagViewer);
+                        return null;
+                    }
+                };
 
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
 
-            tab.setOnCloseRequest(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    hashtagTabController.killThreads();
-                    thread.interrupt();
-                }
-            });
+                tab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                        hashtagTabController.killThreads();
+                        thread.interrupt();
+                    }
+                });
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void goToLoginPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
-        try {
-            AnchorPane loginTab = fxmlLoader.load();
-            LoginController loginController = fxmlLoader.getController();
-            loginController.injectMainController(this, databaseManager, favsViewer);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                if (!isConnected()) {
-                    tab.setContent(loginTab);
-                    tab.setText("Login");
-                    tabPane.getTabs().add(tab);
-                    tabPane.getSelectionModel().select(tab);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isAlreadyOpen("Login")) { //The string must be the same in tab.setText
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+            try {
+                AnchorPane loginTab = fxmlLoader.load();
+                LoginController loginController = fxmlLoader.getController();
+                loginController.injectMainController(this, databaseManager, favsViewer);
+                Tab tab = new Tab();
+                Platform.runLater(() -> {
+                    if (!isConnected()) {
+                        tab.setContent(loginTab);
+                        tab.setText("Login");
+                        tabPane.getTabs().add(tab);
+                        tabPane.getSelectionModel().select(tab);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -420,85 +426,71 @@ public class MainController {
     }
 
     public void goToSigninTab() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
-        try {
-            AnchorPane loginTab = fxmlLoader.load();
-            SignInController loginController = fxmlLoader.getController();
-            loginController.injectMainController(this);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                // if(loginController.connected==0) {
-                tab.setContent(loginTab);
-                tab.setText("SignIn");
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
+        if (!isAlreadyOpen("SignIn")) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SignInTab.fxml"));
+            try {
+                AnchorPane loginTab = fxmlLoader.load();
+                SignInController loginController = fxmlLoader.getController();
+                loginController.injectMainController(this);
+                Tab tab = new Tab();
+                Platform.runLater(() -> {
+                    // if(loginController.connected==0) {
+                    tab.setContent(loginTab);
+                    tab.setText("SignIn");
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
 
-                loginController.injectTabContainer(tabPane);
-                loginController.injectTab(tab);
-            });
+                    loginController.injectTabContainer(tabPane);
+                    loginController.injectTab(tab);
+                });
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void goToSelectedPi(PIViewer piViewer) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
-        try {
-            AnchorPane piTab = fxmlLoader.load();
-            PiTabController piTabController = fxmlLoader.getController();
-            piTabController.injectMainController(this);
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                tab.setContent(piTab);
-                tab.setText(piViewer.getSelectedInterestPoint().getName());
-                tabPane.getTabs().add(tab);
-                tabPane.getSelectionModel().select(tab);
-            });
+        if (!isAlreadyOpen(piViewer.getSelectedInterestPoint().getName())) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
+            try {
+                AnchorPane piTab = fxmlLoader.load();
+                PiTabController piTabController = fxmlLoader.getController();
+                piTabController.injectMainController(this);
+                Tab tab = new Tab();
+                Platform.runLater(() -> {
+                    tab.setContent(piTab);
+                    tab.setText(piViewer.getSelectedInterestPoint().getName());
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
+                });
 
-            //Heavy task inside this thread, we go to user pane before
-            Task<Void> task = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    piTabController.setDatas(piViewer);
-                    return null;
-                }
-            };
+                //Heavy task inside this thread, we go to user pane before
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        piTabController.setDatas(piViewer);
+                        return null;
+                    }
+                };
 
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
 
-            tab.setOnCloseRequest(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    piTabController.killThreads();
-                    thread.interrupt();
-                }
-            });
+                tab.setOnCloseRequest(new EventHandler<Event>() {
+                    @Override
+                    public void handle(Event event) {
+                        piTabController.killThreads();
+                        thread.interrupt();
+                    }
+                });
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    public void goToPIDelete(PIViewer piViewer) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PiTab.fxml"));
-        try {
-            AnchorPane piTab = fxmlLoader.load();
-            PiTabController piTabController = fxmlLoader.getController();
-            Tab tab = new Tab();
-            Platform.runLater(() -> {
-                long id = piViewer.getSelectedInterestPoint().getId();
-                piViewer.deleteInterestPointFromDatabaseById(id);
-
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -555,6 +547,16 @@ public class MainController {
             handler.handle(null);
         }
         tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem());
+    }
+
+    private boolean isAlreadyOpen(String name) {
+        List<Tab> matchingTabs = tabPane.getTabs().stream().filter(tab -> tab.getText().equals(name)).collect(Collectors.toList());
+        if (matchingTabs.size() > 0) {
+            tabPane.getSelectionModel().select(matchingTabs.get(0));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isConnected() {

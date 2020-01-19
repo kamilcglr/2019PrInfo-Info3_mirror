@@ -10,15 +10,14 @@ import fr.tse.ProjetInfo3.mvc.viewer.PIViewer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -375,8 +374,7 @@ public class ListObjects {
 
             } else {
                 if (user.getProfilePicture() == null) {
-                    Platform.runLater(() -> user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false)));
-                    //user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
+                    user.setProfilePicture(new Image(user.getProfile_image_url_https(), 40, 40, false, false));
                 }
                 profileImageView.setImage(user.getProfilePicture());
 
@@ -390,8 +388,8 @@ public class ListObjects {
 
                 profileImageView.setClip(null);
                 profileImageView.setImage(image);
-                profileImageView.getStyleClass().add("profileImageView");
 
+                profileImageView.getStyleClass().add("profileImageView");
 
                 hBox.getStyleClass().add("hbox");
                 nameLabel.setText(user.getName());
@@ -420,9 +418,29 @@ public class ListObjects {
             super();
 
             name = new Label();
+            name.setMinWidth(150);
+            name.setMaxWidth(150);
+            name.setWrapText(true);
+            name.getStyleClass().add("nameOfPI");
+
             users = new Label();
+            users.setAlignment(Pos.CENTER_LEFT);
+            users.setMinWidth(250);
+            users.setMaxWidth(250);
+            users.setWrapText(true);
+
             hashtags = new Label();
-            hBox.getChildren().addAll(name, users, hashtags);
+            hashtags.setAlignment(Pos.CENTER_LEFT);
+            hashtags.setMinWidth(250);
+            hashtags.setMaxWidth(250);
+            hashtags.setWrapText(true);
+
+            users.getStyleClass().add("usersAndHashtagsLabel");
+            hashtags.getStyleClass().add("usersAndHashtagsLabel");
+
+            Region filler2 = new Region();
+            HBox.setHgrow(filler2, Priority.ALWAYS);
+            hBox.getChildren().addAll(name,  users, filler2, hashtags);
         }
 
         @Override
@@ -434,15 +452,12 @@ public class ListObjects {
                 setGraphic(null);
 
             } else {
-
-                hBox.getStyleClass().add("hbox");
-                hBox.setPrefWidth(100);
-
+                setText(null);
                 String userNamesInPI = "";
                 String hashtagNamesInPI = "";
                 if (interestPoint.getUsers() != null) {
                     userNamesInPI = interestPoint.getUsers().stream()
-                            .map(user -> "@" + user.getName()).collect(Collectors.joining(" "));
+                            .map(user -> "@" + user.getScreen_name()).collect(Collectors.joining(" "));
                 }
                 if (interestPoint.getHashtags() != null) {
                     hashtagNamesInPI = interestPoint.getHashtags().stream()
@@ -450,22 +465,11 @@ public class ListObjects {
                 }
 
                 name.setText(interestPoint.getName());
-                name.setMinWidth(100);
-                name.setMaxWidth(100);
-                name.setWrapText(true);
-                name.getStyleClass().add("nameOfPI");
-
                 users.setText(userNamesInPI);
-                users.setMaxWidth(300);
-                users.setWrapText(true);
                 hashtags.setText(hashtagNamesInPI);
-                hashtags.setMaxWidth(300);
-                hashtags.setWrapText(true);
 
-                users.getStyleClass().add("usersAndHashtagsLabel");
-                hashtags.getStyleClass().add("usersAndHashtagsLabel");
-
-                setText(null);
+                hBox.getStyleClass().add("hbox");
+                hBox.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(hBox);
             }
         }

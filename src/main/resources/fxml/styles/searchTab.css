@@ -47,6 +47,7 @@
 
 .jfx-snackbar-layout {
     -fx-background-color: -red;
+    -fx-font-size: 25;
 }
 
 .jfx-snackbar-toast {

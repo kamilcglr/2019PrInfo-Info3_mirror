@@ -29,15 +29,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static fr.tse.ProjetInfo3.mvc.utils.DateFormats.twitterRequestFormat;
+import static fr.tse.ProjetInfo3.mvc.utils.Dates.twitterRequestFormat;
 
 /**
  * @author Sergiy
  * @author kamilcaglar
  * @author TahaAlami
- * @author Kamil CAGLAR
  * @author Laïla
  * This class regroups all the methods used to interact with Twitter using TwitterAPI
  * It contains methods that will return POJO like user, tweet...
@@ -134,7 +132,7 @@ public class RequestManager {
      * @return Map of Names and screen_names of user
      */
     public List<User> getUsersbyName(String userProposition) throws IOException, InterruptedException {
-        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=20&include_entities=false&result_type=popular";
+        String url = "https://api.twitter.com/1.1/users/search.json?q=" + userProposition + "&count=10&include_entities=false&result_type=popular";
 
         //if the proposition contains spaces we will remove them
         //WARNING ! we have to keep userProposition as it is because oAuthManager need spaces

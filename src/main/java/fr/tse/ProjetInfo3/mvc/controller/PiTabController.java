@@ -136,7 +136,6 @@ public class PiTabController {
         nbTweetsLabel.setVisible(false);
         statisticsButton.setVisible(false);
 
-        // this part has bto be here to use the same piviewer ========= to verify
         topFiveUserList.setCellFactory(param -> new ListObjects.TopUserCellWithPlus(interestPointToPrint, piViewer));
         topTenLinkedList
                 .setCellFactory(param -> new ListObjects.TopHashtagCellWithPlus(interestPointToPrint, piViewer));
@@ -146,7 +145,6 @@ public class PiTabController {
         trackedHashtagsList.setCellFactory(param -> new ListObjects.SimpleHashtag());
         userViewer = new UserViewer();
         hashtagViewer = new HashtagViewer();
-        // ====================
     }
 
     @FXML
@@ -268,29 +266,6 @@ public class PiTabController {
     }
 
     public String getDiff(Date date1, Date date2) {
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate d1 = convertToLocalDateViaMilisecond(date1);
-        LocalDate d2 = convertToLocalDateViaMilisecond(date2);
-        long daysBetween = ChronoUnit.DAYS.between(d1, d2);
-
-        if(daysBetween<31 && daysBetween>1)
-            return daysBetween+" jours";
-        else if(daysBetween>=31)
-            return (long) (daysBetween/30.42)+" mois";
-        else{ // daysBetween <1
-            long newDiff = daysBetween/24;
-            if(newDiff<24 && newDiff>=1)
-                return newDiff+" heures";
-            else if(newDiff>=24)
-                return newDiff+" jours";
-            else {
-                long anotherDiff = newDiff/60;
-                if(anotherDiff<60 && anotherDiff>=1)
-                    return anotherDiff+" minutes";
-                else
-                    return anotherDiff+" heures";
-            }
-        }*/
         long diff = date2.getTime() - date1.getTime();
 
         long diffSeconds = diff / 1000 % 60;
@@ -310,12 +285,6 @@ public class PiTabController {
                 return diffSeconds + " minutes";
             }
         }
-    }
-
-    private static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
-        return Instant.ofEpochMilli(dateToConvert.getTime())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
     }
 
     private Task<Void> setTopFiveUsers() throws Exception {
@@ -409,10 +378,6 @@ public class PiTabController {
         }
 
         vBox.setVisible(show);
-        // nbUsersLabel.setVisible(hide);
-        // tweetsLabel.setVisible(hide);
-        // usersLabel.setVisible(hide);
-        // lastAnalysedLabel.setVisible(hide);
     }
 
     private void addTweetsToList(List<Tweet> toptweets) {
@@ -442,6 +407,7 @@ public class PiTabController {
 
     @FXML
     void statisticsButtonPressed(ActionEvent event) {
+        piViewer.setSelectedInterestPointById(interestPointToPrint.getId());
         mainController.goToStatistics(piViewer, bigTweetList);
     }
 

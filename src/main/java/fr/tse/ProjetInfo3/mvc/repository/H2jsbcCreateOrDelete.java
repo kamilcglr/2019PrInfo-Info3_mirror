@@ -19,6 +19,10 @@ public class H2jsbcCreateOrDelete {
      * control, you can can the desired function.
      */
     public static void main(String[] args) {
+        createDatabase();
+    }
+
+    public static void createDatabase(){
         try {
             System.out.println("Connecting to database...");
             conn = SingletonDBConnection.getInstance();
