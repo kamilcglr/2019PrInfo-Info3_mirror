@@ -3,7 +3,7 @@ Application JavaFX permettant d'analyser des statistiques sur des utilisateurs o
 Fonctionne grâce à l'API Twitter (https://developer.twitter.com/)
 
 <p align="center">
- <a href="https://drive.google.com/open?id=1sjNvxCFC7eZYg7x-KeTX1FsJR7CZoVgG">
+ <a href="https://drive.google.com/open?id=1vOLUq7P4GxDFbeYNH-2gjuY_Ba6oOsHz">
   <img src="https://github.com/telecom-se/2019PrInfo-Info3/blob/master/WikiResources/video.png?raw=true" alt="Regarder la vidéo"/>
  </a>
 </p>
