@@ -30,6 +30,10 @@ public class DatabaseManager {
                 .setDateFormat(TwitterDateParser.twitterFormat)
                 .create();
     }
+    
+    public Gson getInstanceOfGson() {
+    	return gson;
+    }
 
     /**
      * Cache a User on the db
