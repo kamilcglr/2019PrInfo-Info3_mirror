@@ -51,6 +51,14 @@ public class PIViewer {
         System.out.println("Affichage : " + selectedInterestPoint.getId());
     }
 
+    public void setSelectedInterestPointById(long selectedInterestPointId) {
+        this.selectedInterestPoint = listOfInterestPoint.stream()
+                .filter(interestPoint -> interestPoint.getId() == selectedInterestPointId).findAny()
+                .orElse(null);
+        System.out.println("Affichage : " + selectedInterestPoint.getId());
+    }
+
+
     /**
      * Return the selected interest Point which was selected in MyPIsController
      * This function is used inside PICreate
@@ -491,4 +499,5 @@ public class PIViewer {
 
         return TweetsSorted;
     }
+
 }
