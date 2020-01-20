@@ -29,7 +29,7 @@ Pour des informations techniques détaillées, veuillez consulter le wiki.
 ### Prérequis
 Java 11.
 ### Installation
-Télécharger le .jar suivant : [Executable](jar/TwitterAnalytics.jar).
+Télécharger le .jar suivant : [Executable](https://github.com/telecom-se/2019PrInfo-Info3/blob/master/2019PrInfo-Info3.jar).
 Ce .jar contient javaFX et toutes les dépendances nécéssaires au fonctionnement de l'application.
 Afin de créer la base de donnée, il faut ajtouer l'argument install la première fois. Cela va créer une base de données locale (simple fichier .h2.db) à la racine de votre répertoire personnel.
 + Sous Linux/MacOs : 
