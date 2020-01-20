@@ -33,19 +33,19 @@ Télécharger le .jar suivant : [Executable](https://github.com/telecom-se/2019P
 Ce .jar contient javaFX et toutes les dépendances nécéssaires au fonctionnement de l'application.
 Afin de créer la base de donnée, il faut ajtouer l'argument install la première fois. Cela va créer une base de données locale (simple fichier .h2.db) à la racine de votre répertoire personnel.
 + Sous Linux/MacOs : 
-Ouvrez un terminal, rendez-vous dans le répertoire contenant le fichier et entrez la commande suivant
+Ouvrez un terminal, rendez-vous dans le répertoire contenant le fichier et entrez la commande suivante
 ```sh
 java -jar TwitterAnalytics.jar install
 ```
 + Sous Linux/MacOs : 
-Ouvrez un cmd, rendez-vous dans le répertoire contenant le fichier, et entrez la commande suivant
+Ouvrez un cmd, rendez-vous dans le répertoire contenant le fichier, et entrez la commande suivante
 ```cmd
 java -jar TwitterAnalytics.jar install
 ```
 
 ### Utilisation
 + Sous linux: 
-Ouvrez un terminal, rendez-vous dans le répertoire contenant le fichier et entrez la commande suivant
+Ouvrez un terminal, rendez-vous dans le répertoire contenant le fichier et entrez la commande suivante
 ```sh
 java -jar TwitterAnalytics.jar 
 ```
